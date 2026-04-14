@@ -107,4 +107,11 @@
   .cta-link:hover::after {
     @apply scale-x-100;
   }
+
+  .field-input {
+    @apply w-full bg-transparent text-sm text-foreground focus:outline-none font-light;
+  }
+  .field-input:focus {
+    /* handled by parent border */
+  }
 }
