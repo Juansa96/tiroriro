@@ -6,6 +6,7 @@ import WhyTiroRiro from "@/components/WhyTiroRiro";
 import TeamSection from "@/components/TeamSection";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
+import SectionCTA from "@/components/SectionCTA";
 
 const Index = () => (
   <>
@@ -13,9 +14,13 @@ const Index = () => (
     <main>
       <HeroSection />
       <ProductsPreview />
+      <SectionCTA to="/configurador" label="Diseña el tuyo" />
       <HowItWorks />
+      <SectionCTA to="/configurador" label="Empieza ahora" />
       <WhyTiroRiro />
+      <SectionCTA to="/contacto" label="Encarga el tuyo" />
       <TeamSection />
+      <SectionCTA to="/contacto" label="Hablamos" />
       <ContactForm />
     </main>
     <Footer />
