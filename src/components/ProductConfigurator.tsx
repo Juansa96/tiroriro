@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
+import ProductSVGPreview from "./ProductSVGPreview";
 import {
   ProductType, PRODUCTS, FABRIC_COLORS, HEADBOARD_SHAPES, BED_SIZES,
   HEADBOARD_HEIGHTS, BENCH_LENGTHS, TABLE_LENGTHS, CUSHION_SHAPES,
-  CUSHION_SIZES, PUFF_SIZES, FINISHES, calculatePrice
+  CUSHION_SIZES, PUFF_SIZES, FINISHES, calculatePrice, buildConfigSummary
 } from "@/lib/products";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const ProductConfigurator = ({ initialType = 'cabecero' }: Props) => {
+  const navigate = useNavigate();
   const [type, setType] = useState<ProductType>(initialType);
   const [options, setOptions] = useState<Record<string, string>>({
     shape: HEADBOARD_SHAPES[0].id,
@@ -29,11 +31,22 @@ const ProductConfigurator = ({ initialType = 'cabecero' }: Props) => {
   const set = (key: string, value: string) => setOptions((o) => ({ ...o, [key]: value }));
   const price = calculatePrice(type, options);
 
+  const handleOrder = () => {
+    const summary = buildConfigSummary(type, options);
+    const product = PRODUCTS.find(p => p.type === type);
+    const params = new URLSearchParams({
+      product: product?.name || '',
+      config: summary,
+      price: price.toString(),
+    });
+    navigate(`/contacto?${params.toString()}`);
+  };
+
   const optionBtn = (selected: boolean) =>
     `px-4 py-2.5 text-sm font-light border transition-all cursor-pointer ${
       selected
-        ? "border-foreground bg-foreground text-background"
-        : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+        ? "border-accent-warm bg-accent-warm text-white"
+        : "border-border text-muted-foreground hover:border-accent-warm hover:text-foreground"
     }`;
 
   const renderSteps = () => {
@@ -145,10 +158,11 @@ const ProductConfigurator = ({ initialType = 'cabecero' }: Props) => {
 
   return (
     <section className="py-20 md:py-32 px-6">
-      <div className="container mx-auto max-w-3xl">
+      <div className="container mx-auto max-w-5xl">
         <AnimatedSection className="text-center mb-4">
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Diseña el tuyo</h2>
-          <p className="mt-4 text-muted-foreground font-light italic max-w-md mx-auto">
+          <span className="section-line" />
+          <p className="mt-6 text-muted-foreground font-light italic max-w-md mx-auto">
             "Cuantos más detalles nos das, más tuya sale la pieza."
           </p>
           <p className="mt-2 text-sm text-muted-foreground font-light">
@@ -165,76 +179,76 @@ const ProductConfigurator = ({ initialType = 'cabecero' }: Props) => {
                 onClick={() => setType(p.type)}
                 className={optionBtn(type === p.type)}
               >
-                {p.name.replace('Mesitas y cojines', 'Mesitas').replace('Puffs elegantes', 'Puffs')}
+                {p.name.replace(' enteladas', '').replace(' tapizados', '').replace(' elegantes', '').replace(' y almohadones', '')}
               </button>
             ))}
-            <button
-              onClick={() => setType('cojin')}
-              className={optionBtn(type === 'cojin')}
-            >
-              Cojines
-            </button>
           </div>
 
-          <div className="space-y-10">
-            {renderSteps()}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14">
+            {/* Options */}
+            <div className="space-y-10 order-2 lg:order-1">
+              {renderSteps()}
 
-            {/* Finish — shared by all except puff */}
-            {type !== 'puff' && (
-              <Step title="Acabado">
-                <div className="space-y-3">
-                  {FINISHES.map((f) => (
+              {type !== 'puff' && (
+                <Step title="Acabado">
+                  <div className="space-y-3">
+                    {FINISHES.map((f) => (
+                      <button
+                        key={f.id}
+                        onClick={() => set('finish', f.id)}
+                        className={`w-full text-left px-5 py-4 border transition-all ${
+                          options.finish === f.id
+                            ? "border-accent-warm"
+                            : "border-border hover:border-accent-warm/40"
+                        }`}
+                      >
+                        <span className="text-sm font-medium text-foreground">{f.name}</span>
+                        <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </Step>
+              )}
+
+              <Step title="Tela y color">
+                <div className="grid grid-cols-4 sm:grid-cols-4 gap-3">
+                  {FABRIC_COLORS.map((c) => (
                     <button
-                      key={f.id}
-                      onClick={() => set('finish', f.id)}
-                      className={`w-full text-left px-5 py-4 border transition-all ${
-                        options.finish === f.id
-                          ? "border-foreground"
-                          : "border-border hover:border-foreground/40"
+                      key={c.id}
+                      onClick={() => set('color', c.id)}
+                      className={`flex flex-col items-center gap-2 p-3 border transition-all ${
+                        options.color === c.id ? "border-accent-warm" : "border-transparent hover:border-border"
                       }`}
                     >
-                      <span className="text-sm font-medium text-foreground">{f.name}</span>
-                      <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
+                      <div
+                        className="w-12 h-12 rounded-sm"
+                        style={{ backgroundColor: c.hex }}
+                      />
+                      <span className="text-xs text-muted-foreground font-light">{c.name}</span>
                     </button>
                   ))}
                 </div>
               </Step>
-            )}
+            </div>
 
-            {/* Color palette — all products */}
-            <Step title="Tela y color">
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                {FABRIC_COLORS.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => set('color', c.id)}
-                    className={`flex flex-col items-center gap-2 p-3 border transition-all ${
-                      options.color === c.id ? "border-foreground" : "border-transparent hover:border-border"
-                    }`}
-                  >
-                    <div
-                      className="w-12 h-12 rounded-sm"
-                      style={{ backgroundColor: c.hex }}
-                    />
-                    <span className="text-xs text-muted-foreground font-light">{c.name}</span>
-                  </button>
-                ))}
+            {/* SVG Preview */}
+            <div className="order-1 lg:order-2 lg:sticky lg:top-28 lg:self-start">
+              <ProductSVGPreview type={type} options={options} />
+
+              {/* Price */}
+              <div className="mt-8 text-center">
+                <p className="font-serif text-4xl md:text-5xl font-light text-foreground">{price}€</p>
+                <p className="mt-2 text-xs text-muted-foreground font-light">
+                  Precio final con IVA incluido y envío a toda España — sin sorpresas.
+                </p>
+                <button
+                  onClick={handleOrder}
+                  className="mt-6 inline-block px-10 py-3.5 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity"
+                >
+                  Solicitar pedido
+                </button>
               </div>
-            </Step>
-          </div>
-
-          {/* Price */}
-          <div className="mt-12 text-center border-t border-border pt-10">
-            <p className="font-serif text-4xl md:text-5xl font-light text-foreground">{price}€</p>
-            <p className="mt-2 text-xs text-muted-foreground font-light">
-              Precio final con IVA incluido y envío a toda España — sin sorpresas cuando llegue la factura.
-            </p>
-            <Link
-              to="/contacto"
-              className="mt-6 inline-block px-10 py-3.5 bg-foreground text-background text-sm tracking-extra-wide uppercase font-medium hover:bg-foreground/90 transition-colors"
-            >
-              Solicitar pedido
-            </Link>
+            </div>
           </div>
         </AnimatedSection>
       </div>

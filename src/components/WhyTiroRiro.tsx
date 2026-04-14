@@ -8,18 +8,12 @@ const REASONS = [
   { num: "05", title: "Para quien no tiene tiempo", text: "Tú tienes trabajo, tienes vida y tienes cosas mejores que hacer que buscar tapiceros, pedir presupuestos y coordinar entregas — nosotras hacemos todo eso para que tú solo tengas que abrir la puerta." },
 ];
 
-const STATS = [
-  { number: "73%", text: "de las personas que se mudan a casa nueva declaran que la decoración del dormitorio es su primera prioridad", source: "Houzz, 2023" },
-  { number: "210%", text: "creció la búsqueda de \"cabecero personalizado\" en España entre 2021 y 2023", source: "Google Trends" },
-  { number: "81%", text: "de los compradores de decoración online abandonaron una compra porque no podían visualizar el producto", source: "IKEA Insights" },
-  { number: "34%", text: "aumenta la percepción de bienestar en una habitación bien decorada", source: "Universidad de Exeter" },
-];
-
 const WhyTiroRiro = () => (
   <section className="py-20 md:py-32 px-6">
     <div className="container mx-auto">
       <AnimatedSection className="text-center mb-16">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Por qué TIRO·RIRO</h2>
+        <span className="section-line" />
       </AnimatedSection>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
@@ -30,15 +24,19 @@ const WhyTiroRiro = () => (
             alt="Manos artesanas trabajando en tapicería"
             className="w-full aspect-[3/4] object-cover"
             loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80";
+            }}
           />
         </AnimatedSection>
 
         {/* Reasons */}
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col">
           {REASONS.map((r, i) => (
             <AnimatedSection key={i} delay={i * 0.08}>
-              <div className="flex gap-5">
-                <span className="font-serif text-3xl md:text-4xl text-earth/40 font-light leading-none shrink-0">
+              <div className={`flex gap-5 py-8 ${i < REASONS.length - 1 ? "border-b border-border" : ""}`}>
+                <span className="font-serif text-3xl md:text-4xl font-light leading-none shrink-0 text-accent-warm">
                   {r.num}
                 </span>
                 <div>
@@ -50,18 +48,16 @@ const WhyTiroRiro = () => (
               </div>
             </AnimatedSection>
           ))}
-        </div>
-      </div>
 
-      {/* Stats */}
-      <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {STATS.map((s, i) => (
-          <AnimatedSection key={i} delay={i * 0.1} className="text-center p-6">
-            <span className="font-serif text-4xl md:text-5xl font-light text-foreground">{s.number}</span>
-            <p className="mt-3 text-sm text-muted-foreground font-light leading-relaxed">{s.text}</p>
-            <p className="mt-1 text-xs text-muted-foreground/60 italic">{s.source}</p>
+          <AnimatedSection delay={0.5} className="mt-6">
+            <button
+              onClick={() => document.getElementById('equipo')?.scrollIntoView({ behavior: 'smooth' })}
+              className="cta-link"
+            >
+              Conoce nuestra historia →
+            </button>
           </AnimatedSection>
-        ))}
+        </div>
       </div>
     </div>
   </section>

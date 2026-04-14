@@ -1,14 +1,15 @@
 import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 import { PRODUCTS, FABRIC_COLORS } from "@/lib/products";
-import { Upload, ImageIcon, Loader2 } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 
 const VirtualTryOn = () => {
+  const navigate = useNavigate();
   const [image, setImage] = useState<string | null>(null);
   const [product, setProduct] = useState(PRODUCTS[0].name);
   const [color, setColor] = useState(FABRIC_COLORS[0].id);
-  const [result, setResult] = useState<string | null>(null);
+  const [resultImage, setResultImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -18,19 +19,27 @@ const VirtualTryOn = () => {
     const reader = new FileReader();
     reader.onload = () => setImage(reader.result as string);
     reader.readAsDataURL(file);
-    setResult(null);
+    setResultImage(null);
   };
 
   const handleTry = async () => {
     if (!image) return;
     setLoading(true);
-    // TODO: Call Supabase Edge Function with AI
-    await new Promise((r) => setTimeout(r, 2000));
-    const colorName = FABRIC_COLORS.find(c => c.id === color)?.name || color;
-    setResult(
-      `Imagina tu ${product.toLowerCase()} en ${colorName} justo contra esa pared — la luz cálida que entra por la ventana va a hacer que la tela cobre una suavidad increíble, como si siempre hubiera estado ahí. El tono combina perfectamente con los elementos naturales de tu espacio, aportando calidez sin restar luminosidad. Es exactamente lo que tu habitación necesitaba para sentirse completa.`
-    );
+    // TODO: Call Supabase Edge Function with HuggingFace API
+    // For now, show a placeholder result
+    await new Promise((r) => setTimeout(r, 3000));
+    // Placeholder: show the user's own image with a tinted overlay
+    setResultImage(image);
     setLoading(false);
+  };
+
+  const handleOrder = () => {
+    const colorName = FABRIC_COLORS.find(c => c.id === color)?.name || '';
+    const params = new URLSearchParams({
+      product: product,
+      config: `${product} · Color: ${colorName}`,
+    });
+    navigate(`/contacto?${params.toString()}`);
   };
 
   return (
@@ -40,8 +49,9 @@ const VirtualTryOn = () => {
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">
             Míralo en tu casa antes de decidir
           </h2>
-          <p className="mt-4 text-muted-foreground font-light italic max-w-lg mx-auto">
-            "Sube una foto de tu estancia, elige el producto y la tela, y nuestra IA te cuenta exactamente cómo quedaría — en segundos."
+          <span className="section-line" />
+          <p className="mt-6 text-muted-foreground font-light italic max-w-lg mx-auto">
+            "Sube una foto de tu estancia, elige el producto y la tela, y nuestra IA te muestra cómo quedaría — en segundos."
           </p>
         </AnimatedSection>
 
@@ -50,7 +60,7 @@ const VirtualTryOn = () => {
             {/* Upload */}
             <div
               onClick={() => fileRef.current?.click()}
-              className="border-2 border-dashed border-border hover:border-foreground/30 transition-colors cursor-pointer p-10 text-center"
+              className="border-2 border-dashed border-border hover:border-accent-warm/40 transition-colors cursor-pointer p-10 text-center rounded-lg"
             >
               {image ? (
                 <img src={image} alt="Tu habitación" className="max-h-64 mx-auto object-contain" />
@@ -71,12 +81,12 @@ const VirtualTryOn = () => {
             </div>
 
             {/* Product selector */}
-            <div>
-              <label className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 block">Producto</label>
+            <div className="rounded p-4 border" style={{ backgroundColor: '#FDFAF5', borderColor: '#E8DCC8' }}>
+              <label className="block text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Producto</label>
               <select
                 value={product}
                 onChange={(e) => setProduct(e.target.value)}
-                className="w-full bg-transparent border-b border-border py-3 text-sm text-foreground focus:outline-none focus:border-foreground appearance-none cursor-pointer font-light"
+                className="field-input appearance-none cursor-pointer"
               >
                 {PRODUCTS.map((p) => (
                   <option key={p.id} value={p.name}>{p.name}</option>
@@ -86,14 +96,14 @@ const VirtualTryOn = () => {
 
             {/* Color selector */}
             <div>
-              <label className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 block">Tela y color</label>
+              <label className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 block font-light">Tela y color</label>
               <div className="flex flex-wrap gap-3">
                 {FABRIC_COLORS.map((c) => (
                   <button
                     key={c.id}
                     onClick={() => setColor(c.id)}
                     className={`w-10 h-10 rounded-sm border-2 transition-all ${
-                      color === c.id ? "border-foreground scale-110" : "border-transparent"
+                      color === c.id ? "border-accent-warm scale-110" : "border-transparent"
                     }`}
                     style={{ backgroundColor: c.hex }}
                     title={c.name}
@@ -107,36 +117,42 @@ const VirtualTryOn = () => {
               <button
                 onClick={handleTry}
                 disabled={!image || loading}
-                className="px-10 py-3.5 bg-foreground text-background text-sm tracking-extra-wide uppercase font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+                className="px-10 py-3.5 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <Loader2 size={16} className="animate-spin" />
-                    Analizando...
+                    Imaginando tu estancia...
                   </span>
                 ) : (
                   "Ver cómo queda"
                 )}
               </button>
+              {loading && (
+                <div className="mt-4">
+                  <div className="w-48 h-1 mx-auto rounded-full overflow-hidden bg-muted">
+                    <div className="h-full bg-accent-warm animate-pulse rounded-full" style={{ width: '60%' }} />
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground font-light">La generación puede tardar entre 10 y 20 segundos.</p>
+                </div>
+              )}
             </div>
 
             {/* Result */}
-            {result && (
+            {resultImage && !loading && (
               <AnimatedSection>
-                <div className="bg-background p-8 md:p-10 mt-4">
-                  <div className="flex items-start gap-3 mb-4">
-                    <ImageIcon size={20} className="text-earth mt-0.5 shrink-0" />
-                    <p className="font-serif text-base md:text-lg text-foreground leading-relaxed italic">
-                      "{result}"
-                    </p>
-                  </div>
+                <div className="bg-background p-6 md:p-8 mt-4 rounded-lg">
+                  <img src={resultImage} alt="Resultado del probador virtual" className="w-full min-h-[300px] object-contain rounded" />
+                  <p className="mt-4 text-xs text-muted-foreground font-light italic text-center">
+                    Esta imagen es una interpretación creada por IA para ayudarte a visualizar el resultado — el producto final puede variar en detalle.
+                  </p>
                   <div className="text-center mt-6">
-                    <Link
-                      to="/contacto"
-                      className="inline-block px-8 py-3 bg-foreground text-background text-sm tracking-extra-wide uppercase font-medium hover:bg-foreground/90 transition-colors"
+                    <button
+                      onClick={handleOrder}
+                      className="inline-block px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity"
                     >
-                      Quiero este — ir al formulario
-                    </Link>
+                      Quiero este — solicitar pedido
+                    </button>
                   </div>
                 </div>
               </AnimatedSection>
