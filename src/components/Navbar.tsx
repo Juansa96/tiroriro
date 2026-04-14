@@ -26,7 +26,7 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-background/90 backdrop-blur-md border-b border-border"
+          ? "bg-background/95 backdrop-blur-sm border-b border-border"
           : "bg-transparent"
       }`}
     >
@@ -41,7 +41,7 @@ const Navbar = () => {
             <Link
               key={link.to}
               to={link.to}
-              className="text-sm tracking-extra-wide uppercase text-muted-foreground hover:text-foreground transition-colors font-body font-light"
+              className="nav-link-underline text-sm tracking-extra-wide uppercase text-foreground hover:text-foreground transition-colors font-body font-light pb-0.5"
             >
               {link.label}
             </Link>
@@ -60,13 +60,13 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-background/95 backdrop-blur-md border-b border-border">
+        <div className="md:hidden bg-background/95 backdrop-blur-sm border-b border-border">
           <div className="px-6 py-6 flex flex-col gap-4">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-sm tracking-extra-wide uppercase text-muted-foreground hover:text-foreground transition-colors font-body"
+                className="text-sm tracking-extra-wide uppercase text-foreground hover:text-accent-warm transition-colors font-body"
               >
                 {link.label}
               </Link>

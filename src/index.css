@@ -27,6 +27,9 @@
     --accent: 30 30% 82%;
     --accent-foreground: 0 0% 13%;
 
+    --accent-warm: 29 43% 59%;
+    --accent-warm-foreground: 0 0% 100%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
@@ -71,5 +74,37 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer components {
+  .section-line {
+    @apply block w-[60px] h-px mx-auto mt-4;
+    background-color: hsl(var(--accent-warm));
+  }
+
+  .nav-link-underline {
+    @apply relative;
+  }
+  .nav-link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px origin-left scale-x-0 transition-transform duration-300;
+    background-color: hsl(var(--accent-warm));
+  }
+  .nav-link-underline:hover::after {
+    @apply scale-x-100;
+  }
+
+  .cta-link {
+    color: hsl(var(--accent-warm));
+    @apply relative inline-flex items-center gap-1 text-sm tracking-extra-wide uppercase font-light transition-colors;
+  }
+  .cta-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px origin-left scale-x-0 transition-transform duration-300;
+    background-color: hsl(var(--accent-warm));
+  }
+  .cta-link:hover::after {
+    @apply scale-x-100;
   }
 }
