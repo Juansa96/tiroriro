@@ -28,11 +28,12 @@ const TEAM = [
 ];
 
 const TeamSection = () => (
-  <section className="py-20 md:py-32 px-6 bg-secondary">
+  <section id="equipo" className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
       <AnimatedSection className="text-center mb-16">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Los que están detrás</h2>
-        <p className="mt-4 text-muted-foreground font-light max-w-xl mx-auto italic">
+        <span className="section-line" />
+        <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic">
           "Dos parejas, dos hermanos, dos amigas de toda la vida — y un proyecto que nació porque ninguna de las dos encontraba lo que buscaba para su casa."
         </p>
       </AnimatedSection>
@@ -46,6 +47,7 @@ const TeamSection = () => (
                 alt={member.name}
                 className="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full mx-auto grayscale hover:grayscale-0 transition-all duration-500"
                 loading="lazy"
+                decoding="async"
               />
               <h3 className="mt-6 font-serif text-2xl font-medium text-foreground">{member.name}</h3>
               <p className="mt-1 text-xs tracking-ultra-wide uppercase text-muted-foreground">{member.role}</p>
