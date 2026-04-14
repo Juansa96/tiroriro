@@ -3,19 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import { PRODUCTS, type ProductType } from "@/lib/products";
-
-const ALL_PRODUCTS = [
-  ...PRODUCTS,
-  {
-    id: 'cojin-almohadon',
-    type: 'cojin' as ProductType,
-    name: 'Cojines y almohadones',
-    tagline: 'El detalle final que lo cambia todo',
-    basePrice: 45,
-    image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&q=80',
-  },
-];
+import { PRODUCTS } from "@/lib/products";
 
 type SortOption = 'default' | 'price-asc' | 'price-desc';
 
@@ -25,14 +13,14 @@ const ProductsPage = () => {
   const [sort, setSort] = useState<SortOption>('default');
 
   const filtered = useMemo(() => {
-    let list = ALL_PRODUCTS;
+    let list = [...PRODUCTS];
     if (filter !== 'all') list = list.filter((p) => p.type === filter);
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q));
     }
-    if (sort === 'price-asc') list = [...list].sort((a, b) => a.basePrice - b.basePrice);
-    if (sort === 'price-desc') list = [...list].sort((a, b) => b.basePrice - a.basePrice);
+    if (sort === 'price-asc') list.sort((a, b) => a.basePrice - b.basePrice);
+    if (sort === 'price-desc') list.sort((a, b) => b.basePrice - a.basePrice);
     return list;
   }, [filter, search, sort]);
 
@@ -45,6 +33,7 @@ const ProductsPage = () => {
         <div className="container mx-auto">
           <AnimatedSection className="text-center mb-12">
             <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h1>
+            <span className="section-line" />
           </AnimatedSection>
 
           {/* Filters */}
@@ -88,8 +77,9 @@ const ProductsPage = () => {
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="mt-4">
@@ -98,7 +88,7 @@ const ProductsPage = () => {
                     <p className="mt-2 text-sm text-foreground">Desde {product.basePrice}€</p>
                     <Link
                       to="/configurador"
-                      className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-foreground border-b border-foreground pb-0.5 hover:border-muted-foreground transition-colors"
+                      className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 hover:opacity-80 transition-opacity"
                     >
                       Personalizar
                     </Link>
