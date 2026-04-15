@@ -1,22 +1,23 @@
 import { Link } from "react-router-dom";
 import { Instagram } from "lucide-react";
+import logo from "@/assets/logo-tiroriro.jpeg";
 
 const Footer = () => (
   <footer className="bg-secondary py-16 md:py-20">
     <div className="container mx-auto px-6 text-center">
-      <Link to="/" className="font-serif text-2xl md:text-3xl font-semibold tracking-ultra-wide text-foreground">
-        TIRO·RIRO
+      <Link to="/">
+        <img src={logo} alt="TIRO·RIRO" className="h-10 w-auto mx-auto" />
       </Link>
 
-      <p className="mt-4 text-sm text-muted-foreground font-light max-w-md mx-auto">
+      <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">
         Hecho a mano en España · Envío a toda la península · contacto@tiroriro.com
       </p>
 
       <div className="mt-8 flex items-center justify-center gap-8 text-xs tracking-extra-wide uppercase text-muted-foreground">
         <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
-        <Link to="/quienes-somos" className="hover:text-foreground transition-colors">Quiénes somos</Link>
+        <Link to="/#equipo" className="hover:text-foreground transition-colors">Quiénes somos</Link>
         <Link to="/configurador" className="hover:text-foreground transition-colors">Diseña el tuyo</Link>
-        <Link to="/contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
+        <Link to="/#contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
         <a href="https://instagram.com/tiroriro" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Instagram de TIRO·RIRO">
           <Instagram size={18} />
         </a>

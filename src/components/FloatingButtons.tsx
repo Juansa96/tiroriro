@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MessageCircle, Instagram, Plus, X } from "lucide-react";
 
 const WHATSAPP_URL = "https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
@@ -8,19 +8,22 @@ const FloatingButtons = () => {
   const [expanded, setExpanded] = useState(false);
   const [whatsappHovered, setWhatsappHovered] = useState(false);
   const [igHovered, setIgHovered] = useState(false);
+  const location = useLocation();
+
+  // Hide on configurator page to avoid overlap with bottom bar
+  if (location.pathname === '/configurador') return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {/* Solicita información */}
       <Link
-        to="/contacto"
+        to="/#contacto"
         className="flex items-center gap-2 rounded-full bg-accent-warm text-white px-4 py-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
       >
         <MessageCircle size={18} />
         <span className="hidden sm:inline text-xs tracking-wide uppercase font-medium">Solicita información</span>
       </Link>
 
-      {/* Desktop: always show IG + WA. Mobile: toggle */}
       {/* Toggle button - mobile only */}
       <button
         onClick={() => setExpanded(!expanded)}

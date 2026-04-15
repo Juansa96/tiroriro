@@ -18,18 +18,16 @@ const WhyTiroRiro = () => (
       </AnimatedSection>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-        {/* Image */}
         <AnimatedSection>
           <img
-            src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&q=80"
-            alt="Manos artesanas trabajando en tapicería de muebles"
+            src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=85"
+            alt="Banco tapizado artesanal con acabado de calidad, taller TIRO·RIRO"
             className="w-full aspect-[3/4] object-cover"
             loading="lazy"
             decoding="async"
           />
         </AnimatedSection>
 
-        {/* Reasons */}
         <div className="flex flex-col">
           {REASONS.map((r, i) => (
             <AnimatedSection key={i} delay={i * 0.08}>
@@ -39,7 +37,7 @@ const WhyTiroRiro = () => (
                 </span>
                 <div>
                   <h3 className="font-serif text-lg font-medium text-foreground">{r.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground font-light leading-relaxed italic">
+                  <p className="mt-2 text-base text-muted-foreground font-light leading-relaxed italic">
                     "{r.text}"
                   </p>
                 </div>
@@ -48,7 +46,7 @@ const WhyTiroRiro = () => (
           ))}
 
           <AnimatedSection delay={0.5} className="mt-6">
-            <Link to="/quienes-somos" className="cta-link">
+            <Link to="/#equipo" className="cta-link">
               Conoce nuestra historia →
             </Link>
           </AnimatedSection>

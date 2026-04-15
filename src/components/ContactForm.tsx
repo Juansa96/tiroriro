@@ -4,7 +4,7 @@ import AnimatedSection from "./AnimatedSection";
 import { toast } from "sonner";
 import { Check, Loader2, ChevronDown } from "lucide-react";
 
-const PRODUCT_OPTIONS = ["Cabecero", "Banco", "Mesita", "Cojines", "Puff", "Varios"];
+const PRODUCT_OPTIONS = ["Cabecero", "Banco", "Cojines", "Puff", "Varios"];
 
 const ContactForm = () => {
   const [searchParams] = useSearchParams();
@@ -79,7 +79,7 @@ const ContactForm = () => {
       return;
     }
     setSending(true);
-    // TODO: Save to Supabase table `pedidos`
+    // TODO: Save to database
     await new Promise((r) => setTimeout(r, 800));
     setSent(true);
     setSending(false);
@@ -87,12 +87,8 @@ const ContactForm = () => {
 
   if (sent) {
     return (
-      <section className="py-20 md:py-32 px-6 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80" alt="" className="w-full h-full object-cover" loading="lazy" decoding="async" />
-          <div className="absolute inset-0 bg-background/85" />
-        </div>
-        <div className="relative z-10 container mx-auto max-w-xl text-center py-20">
+      <section className="py-20 md:py-32 px-6 bg-background">
+        <div className="container mx-auto max-w-xl text-center py-20">
           <div className="w-16 h-16 rounded-full bg-accent-warm/10 flex items-center justify-center mx-auto mb-6">
             <Check size={32} className="text-accent-warm" />
           </div>
@@ -105,41 +101,28 @@ const ContactForm = () => {
           </p>
           <button
             onClick={() => { setSent(false); setForm({ name: '', phone: '', email: '', product: '', details: '', source: '' }); setRgpd(false); setTouched({}); setErrors({}); }}
-            className="mt-8 px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity"
+            className="mt-8 px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity rounded-full"
           >
             Volver al inicio
           </button>
-          <p className="font-serif text-xl mt-8 tracking-ultra-wide text-foreground/60">TIRO·RIRO</p>
         </div>
       </section>
     );
   }
 
-  const fieldError = (field: string) =>
-    touched[field] && errors[field] ? (
-      <p className="text-xs mt-1 font-light" style={{ color: 'hsl(0 84% 60%)' }}>{errors[field]}</p>
-    ) : null;
-
-  const fieldBorderColor = (field: string) =>
-    touched[field] && errors[field] ? '#ef4444' : '#E8DCC8';
+  const hasError = (field: string) => touched[field] && errors[field];
+  const borderColor = (field: string) => hasError(field) ? 'border-destructive' : 'border-border focus-within:border-accent-warm';
 
   return (
-    <section id="contacto" className="py-20 md:py-32 px-6 relative overflow-hidden">
-      <div className="absolute inset-0">
-        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80" alt="" className="w-full h-full object-cover" loading="lazy" decoding="async" />
-        <div className="absolute inset-0 bg-background/85" />
-      </div>
-
-      <div className="relative z-10 container mx-auto max-w-xl">
+    <section id="contacto" className="py-20 md:py-32 px-6 bg-background">
+      <div className="container mx-auto max-w-xl">
         {fromConfig && (
-          <AnimatedSection className="mb-8">
-            <div className="border-l-4 px-5 py-4 rounded-r text-sm text-foreground font-light" style={{ borderColor: 'hsl(var(--accent-warm))', backgroundColor: 'hsl(29 43% 59% / 0.08)' }}>
-              Tu configuración está guardada ↓ Revísala y completa tus datos.
-              {expressParam === 'true' && (
-                <span className="block mt-1 text-accent-warm">+ Entrega express (7 días) +35€</span>
-              )}
-            </div>
-          </AnimatedSection>
+          <div className="mb-8 bg-green-50 border border-green-200 rounded px-5 py-4 text-sm text-foreground font-light">
+            <span className="text-green-600 font-medium">✓</span> Tu configuración está lista — solo confirma tus datos
+            {expressParam === 'true' && (
+              <span className="block mt-1 text-accent-warm">+ Entrega express (7 días) +35€</span>
+            )}
+          </div>
         )}
 
         <AnimatedSection className="text-center mb-10">
@@ -148,25 +131,76 @@ const ContactForm = () => {
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            <FieldCard label="Nombre *" htmlFor="contact-name" borderColor={fieldBorderColor('name')}>
-              <input id="contact-name" type="text" value={form.name} onChange={(e) => update("name", e.target.value)} className="field-input" placeholder="Tu nombre" />
-              {fieldError('name')}
-            </FieldCard>
+          <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+            {/* Nombre */}
+            <div className={`relative border-b transition-colors ${borderColor('name')}`}>
+              <input
+                id="contact-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => update("name", e.target.value)}
+                className="peer w-full bg-transparent pt-6 pb-2 text-sm text-foreground placeholder-transparent focus:outline-none"
+                placeholder=" "
+              />
+              <label
+                htmlFor="contact-name"
+                className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
+              >
+                Nombre *
+              </label>
+              {hasError('name') && <p className="text-xs mt-1 font-light text-destructive">{errors.name}</p>}
+            </div>
 
-            <FieldCard label="Teléfono * (te llamamos nosotros)" htmlFor="contact-phone" borderColor={fieldBorderColor('phone')}>
-              <input id="contact-phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} className="field-input" placeholder="612 345 678" />
-              {fieldError('phone')}
-            </FieldCard>
+            {/* Teléfono */}
+            <div className={`relative border-b transition-colors ${borderColor('phone')}`}>
+              <input
+                id="contact-phone"
+                type="tel"
+                value={form.phone}
+                onChange={(e) => update("phone", e.target.value)}
+                className="peer w-full bg-transparent pt-6 pb-2 text-sm text-foreground placeholder-transparent focus:outline-none"
+                placeholder=" "
+              />
+              <label
+                htmlFor="contact-phone"
+                className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
+              >
+                Teléfono * (te llamamos nosotros)
+              </label>
+              {hasError('phone') && <p className="text-xs mt-1 font-light text-destructive">{errors.phone}</p>}
+            </div>
 
-            <FieldCard label="Email *" htmlFor="contact-email" borderColor={fieldBorderColor('email')}>
-              <input id="contact-email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} className="field-input" placeholder="tu@email.com" />
-              {fieldError('email')}
-            </FieldCard>
+            {/* Email */}
+            <div className={`relative border-b transition-colors ${borderColor('email')}`}>
+              <input
+                id="contact-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => update("email", e.target.value)}
+                className="peer w-full bg-transparent pt-6 pb-2 text-sm text-foreground placeholder-transparent focus:outline-none"
+                placeholder=" "
+              />
+              <label
+                htmlFor="contact-email"
+                className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
+              >
+                Email *
+              </label>
+              {hasError('email') && <p className="text-xs mt-1 font-light text-destructive">{errors.email}</p>}
+            </div>
 
-            <FieldCard label="Producto de interés *" htmlFor="contact-product" borderColor={fieldBorderColor('product')}>
+            {/* Producto */}
+            <div className={`relative border-b transition-colors ${borderColor('product')}`}>
+              <label htmlFor="contact-product" className="block text-xs tracking-wide uppercase text-muted-foreground mb-1">
+                Producto de interés *
+              </label>
               <div className="relative">
-                <select id="contact-product" value={form.product} onChange={(e) => update("product", e.target.value)} className="field-input appearance-none cursor-pointer pr-8">
+                <select
+                  id="contact-product"
+                  value={form.product}
+                  onChange={(e) => update("product", e.target.value)}
+                  className="w-full bg-transparent pb-2 text-sm text-foreground focus:outline-none appearance-none cursor-pointer pr-8"
+                >
                   <option value="">Seleccionar...</option>
                   {PRODUCT_OPTIONS.map((p) => (
                     <option key={p} value={p}>{p}</option>
@@ -174,25 +208,46 @@ const ContactForm = () => {
                 </select>
                 <ChevronDown size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
               </div>
-              {fieldError('product')}
-            </FieldCard>
+              {hasError('product') && <p className="text-xs mt-1 font-light text-destructive">{errors.product}</p>}
+            </div>
 
-            <FieldCard label="Cuéntanos un poco más" htmlFor="contact-details">
+            {/* Detalles */}
+            <div className="relative border-b border-border transition-colors focus-within:border-accent-warm">
               <textarea
                 id="contact-details"
                 value={form.details}
                 onChange={(e) => update("details", e.target.value)}
                 rows={4}
-                className="field-input resize-none"
-                placeholder="Tengo una cama de 150, me gusta el lino en tono crudo y quiero el cabecero con vivo doble..."
+                className="peer w-full bg-transparent pt-6 pb-2 text-sm text-foreground placeholder-transparent focus:outline-none resize-none"
+                placeholder=" "
               />
-            </FieldCard>
+              <label
+                htmlFor="contact-details"
+                className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
+              >
+                Cuéntanos un poco más
+              </label>
+            </div>
 
-            <FieldCard label="¿Cómo nos has conocido? (opcional)" htmlFor="contact-source">
-              <input id="contact-source" type="text" value={form.source} onChange={(e) => update("source", e.target.value)} className="field-input" placeholder="Instagram, un amigo, Google..." />
-            </FieldCard>
+            {/* Fuente */}
+            <div className="relative border-b border-border transition-colors focus-within:border-accent-warm">
+              <input
+                id="contact-source"
+                type="text"
+                value={form.source}
+                onChange={(e) => update("source", e.target.value)}
+                className="peer w-full bg-transparent pt-6 pb-2 text-sm text-foreground placeholder-transparent focus:outline-none"
+                placeholder=" "
+              />
+              <label
+                htmlFor="contact-source"
+                className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-sm peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
+              >
+                ¿Cómo nos has conocido? (opcional)
+              </label>
+            </div>
 
-            {/* RGPD Checkbox */}
+            {/* RGPD */}
             <div className="flex items-start gap-3 pt-2">
               <input
                 id="rgpd"
@@ -209,14 +264,14 @@ const ContactForm = () => {
               </label>
             </div>
             {touched.rgpd && errors.rgpd && (
-              <p className="text-xs font-light" style={{ color: 'hsl(0 84% 60%)' }}>{errors.rgpd}</p>
+              <p className="text-xs font-light text-destructive">{errors.rgpd}</p>
             )}
 
-            <div className="pt-4">
+            <div className="pt-4 text-center">
               <button
                 type="submit"
                 disabled={sending}
-                className="w-full sm:w-auto sm:mx-auto sm:block px-10 py-3.5 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+                className="px-10 py-4 bg-accent-warm text-white text-sm tracking-widest uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-full inline-flex items-center gap-2"
               >
                 {sending ? (
                   <>
@@ -224,10 +279,10 @@ const ContactForm = () => {
                     Enviando...
                   </>
                 ) : (
-                  "Quiero el mío"
+                  "Quiero el mío →"
                 )}
               </button>
-              <p className="mt-4 text-xs text-muted-foreground font-light italic text-center">
+              <p className="mt-4 text-xs text-muted-foreground font-light italic">
                 Te llamamos en menos de 24 horas laborables — sin compromiso.
               </p>
             </div>
@@ -238,17 +293,9 @@ const ContactForm = () => {
   );
 };
 
-const FieldCard = ({ label, children, htmlFor, borderColor = '#E8DCC8' }: { label: string; children: React.ReactNode; htmlFor?: string; borderColor?: string }) => (
-  <div className="rounded p-4 transition-colors duration-200" style={{ backgroundColor: '#FDFAF5', border: `1px solid ${borderColor}` }}>
-    <label htmlFor={htmlFor} className="block text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">{label}</label>
-    {children}
-  </div>
-);
-
 function mapProductName(name: string): string {
   if (name.toLowerCase().includes('cabecero')) return 'Cabecero';
   if (name.toLowerCase().includes('banco')) return 'Banco';
-  if (name.toLowerCase().includes('mesita')) return 'Mesita';
   if (name.toLowerCase().includes('cojin') || name.toLowerCase().includes('cojín')) return 'Cojines';
   if (name.toLowerCase().includes('puff')) return 'Puff';
   return 'Varios';
