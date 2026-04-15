@@ -31,7 +31,7 @@ const TeamSection = () => (
   <section id="equipo" className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
       <AnimatedSection className="text-center mb-16">
-        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Los que están detrás</h2>
+        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Las personas detrás</h2>
         <span className="section-line" />
         <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic">
           "Dos parejas, dos hermanos, dos amigas de toda la vida — y un proyecto que nació porque ninguna de las dos encontraba lo que buscaba para su casa."
@@ -44,7 +44,7 @@ const TeamSection = () => (
             <div className="text-center">
               <img
                 src={member.image}
-                alt={member.name}
+                alt={`${member.name}, ${member.role.toLowerCase()} del equipo TIRO·RIRO`}
                 className="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full mx-auto grayscale hover:grayscale-0 transition-all duration-500"
                 loading="lazy"
                 decoding="async"

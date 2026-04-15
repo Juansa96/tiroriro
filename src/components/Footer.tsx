@@ -16,9 +16,17 @@ const Footer = () => (
         <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
         <Link to="/configurador" className="hover:text-foreground transition-colors">Diseña el tuyo</Link>
         <Link to="/contacto" className="hover:text-foreground transition-colors">Contacto</Link>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Instagram de TIRO·RIRO">
           <Instagram size={18} />
         </a>
+      </div>
+
+      <div className="mt-6 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+        <Link to="/aviso-legal" className="hover:text-foreground transition-colors">Aviso Legal</Link>
+        <span>·</span>
+        <Link to="/privacidad" className="hover:text-foreground transition-colors">Política de Privacidad</Link>
+        <span>·</span>
+        <Link to="/cookies" className="hover:text-foreground transition-colors">Política de Cookies</Link>
       </div>
 
       <p className="mt-10 text-xs text-muted-foreground/60">
