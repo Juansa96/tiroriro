@@ -18,10 +18,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "El punto de partida de cualquier dormitorio que merece la pena.",
     models: [
       { name: "Recto Clásico", photo: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80", desc: "Líneas limpias, atemporal. El más solicitado.", price: 180, configParam: "recto" },
-      { name: "Arco Suave", photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", desc: "Remate en arco que aporta calidez sin renunciar a la elegancia.", price: 195, configParam: "semicirculo" },
-      { name: "Alto Moderno", photo: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80", desc: "Para dormitorios con altura de techo — hace la habitación más grande.", price: 220, configParam: "rectangular" },
-      { name: "Con Patas", photo: "https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=600&q=80", desc: "Se ancla al suelo. Estable y con personalidad propia.", price: 240, configParam: "corona-simple" },
-      { name: "Capitoné", photo: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=600&q=80", desc: "Botonadura artesanal. El más elaborado de la colección.", price: 280, configParam: "corona-doble" },
+      { name: "Arco Suave", photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", desc: "Remate en arco que aporta calidez sin renunciar a la elegancia.", price: 195, configParam: "arco" },
+      { name: "Alto Moderno", photo: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80", desc: "Para dormitorios con altura de techo — hace la habitación más grande.", price: 220, configParam: "alto" },
+      { name: "Con Patas", photo: "https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=600&q=80", desc: "Se ancla al suelo. Estable y con personalidad propia.", price: 240, configParam: "con-patas" },
     ],
   },
   bancos: {
