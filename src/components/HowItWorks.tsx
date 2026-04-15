@@ -25,7 +25,7 @@ const STEPS = [
   },
 ];
 
-const StepCircle = ({ num, Icon }: { num: string; Icon: React.ComponentType<{ size?: number; className?: string }> }) => {
+const StepCircle = ({ num, Icon }: { num: string; Icon: React.ComponentType<Record<string, unknown>> }) => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -36,16 +36,13 @@ const StepCircle = ({ num, Icon }: { num: string; Icon: React.ComponentType<{ si
       onMouseLeave={() => setHovered(false)}
     >
       <span
-        className="font-serif text-xl font-medium text-accent-warm absolute transition-opacity duration-300"
-        style={{ opacity: hovered ? 0 : 1 }}
+        className={`font-serif text-xl font-medium text-accent-warm absolute transition-opacity duration-300 ${hovered ? 'opacity-0' : 'opacity-100'}`}
       >
         {num}
       </span>
-      <Icon
-        size={24}
-        className="text-accent-warm absolute transition-opacity duration-300"
-        style={{ opacity: hovered ? 1 : 0 }}
-      />
+      <div className={`absolute transition-opacity duration-300 ${hovered ? 'opacity-100' : 'opacity-0'}`}>
+        <Icon size={24} className="text-accent-warm" />
+      </div>
     </div>
   );
 };
