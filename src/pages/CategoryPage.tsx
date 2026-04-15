@@ -53,16 +53,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       { name: "Puff Gigante", photo: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80", desc: "El más contundente. Para salones y zonas de estar.", price: 150 },
     ],
   },
-  mesitas: {
-    title: "Mesitas de noche",
-    subtitle: "El rincón que más tocas — que también sea bonito.",
-    models: [
-      { name: "Mesita Redonda", photo: "https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=600&q=80", desc: "Silueta suave. Combina con todo.", price: 85 },
-      { name: "Mesita Cuadrada", photo: "https://images.unsplash.com/photo-1586798271654-0471bb1b0517?w=600&q=80", desc: "Clásica y funcional. Líneas rectas.", price: 90 },
-      { name: "Mesita con Bandeja", photo: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80", desc: "Superficie extraíble para más versatilidad.", price: 105 },
-      { name: "Mesita Set ×2", photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", desc: "Dos mesitas iguales. Perfectas para camas de matrimonio.", price: 160 },
-    ],
-  },
 };
 
 const CategoryPage = () => {
@@ -125,8 +115,8 @@ const CategoryPage = () => {
                   </div>
                   <div className="p-5">
                     <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground font-light italic">{model.desc}</p>
-                    <p className="mt-2 text-sm text-foreground font-medium">Desde {model.price}€</p>
+                    <p className="mt-1 text-base text-muted-foreground font-light italic">{model.desc}</p>
+                    <p className="mt-2 text-base text-foreground font-medium">Desde {model.price}€</p>
                     <Link
                       to={`/configurador?tipo=${productTypeMap[category || '']}${model.configParam ? `&forma=${model.configParam}` : ''}`}
                       className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 hover:opacity-80 transition-opacity"
