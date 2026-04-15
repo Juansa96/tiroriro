@@ -20,7 +20,7 @@ const HeroSection = () => {
         />
       </motion.div>
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-foreground/65 via-foreground/40 to-foreground/20" />
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
         <motion.h1
@@ -28,6 +28,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
           className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-primary-foreground leading-tight"
+          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
         >
           Algunas cosas merecen hacerse a mano
         </motion.h1>
@@ -37,6 +38,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6 }}
           className="mt-6 text-base md:text-lg text-primary-foreground/80 font-light max-w-xl mx-auto leading-relaxed"
+          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
         >
           Nuestro equipo construye, tapiza y envía — tú solo eliges la tela y el tamaño y en 15 días lo tienes en casa.
         </motion.p>
