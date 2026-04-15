@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Instagram } from "lucide-react";
-import logo from "@/assets/logo-tiroriro.jpeg";
+import logo from "@/assets/logo-tiroriro.png";
 
 const Footer = () => (
   <footer className="bg-secondary py-16 md:py-20">
     <div className="container mx-auto px-6 text-center">
       <Link to="/">
-        <img src={logo} alt="TIRO·RIRO" className="h-10 w-auto mx-auto" />
+        <img src={logo} alt="TIRO·RIRO" className="h-11 w-auto mx-auto object-contain" />
       </Link>
 
       <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">

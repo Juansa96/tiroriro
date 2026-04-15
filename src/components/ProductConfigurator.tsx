@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
 import { ChevronDown } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // --- Fabric data ---
 const FABRIC_GROUPS = [
@@ -61,7 +62,6 @@ const HEADBOARD_SHAPES = [
   { id: "con-patas", name: "Con Patas", svgPreview: "M 5 30 L 5 5 L 55 5 L 55 30 Z M 10 30 L 10 38 M 50 30 L 50 38" },
 ];
 
-// --- Types ---
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
 const STEPS: Step[] = ["type", "measures", "fabric", "finish", "extras"];
 const STEP_LABELS: Record<Step, string> = {
@@ -96,7 +96,6 @@ const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-// Helper to parse cm value from select or custom input
 function parseCm(selectVal: string, customVal: string): number | undefined {
   if (selectVal === 'custom') {
     const n = parseInt(customVal);
@@ -109,10 +108,13 @@ function parseCm(selectVal: string, customVal: string): number | undefined {
   return undefined;
 }
 
-// --- Component ---
+const WHATSAPP_BASE = "https://wa.me/34645363323";
+
 const ProductConfigurator = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const isMobile = useIsMobile();
+
   const [productType, setProductType] = useState<ProductType | null>(null);
   const [shape, setShape] = useState("recto");
   const [bedWidth, setBedWidth] = useState("");
@@ -133,25 +135,80 @@ const ProductConfigurator = () => {
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
 
-  const [openAccordion, setOpenAccordion] = useState<string>("type");
+  const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
+
+  // Mark configurator as visited
+  useEffect(() => {
+    localStorage.setItem('configurador_visitado', 'true');
+  }, []);
+
+  // Update accordion type when breakpoint changes
+  useEffect(() => {
+    if (isMobile) {
+      setOpenAccordion(prev => Array.isArray(prev) ? (prev[0] || 'type') : prev);
+    } else {
+      setOpenAccordion(prev => typeof prev === 'string' ? [prev] : prev);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
     if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
       setProductType(tipo as ProductType);
-      setOpenAccordion('measures');
+      if (isMobile) {
+        setOpenAccordion('measures');
+      } else {
+        setOpenAccordion(['measures']);
+      }
     }
     if (forma) setShape(forma);
   }, [searchParams]);
 
+  const resetConfiguracion = (newType?: ProductType) => {
+    setShape(newType === 'cabecero' ? 'recto' : 'recto');
+    setBedWidth('');
+    setBedHeight('');
+    setBenchLength('');
+    setBenchDepth('');
+    setBenchHeight('');
+    setPuffDiameter('');
+    setPuffHeight('');
+    setCushionSize('');
+    setFabricId('');
+    setFinish('');
+    setVivoColorId('');
+    setCustomWidth('');
+    setCustomHeight('');
+    setExtraPatas(false);
+    setExtraRelleno(false);
+    setExtraExpress(false);
+  };
+
+  const handleProductChange = (type: ProductType) => {
+    if (type !== productType) {
+      resetConfiguracion(type);
+    }
+    setProductType(type);
+    advanceTo('measures');
+  };
+
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
   const vivoFabric = ALL_FABRICS.find(f => f.id === vivoColorId);
-  const fillColor = fabric?.hex || "#E5E5E5";
+  const fillColor = fabric?.hex || "#D4C5A9";
   const vivoColor = vivoFabric?.hex || darken(fillColor);
 
-  const widthCm = parseCm(bedWidth, customWidth);
-  const heightCm = parseCm(bedHeight, customHeight);
+  const widthCm = productType === 'cabecero' ? parseCm(bedWidth, customWidth)
+    : productType === 'banco' ? parseCm(benchLength, '')
+    : productType === 'puff' ? parseCm(puffDiameter, '')
+    : undefined;
+  const heightCm = productType === 'cabecero' ? parseCm(bedHeight, customHeight)
+    : productType === 'banco' ? parseCm(benchHeight, '')
+    : productType === 'puff' ? parseCm(puffHeight, '')
+    : undefined;
+
+  // For cushion, pass size info via forma
+  const svgForma = productType === 'cojin' ? cushionSize : shape;
 
   const options = useMemo(() => {
     const o: Record<string, string> = {};
@@ -188,7 +245,8 @@ const ProductConfigurator = () => {
     extras: true,
   };
 
-  const activeStepIndex = STEPS.indexOf(openAccordion as Step);
+  const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
+  const activeStepIndex = STEPS.indexOf(currentStep as Step);
   const isIncomplete = !productType || !fabricId || !finish;
   const priceLabel = isIncomplete ? `desde ${price || (productType ? PRODUCTS.find(p => p.type === productType)?.basePrice || 0 : 180)}` : `${price}`;
 
@@ -215,7 +273,17 @@ const ProductConfigurator = () => {
     fabric?.name || '',
   ].filter(Boolean).join(' · ') || 'Tu pieza aparecerá aquí';
 
-  const advanceTo = (next: Step) => setOpenAccordion(next);
+  const advanceTo = (next: Step) => {
+    if (isMobile) {
+      setOpenAccordion(next);
+    } else {
+      setOpenAccordion(prev => {
+        const arr = Array.isArray(prev) ? [...prev] : [prev];
+        if (!arr.includes(next)) arr.push(next);
+        return arr;
+      });
+    }
+  };
 
   const handleOrder = () => {
     if (!productType) return;
@@ -227,6 +295,16 @@ const ProductConfigurator = () => {
     });
     if (extraExpress) params.set('express', 'true');
     navigate(`/?${params.toString()}#contacto`);
+  };
+
+  const handleReset = () => {
+    setProductType(null);
+    resetConfiguracion();
+    if (isMobile) {
+      setOpenAccordion('type');
+    } else {
+      setOpenAccordion(['type']);
+    }
   };
 
   const selectionLabel = (step: Step): React.ReactNode => {
@@ -244,9 +322,10 @@ const ProductConfigurator = () => {
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'finish':
         return finishObj ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishObj.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
-      case 'extras':
+      case 'extras': {
         const extras = [extraPatas && 'Patas', extraRelleno && 'Relleno', extraExpress && 'Express'].filter(Boolean);
         return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
+      }
     }
   };
 
@@ -266,7 +345,7 @@ const ProductConfigurator = () => {
         ))}
       </div>
       <p className="text-xs text-muted-foreground font-light mt-2">
-        Paso {Math.max(1, activeStepIndex + 1)} de {STEPS.length} · {STEP_LABELS[openAccordion as Step] || STEP_LABELS.type}
+        Paso {Math.max(1, activeStepIndex + 1)} de {STEPS.length} · {STEP_LABELS[currentStep as Step] || STEP_LABELS.type}
       </p>
     </div>
   );
@@ -276,7 +355,7 @@ const ProductConfigurator = () => {
   const productCard = (type: ProductType, label: string) => (
     <button
       key={type}
-      onClick={() => { setProductType(type); advanceTo('measures'); }}
+      onClick={() => handleProductChange(type)}
       className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
         productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
       }`}
@@ -286,14 +365,22 @@ const ProductConfigurator = () => {
     </button>
   );
 
+  const accordionValue = isMobile
+    ? (typeof openAccordion === 'string' ? openAccordion : '')
+    : (Array.isArray(openAccordion) ? openAccordion : [openAccordion]);
+
+  const handleAccordionChange = (val: string | string[]) => {
+    setOpenAccordion(val || (isMobile ? '' : []));
+  };
+
   return (
     <div className="min-h-screen">
       {/* MOBILE: sticky preview */}
-      <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#E8E4DF' }}>
+      <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
         <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
           <div className="flex-1 flex items-center justify-center w-full">
-            <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={shape} widthCm={widthCm} heightCm={heightCm} />
+            <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} />
           </div>
           <div className="flex flex-wrap gap-1.5 justify-center mt-2">
             {chips.map((c, i) => (
@@ -310,10 +397,10 @@ const ProductConfigurator = () => {
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
         {/* Zone A: Preview */}
         <div className="w-[40%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-          <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: '#E8E4DF' }}>
+          <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: '#F0EDE8' }}>
             <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
             <div className="flex-1 flex items-center justify-center w-full">
-              <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={shape} widthCm={widthCm} heightCm={heightCm} />
+              <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} />
             </div>
             {!productType && (
               <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
@@ -333,13 +420,19 @@ const ProductConfigurator = () => {
             <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="flex flex-col gap-3 mt-6">
             <button
               onClick={handleOrder}
               disabled={!productType}
-              className="px-10 py-3.5 bg-foreground text-background text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
             >
-              Lo quiero →
+              Lo quiero — solicitar presupuesto
+            </button>
+            <button
+              onClick={handleReset}
+              className="w-full px-6 py-3 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors text-center"
+            >
+              Quiero configurar otro producto
             </button>
           </div>
         </div>
@@ -351,22 +444,43 @@ const ProductConfigurator = () => {
             <p className="mt-2 text-base text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
           </div>
           <ProgressBar className="mb-6" />
-          <ConfigAccordions
-            openAccordion={openAccordion} setOpenAccordion={setOpenAccordion} selectionLabel={selectionLabel}
-            productType={productType} productCard={productCard}
-            shape={shape} setShape={setShape}
-            bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
-            benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
-            puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
-            cushionSize={cushionSize} setCushionSize={setCushionSize}
-            fabricId={fabricId} setFabricId={(id) => { setFabricId(id); advanceTo('finish'); }}
-            finish={finish} setFinish={(f) => { setFinish(f); advanceTo('extras'); }}
-            vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
-            customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
-            extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
-            extraExpress={extraExpress} setExtraExpress={setExtraExpress}
-            advanceTo={advanceTo} needsVivo={needsVivo}
-          />
+          {isMobile ? (
+            <ConfigAccordionsSingle
+              openAccordion={typeof accordionValue === 'string' ? accordionValue : ''} setOpenAccordion={(v) => handleAccordionChange(v)}
+              selectionLabel={selectionLabel}
+              productType={productType} productCard={productCard}
+              shape={shape} setShape={setShape}
+              bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
+              benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
+              puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
+              cushionSize={cushionSize} setCushionSize={setCushionSize}
+              fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
+              finish={finish} setFinish={(f) => { setFinish(f); }}
+              vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
+              customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
+              extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
+              extraExpress={extraExpress} setExtraExpress={setExtraExpress}
+              advanceTo={advanceTo} needsVivo={needsVivo}
+            />
+          ) : (
+            <ConfigAccordionsMultiple
+              openAccordion={Array.isArray(accordionValue) ? accordionValue : [accordionValue as string]} setOpenAccordion={(v) => handleAccordionChange(v)}
+              selectionLabel={selectionLabel}
+              productType={productType} productCard={productCard}
+              shape={shape} setShape={setShape}
+              bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
+              benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
+              puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
+              cushionSize={cushionSize} setCushionSize={setCushionSize}
+              fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
+              finish={finish} setFinish={(f) => { setFinish(f); }}
+              vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
+              customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
+              extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
+              extraExpress={extraExpress} setExtraExpress={setExtraExpress}
+              advanceTo={advanceTo} needsVivo={needsVivo}
+            />
+          )}
         </div>
       </div>
 
@@ -375,16 +489,17 @@ const ProductConfigurator = () => {
         <div className="mb-4">
           <h1 className="font-serif text-2xl font-light text-foreground">Diseña el tuyo</h1>
         </div>
-        <ConfigAccordions
-          openAccordion={openAccordion} setOpenAccordion={setOpenAccordion} selectionLabel={selectionLabel}
+        <ConfigAccordionsSingle
+          openAccordion={typeof accordionValue === 'string' ? accordionValue : ''} setOpenAccordion={(v) => handleAccordionChange(v)}
+          selectionLabel={selectionLabel}
           productType={productType} productCard={productCard}
           shape={shape} setShape={setShape}
           bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
           benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
           puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
           cushionSize={cushionSize} setCushionSize={setCushionSize}
-          fabricId={fabricId} setFabricId={(id) => { setFabricId(id); advanceTo('finish'); }}
-          finish={finish} setFinish={(f) => { setFinish(f); advanceTo('extras'); }}
+          fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
+          finish={finish} setFinish={(f) => { setFinish(f); }}
           vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
           customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
           extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
@@ -394,27 +509,33 @@ const ProductConfigurator = () => {
       </div>
 
       {/* MOBILE: fixed bottom bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border flex items-center justify-between px-6 py-4">
-        <div>
-          <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
-          <p className="text-xs text-muted-foreground">IVA incluido</p>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
+            <p className="text-xs text-muted-foreground">IVA incluido</p>
+          </div>
+          <button
+            onClick={handleOrder}
+            disabled={!productType}
+            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+          >
+            Lo quiero →
+          </button>
         </div>
         <button
-          onClick={handleOrder}
-          disabled={!productType}
-          className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+          onClick={handleReset}
+          className="w-full mt-2 text-xs text-muted-foreground text-center hover:text-foreground transition-colors"
         >
-          Lo quiero →
+          Configurar otro producto
         </button>
       </div>
     </div>
   );
 };
 
-// --- Config Accordions ---
-interface ConfigAccordionsProps {
-  openAccordion: string;
-  setOpenAccordion: (v: string) => void;
+// --- Accordion content shared ---
+interface AccordionContentSharedProps {
   selectionLabel: (step: Step) => React.ReactNode;
   productType: ProductType | null;
   productCard: (type: ProductType, label: string) => React.ReactNode;
@@ -439,9 +560,9 @@ interface ConfigAccordionsProps {
   needsVivo: boolean;
 }
 
-const ConfigAccordions = (props: ConfigAccordionsProps) => {
+const AccordionItems = (props: AccordionContentSharedProps) => {
   const {
-    openAccordion, setOpenAccordion, selectionLabel,
+    selectionLabel,
     productType, productCard,
     shape, setShape,
     bedWidth, setBedWidth, bedHeight, setBedHeight,
@@ -457,7 +578,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
   } = props;
 
   return (
-    <Accordion type="single" collapsible value={openAccordion} onValueChange={(v) => setOpenAccordion(v || '')}>
+    <>
       {/* Step 1: Product type */}
       <AccordionItem value="type" className="border-b border-border">
         <AccordionTrigger className="py-5 hover:no-underline">
@@ -473,6 +594,19 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
           </div>
+          <div className="mt-4 pt-4 border-t border-border/40">
+            <a
+              href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, no sé muy bien qué producto necesito y me gustaría que me ayudarais.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-accent-warm transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 shrink-0">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+              No sé muy bien qué quiero — ayudadme a elegir
+            </a>
+          </div>
         </AccordionContent>
       </AccordionItem>
 
@@ -487,7 +621,6 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
         <AccordionContent className="pb-6 space-y-6">
           {productType === 'cabecero' && (
             <>
-              {/* Shape selector */}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -501,7 +634,6 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
                   ))}
                 </div>
               </div>
-              {/* Width dropdown */}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho de cama</p>
                 <SelectWrapper>
@@ -523,7 +655,6 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
                   </div>
                 )}
               </div>
-              {/* Height dropdown */}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
                 <SelectWrapper>
@@ -624,9 +755,22 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
           {productType && (
-            <button onClick={() => advanceTo('fabric')} className="mt-2 text-sm text-accent-warm font-light hover:underline">
-              Siguiente: Tela y color →
-            </button>
+            <>
+              <button onClick={() => advanceTo('fabric')} className="mt-2 text-sm text-accent-warm font-light hover:underline">
+                Siguiente: Tela y color →
+              </button>
+              <div className="mt-4 pt-3 border-t border-border/40">
+                <p className="text-xs text-muted-foreground italic">
+                  ¿No tienes las medidas a mano?
+                  <a href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, no tengo las medidas exactas. ¿Me podéis ayudar?")}`} target="_blank" rel="noopener noreferrer" className="underline text-accent-warm ml-1">
+                    Escríbenos y te ayudamos →
+                  </a>
+                </p>
+                <p className="text-xs text-muted-foreground/60 mt-1">
+                  También puedes poner medidas aproximadas y las confirmamos por teléfono.
+                </p>
+              </div>
+            </>
           )}
         </AccordionContent>
       </AccordionItem>
@@ -663,7 +807,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
           )}
           <p className="text-xs text-muted-foreground font-light">
             {"¿No encuentras tu tela? "}
-            <a href="https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a>
+            <a href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.")}`} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a>
             {" — trabajamos con más de 80 referencias."}
           </p>
         </AccordionContent>
@@ -743,6 +887,36 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
           </div>
         </AccordionContent>
       </AccordionItem>
+    </>
+  );
+};
+
+// Single accordion for mobile
+interface SingleAccordionProps extends AccordionContentSharedProps {
+  openAccordion: string;
+  setOpenAccordion: (v: string) => void;
+}
+
+const ConfigAccordionsSingle = (props: SingleAccordionProps) => {
+  const { openAccordion, setOpenAccordion, ...rest } = props;
+  return (
+    <Accordion type="single" collapsible value={openAccordion} onValueChange={(v) => setOpenAccordion(v || '')}>
+      <AccordionItems {...rest} />
+    </Accordion>
+  );
+};
+
+// Multiple accordion for desktop
+interface MultipleAccordionProps extends AccordionContentSharedProps {
+  openAccordion: string[];
+  setOpenAccordion: (v: string[]) => void;
+}
+
+const ConfigAccordionsMultiple = (props: MultipleAccordionProps) => {
+  const { openAccordion, setOpenAccordion, ...rest } = props;
+  return (
+    <Accordion type="multiple" value={openAccordion} onValueChange={(v) => setOpenAccordion(v)}>
+      <AccordionItems {...rest} />
     </Accordion>
   );
 };

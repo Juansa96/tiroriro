@@ -49,7 +49,7 @@ const TeamSection = () => (
               <img
                 src={member.image}
                 alt={`${member.name}, ${member.role.toLowerCase()} del equipo TIRO·RIRO`}
-                className="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full mx-auto grayscale hover:grayscale-0 transition-all duration-500"
+                className="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full mx-auto transition-all duration-500"
                 loading="lazy"
                 decoding="async"
               />
