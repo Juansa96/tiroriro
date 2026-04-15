@@ -10,6 +10,7 @@ const ContactForm = () => {
   const [searchParams] = useSearchParams();
   const fromConfig = searchParams.get('config');
   const prefilledProduct = searchParams.get('product');
+  const expressParam = searchParams.get('express');
 
   const [form, setForm] = useState({
     name: "",
@@ -27,13 +28,17 @@ const ContactForm = () => {
 
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
+      let details = fromConfig || '';
+      if (expressParam === 'true') {
+        details += '\nEnvío express en 7 días: Sí (+35€)';
+      }
       setForm(f => ({
         ...f,
         product: prefilledProduct ? mapProductName(prefilledProduct) : f.product,
-        details: fromConfig || f.details,
+        details: details || f.details,
       }));
     }
-  }, [prefilledProduct, fromConfig]);
+  }, [prefilledProduct, fromConfig, expressParam]);
 
   const update = (field: string, value: string) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -130,6 +135,9 @@ const ContactForm = () => {
           <AnimatedSection className="mb-8">
             <div className="border-l-4 px-5 py-4 rounded-r text-sm text-foreground font-light" style={{ borderColor: 'hsl(var(--accent-warm))', backgroundColor: 'hsl(29 43% 59% / 0.08)' }}>
               Tu configuración está guardada ↓ Revísala y completa tus datos.
+              {expressParam === 'true' && (
+                <span className="block mt-1 text-accent-warm">+ Entrega express (7 días) +35€</span>
+              )}
             </div>
           </AnimatedSection>
         )}
