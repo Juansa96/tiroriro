@@ -18,11 +18,11 @@ const WhyTiroRiro = () => (
       </AnimatedSection>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-        <AnimatedSection>
+        <AnimatedSection className="lg:self-stretch">
           <img
-            src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=85"
-            alt="Banco tapizado artesanal con acabado de calidad, taller TIRO·RIRO"
-            className="w-full aspect-[3/4] object-cover"
+            src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&q=85"
+            alt="Manos artesanas trabajando en tapicería de muebles"
+            className="w-full h-full object-cover min-h-[500px]"
             loading="lazy"
             decoding="async"
           />

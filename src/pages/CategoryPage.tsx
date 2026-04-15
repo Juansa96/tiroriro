@@ -77,7 +77,6 @@ const CategoryPage = () => {
     bancos: 'banco',
     cojines: 'cojin',
     puffs: 'puff',
-    mesitas: 'mesita',
   };
 
   return (
@@ -85,7 +84,6 @@ const CategoryPage = () => {
       <Navbar />
       <main className="pt-24 pb-20 px-6">
         <div className="container mx-auto">
-          {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-8">
             <Link to="/" className="hover:text-foreground transition-colors">Inicio</Link>
             <ChevronRight size={12} />

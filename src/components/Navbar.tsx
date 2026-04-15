@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import logo from "@/assets/logo-tiroriro.jpeg";
+import logo from "@/assets/logo-tiroriro.png";
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
@@ -15,10 +15,15 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const isHome = location.pathname === '/';
+
+  // On non-home pages, always show scrolled style
+  const showLight = isHome && !scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -48,14 +53,19 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/95 backdrop-blur-sm shadow-sm border-b border-border"
-          : "bg-transparent"
+        showLight
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur-sm shadow-sm border-b border-border"
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-6">
         <Link to="/">
-          <img src={logo} alt="TIRO·RIRO" className="h-8 md:h-10 w-auto" />
+          <img
+            src={logo}
+            alt="TIRO·RIRO"
+            className="h-9 md:h-11 w-auto object-contain"
+            style={showLight ? { filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.3)) brightness(0) invert(1)' } : undefined}
+          />
         </Link>
 
         {/* Desktop */}
@@ -67,7 +77,9 @@ const Navbar = () => {
               onClick={(e) => {
                 if (handleClick(link.to)) e.preventDefault();
               }}
-              className="nav-link-underline text-sm tracking-extra-wide uppercase text-foreground hover:text-foreground transition-colors font-body font-light pb-0.5"
+              className={`nav-link-underline text-sm tracking-extra-wide uppercase hover:opacity-80 transition-colors font-body font-light pb-0.5 ${
+                showLight ? 'text-primary-foreground' : 'text-foreground'
+              }`}
             >
               {link.label}
             </Link>
@@ -77,7 +89,11 @@ const Navbar = () => {
             onClick={(e) => {
               if (handleClick('/#contacto')) e.preventDefault();
             }}
-            className="ml-4 px-4 py-2 rounded-full bg-accent-warm text-white text-xs tracking-wide uppercase font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
+            className={`ml-4 px-4 py-2 rounded-full text-xs tracking-wide uppercase font-medium transition-all whitespace-nowrap ${
+              showLight
+                ? 'bg-white/20 backdrop-blur-sm border border-white/40 text-white hover:bg-white/30'
+                : 'bg-accent-warm text-white hover:opacity-90'
+            }`}
           >
             Solicita información
           </Link>
@@ -86,7 +102,7 @@ const Navbar = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-foreground"
+          className={`md:hidden ${showLight ? 'text-primary-foreground' : 'text-foreground'}`}
           aria-label="Menú"
         >
           {open ? <X size={24} /> : <Menu size={24} />}

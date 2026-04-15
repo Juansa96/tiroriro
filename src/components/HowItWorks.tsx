@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
-import { Palette, Phone, Package, CreditCard, ArrowRight } from "lucide-react";
+import { Palette, Phone, Package, ArrowRight } from "lucide-react";
 
 const STEPS = [
   {
@@ -14,9 +14,8 @@ const STEPS = [
   {
     num: "02",
     title: "Te llamamos nosotros",
-    desc: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle. Pagas de forma segura con tarjeta a través de Stripe.",
+    desc: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle. Pagas de forma segura con tarjeta.",
     Icon: Phone,
-    showPayment: true,
     link: "/#contacto",
   },
   {
@@ -78,12 +77,6 @@ const HowItWorks = () => {
                   <p className="mt-2 text-base text-muted-foreground font-light leading-relaxed max-w-xs mx-auto">
                     {step.desc}
                   </p>
-                  {step.showPayment && (
-                    <div className="mt-3 flex items-center justify-center gap-3 text-xs text-muted-foreground">
-                      <span className="font-bold" style={{ color: '#635BFF' }}>Stripe</span>
-                      <CreditCard size={16} className="text-muted-foreground" />
-                    </div>
-                  )}
                   {step.link && (
                     <ArrowRight size={14} className="mx-auto mt-3 text-accent-warm opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                   )}
