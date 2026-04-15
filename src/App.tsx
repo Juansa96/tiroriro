@@ -1,9 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import CustomCursor from "@/components/CustomCursor";
 import FloatingButtons from "@/components/FloatingButtons";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -12,8 +11,6 @@ import ProductsPage from "./pages/ProductsPage";
 import CategoryPage from "./pages/CategoryPage";
 import ConfiguratorPage from "./pages/ConfiguratorPage";
 import TryOnPage from "./pages/TryOnPage";
-import ContactPage from "./pages/ContactPage";
-import AboutPage from "./pages/AboutPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
@@ -26,7 +23,6 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <CustomCursor />
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
@@ -35,8 +31,8 @@ const App = () => (
           <Route path="/productos/:category" element={<CategoryPage />} />
           <Route path="/configurador" element={<ConfiguratorPage />} />
           <Route path="/probador" element={<TryOnPage />} />
-          <Route path="/contacto" element={<ContactPage />} />
-          <Route path="/quienes-somos" element={<AboutPage />} />
+          <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
+          <Route path="/quienes-somos" element={<Navigate to="/#equipo" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
           <Route path="/aviso-legal" element={<LegalPage />} />
           <Route path="/cookies" element={<CookiesPage />} />

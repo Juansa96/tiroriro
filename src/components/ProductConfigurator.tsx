@@ -52,14 +52,13 @@ const FINISHES = [
   { id: "liso", name: "Sin acabado", desc: "Tapizado liso, sin costuras decorativas" },
   { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro, mismo color o contraste", extra: 15 },
   { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 25 },
-  { id: "botonadura", name: "Botonadura", desc: "Botones tapizados distribuidos uniformemente", extra: 30 },
 ];
 
 const HEADBOARD_SHAPES = [
-  { id: "rectangular", name: "Recto Clásico", svgPreview: "M 5 35 L 5 5 L 55 5 L 55 35 Z" },
-  { id: "semicirculo", name: "Arco Suave", svgPreview: "M 5 35 L 5 18 Q 30 0 55 18 L 55 35 Z" },
-  { id: "corona-simple", name: "Corona Simple", svgPreview: "M 5 35 L 5 12 Q 18 2 30 12 Q 42 2 55 12 L 55 35 Z" },
-  { id: "corona-doble", name: "Corona Doble", svgPreview: "M 5 35 L 5 12 Q 12 2 20 12 Q 28 2 35 12 Q 42 2 50 12 L 55 12 L 55 35 Z" },
+  { id: "recto", name: "Recto Clásico", svgPreview: "M 5 35 L 5 5 L 55 5 L 55 35 Z" },
+  { id: "arco", name: "Arco Suave", svgPreview: "M 5 35 L 5 18 Q 30 0 55 18 L 55 35 Z" },
+  { id: "alto", name: "Alto Moderno", svgPreview: "M 10 35 L 10 2 L 50 2 L 50 35 Z" },
+  { id: "con-patas", name: "Con Patas", svgPreview: "M 5 30 L 5 5 L 55 5 L 55 30 Z M 10 30 L 10 38 M 50 30 L 50 38" },
 ];
 
 // --- Types ---
@@ -73,7 +72,6 @@ const STEP_LABELS: Record<Step, string> = {
   extras: "Extras",
 };
 
-// --- Icons for product types ---
 const ProductIcon = ({ type }: { type: string }) => {
   switch (type) {
     case 'cabecero':
@@ -84,8 +82,6 @@ const ProductIcon = ({ type }: { type: string }) => {
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><ellipse cx="20" cy="17" rx="16" ry="11" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
       return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
-    case 'mesita':
-      return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="4" width="24" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="7" y1="16" x2="7" y2="26" stroke="currentColor" strokeWidth="2" /><line x1="23" y1="16" x2="23" y2="26" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
       return null;
   }
@@ -100,12 +96,25 @@ const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+// Helper to parse cm value from select or custom input
+function parseCm(selectVal: string, customVal: string): number | undefined {
+  if (selectVal === 'custom') {
+    const n = parseInt(customVal);
+    return isNaN(n) ? undefined : n;
+  }
+  if (selectVal) {
+    const n = parseInt(selectVal);
+    return isNaN(n) ? undefined : n;
+  }
+  return undefined;
+}
+
 // --- Component ---
 const ProductConfigurator = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [productType, setProductType] = useState<ProductType | null>(null);
-  const [shape, setShape] = useState("");
+  const [shape, setShape] = useState("recto");
   const [bedWidth, setBedWidth] = useState("");
   const [bedHeight, setBedHeight] = useState("");
   const [benchLength, setBenchLength] = useState("");
@@ -126,11 +135,10 @@ const ProductConfigurator = () => {
 
   const [openAccordion, setOpenAccordion] = useState<string>("type");
 
-  // Pre-fill from URL params
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
-    if (tipo && ['cabecero', 'banco', 'mesita', 'cojin', 'puff'].includes(tipo)) {
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
       setProductType(tipo as ProductType);
       setOpenAccordion('measures');
     }
@@ -142,6 +150,9 @@ const ProductConfigurator = () => {
   const fillColor = fabric?.hex || "#E5E5E5";
   const vivoColor = vivoFabric?.hex || darken(fillColor);
 
+  const widthCm = parseCm(bedWidth, customWidth);
+  const heightCm = parseCm(bedHeight, customHeight);
+
   const options = useMemo(() => {
     const o: Record<string, string> = {};
     if (productType === 'cabecero') {
@@ -150,7 +161,6 @@ const ProductConfigurator = () => {
       o.height = bedHeight || (customHeight ? customHeight + ' cm' : '');
     }
     if (productType === 'banco') o.length = benchLength;
-    if (productType === 'mesita') o.length = benchLength;
     if (productType === 'cojin') o.size = cushionSize;
     if (productType === 'puff') o.puffSize = puffDiameter === '40cm' ? 'Pequeño' : puffDiameter === '50cm' ? 'Mediano' : puffDiameter === '60cm' ? 'Grande' : '';
     if (finish) o.finish = finish;
@@ -172,7 +182,6 @@ const ProductConfigurator = () => {
       : productType === 'banco' ? !!benchLength
       : productType === 'puff' ? !!puffDiameter
       : productType === 'cojin' ? !!cushionSize
-      : productType === 'mesita' ? !!benchLength
       : false,
     fabric: !!fabricId,
     finish: !!finish,
@@ -210,14 +219,14 @@ const ProductConfigurator = () => {
 
   const handleOrder = () => {
     if (!productType) return;
-    const summary = buildConfigSummary(productType, options);
     const product = PRODUCTS.find(p => p.type === productType);
+    const summary = buildConfigSummary(productType, options);
     const params = new URLSearchParams({
       product: product?.name || '',
       config: `Me interesa: ${summary} (aprox. ${price}€)`,
     });
     if (extraExpress) params.set('express', 'true');
-    navigate(`/contacto?${params.toString()}`);
+    navigate(`/?${params.toString()}#contacto`);
   };
 
   const selectionLabel = (step: Step): React.ReactNode => {
@@ -280,29 +289,31 @@ const ProductConfigurator = () => {
   return (
     <div className="min-h-screen">
       {/* MOBILE: sticky preview */}
-      <div className="md:hidden sticky top-16 z-30 bg-secondary">
-        <div className="px-4 py-4 flex flex-col items-center" style={{ height: '220px' }}>
+      <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#E8E4DF' }}>
+        <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
           <div className="flex-1 flex items-center justify-center w-full">
-            <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} />
+            <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={shape} widthCm={widthCm} heightCm={heightCm} />
           </div>
           <div className="flex flex-wrap gap-1.5 justify-center mt-2">
             {chips.map((c, i) => (
               <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>
             ))}
           </div>
+          <div className="mt-2 w-full">
+            <ProgressBar />
+          </div>
         </div>
-        <ProgressBar className="px-4 pb-3" />
       </div>
 
       {/* TABLET + DESKTOP: 2-col layout */}
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
         {/* Zone A: Preview */}
         <div className="w-[40%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-          <div className="bg-secondary rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]">
+          <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: '#E8E4DF' }}>
             <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
             <div className="flex-1 flex items-center justify-center w-full">
-              <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} />
+              <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={shape} widthCm={widthCm} heightCm={heightCm} />
             </div>
             {!productType && (
               <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
@@ -337,7 +348,7 @@ const ProductConfigurator = () => {
         <div className="w-[60%] lg:w-1/2">
           <div className="mb-6">
             <h1 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Diseña el tuyo</h1>
-            <p className="mt-2 text-sm text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
+            <p className="mt-2 text-base text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
           </div>
           <ProgressBar className="mb-6" />
           <ConfigAccordions
@@ -360,8 +371,8 @@ const ProductConfigurator = () => {
       </div>
 
       {/* MOBILE: accordion content */}
-      <div className="md:hidden px-4 pb-28">
-        <div className="mb-4 pt-4">
+      <div className="md:hidden px-4 pb-28 pt-4">
+        <div className="mb-4">
           <h1 className="font-serif text-2xl font-light text-foreground">Diseña el tuyo</h1>
         </div>
         <ConfigAccordions
@@ -461,7 +472,6 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
             {productCard('banco', 'Banco')}
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
-            {productCard('mesita', 'Mesita')}
           </div>
         </AccordionContent>
       </AccordionItem>
@@ -495,11 +505,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho de cama</p>
                 <SelectWrapper>
-                  <select
-                    value={bedWidth}
-                    onChange={(e) => { setBedWidth(e.target.value); setCustomWidth(''); }}
-                    className={selectClass}
-                  >
+                  <select value={bedWidth} onChange={(e) => { setBedWidth(e.target.value); setCustomWidth(''); }} className={selectClass}>
                     <option value="">Seleccionar ancho...</option>
                     <option value="90cm">90 cm</option>
                     <option value="105cm">105 cm</option>
@@ -521,11 +527,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
                 <SelectWrapper>
-                  <select
-                    value={bedHeight}
-                    onChange={(e) => { setBedHeight(e.target.value); setCustomHeight(''); }}
-                    className={selectClass}
-                  >
+                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); setCustomHeight(''); }} className={selectClass}>
                     <option value="">Seleccionar alto...</option>
                     <option value="60cm">60 cm</option>
                     <option value="70cm">70 cm</option>
@@ -618,23 +620,8 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
               </SelectWrapper>
             </div>
           )}
-          {productType === 'mesita' && (
-            <div>
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
-              <SelectWrapper>
-                <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
-                  <option value="">Seleccionar largo...</option>
-                  <option value="80cm">80 cm</option>
-                  <option value="100cm">100 cm</option>
-                  <option value="120cm">120 cm</option>
-                  <option value="140cm">140 cm</option>
-                  <option value="160cm">160 cm</option>
-                </select>
-              </SelectWrapper>
-            </div>
-          )}
           {!productType && (
-            <p className="text-sm text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
+            <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
           {productType && (
             <button onClick={() => advanceTo('fabric')} className="mt-2 text-sm text-accent-warm font-light hover:underline">
@@ -729,10 +716,10 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-4">
-          {(productType === 'banco' || productType === 'mesita') && (
+          {productType === 'banco' && (
             <div className="flex justify-between items-center py-2">
               <div>
-                <p className="text-sm text-foreground font-light">Patas de madera</p>
+                <p className="text-base text-foreground font-light">Patas de madera</p>
                 <p className="text-xs text-muted-foreground">+15€</p>
               </div>
               <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
@@ -741,7 +728,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
           {(productType === 'banco' || productType === 'puff') && (
             <div className="flex justify-between items-center py-2">
               <div>
-                <p className="text-sm text-foreground font-light">Relleno extra firmeza</p>
+                <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
                 <p className="text-xs text-muted-foreground">+20€</p>
               </div>
               <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
@@ -749,7 +736,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
           )}
           <div className="flex justify-between items-center py-2">
             <div>
-              <p className="text-sm text-foreground font-light">Entrega express 7 días</p>
+              <p className="text-base text-foreground font-light">Entrega express 7 días</p>
               <p className="text-xs text-muted-foreground">+35€</p>
             </div>
             <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
