@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 
 const REASONS = [
@@ -47,12 +48,9 @@ const WhyTiroRiro = () => (
           ))}
 
           <AnimatedSection delay={0.5} className="mt-6">
-            <button
-              onClick={() => document.getElementById('equipo')?.scrollIntoView({ behavior: 'smooth' })}
-              className="cta-link"
-            >
+            <Link to="/quienes-somos" className="cta-link">
               Conoce nuestra historia →
-            </button>
+            </Link>
           </AnimatedSection>
         </div>
       </div>

@@ -17,8 +17,8 @@ const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -50,7 +50,7 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-background/95 backdrop-blur-sm border-b border-border"
+          ? "bg-background/95 backdrop-blur-sm shadow-sm border-b border-border"
           : "bg-transparent"
       }`}
     >
@@ -87,22 +87,29 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-background/95 backdrop-blur-sm border-b border-border">
-          <div className="px-6 py-6 flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={(e) => {
-                  if (handleClick(link.to)) e.preventDefault();
-                }}
-                className="text-sm tracking-extra-wide uppercase text-foreground hover:text-accent-warm transition-colors font-body"
-              >
-                {link.label}
-              </Link>
-            ))}
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 top-16 bg-foreground/40 z-40"
+            onClick={() => setOpen(false)}
+          />
+          <div className="md:hidden relative z-50 bg-background/95 backdrop-blur-sm border-b border-border animate-in slide-in-from-top-2 duration-200">
+            <div className="px-6 py-6 flex flex-col gap-4">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={(e) => {
+                    if (handleClick(link.to)) e.preventDefault();
+                  }}
+                  className="text-sm tracking-extra-wide uppercase text-foreground hover:text-accent-warm transition-colors font-body"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </nav>
   );

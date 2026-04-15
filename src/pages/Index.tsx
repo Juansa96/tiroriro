@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import TrustBanner from "@/components/TrustBanner";
 import ProductsPreview from "@/components/ProductsPreview";
 import HowItWorks from "@/components/HowItWorks";
 import WhyTiroRiro from "@/components/WhyTiroRiro";
 import TeamSection from "@/components/TeamSection";
 import Testimonials from "@/components/Testimonials";
+import InspirationGallery from "@/components/InspirationGallery";
 import FAQSection from "@/components/FAQSection";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
@@ -15,6 +17,7 @@ const Index = () => (
     <Navbar />
     <main>
       <HeroSection />
+      <TrustBanner />
       <ProductsPreview />
       <SectionCTA to="/configurador" label="Diseña el tuyo" />
       <HowItWorks />
@@ -24,6 +27,7 @@ const Index = () => (
       <TeamSection />
       <SectionCTA to="/contacto" label="Hablamos" />
       <Testimonials />
+      <InspirationGallery />
       <FAQSection />
       <ContactForm />
     </main>
