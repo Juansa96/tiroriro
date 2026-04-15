@@ -3,9 +3,9 @@ import AnimatedSection from "./AnimatedSection";
 const REASONS = [
   { num: "01", title: "El origen", text: "Dos amigas de toda la vida, dos bebés casi a la vez, dos casas nuevas que decorar — y ninguna web que tuviera lo que buscaban sin costar una fortuna o parecer el catálogo de un hotel de aeropuerto." },
   { num: "02", title: "La filosofía", text: "Hay piezas que no deberían ser iguales en todos los hogares — y si vas a ver ese cabecero cada noche durante diez años, merece que sea exactamente el que querías desde el principio." },
-  { num: "03", title: "Sin complicaciones", text: "Decorar bien no debería requerir saber de obras, de proveedores ni de montar nada — solo tener claro lo que te gusta y dejar que nosotras hagamos el resto." },
+  { num: "03", title: "Sin complicaciones", text: "Decorar bien no debería requerir saber de obras, de proveedores ni de montar nada — solo tener claro lo que te gusta y dejar que nuestro equipo haga el resto." },
   { num: "04", title: "Lo que no encuentras en otro sitio", text: "Un cabecero tapizado a medida, con la tela que tú eliges y el acabado que tú decides, no lo tiene ningún catálogo masivo — y el precio tampoco tiene que ser el de una boutique de lujo." },
-  { num: "05", title: "Para quien no tiene tiempo", text: "Tú tienes trabajo, tienes vida y tienes cosas mejores que hacer que buscar tapiceros, pedir presupuestos y coordinar entregas — nosotras hacemos todo eso para que tú solo tengas que abrir la puerta." },
+  { num: "05", title: "Para quien no tiene tiempo", text: "Tú tienes trabajo, tienes vida y tienes cosas mejores que hacer que buscar tapiceros, pedir presupuestos y coordinar entregas — nuestro equipo hace todo eso para que tú solo tengas que abrir la puerta." },
 ];
 
 const WhyTiroRiro = () => (
@@ -20,14 +20,11 @@ const WhyTiroRiro = () => (
         {/* Image */}
         <AnimatedSection>
           <img
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80"
-            alt="Manos artesanas trabajando en tapicería"
+            src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&q=80"
+            alt="Manos artesanas trabajando en tapicería de muebles"
             className="w-full aspect-[3/4] object-cover"
             loading="lazy"
             decoding="async"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80";
-            }}
           />
         </AnimatedSection>
 

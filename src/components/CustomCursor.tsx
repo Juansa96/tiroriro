@@ -5,6 +5,8 @@ const CustomCursor = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Only activate on devices with fine pointer (no touch)
+    if (!window.matchMedia('(pointer: fine)').matches) return;
     const isTouchDevice = 'ontouchstart' in window;
     if (isTouchDevice) return;
 

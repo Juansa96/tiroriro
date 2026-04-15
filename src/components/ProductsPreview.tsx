@@ -3,6 +3,14 @@ import AnimatedSection from "./AnimatedSection";
 import { PRODUCTS } from "@/lib/products";
 import { ArrowRight } from "lucide-react";
 
+const ALT_TEXTS: Record<string, string> = {
+  'cabecero-tapizado': 'Cabecero tapizado en lino natural sobre cama de matrimonio',
+  'banco-entelado': 'Banco entelado al pie de cama en tela beige',
+  'mesita-entelada': 'Mesita de noche entelada en dormitorio elegante',
+  'cojin-almohadon': 'Cojines y almohadones decorativos en tonos neutros sobre cama',
+  'puff-elegante': 'Puff tapizado elegante en salón con luz natural',
+};
+
 const ProductsPreview = () => (
   <section className="py-20 md:py-32 px-6">
     <div className="container mx-auto">
@@ -11,14 +19,18 @@ const ProductsPreview = () => (
         <span className="section-line" />
       </AnimatedSection>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
         {PRODUCTS.map((product, i) => (
-          <AnimatedSection key={product.id} delay={i * 0.1} className={i === PRODUCTS.length - 1 && PRODUCTS.length % 3 !== 0 ? "md:col-span-2 lg:col-span-1 lg:mx-auto lg:max-w-sm" : ""}>
+          <AnimatedSection
+            key={product.id}
+            delay={i * 0.1}
+            className={PRODUCTS.length % 2 !== 0 && i === PRODUCTS.length - 1 ? "sm:col-span-2 sm:max-w-md sm:mx-auto" : ""}
+          >
             <Link to="/productos" className="group block">
               <div className="overflow-hidden">
                 <img
                   src={product.image}
-                  alt={product.name}
+                  alt={ALT_TEXTS[product.id] || product.name}
                   className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                   decoding="async"

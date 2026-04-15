@@ -12,8 +12,8 @@ const HeroSection = () => {
       {/* Parallax image */}
       <motion.div className="absolute inset-0" style={{ y }}>
         <img
-          src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1920&q=80"
-          alt="Habitación elegante con cabecero tapizado"
+          src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1920&q=85"
+          alt="Dormitorio elegante con cabecero tapizado artesanal, luz cálida lateral"
           className="w-full h-[120%] object-cover"
           loading="eager"
           decoding="async"
@@ -38,7 +38,7 @@ const HeroSection = () => {
           transition={{ duration: 1, delay: 0.6 }}
           className="mt-6 text-base md:text-lg text-primary-foreground/80 font-light max-w-xl mx-auto leading-relaxed"
         >
-          Nosotras construimos, tapizamos y enviamos — tú solo eliges la tela y el tamaño y en 15 días lo tienes en casa.
+          Nuestro equipo construye, tapiza y envía — tú solo eliges la tela y el tamaño y en 15 días lo tienes en casa.
         </motion.p>
 
         <motion.div
@@ -60,6 +60,15 @@ const HeroSection = () => {
             Personaliza el tuyo
           </Link>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.2 }}
+          className="text-xs text-primary-foreground/60 font-light tracking-wide mt-4"
+        >
+          Cabeceros desde 180€ · Bancos desde 120€ · Precio exacto en el configurador
+        </motion.p>
       </div>
     </section>
   );

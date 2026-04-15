@@ -26,31 +26,31 @@ export const PRODUCTS: Product[] = [
     type: 'cabecero',
     name: 'Cabeceros tapizados',
     tagline: 'El punto de partida de cualquier dormitorio que merece la pena',
-    basePrice: 320,
-    image: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=800&q=80',
+    basePrice: 180,
+    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80',
   },
   {
     id: 'banco-entelado',
     type: 'banco',
     name: 'Bancos entelados',
     tagline: 'Para el pie de la cama, la entrada o donde quieras que aterrice la vista',
-    basePrice: 220,
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80',
+    basePrice: 120,
+    image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80',
   },
   {
     id: 'mesita-entelada',
     type: 'mesita',
-    name: 'Mesitas de centro enteladas',
-    tagline: 'Para el salón que lleva tiempo esperando ese último detalle',
+    name: 'Mesitas de noche',
+    tagline: 'El rincón que más tocas — que también sea bonito',
     basePrice: 180,
-    image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=800&q=80',
   },
   {
     id: 'cojin-almohadon',
     type: 'cojin',
     name: 'Cojines y almohadones',
-    tagline: 'Porque una tela bien elegida cambia el carácter de cualquier rincón',
-    basePrice: 45,
+    tagline: 'Los últimos detalles que convierten una cama en la tuya',
+    basePrice: 35,
     image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&q=80',
   },
   {
@@ -58,8 +58,8 @@ export const PRODUCTS: Product[] = [
     type: 'puff',
     name: 'Puffs elegantes',
     tagline: 'Asiento, reposapiés, escultura — según cómo lo mires',
-    basePrice: 150,
-    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=800&q=80',
+    basePrice: 95,
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
   },
 ];
 
@@ -70,18 +70,19 @@ export const HEADBOARD_SHAPES = [
   { id: 'corona-doble', name: 'Corona doble' },
 ];
 
-export const BED_SIZES = ['90 cm', '135 cm', '150 cm', '180 cm', 'Medida especial'];
-export const HEADBOARD_HEIGHTS = ['100 cm', '120 cm', 'Altura especial'];
-export const BENCH_LENGTHS = ['80 cm', '100 cm', '120 cm', '140 cm', '160 cm', 'Personalizado'];
+export const BED_SIZES = ['90 cm', '105 cm', '135 cm', '150 cm', '160 cm', '180 cm'];
+export const HEADBOARD_HEIGHTS = ['60 cm', '70 cm', '80 cm', '90 cm'];
+export const BENCH_LENGTHS = ['80 cm', '100 cm', '120 cm', '140 cm', 'Personalizado'];
 export const TABLE_LENGTHS = ['80 cm', '100 cm', '120 cm', '140 cm', '160 cm', 'Personalizado'];
 export const CUSHION_SHAPES = ['Cuadrado', 'Rectangular'];
-export const CUSHION_SIZES = ['30×30 cm', '40×40 cm', '50×50 cm', '30×50 cm'];
+export const CUSHION_SIZES = ['40×40 cm', '45×45 cm', '50×30 cm (lumbar)'];
 export const PUFF_SIZES = ['Pequeño', 'Mediano', 'Grande'];
 
 export const FINISHES = [
   { id: 'liso', name: 'Acabado liso', desc: 'Limpio, moderno, sin interrupciones', extra: 0 },
-  { id: 'vivo-simple', name: 'Con vivo simple', desc: 'Una línea que define y remata', extra: 30 },
-  { id: 'vivo-doble', name: 'Con vivo doble', desc: 'El detalle que lo convierte en una pieza de autor', extra: 60 },
+  { id: 'vivo-simple', name: 'Con vivo simple', desc: 'Una línea que define y remata', extra: 15 },
+  { id: 'vivo-doble', name: 'Con vivo doble', desc: 'El detalle que lo convierte en una pieza de autor', extra: 25 },
+  { id: 'botonadura', name: 'Botonadura', desc: 'Botones tapizados distribuidos uniformemente', extra: 30 },
 ];
 
 export function calculatePrice(type: ProductType, options: Record<string, string>): number {
@@ -93,27 +94,48 @@ export function calculatePrice(type: ProductType, options: Record<string, string
   if (finish) price += finish.extra;
 
   if (type === 'cabecero') {
-    const sizeIdx = BED_SIZES.indexOf(options.bedSize || '');
-    price += sizeIdx * 40;
-    if (options.height === '120 cm') price += 50;
-    if (options.height === 'Altura especial') price += 80;
-    if (options.bedSize === 'Medida especial') price += 60;
+    const sizeMap: Record<string, number> = {
+      '90 cm': 180, '105 cm': 195, '135 cm': 220, '150 cm': 240, '160 cm': 260, '180 cm': 290,
+    };
+    const sizePrice = sizeMap[options.bedSize];
+    if (sizePrice) {
+      price = sizePrice; // base is the size price
+      if (finish) price += finish.extra;
+    }
   }
-  if (type === 'banco' || type === 'mesita') {
-    const lengths = type === 'banco' ? BENCH_LENGTHS : TABLE_LENGTHS;
+
+  if (type === 'banco') {
+    const lenMap: Record<string, number> = { '80 cm': 120, '100 cm': 135, '120 cm': 150, '140 cm': 165 };
+    const lenPrice = lenMap[options.length];
+    if (lenPrice) {
+      price = lenPrice;
+      if (finish) price += finish.extra;
+    }
+    if (options.length === 'Personalizado') price += 50;
+  }
+
+  if (type === 'mesita') {
+    const lengths = TABLE_LENGTHS;
     const lenIdx = lengths.indexOf(options.length || '');
     price += lenIdx * 25;
     if (options.length === 'Personalizado') price += 50;
-    if (type === 'mesita' && options.skirt === 'Entelado') price += 40;
+    if (options.skirt === 'Entelado') price += 40;
   }
+
   if (type === 'cojin') {
     const sizeIdx = CUSHION_SIZES.indexOf(options.size || '');
     price += sizeIdx * 10;
   }
+
   if (type === 'puff') {
     if (options.puffSize === 'Mediano') price += 40;
     if (options.puffSize === 'Grande') price += 90;
   }
+
+  // Extras
+  if (options.patas === 'true') price += 15;
+  if (options.relleno === 'true') price += 20;
+  if (options.express === 'true') price += 35;
 
   return price;
 }
