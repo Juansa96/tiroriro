@@ -675,7 +675,7 @@ const ConfigAccordions = (props: ConfigAccordionsProps) => {
             </p>
           )}
           <p className="text-xs text-muted-foreground font-light">
-            ¿No encuentras tu tela? <a ¿No encuentras tu tela? <a href="https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a> — trabajamos con más de 80 referencias. target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a> — trabajamos con más de 80 referencias.
+            ¿No encuentras tu tela?{" "}<a href={"https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n."} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a> — trabajamos con más de 80 referencias. <a href="https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a> — trabajamos con más de 80 referencias. target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a> — trabajamos con más de 80 referencias.
           </p>
         </AccordionContent>
       </AccordionItem>
