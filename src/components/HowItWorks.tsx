@@ -34,7 +34,7 @@ const StepCircle = ({ num, Icon, clickable }: { num: string; Icon: React.Compone
   return (
     <div
       className={`w-16 h-16 rounded-full border-2 flex items-center justify-center mx-auto relative bg-background transition-colors duration-200 ${clickable ? 'group-hover:border-accent-warm' : ''}`}
-      style={{ borderColor: hovered && clickable ? 'hsl(var(--accent-warm))' : 'hsl(var(--accent-warm))' }}
+      style={{ borderColor: 'hsl(var(--accent-warm))' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
