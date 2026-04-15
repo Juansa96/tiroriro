@@ -18,10 +18,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "El punto de partida de cualquier dormitorio que merece la pena.",
     models: [
       { name: "Recto Clásico", photo: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80", desc: "Líneas limpias, atemporal. El más solicitado.", price: 180, configParam: "recto" },
-      { name: "Arco Suave", photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", desc: "Remate en arco que aporta calidez sin renunciar a la elegancia.", price: 195, configParam: "semicirculo" },
-      { name: "Alto Moderno", photo: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80", desc: "Para dormitorios con altura de techo — hace la habitación más grande.", price: 220, configParam: "rectangular" },
-      { name: "Con Patas", photo: "https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=600&q=80", desc: "Se ancla al suelo. Estable y con personalidad propia.", price: 240, configParam: "corona-simple" },
-      { name: "Capitoné", photo: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=600&q=80", desc: "Botonadura artesanal. El más elaborado de la colección.", price: 280, configParam: "corona-doble" },
+      { name: "Arco Suave", photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", desc: "Remate en arco que aporta calidez sin renunciar a la elegancia.", price: 195, configParam: "arco" },
+      { name: "Alto Moderno", photo: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80", desc: "Para dormitorios con altura de techo — hace la habitación más grande.", price: 220, configParam: "alto" },
+      { name: "Con Patas", photo: "https://images.unsplash.com/photo-1588046130717-0eb0c9a3ba15?w=600&q=80", desc: "Se ancla al suelo. Estable y con personalidad propia.", price: 240, configParam: "con-patas" },
     ],
   },
   bancos: {
@@ -52,16 +51,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       { name: "Puff Cuadrado", photo: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80", desc: "Líneas rectas para ambientes más estructurados.", price: 110 },
       { name: "Puff Alto (taburete)", photo: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80", desc: "Altura de asiento. Perfecto junto a un tocador.", price: 120 },
       { name: "Puff Gigante", photo: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80", desc: "El más contundente. Para salones y zonas de estar.", price: 150 },
-    ],
-  },
-  mesitas: {
-    title: "Mesitas de noche",
-    subtitle: "El rincón que más tocas — que también sea bonito.",
-    models: [
-      { name: "Mesita Redonda", photo: "https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=600&q=80", desc: "Silueta suave. Combina con todo.", price: 85 },
-      { name: "Mesita Cuadrada", photo: "https://images.unsplash.com/photo-1586798271654-0471bb1b0517?w=600&q=80", desc: "Clásica y funcional. Líneas rectas.", price: 90 },
-      { name: "Mesita con Bandeja", photo: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80", desc: "Superficie extraíble para más versatilidad.", price: 105 },
-      { name: "Mesita Set ×2", photo: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80", desc: "Dos mesitas iguales. Perfectas para camas de matrimonio.", price: 160 },
     ],
   },
 };
@@ -126,8 +115,8 @@ const CategoryPage = () => {
                   </div>
                   <div className="p-5">
                     <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground font-light italic">{model.desc}</p>
-                    <p className="mt-2 text-sm text-foreground font-medium">Desde {model.price}€</p>
+                    <p className="mt-1 text-base text-muted-foreground font-light italic">{model.desc}</p>
+                    <p className="mt-2 text-base text-foreground font-medium">Desde {model.price}€</p>
                     <Link
                       to={`/configurador?tipo=${productTypeMap[category || '']}${model.configParam ? `&forma=${model.configParam}` : ''}`}
                       className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 hover:opacity-80 transition-opacity"

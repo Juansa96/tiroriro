@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import heroImage from "@/assets/hero-portada.jpg";
 
 const HeroSection = () => {
   const ref = useRef<HTMLElement>(null);
@@ -9,18 +10,16 @@ const HeroSection = () => {
 
   return (
     <section ref={ref} className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
-      {/* Parallax image */}
       <motion.div className="absolute inset-0" style={{ y }}>
         <img
-          src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1920&q=85"
+          src={heroImage}
           alt="Dormitorio elegante con cabecero tapizado artesanal, luz cálida lateral"
-          className="w-full h-[120%] object-cover"
+          className="w-full h-[120%] object-cover object-center"
           loading="eager"
           decoding="async"
         />
       </motion.div>
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-foreground/65 via-foreground/40 to-foreground/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-foreground/60 via-foreground/35 to-foreground/15" />
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
         <motion.h1
@@ -28,7 +27,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
           className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-primary-foreground leading-tight"
-          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
+          style={{ textShadow: '0 2px 24px rgba(0,0,0,0.5)' }}
         >
           Algunas cosas merecen hacerse a mano
         </motion.h1>
@@ -38,7 +37,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6 }}
           className="mt-6 text-base md:text-lg text-primary-foreground/80 font-light max-w-xl mx-auto leading-relaxed"
-          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
+          style={{ textShadow: '0 1px 16px rgba(0,0,0,0.45)' }}
         >
           Nuestro equipo construye, tapiza y envía — tú solo eliges la tela y el tamaño y en 15 días lo tienes en casa.
         </motion.p>
@@ -68,6 +67,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.2 }}
           className="text-xs text-primary-foreground/60 font-light tracking-wide mt-4"
+          style={{ textShadow: '0 1px 16px rgba(0,0,0,0.45)' }}
         >
           Cabeceros desde 180€ · Bancos desde 120€ · Precio exacto en el configurador
         </motion.p>

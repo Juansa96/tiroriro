@@ -33,7 +33,7 @@ const Testimonials = () => (
       <AnimatedSection className="text-center mb-16">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Lo que dicen nuestros clientes</h2>
         <span className="section-line" />
-        <p className="mt-6 text-muted-foreground font-light italic">
+        <p className="mt-6 text-muted-foreground font-light italic text-base">
           "No lo decimos nosotros — lo dicen ellos."
         </p>
       </AnimatedSection>
@@ -58,7 +58,7 @@ const Testimonials = () => (
               <div className="flex gap-0.5 mb-3">
                 {[...Array(5)].map((_, j) => <Star key={j} />)}
               </div>
-              <p className="text-sm font-light text-muted-foreground italic leading-relaxed flex-1">
+              <p className="text-base font-light text-muted-foreground italic leading-relaxed flex-1">
                 "{t.text}"
               </p>
             </div>

@@ -1,4 +1,4 @@
-export type ProductType = 'cabecero' | 'banco' | 'mesita' | 'cojin' | 'puff';
+export type ProductType = 'cabecero' | 'banco' | 'cojin' | 'puff';
 
 export interface Product {
   id: string;
@@ -38,14 +38,6 @@ export const PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80',
   },
   {
-    id: 'mesita-entelada',
-    type: 'mesita',
-    name: 'Mesitas de noche',
-    tagline: 'El rincón que más tocas — que también sea bonito',
-    basePrice: 180,
-    image: 'https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=800&q=80',
-  },
-  {
     id: 'cojin-almohadon',
     type: 'cojin',
     name: 'Cojines y almohadones',
@@ -64,16 +56,15 @@ export const PRODUCTS: Product[] = [
 ];
 
 export const HEADBOARD_SHAPES = [
-  { id: 'rectangular', name: 'Rectangular' },
-  { id: 'semicirculo', name: 'Semicírculo' },
-  { id: 'corona-simple', name: 'Corona simple' },
-  { id: 'corona-doble', name: 'Corona doble' },
+  { id: 'recto', name: 'Recto' },
+  { id: 'arco', name: 'Arco' },
+  { id: 'alto', name: 'Alto' },
+  { id: 'con-patas', name: 'Con patas' },
 ];
 
 export const BED_SIZES = ['90 cm', '105 cm', '135 cm', '150 cm', '160 cm', '180 cm'];
 export const HEADBOARD_HEIGHTS = ['60 cm', '70 cm', '80 cm', '90 cm'];
 export const BENCH_LENGTHS = ['80 cm', '100 cm', '120 cm', '140 cm', 'Personalizado'];
-export const TABLE_LENGTHS = ['80 cm', '100 cm', '120 cm', '140 cm', '160 cm', 'Personalizado'];
 export const CUSHION_SHAPES = ['Cuadrado', 'Rectangular'];
 export const CUSHION_SIZES = ['40×40 cm', '45×45 cm', '50×30 cm (lumbar)'];
 export const PUFF_SIZES = ['Pequeño', 'Mediano', 'Grande'];
@@ -82,7 +73,6 @@ export const FINISHES = [
   { id: 'liso', name: 'Acabado liso', desc: 'Limpio, moderno, sin interrupciones', extra: 0 },
   { id: 'vivo-simple', name: 'Con vivo simple', desc: 'Una línea que define y remata', extra: 15 },
   { id: 'vivo-doble', name: 'Con vivo doble', desc: 'El detalle que lo convierte en una pieza de autor', extra: 25 },
-  { id: 'botonadura', name: 'Botonadura', desc: 'Botones tapizados distribuidos uniformemente', extra: 30 },
 ];
 
 export function calculatePrice(type: ProductType, options: Record<string, string>): number {
@@ -99,7 +89,7 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     };
     const sizePrice = sizeMap[options.bedSize];
     if (sizePrice) {
-      price = sizePrice; // base is the size price
+      price = sizePrice;
       if (finish) price += finish.extra;
     }
   }
@@ -112,14 +102,6 @@ export function calculatePrice(type: ProductType, options: Record<string, string
       if (finish) price += finish.extra;
     }
     if (options.length === 'Personalizado') price += 50;
-  }
-
-  if (type === 'mesita') {
-    const lengths = TABLE_LENGTHS;
-    const lenIdx = lengths.indexOf(options.length || '');
-    price += lenIdx * 25;
-    if (options.length === 'Personalizado') price += 50;
-    if (options.skirt === 'Entelado') price += 40;
   }
 
   if (type === 'cojin') {
@@ -155,10 +137,6 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
   }
   if (type === 'banco') {
     if (options.length) parts.push(options.length);
-  }
-  if (type === 'mesita') {
-    if (options.length) parts.push(options.length);
-    if (options.skirt) parts.push(`Faldón: ${options.skirt}`);
   }
   if (type === 'cojin') {
     if (options.cushionShape) parts.push(options.cushionShape);

@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import logo from "@/assets/logo-tiroriro.jpeg";
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/productos", label: "Productos" },
-  { to: "/quienes-somos", label: "Quiénes somos" },
+  { to: "/#equipo", label: "Quiénes somos" },
   { to: "/#testimoniales", label: "Testimoniales" },
   { to: "/configurador", label: "Diseña el tuyo" },
-  { to: "/contacto", label: "Solicita información" },
 ];
 
 const Navbar = () => {
@@ -24,7 +24,6 @@ const Navbar = () => {
 
   useEffect(() => setOpen(false), [location]);
 
-  // Handle anchor links
   useEffect(() => {
     if (location.hash) {
       const el = document.getElementById(location.hash.slice(1));
@@ -55,8 +54,8 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-6">
-        <Link to="/" className="font-serif text-xl md:text-2xl font-semibold tracking-ultra-wide text-foreground">
-          TIRO·RIRO
+        <Link to="/">
+          <img src={logo} alt="TIRO·RIRO" className="h-8 md:h-10 w-auto" />
         </Link>
 
         {/* Desktop */}
@@ -73,6 +72,15 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          <Link
+            to="/#contacto"
+            onClick={(e) => {
+              if (handleClick('/#contacto')) e.preventDefault();
+            }}
+            className="ml-4 px-4 py-2 rounded-full bg-accent-warm text-white text-xs tracking-wide uppercase font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            Solicita información
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -88,7 +96,6 @@ const Navbar = () => {
       {/* Mobile menu */}
       {open && (
         <>
-          {/* Backdrop */}
           <div
             className="md:hidden fixed inset-0 top-16 bg-foreground/40 z-40"
             onClick={() => setOpen(false)}
@@ -107,6 +114,15 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+              <Link
+                to="/#contacto"
+                onClick={(e) => {
+                  if (handleClick('/#contacto')) e.preventDefault();
+                }}
+                className="text-sm tracking-extra-wide uppercase text-accent-warm hover:text-accent-warm transition-colors font-body font-medium"
+              >
+                Solicita información
+              </Link>
             </div>
           </div>
         </>
