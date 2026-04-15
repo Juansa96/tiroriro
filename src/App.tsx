@@ -4,13 +4,16 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import CustomCursor from "@/components/CustomCursor";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import FloatingButtons from "@/components/FloatingButtons";
 import CookieBanner from "@/components/CookieBanner";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
+import CategoryPage from "./pages/CategoryPage";
 import ConfiguratorPage from "./pages/ConfiguratorPage";
 import TryOnPage from "./pages/TryOnPage";
 import ContactPage from "./pages/ContactPage";
+import AboutPage from "./pages/AboutPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
@@ -25,18 +28,21 @@ const App = () => (
       <Sonner />
       <CustomCursor />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/productos" element={<ProductsPage />} />
+          <Route path="/productos/:category" element={<CategoryPage />} />
           <Route path="/configurador" element={<ConfiguratorPage />} />
           <Route path="/probador" element={<TryOnPage />} />
           <Route path="/contacto" element={<ContactPage />} />
+          <Route path="/quienes-somos" element={<AboutPage />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
           <Route path="/aviso-legal" element={<LegalPage />} />
           <Route path="/cookies" element={<CookiesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <WhatsAppButton />
+        <FloatingButtons />
         <CookieBanner />
       </BrowserRouter>
     </TooltipProvider>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
+import { ChevronDown } from "lucide-react";
 
 // --- Fabric data ---
 const FABRIC_GROUPS = [
@@ -55,10 +56,10 @@ const FINISHES = [
 ];
 
 const HEADBOARD_SHAPES = [
-  { id: "rectangular", name: "Recto" },
-  { id: "semicirculo", name: "Con arco" },
-  { id: "corona-simple", name: "Corona simple" },
-  { id: "corona-doble", name: "Corona doble" },
+  { id: "rectangular", name: "Recto Clásico", svgPreview: "M 5 35 L 5 5 L 55 5 L 55 35 Z" },
+  { id: "semicirculo", name: "Arco Suave", svgPreview: "M 5 35 L 5 18 Q 30 0 55 18 L 55 35 Z" },
+  { id: "corona-simple", name: "Corona Simple", svgPreview: "M 5 35 L 5 12 Q 18 2 30 12 Q 42 2 55 12 L 55 35 Z" },
+  { id: "corona-doble", name: "Corona Doble", svgPreview: "M 5 35 L 5 12 Q 12 2 20 12 Q 28 2 35 12 Q 42 2 50 12 L 55 12 L 55 35 Z" },
 ];
 
 // --- Types ---
@@ -90,9 +91,19 @@ const ProductIcon = ({ type }: { type: string }) => {
   }
 };
 
+const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
+
+const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
+  <div className="relative">
+    {children}
+    <ChevronDown size={14} className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+  </div>
+);
+
 // --- Component ---
 const ProductConfigurator = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [productType, setProductType] = useState<ProductType | null>(null);
   const [shape, setShape] = useState("");
   const [bedWidth, setBedWidth] = useState("");
@@ -115,18 +126,28 @@ const ProductConfigurator = () => {
 
   const [openAccordion, setOpenAccordion] = useState<string>("type");
 
+  // Pre-fill from URL params
+  useEffect(() => {
+    const tipo = searchParams.get('tipo');
+    const forma = searchParams.get('forma');
+    if (tipo && ['cabecero', 'banco', 'mesita', 'cojin', 'puff'].includes(tipo)) {
+      setProductType(tipo as ProductType);
+      setOpenAccordion('measures');
+    }
+    if (forma) setShape(forma);
+  }, [searchParams]);
+
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
   const vivoFabric = ALL_FABRICS.find(f => f.id === vivoColorId);
   const fillColor = fabric?.hex || "#E5E5E5";
   const vivoColor = vivoFabric?.hex || darken(fillColor);
 
-  // Build options for price calc
   const options = useMemo(() => {
     const o: Record<string, string> = {};
     if (productType === 'cabecero') {
       o.shape = shape;
-      o.bedSize = bedWidth || customWidth + ' cm';
-      o.height = bedHeight || customHeight + ' cm';
+      o.bedSize = bedWidth || (customWidth ? customWidth + ' cm' : '');
+      o.height = bedHeight || (customHeight ? customHeight + ' cm' : '');
     }
     if (productType === 'banco') o.length = benchLength;
     if (productType === 'mesita') o.length = benchLength;
@@ -145,7 +166,6 @@ const ProductConfigurator = () => {
     return calculatePrice(productType, options);
   }, [productType, options]);
 
-  // Selection completeness
   const stepComplete: Record<Step, boolean> = {
     type: !!productType,
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
@@ -159,14 +179,10 @@ const ProductConfigurator = () => {
     extras: true,
   };
 
-  const completedSteps = STEPS.filter(s => stepComplete[s]).length;
   const activeStepIndex = STEPS.indexOf(openAccordion as Step);
-  const allComplete = completedSteps >= 4; // extras always complete
-
   const isIncomplete = !productType || !fabricId || !finish;
   const priceLabel = isIncomplete ? `desde ${price || (productType ? PRODUCTS.find(p => p.type === productType)?.basePrice || 0 : 180)}` : `${price}`;
 
-  // Chips
   const chips: string[] = [];
   if (productType) {
     const pName = PRODUCTS.find(p => p.type === productType)?.name || '';
@@ -184,16 +200,13 @@ const ProductConfigurator = () => {
   if (finishObj) chips.push(finishObj.name);
   else chips.push("—");
 
-  // Label
   const previewLabel = [
     productType ? (PRODUCTS.find(p => p.type === productType)?.name.split(' ')[0] || '') : '',
     productType === 'cabecero' ? (bedWidth || (customWidth ? `${customWidth} cm` : '')) : '',
     fabric?.name || '',
   ].filter(Boolean).join(' · ') || 'Tu pieza aparecerá aquí';
 
-  const advanceTo = (next: Step) => {
-    setOpenAccordion(next);
-  };
+  const advanceTo = (next: Step) => setOpenAccordion(next);
 
   const handleOrder = () => {
     if (!productType) return;
@@ -203,14 +216,9 @@ const ProductConfigurator = () => {
       product: product?.name || '',
       config: `Me interesa: ${summary} (aprox. ${price}€)`,
     });
+    if (extraExpress) params.set('express', 'true');
     navigate(`/contacto?${params.toString()}`);
   };
-
-  // Btn style
-  const sizeBtn = (selected: boolean) =>
-    `border rounded px-3 py-2 text-sm font-light cursor-pointer transition-all ${
-      selected ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground/60"
-    }`;
 
   const selectionLabel = (step: Step): React.ReactNode => {
     switch (step) {
@@ -233,11 +241,10 @@ const ProductConfigurator = () => {
     }
   };
 
-  // Progress bar
   const ProgressBar = ({ className = "" }: { className?: string }) => (
     <div className={className}>
       <div className="flex gap-1">
-        {STEPS.map((s, i) => (
+        {STEPS.map((s) => (
           <div key={s} className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
             <div
               className="h-full rounded-full transition-all duration-300"
@@ -253,6 +260,21 @@ const ProductConfigurator = () => {
         Paso {Math.max(1, activeStepIndex + 1)} de {STEPS.length} · {STEP_LABELS[openAccordion as Step] || STEP_LABELS.type}
       </p>
     </div>
+  );
+
+  const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
+
+  const productCard = (type: ProductType, label: string) => (
+    <button
+      key={type}
+      onClick={() => { setProductType(type); advanceTo('measures'); }}
+      className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
+        productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
+      }`}
+    >
+      <ProductIcon type={type} />
+      <span className="text-sm font-light text-foreground">{label}</span>
+    </button>
   );
 
   return (
@@ -318,30 +340,21 @@ const ProductConfigurator = () => {
             <p className="mt-2 text-sm text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
           </div>
           <ProgressBar className="mb-6" />
-          <AccordionSection
-            openAccordion={openAccordion}
-            setOpenAccordion={setOpenAccordion}
-            selectionLabel={selectionLabel}
-            productType={productType}
-            setProductType={(t) => { setProductType(t); advanceTo('measures'); }}
+          <ConfigAccordions
+            openAccordion={openAccordion} setOpenAccordion={setOpenAccordion} selectionLabel={selectionLabel}
+            productType={productType} productCard={productCard}
             shape={shape} setShape={setShape}
-            bedWidth={bedWidth} setBedWidth={setBedWidth}
-            bedHeight={bedHeight} setBedHeight={setBedHeight}
-            benchLength={benchLength} setBenchLength={setBenchLength}
-            benchDepth={benchDepth} setBenchDepth={setBenchDepth}
-            benchHeight={benchHeight} setBenchHeight={setBenchHeight}
-            puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter}
-            puffHeight={puffHeight} setPuffHeight={setPuffHeight}
+            bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
+            benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
+            puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
             cushionSize={cushionSize} setCushionSize={setCushionSize}
             fabricId={fabricId} setFabricId={(id) => { setFabricId(id); advanceTo('finish'); }}
             finish={finish} setFinish={(f) => { setFinish(f); advanceTo('extras'); }}
             vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
-            customWidth={customWidth} setCustomWidth={setCustomWidth}
-            customHeight={customHeight} setCustomHeight={setCustomHeight}
-            extraPatas={extraPatas} setExtraPatas={setExtraPatas}
-            extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
+            customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
+            extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
             extraExpress={extraExpress} setExtraExpress={setExtraExpress}
-            advanceTo={advanceTo}
+            advanceTo={advanceTo} needsVivo={needsVivo}
           />
         </div>
       </div>
@@ -351,30 +364,21 @@ const ProductConfigurator = () => {
         <div className="mb-4 pt-4">
           <h1 className="font-serif text-2xl font-light text-foreground">Diseña el tuyo</h1>
         </div>
-        <AccordionSection
-          openAccordion={openAccordion}
-          setOpenAccordion={setOpenAccordion}
-          selectionLabel={selectionLabel}
-          productType={productType}
-          setProductType={(t) => { setProductType(t); advanceTo('measures'); }}
+        <ConfigAccordions
+          openAccordion={openAccordion} setOpenAccordion={setOpenAccordion} selectionLabel={selectionLabel}
+          productType={productType} productCard={productCard}
           shape={shape} setShape={setShape}
-          bedWidth={bedWidth} setBedWidth={setBedWidth}
-          bedHeight={bedHeight} setBedHeight={setBedHeight}
-          benchLength={benchLength} setBenchLength={setBenchLength}
-          benchDepth={benchDepth} setBenchDepth={setBenchDepth}
-          benchHeight={benchHeight} setBenchHeight={setBenchHeight}
-          puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter}
-          puffHeight={puffHeight} setPuffHeight={setPuffHeight}
+          bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
+          benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
+          puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
           cushionSize={cushionSize} setCushionSize={setCushionSize}
           fabricId={fabricId} setFabricId={(id) => { setFabricId(id); advanceTo('finish'); }}
           finish={finish} setFinish={(f) => { setFinish(f); advanceTo('extras'); }}
           vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
-          customWidth={customWidth} setCustomWidth={setCustomWidth}
-          customHeight={customHeight} setCustomHeight={setCustomHeight}
-          extraPatas={extraPatas} setExtraPatas={setExtraPatas}
-          extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
+          customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
+          extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
           extraExpress={extraExpress} setExtraExpress={setExtraExpress}
-          advanceTo={advanceTo}
+          advanceTo={advanceTo} needsVivo={needsVivo}
         />
       </div>
 
@@ -396,13 +400,13 @@ const ProductConfigurator = () => {
   );
 };
 
-// --- Accordion Section (shared between mobile and desktop) ---
-interface AccordionSectionProps {
+// --- Config Accordions ---
+interface ConfigAccordionsProps {
   openAccordion: string;
   setOpenAccordion: (v: string) => void;
   selectionLabel: (step: Step) => React.ReactNode;
   productType: ProductType | null;
-  setProductType: (t: ProductType) => void;
+  productCard: (type: ProductType, label: string) => React.ReactNode;
   shape: string; setShape: (v: string) => void;
   bedWidth: string; setBedWidth: (v: string) => void;
   bedHeight: string; setBedHeight: (v: string) => void;
@@ -421,12 +425,13 @@ interface AccordionSectionProps {
   extraRelleno: boolean; setExtraRelleno: (v: boolean) => void;
   extraExpress: boolean; setExtraExpress: (v: boolean) => void;
   advanceTo: (step: Step) => void;
+  needsVivo: boolean;
 }
 
-const AccordionSection = (props: AccordionSectionProps) => {
+const ConfigAccordions = (props: ConfigAccordionsProps) => {
   const {
     openAccordion, setOpenAccordion, selectionLabel,
-    productType, setProductType,
+    productType, productCard,
     shape, setShape,
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
@@ -437,28 +442,8 @@ const AccordionSection = (props: AccordionSectionProps) => {
     vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
-    advanceTo,
+    advanceTo, needsVivo,
   } = props;
-
-  const sizeBtn = (selected: boolean) =>
-    `border rounded px-3 py-2 text-sm font-light cursor-pointer transition-all ${
-      selected ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground/60"
-    }`;
-
-  const productCard = (type: ProductType, label: string, popular: boolean) => (
-    <button
-      key={type}
-      onClick={() => setProductType(type)}
-      className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
-        productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
-      } ${popular ? '' : 'text-sm'}`}
-    >
-      <ProductIcon type={type} />
-      <span className="text-sm font-light text-foreground">{label}</span>
-    </button>
-  );
-
-  const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
 
   return (
     <Accordion type="single" collapsible value={openAccordion} onValueChange={(v) => setOpenAccordion(v || '')}>
@@ -472,11 +457,11 @@ const AccordionSection = (props: AccordionSectionProps) => {
         </AccordionTrigger>
         <AccordionContent className="pb-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {productCard('cabecero', 'Cabecero', true)}
-            {productCard('banco', 'Banco', true)}
-            {productCard('puff', 'Puff', true)}
-            {productCard('cojin', 'Cojines', false)}
-            {productCard('mesita', 'Mesita', false)}
+            {productCard('cabecero', 'Cabecero')}
+            {productCard('banco', 'Banco')}
+            {productCard('puff', 'Puff')}
+            {productCard('cojin', 'Cojines')}
+            {productCard('mesita', 'Mesita')}
           </div>
         </AccordionContent>
       </AccordionItem>
@@ -492,56 +477,69 @@ const AccordionSection = (props: AccordionSectionProps) => {
         <AccordionContent className="pb-6 space-y-6">
           {productType === 'cabecero' && (
             <>
-              {/* Shape */}
+              {/* Shape selector */}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {HEADBOARD_SHAPES.map(s => (
-                    <button key={s.id} onClick={() => setShape(s.id)} className={sizeBtn(shape === s.id)}>{s.name}</button>
+                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                      <svg viewBox="0 0 60 40" className="w-12 h-8">
+                        <path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      </svg>
+                      <span className="text-xs font-light">{s.name}</span>
+                    </button>
                   ))}
                 </div>
               </div>
-              {/* Width */}
+              {/* Width dropdown */}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho de cama</p>
-                <div className="flex flex-wrap gap-2">
-                  {['90cm', '105cm', '135cm', '150cm', '160cm', '180cm'].map(s => (
-                    <button key={s} onClick={() => { setBedWidth(s); setCustomWidth(''); }} className={sizeBtn(bedWidth === s)}>{s}</button>
-                  ))}
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={60}
-                    max={220}
-                    placeholder="Otra medida"
-                    value={customWidth}
-                    onChange={(e) => { setCustomWidth(e.target.value); setBedWidth(''); }}
-                    className="w-28 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1"
-                  />
-                  <span className="text-xs text-muted-foreground">cm</span>
-                </div>
+                <SelectWrapper>
+                  <select
+                    value={bedWidth}
+                    onChange={(e) => { setBedWidth(e.target.value); setCustomWidth(''); }}
+                    className={selectClass}
+                  >
+                    <option value="">Seleccionar ancho...</option>
+                    <option value="90cm">90 cm</option>
+                    <option value="105cm">105 cm</option>
+                    <option value="135cm">135 cm</option>
+                    <option value="150cm">150 cm</option>
+                    <option value="160cm">160 cm</option>
+                    <option value="180cm">180 cm</option>
+                    <option value="custom">Personalizado</option>
+                  </select>
+                </SelectWrapper>
+                {bedWidth === 'custom' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={60} max={220} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
               </div>
-              {/* Height */}
+              {/* Height dropdown */}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
-                <div className="flex flex-wrap gap-2">
-                  {['60cm', '70cm', '80cm', '90cm'].map(h => (
-                    <button key={h} onClick={() => { setBedHeight(h); setCustomHeight(''); }} className={sizeBtn(bedHeight === h)}>{h}</button>
-                  ))}
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={40}
-                    max={150}
-                    placeholder="Otra medida"
-                    value={customHeight}
-                    onChange={(e) => { setCustomHeight(e.target.value); setBedHeight(''); }}
-                    className="w-28 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1"
-                  />
-                  <span className="text-xs text-muted-foreground">cm</span>
-                </div>
+                <SelectWrapper>
+                  <select
+                    value={bedHeight}
+                    onChange={(e) => { setBedHeight(e.target.value); setCustomHeight(''); }}
+                    className={selectClass}
+                  >
+                    <option value="">Seleccionar alto...</option>
+                    <option value="60cm">60 cm</option>
+                    <option value="70cm">70 cm</option>
+                    <option value="80cm">80 cm</option>
+                    <option value="90cm">90 cm</option>
+                    <option value="custom">Personalizado</option>
+                  </select>
+                </SelectWrapper>
+                {bedHeight === 'custom' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={40} max={150} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -549,27 +547,36 @@ const AccordionSection = (props: AccordionSectionProps) => {
             <>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
-                <div className="flex flex-wrap gap-2">
-                  {['80cm', '100cm', '120cm', '140cm'].map(l => (
-                    <button key={l} onClick={() => setBenchLength(l)} className={sizeBtn(benchLength === l)}>{l}</button>
-                  ))}
-                </div>
+                <SelectWrapper>
+                  <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar largo...</option>
+                    <option value="80cm">80 cm</option>
+                    <option value="100cm">100 cm</option>
+                    <option value="120cm">120 cm</option>
+                    <option value="140cm">140 cm</option>
+                  </select>
+                </SelectWrapper>
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
-                <div className="flex flex-wrap gap-2">
-                  {['35cm', '40cm', '45cm'].map(d => (
-                    <button key={d} onClick={() => setBenchDepth(d)} className={sizeBtn(benchDepth === d)}>{d}</button>
-                  ))}
-                </div>
+                <SelectWrapper>
+                  <select value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar fondo...</option>
+                    <option value="35cm">35 cm</option>
+                    <option value="40cm">40 cm</option>
+                    <option value="45cm">45 cm</option>
+                  </select>
+                </SelectWrapper>
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
-                <div className="flex flex-wrap gap-2">
-                  {['40cm', '45cm'].map(h => (
-                    <button key={h} onClick={() => setBenchHeight(h)} className={sizeBtn(benchHeight === h)}>{h}</button>
-                  ))}
-                </div>
+                <SelectWrapper>
+                  <select value={benchHeight} onChange={(e) => setBenchHeight(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar alto...</option>
+                    <option value="40cm">40 cm</option>
+                    <option value="45cm">45 cm</option>
+                  </select>
+                </SelectWrapper>
               </div>
             </>
           )}
@@ -577,40 +584,53 @@ const AccordionSection = (props: AccordionSectionProps) => {
             <>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Diámetro</p>
-                <div className="flex flex-wrap gap-2">
-                  {['40cm', '50cm', '60cm'].map(d => (
-                    <button key={d} onClick={() => setPuffDiameter(d)} className={sizeBtn(puffDiameter === d)}>{d}</button>
-                  ))}
-                </div>
+                <SelectWrapper>
+                  <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar diámetro...</option>
+                    <option value="40cm">40 cm</option>
+                    <option value="50cm">50 cm</option>
+                    <option value="60cm">60 cm</option>
+                  </select>
+                </SelectWrapper>
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
-                <div className="flex flex-wrap gap-2">
-                  {['30cm', '40cm'].map(h => (
-                    <button key={h} onClick={() => setPuffHeight(h)} className={sizeBtn(puffHeight === h)}>{h}</button>
-                  ))}
-                </div>
+                <SelectWrapper>
+                  <select value={puffHeight} onChange={(e) => setPuffHeight(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar alto...</option>
+                    <option value="30cm">30 cm</option>
+                    <option value="40cm">40 cm</option>
+                  </select>
+                </SelectWrapper>
               </div>
             </>
           )}
           {productType === 'cojin' && (
             <div>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
-              <div className="flex flex-wrap gap-2">
-                {['40×40', '45×45', '50×30 lumbar'].map(s => (
-                  <button key={s} onClick={() => setCushionSize(s)} className={sizeBtn(cushionSize === s)}>{s}</button>
-                ))}
-              </div>
+              <SelectWrapper>
+                <select value={cushionSize} onChange={(e) => setCushionSize(e.target.value)} className={selectClass}>
+                  <option value="">Seleccionar tamaño...</option>
+                  <option value="40×40">40×40 cm</option>
+                  <option value="45×45">45×45 cm</option>
+                  <option value="50×30 lumbar">50×30 cm lumbar</option>
+                </select>
+              </SelectWrapper>
             </div>
           )}
           {productType === 'mesita' && (
             <div>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
-              <div className="flex flex-wrap gap-2">
-                {['80cm', '100cm', '120cm', '140cm', '160cm'].map(l => (
-                  <button key={l} onClick={() => setBenchLength(l)} className={sizeBtn(benchLength === l)}>{l}</button>
-                ))}
-              </div>
+              <SelectWrapper>
+                <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
+                  <option value="">Seleccionar largo...</option>
+                  <option value="80cm">80 cm</option>
+                  <option value="100cm">100 cm</option>
+                  <option value="120cm">120 cm</option>
+                  <option value="140cm">140 cm</option>
+                  <option value="160cm">160 cm</option>
+                </select>
+              </SelectWrapper>
             </div>
           )}
           {!productType && (
@@ -638,16 +658,9 @@ const AccordionSection = (props: AccordionSectionProps) => {
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
               <div className="flex flex-wrap gap-3">
                 {group.fabrics.map(f => (
-                  <button
-                    key={f.id}
-                    onClick={() => setFabricId(f.id)}
-                    className="flex flex-col items-center gap-1.5"
-                    title={f.name}
-                  >
+                  <button key={f.id} onClick={() => setFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
                     <div
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${
-                        fabricId === f.id ? "border-foreground ring-2 ring-offset-2 ring-foreground/30" : "border-transparent hover:border-foreground/40"
-                      }`}
+                      className={`w-10 h-10 rounded-full border-2 transition-all ${fabricId === f.id ? "border-foreground ring-2 ring-offset-2 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
                       style={{ backgroundColor: f.hex }}
                     />
                     <span className="text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
@@ -680,9 +693,7 @@ const AccordionSection = (props: AccordionSectionProps) => {
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
-              className={`w-full text-left px-5 py-4 border rounded transition-all ${
-                finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
-              }`}
+              className={`w-full text-left px-5 py-4 border rounded transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
               <span className="text-sm font-medium text-foreground">{f.name}</span>
               {f.extra && <span className="text-xs text-accent-warm ml-2">+{f.extra}€</span>}
@@ -694,15 +705,9 @@ const AccordionSection = (props: AccordionSectionProps) => {
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Color del vivo</p>
               <div className="flex flex-wrap gap-2">
                 {ALL_FABRICS.map(f => (
-                  <button
-                    key={f.id}
-                    onClick={() => setVivoColorId(f.id)}
-                    title={f.name}
-                  >
+                  <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
                     <div
-                      className={`w-7 h-7 rounded-full border-2 transition-all ${
-                        vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"
-                      }`}
+                      className={`w-7 h-7 rounded-full border-2 transition-all ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
                       style={{ backgroundColor: f.hex }}
                     />
                   </button>

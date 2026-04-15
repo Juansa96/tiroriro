@@ -3,10 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
+  { to: "/", label: "Home" },
   { to: "/productos", label: "Productos" },
+  { to: "/quienes-somos", label: "Quiénes somos" },
+  { to: "/#testimoniales", label: "Testimoniales" },
   { to: "/configurador", label: "Diseña el tuyo" },
-  { to: "/probador", label: "Míralo en tu casa" },
-  { to: "/contacto", label: "Contacto" },
+  { to: "/contacto", label: "Solicita información" },
 ];
 
 const Navbar = () => {
@@ -21,6 +23,28 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => setOpen(false), [location]);
+
+  // Handle anchor links
+  useEffect(() => {
+    if (location.hash) {
+      const el = document.getElementById(location.hash.slice(1));
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
+      }
+    }
+  }, [location]);
+
+  const handleClick = (to: string) => {
+    if (to.startsWith('/#') && location.pathname === '/') {
+      const el = document.getElementById(to.slice(2));
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        setOpen(false);
+        return true;
+      }
+    }
+    return false;
+  };
 
   return (
     <nav
@@ -41,6 +65,9 @@ const Navbar = () => {
             <Link
               key={link.to}
               to={link.to}
+              onClick={(e) => {
+                if (handleClick(link.to)) e.preventDefault();
+              }}
               className="nav-link-underline text-sm tracking-extra-wide uppercase text-foreground hover:text-foreground transition-colors font-body font-light pb-0.5"
             >
               {link.label}
@@ -66,6 +93,9 @@ const Navbar = () => {
               <Link
                 key={link.to}
                 to={link.to}
+                onClick={(e) => {
+                  if (handleClick(link.to)) e.preventDefault();
+                }}
                 className="text-sm tracking-extra-wide uppercase text-foreground hover:text-accent-warm transition-colors font-body"
               >
                 {link.label}
