@@ -407,16 +407,7 @@ const ProductConfigurator = () => {
 
   return (
     <div className="min-h-screen">
-      {hasVisitedBefore && (
-        <div className="container mx-auto px-4 md:px-6 pt-4">
-          <div className="bg-secondary/50 rounded-lg p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              Vemos que ya has estado explorando — ¿seguimos donde lo dejaste?
-            </p>
-          </div>
-        </div>
-      )}
-      <div className="container mx-auto px-4 md:px-6 pt-3">
+      <div className="container mx-auto px-4 md:px-6 pt-6">
         <p className="text-sm italic text-muted-foreground text-center">
           ¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.
         </p>
