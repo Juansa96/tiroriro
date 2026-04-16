@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Check, Loader2, ChevronDown, MessageCircle } from "lucide-react";
+import { Check, Loader2, MessageCircle } from "lucide-react";
 
-const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Mesa de centro", "Varios", "Otro"];
+const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Mesa de centro", "Otro"];
 
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
@@ -28,11 +28,12 @@ const ContactForm = () => {
 
   const [form, setForm] = useState({
     name: "",
+    lastName: "",
     phone: "",
     email: "",
-    product: "",
     details: "",
   });
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [rgpd, setRgpd] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -45,13 +46,21 @@ const ContactForm = () => {
       if (expressParam === 'true') {
         details += '\nEnvío express en 7 días: Sí (+35€)';
       }
+      if (prefilledProduct) {
+        const mapped = mapProductName(prefilledProduct);
+        setSelectedProducts(prev => prev.includes(mapped) ? prev : [...prev, mapped]);
+      }
       setForm(f => ({
         ...f,
-        product: prefilledProduct ? mapProductName(prefilledProduct) : f.product,
         details: details || f.details,
       }));
     }
   }, [prefilledProduct, fromConfig, expressParam]);
+
+  const toggleProduct = (p: string) => {
+    setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
+    setTouched(t => ({ ...t, product: true }));
+  };
 
   const update = (field: string, value: string) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -69,7 +78,7 @@ const ContactForm = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       errs.email = "Introduce un email válido";
     }
-    if (!form.product) errs.product = "Selecciona un producto";
+    if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
     if (!rgpd) errs.rgpd = "Debes aceptar la política de privacidad";
     return errs;
   };
@@ -78,7 +87,7 @@ const ContactForm = () => {
     if (Object.keys(touched).length > 0) {
       setErrors(validate());
     }
-  }, [form, rgpd, touched]);
+  }, [form, rgpd, selectedProducts, touched]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +120,7 @@ const ContactForm = () => {
             Te respondemos en menos de 24 horas laborables.
           </p>
           <button
-            onClick={() => { setSent(false); setForm({ name: '', phone: '', email: '', product: '', details: '' }); setRgpd(false); setTouched({}); setErrors({}); }}
+            onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setRgpd(false); setTouched({}); setErrors({}); }}
             className="mt-8 px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity rounded-full"
           >
             Volver al inicio
@@ -169,7 +178,7 @@ const ContactForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-          {/* Nombre + Teléfono */}
+          {/* Nombre + Apellidos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label htmlFor="contact-name" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
@@ -186,6 +195,23 @@ const ContactForm = () => {
               {hasError('name') && <p className="text-xs mt-1 text-destructive">{errors.name}</p>}
             </div>
             <div>
+              <label htmlFor="contact-lastname" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                Apellidos
+              </label>
+              <input
+                id="contact-lastname"
+                type="text"
+                value={form.lastName}
+                onChange={(e) => update("lastName", e.target.value)}
+                placeholder="Tus apellidos"
+                className={inputBase}
+              />
+            </div>
+          </div>
+
+          {/* Teléfono + Email */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
               <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
                 Teléfono / WhatsApp
               </label>
@@ -199,44 +225,48 @@ const ContactForm = () => {
               />
               {hasError('phone') && <p className="text-xs mt-1 text-destructive">{errors.phone}</p>}
             </div>
-          </div>
-
-          {/* Email */}
-          <div>
-            <label htmlFor="contact-email" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
-              Email *
-            </label>
-            <input
-              id="contact-email"
-              type="email"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              placeholder="tu@email.com"
-              className={`${inputBase} ${hasError('email') ? 'border-destructive' : ''}`}
-            />
-            {hasError('email') && <p className="text-xs mt-1 text-destructive">{errors.email}</p>}
-          </div>
-
-          {/* Producto */}
-          <div>
-            <label htmlFor="contact-product" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
-              Tipo de producto *
-            </label>
-            <div className="relative">
-              <select
-                id="contact-product"
-                value={form.product}
-                onChange={(e) => update("product", e.target.value)}
-                className={`${inputBase} appearance-none cursor-pointer pr-10 ${hasError('product') ? 'border-destructive' : ''}`}
-              >
-                <option value="">Seleccionar...</option>
-                {PRODUCT_OPTIONS.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-              <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            <div>
+              <label htmlFor="contact-email" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                Email *
+              </label>
+              <input
+                id="contact-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => update("email", e.target.value)}
+                placeholder="tu@email.com"
+                className={`${inputBase} ${hasError('email') ? 'border-destructive' : ''}`}
+              />
+              {hasError('email') && <p className="text-xs mt-1 text-destructive">{errors.email}</p>}
             </div>
-            {hasError('product') && <p className="text-xs mt-1 text-destructive">{errors.product}</p>}
+          </div>
+
+          {/* Producto — multi-select chips */}
+          <div>
+            <span className="block text-xs tracking-wide uppercase text-muted-foreground mb-3 font-medium">
+              Tipo de producto * <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(puedes elegir varios)</span>
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {PRODUCT_OPTIONS.map((p) => {
+                const active = selectedProducts.includes(p);
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => toggleProduct(p)}
+                    aria-pressed={active}
+                    className={`min-h-[40px] px-4 py-2 text-sm rounded-full border transition-all ${
+                      active
+                        ? 'border-accent-warm bg-accent-warm/10 text-accent-warm font-medium'
+                        : 'border-border bg-background text-foreground hover:border-foreground/60'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+            {hasError('product') && <p className="text-xs mt-2 text-destructive">{errors.product}</p>}
           </div>
 
           {/* Detalles */}
@@ -257,24 +287,10 @@ const ContactForm = () => {
             </p>
           </div>
 
-          {/* Sección de pago */}
-          <div className="p-4 bg-secondary rounded-md">
-            <p className="text-xs tracking-wide uppercase text-muted-foreground font-medium mb-3">Métodos de pago</p>
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
-                <span>📱</span> Bizum
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
-                <span>💳</span> Stripe
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
-                <span>🏦</span> Transferencia bancaria
-              </span>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground italic">
-              50% al confirmar · 50% a la entrega
-            </p>
-          </div>
+          {/* Métodos de pago — texto discreto */}
+          <p className="text-xs text-muted-foreground font-light mt-2">
+            Pago por Bizum, Stripe o Transferencia bancaria · 50% al confirmar · 50% a la entrega
+          </p>
 
           {/* RGPD */}
           <div className="flex items-start gap-3 pt-2">

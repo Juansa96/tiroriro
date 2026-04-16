@@ -2,13 +2,15 @@ interface LogoProps {
   className?: string;
   style?: React.CSSProperties;
   monochrome?: boolean;
+  /** Override the SVG viewBox — useful to crop empty space (e.g. footer). */
+  viewBox?: string;
 }
 
 /**
  * Tiroriro logo as inline SVG so it scales perfectly and can be styled with CSS.
  * Uses currentColor so the parent can control the color via text-* utilities.
  */
-const Logo = ({ className, style, monochrome = true }: LogoProps) => {
+const Logo = ({ className, style, monochrome = true, viewBox = "0 0 929 600" }: LogoProps) => {
   const fill = monochrome ? "currentColor" : "#1a4b5b";
   const stroke = monochrome ? "currentColor" : "#1a4b5b";
   const strokeAlt = monochrome ? "currentColor" : "#fff";
@@ -16,7 +18,7 @@ const Logo = ({ className, style, monochrome = true }: LogoProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 929 600"
+      viewBox={viewBox}
       className={className}
       style={style}
       role="img"

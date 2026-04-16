@@ -8,6 +8,7 @@ const Footer = () => (
       <Link to="/" className="inline-flex" aria-label="Tiroriro inicio">
         <Logo
           className="text-primary"
+          viewBox="0 340 929 220"
           style={{ width: 200, height: "auto" }}
         />
       </Link>
