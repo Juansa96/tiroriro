@@ -335,22 +335,7 @@ const ProductConfigurator = () => {
 
   const handleOrder = () => {
     if (!productType) return;
-    toast.success("✓ Añadido a tu solicitud");
-    setShowAddedConfirm(true);
-  };
-
-  const handleReset = () => {
-    setProductType(null);
-    resetConfiguracion();
-    setShowAddedConfirm(false);
-    if (isMobile) {
-      setOpenAccordion('type');
-    } else {
-      setOpenAccordion(['type']);
-    }
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    navigate(buildOrderUrl());
   };
 
   const selectionLabel = (step: Step): React.ReactNode => {
