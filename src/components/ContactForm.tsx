@@ -46,13 +46,21 @@ const ContactForm = () => {
       if (expressParam === 'true') {
         details += '\nEnvío express en 7 días: Sí (+35€)';
       }
+      if (prefilledProduct) {
+        const mapped = mapProductName(prefilledProduct);
+        setSelectedProducts(prev => prev.includes(mapped) ? prev : [...prev, mapped]);
+      }
       setForm(f => ({
         ...f,
-        product: prefilledProduct ? mapProductName(prefilledProduct) : f.product,
         details: details || f.details,
       }));
     }
   }, [prefilledProduct, fromConfig, expressParam]);
+
+  const toggleProduct = (p: string) => {
+    setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
+    setTouched(t => ({ ...t, product: true }));
+  };
 
   const update = (field: string, value: string) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -70,7 +78,7 @@ const ContactForm = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       errs.email = "Introduce un email válido";
     }
-    if (!form.product) errs.product = "Selecciona un producto";
+    if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
     if (!rgpd) errs.rgpd = "Debes aceptar la política de privacidad";
     return errs;
   };
@@ -79,7 +87,7 @@ const ContactForm = () => {
     if (Object.keys(touched).length > 0) {
       setErrors(validate());
     }
-  }, [form, rgpd, touched]);
+  }, [form, rgpd, selectedProducts, touched]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +120,7 @@ const ContactForm = () => {
             Te respondemos en menos de 24 horas laborables.
           </p>
           <button
-            onClick={() => { setSent(false); setForm({ name: '', phone: '', email: '', product: '', details: '' }); setRgpd(false); setTouched({}); setErrors({}); }}
+            onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setRgpd(false); setTouched({}); setErrors({}); }}
             className="mt-8 px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity rounded-full"
           >
             Volver al inicio
