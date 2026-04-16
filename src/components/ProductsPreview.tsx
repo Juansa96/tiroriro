@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 
@@ -44,40 +45,71 @@ const PRODUCTS_DATA = [
   },
 ];
 
+const ProductCard = ({ product, index }: { product: typeof PRODUCTS_DATA[number]; index: number }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <AnimatedSection delay={index * 0.1}>
+      <Link
+        to={product.link}
+        className="block"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <div className="relative overflow-hidden border border-border/40 rounded">
+          <img
+            src={product.image}
+            alt={product.alt}
+            className="w-full aspect-[3/4] object-cover max-h-72 md:max-h-72"
+            style={{
+              transform: hovered ? 'scale(1.04)' : 'scale(1)',
+              transition: 'transform 0.4s ease',
+            }}
+            loading="lazy"
+            decoding="async"
+          />
+          <div
+            style={{ opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }}
+            className="absolute inset-0 bg-black/15 flex items-center justify-center pointer-events-none"
+          >
+            <span className="text-white text-sm tracking-widest uppercase">Explorar →</span>
+          </div>
+        </div>
+        <div className="mt-5 p-1">
+          <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">
+            {product.name}
+          </h3>
+          <p className="mt-1.5 text-base text-muted-foreground font-light italic">
+            "{product.tagline}"
+          </p>
+          <span
+            className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-foreground border-b border-foreground pb-0.5 transition-colors"
+            style={{
+              color: hovered ? 'hsl(var(--accent-warm))' : undefined,
+              borderColor: hovered ? 'hsl(var(--accent-warm))' : undefined,
+            }}
+          >
+            Explorar
+          </span>
+        </div>
+      </Link>
+    </AnimatedSection>
+  );
+};
+
 const ProductsPreview = () => (
   <section className="py-20 md:py-32 px-6">
     <div className="container mx-auto">
-      <AnimatedSection className="text-center mb-16">
+      <AnimatedSection className="text-center mb-8">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
         <span className="section-line" />
+        <p className="font-light italic text-muted-foreground text-base max-w-2xl mx-auto text-center mt-6 leading-relaxed">
+          Cada pieza que sale de nuestro taller ha pasado por las manos de alguien que sabe lo que hace. Elegimos los materiales con cuidado, cortamos y tapizamos a medida, y embalamos con la misma atención que pondríamos si fuera para nuestra propia casa. Porque creemos que los detalles se notan — y que una pieza bien hecha dura toda la vida.
+        </p>
       </AnimatedSection>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto mt-12">
         {PRODUCTS_DATA.map((product, i) => (
-          <AnimatedSection key={product.id} delay={i * 0.1}>
-            <Link to={product.link} className="group block">
-              <div className="overflow-hidden border border-border/40 rounded">
-                <img
-                  src={product.image}
-                  alt={product.alt}
-                  className="w-full aspect-[3/4] object-cover max-h-72 md:max-h-72 transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="mt-5 p-1">
-                <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">
-                  {product.name}
-                </h3>
-                <p className="mt-1.5 text-base text-muted-foreground font-light italic">
-                  "{product.tagline}"
-                </p>
-                <span className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-foreground border-b border-foreground pb-0.5 group-hover:border-accent-warm group-hover:text-accent-warm transition-colors">
-                  Explorar
-                </span>
-              </div>
-            </Link>
-          </AnimatedSection>
+          <ProductCard key={product.id} product={product} index={i} />
         ))}
       </div>
     </div>
