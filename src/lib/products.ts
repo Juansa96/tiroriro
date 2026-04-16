@@ -102,13 +102,14 @@ export function calculatePrice(type: ProductType, options: Record<string, string
 
   if (type === 'cabecero') {
     const sizeMap: Record<string, number> = {
-      '90 cm': 180, '105 cm': 195, '135 cm': 220, '150 cm': 240, '160 cm': 260, '180 cm': 290,
+      '1m': 180, "1'20m": 220, "1'30m": 240,
     };
     const sizePrice = sizeMap[options.bedSize];
     if (sizePrice) {
       price = sizePrice;
       if (finish) price += finish.extra;
     }
+    if (options.bedSize === 'Otra medida' || options.bedSize === 'custom') price += 80;
   }
 
   if (type === 'banco') {
