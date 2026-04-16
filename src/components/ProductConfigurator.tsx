@@ -692,7 +692,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </AccordionItem>
 
       {/* Step 2: Measures */}
-      <AccordionItem value="measures" className="border-b border-border">
+      <AccordionItem value="measures" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.measures}</span>
@@ -718,28 +718,30 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho de cama</p>
                 <SelectWrapper>
-                  <select value={bedWidth} onChange={(e) => { setBedWidth(e.target.value); setCustomWidth(''); }} className={selectClass}>
+                  <select value={bedWidth} onChange={(e) => { setBedWidth(e.target.value); if (e.target.value !== 'custom') setCustomWidth(''); }} className={selectClass}>
                     <option value="">Seleccionar ancho...</option>
-                    <option value="90cm">90 cm</option>
-                    <option value="105cm">105 cm</option>
-                    <option value="135cm">135 cm</option>
-                    <option value="150cm">150 cm</option>
-                    <option value="160cm">160 cm</option>
-                    <option value="180cm">180 cm</option>
-                    <option value="custom">Personalizado</option>
+                    <option value="1m">1 m</option>
+                    <option value="1'20m">1'20 m</option>
+                    <option value="1'30m">1'30 m</option>
+                    <option value="custom">Otra medida</option>
                   </select>
                 </SelectWrapper>
                 {bedWidth === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={60} max={220} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
-                  </div>
+                  <>
+                    <div className="mt-3 flex items-center gap-2">
+                      <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    {parseInt(customWidth) > 250 && (
+                      <p className="text-sm text-destructive mt-1">El ancho máximo es 250cm. Consúltanos para medidas especiales.</p>
+                    )}
+                  </>
                 )}
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
                 <SelectWrapper>
-                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); setCustomHeight(''); }} className={selectClass}>
+                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); if (e.target.value !== 'custom') setCustomHeight(''); }} className={selectClass}>
                     <option value="">Seleccionar alto...</option>
                     <option value="60cm">60 cm</option>
                     <option value="70cm">70 cm</option>
@@ -749,10 +751,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </select>
                 </SelectWrapper>
                 {bedHeight === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={40} max={150} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
-                  </div>
+                  <>
+                    <div className="mt-3 flex items-center gap-2">
+                      <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    {parseInt(customHeight) > 120 && (
+                      <p className="text-sm text-destructive mt-1">El alto máximo habitual es 120cm. Escríbenos para confirmar.</p>
+                    )}
+                  </>
                 )}
               </div>
             </>
