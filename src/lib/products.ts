@@ -131,6 +131,19 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     if (options.puffSize === 'Grande') price += 90;
   }
 
+  if (type === 'mesa') {
+    const sizeMap: Record<string, number> = {
+      '60×60 cm': 290, '80×40 cm': 310, '100×50 cm': 360, '120×60 cm': 410,
+    };
+    const sizePrice = sizeMap[options.size];
+    if (sizePrice) {
+      price = sizePrice;
+      if (finish) price += finish.extra;
+    }
+    if (options.size === 'Personalizada') price += 80;
+    if (options.legs && options.legs !== 'Sin patas') price += 30;
+  }
+
   // Extras
   if (options.patas === 'true') price += 15;
   if (options.relleno === 'true') price += 20;
@@ -161,6 +174,12 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
   }
   if (type === 'puff') {
     if (options.puffSize) parts.push(options.puffSize);
+  }
+  if (type === 'mesa') {
+    const shapeName = MESA_SHAPES.find(s => s.id === options.shape)?.name;
+    if (shapeName) parts.push(shapeName);
+    if (options.size) parts.push(options.size);
+    if (options.legs) parts.push(`Patas: ${options.legs}`);
   }
   if (finishName && type !== 'puff') parts.push(finishName);
   if (colorName) parts.push(`Color: ${colorName}`);
