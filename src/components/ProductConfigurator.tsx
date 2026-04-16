@@ -567,6 +567,8 @@ interface AccordionContentSharedProps {
   puffDiameter: string; setPuffDiameter: (v: string) => void;
   puffHeight: string; setPuffHeight: (v: string) => void;
   cushionSize: string; setCushionSize: (v: string) => void;
+  mesaSize: string; setMesaSize: (v: string) => void;
+  mesaLegs: string; setMesaLegs: (v: string) => void;
   fabricId: string; setFabricId: (v: string) => void;
   finish: string; setFinish: (v: string) => void;
   vivoColorId: string; setVivoColorId: (v: string) => void;
@@ -770,6 +772,44 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 </select>
               </SelectWrapper>
             </div>
+          )}
+          {productType === 'mesa' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {MESA_SHAPES.map(s => (
+                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all text-xs font-light ${shape === s.id ? "border-foreground bg-foreground/5 text-foreground" : "border-border text-muted-foreground hover:border-foreground/60"}`}>
+                      {s.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medidas</p>
+                <SelectWrapper>
+                  <select value={mesaSize} onChange={(e) => setMesaSize(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar medidas...</option>
+                    {MESA_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </SelectWrapper>
+                {mesaSize === 'Personalizada' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={40} max={200} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-32 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Material patas</p>
+                <SelectWrapper>
+                  <select value={mesaLegs} onChange={(e) => setMesaLegs(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar material...</option>
+                    {MESA_LEGS.map(l => <option key={l} value={l}>{l}</option>)}
+                  </select>
+                </SelectWrapper>
+              </div>
+            </>
           )}
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
