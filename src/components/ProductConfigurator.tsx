@@ -875,13 +875,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </>
           )}
-          {/* Material patas removed — only forma, medidas, tela y acabado */}
-          {productType === 'mesa' && false && (
-            <div />
-          )}
-          {productType !== 'mesa' && false && (
-            <div />
-          )}
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
