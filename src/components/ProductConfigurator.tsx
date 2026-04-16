@@ -127,6 +127,8 @@ const ProductConfigurator = () => {
   const [puffDiameter, setPuffDiameter] = useState("");
   const [puffHeight, setPuffHeight] = useState("");
   const [cushionSize, setCushionSize] = useState("");
+  const [mesaSize, setMesaSize] = useState("");
+  const [mesaLegs, setMesaLegs] = useState("");
   const [fabricId, setFabricId] = useState("");
   const [finish, setFinish] = useState("");
   const [vivoColorId, setVivoColorId] = useState("");
@@ -156,7 +158,7 @@ const ProductConfigurator = () => {
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
-    if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puff', 'mesa'].includes(tipo)) {
       setProductType(tipo as ProductType);
       if (isMobile) {
         setOpenAccordion('measures');
@@ -168,7 +170,7 @@ const ProductConfigurator = () => {
   }, [searchParams]);
 
   const resetConfiguracion = (newType?: ProductType) => {
-    setShape(newType === 'cabecero' ? 'recto' : 'recto');
+    setShape(newType === 'mesa' ? 'rectangular' : 'recto');
     setBedWidth('');
     setBedHeight('');
     setBenchLength('');
@@ -177,6 +179,8 @@ const ProductConfigurator = () => {
     setPuffDiameter('');
     setPuffHeight('');
     setCushionSize('');
+    setMesaSize('');
+    setMesaLegs('');
     setFabricId('');
     setFinish('');
     setVivoColorId('');
@@ -203,10 +207,12 @@ const ProductConfigurator = () => {
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth, customWidth)
     : productType === 'banco' ? parseCm(benchLength, '')
     : productType === 'puff' ? parseCm(puffDiameter, '')
+    : productType === 'mesa' ? (mesaSize && mesaSize !== 'Personalizada' ? parseInt(mesaSize) : (customWidth ? parseInt(customWidth) : undefined))
     : undefined;
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight, customHeight)
     : productType === 'banco' ? parseCm(benchHeight, '')
     : productType === 'puff' ? parseCm(puffHeight, '')
+    : productType === 'mesa' ? (mesaSize && mesaSize.includes('×') ? parseInt(mesaSize.split('×')[1]) : undefined)
     : undefined;
 
   // For cushion, pass size info via forma
