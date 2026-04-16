@@ -335,6 +335,7 @@ const ProductConfigurator = () => {
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
         if (productType === 'puff') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> Ø{puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {cushionSize}</span>;
+        if (productType === 'mesa') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {MESA_SHAPES.find(s => s.id === shape)?.name} · {mesaSize}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
