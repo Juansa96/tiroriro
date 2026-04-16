@@ -178,7 +178,7 @@ const ContactForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-          {/* Nombre + Teléfono */}
+          {/* Nombre + Apellidos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label htmlFor="contact-name" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
@@ -195,6 +195,23 @@ const ContactForm = () => {
               {hasError('name') && <p className="text-xs mt-1 text-destructive">{errors.name}</p>}
             </div>
             <div>
+              <label htmlFor="contact-lastname" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                Apellidos
+              </label>
+              <input
+                id="contact-lastname"
+                type="text"
+                value={form.lastName}
+                onChange={(e) => update("lastName", e.target.value)}
+                placeholder="Tus apellidos"
+                className={inputBase}
+              />
+            </div>
+          </div>
+
+          {/* Teléfono + Email */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
               <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
                 Teléfono / WhatsApp
               </label>
@@ -207,6 +224,20 @@ const ContactForm = () => {
                 className={`${inputBase} ${hasError('phone') ? 'border-destructive' : ''}`}
               />
               {hasError('phone') && <p className="text-xs mt-1 text-destructive">{errors.phone}</p>}
+            </div>
+            <div>
+              <label htmlFor="contact-email" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                Email *
+              </label>
+              <input
+                id="contact-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => update("email", e.target.value)}
+                placeholder="tu@email.com"
+                className={`${inputBase} ${hasError('email') ? 'border-destructive' : ''}`}
+              />
+              {hasError('email') && <p className="text-xs mt-1 text-destructive">{errors.email}</p>}
             </div>
           </div>
 
