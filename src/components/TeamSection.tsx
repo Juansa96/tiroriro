@@ -1,65 +1,74 @@
-import AnimatedSection from "./AnimatedSection";
-import beatrizPhoto from "@/assets/team/beatriz.jpeg";
-import rocioPhoto from "@/assets/team/rocio.jpeg";
-import inakiPhoto from "@/assets/team/inaki.jpeg";
-import juanPhoto from "@/assets/team/juan.jpeg";
+import inakiRocioPhoto from "@/assets/team/inaki-rocio.jpeg";
+import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
 
-const TEAM = [
+const COUPLES = [
   {
-    name: "Beatriz",
-    role: "LA ESTRATEGA",
-    desc: "Bea es la que convierte una idea en una lista de tareas antes de que termines la frase — la que necesita que las cosas pasen, que se decidan y que se acaben — y si le preguntas si prefiere tener una idea perfecta en tres semanas o una buena idea mañana, ya sabes la respuesta.",
-    image: beatrizPhoto,
+    photo: inakiRocioPhoto,
+    photoAlt: "Iñaki y Rocío, pareja fundadora de TIRO·RIRO",
+    members: [
+      {
+        name: "Iñaki",
+        role: "EL QUE LO VENDE TODO",
+        desc: "Iñaki podría vender mantas en agosto y sombrillas en enero — y los clientes le darían las gracias — es el que habla con cada persona que llega a Tiroriro, el que entiende lo que necesitan antes de que ellas mismas lo sepan, y el que se asegura de que todo llegue donde tiene que llegar.",
+      },
+      {
+        name: "Rocío",
+        role: "LA CREATIVA",
+        desc: "Rocío podría estar rediseñando un cabecero, eligiendo telas para tres pedidos y pensando en la próxima colección al mismo tiempo — sin parpadear — porque si pudiera vivir exclusivamente de imaginar cómo quedan las cosas, lo haría sin dudarlo un segundo.",
+      },
+    ],
   },
   {
-    name: "Rocío",
-    role: "LA CREATIVA",
-    desc: "Rocío podría estar rediseñando un cabecero, eligiendo telas para tres pedidos y pensando en la próxima colección al mismo tiempo — sin parpadear — porque si pudiera vivir exclusivamente de imaginar cómo quedan las cosas, lo haría sin dudarlo un segundo.",
-    image: rocioPhoto,
-  },
-  {
-    name: "Iñaki",
-    role: "EL QUE LO VENDE TODO",
-    desc: "Iñaki podría vender mantas en agosto y sombrillas en enero — y los clientes le darían las gracias — es el que habla con cada persona que llega a Tiroriro, el que entiende lo que necesitan antes de que ellas mismas lo sepan, y el que se asegura de que todo llegue donde tiene que llegar.",
-    image: inakiPhoto,
-  },
-  {
-    name: "Juan",
-    role: "EL TECNOLÓGICO",
-    desc: "Juan es el responsable de que puedas leer esto — de que la web funcione, de que el configurador calcule bien, de que los datos digan lo que tienen que decir — y probablemente el único del equipo que sabe exactamente cuántas personas han llegado hasta esta frase.",
-    image: juanPhoto,
+    photo: juanBeaPhoto,
+    photoAlt: "Juan y Beatriz, pareja fundadora de TIRO·RIRO",
+    members: [
+      {
+        name: "Juan",
+        role: "EL TECNOLÓGICO",
+        desc: "Juan es el responsable de que puedas leer esto — de que la web funcione, de que el configurador calcule bien, de que los datos digan lo que tienen que decir — y probablemente el único del equipo que sabe exactamente cuántas personas han llegado hasta esta frase.",
+      },
+      {
+        name: "Beatriz",
+        role: "LA ESTRATEGA",
+        desc: "Bea es la que convierte una idea en una lista de tareas antes de que termines la frase — la que necesita que las cosas pasen, que se decidan y que se acaben — y si le preguntas si prefiere tener una idea perfecta en tres semanas o una buena idea mañana, ya sabes la respuesta.",
+      },
+    ],
   },
 ];
 
 const TeamSection = () => (
   <section id="equipo" className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
-      <AnimatedSection className="text-center mb-16">
-        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Las personas detrás</h2>
+      <div className="text-center mb-16">
+        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Quiénes somos</h2>
         <span className="section-line" />
         <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic text-base">
           "Dos parejas, dos hermanos, dos amigas de toda la vida — y un proyecto que nació porque ninguna de las dos encontraba lo que buscaba para su casa."
         </p>
-      </AnimatedSection>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-4xl mx-auto">
-        {TEAM.map((member, i) => (
-          <AnimatedSection key={member.name} delay={i * 0.1}>
-            <div className="text-center">
-              <img
-                src={member.image}
-                alt={`${member.name}, ${member.role.toLowerCase()} del equipo TIRO·RIRO`}
-                className="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full mx-auto transition-all duration-500"
-                loading="lazy"
-                decoding="async"
-              />
-              <h3 className="mt-6 font-serif text-2xl font-medium text-foreground">{member.name}</h3>
-              <p className="mt-1 text-xs tracking-ultra-wide uppercase text-muted-foreground">{member.role}</p>
-              <p className="mt-4 text-base text-muted-foreground font-light leading-relaxed italic max-w-sm mx-auto">
-                "{member.desc}"
-              </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-10 max-w-6xl mx-auto">
+        {COUPLES.map((couple) => (
+          <div key={couple.photoAlt} className="flex flex-col">
+            <img
+              src={couple.photo}
+              alt={couple.photoAlt}
+              className="w-full aspect-[4/3] object-cover rounded-sm"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="mt-8 space-y-8">
+              {couple.members.map((m) => (
+                <div key={m.name}>
+                  <h3 className="font-serif text-2xl font-medium text-foreground">{m.name}</h3>
+                  <p className="mt-1 text-xs tracking-ultra-wide uppercase text-muted-foreground">{m.role}</p>
+                  <p className="mt-3 text-base text-muted-foreground font-light leading-relaxed italic">
+                    "{m.desc}"
+                  </p>
+                </div>
+              ))}
             </div>
-          </AnimatedSection>
+          </div>
         ))}
       </div>
     </div>

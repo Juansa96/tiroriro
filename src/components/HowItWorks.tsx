@@ -1,93 +1,102 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AnimatedSection from "./AnimatedSection";
-import { Palette, Phone, Package, ArrowRight } from "lucide-react";
+import { Palette, Phone, Package, type LucideIcon } from "lucide-react";
 
 const STEPS = [
   {
     num: "01",
     title: "Diseña y elige",
-    desc: "Usa el configurador para elegir forma, medida y tela. El precio aparece al momento — sin sorpresas.",
+    text: "Usa el configurador para elegir forma, medida y tela. El precio aparece al momento — sin sorpresas.",
     Icon: Palette,
-    link: "/configurador",
+    href: "/configurador",
   },
   {
     num: "02",
     title: "Te llamamos nosotros",
-    desc: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle. Pagas de forma segura con tarjeta.",
+    text: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle. Pagas de forma segura.",
     Icon: Phone,
-    link: "/#contacto",
+    href: "/contacto",
   },
   {
     num: "03",
     title: "Lo recibes en casa",
-    desc: "En 15 días tu pedido llega listo para poner. Hecho a mano, embalado con cuidado, sin montaje.",
+    text: "En 15 días tu pedido llega listo para poner. Hecho a mano, embalado con cuidado, sin montaje.",
     Icon: Package,
-    link: null,
+    href: null,
   },
 ];
 
-const StepCircle = ({ num, Icon, clickable }: { num: string; Icon: React.ComponentType<Record<string, unknown>>; clickable: boolean }) => {
+interface StepProps {
+  num: string;
+  Icon: LucideIcon;
+  title: string;
+  text: string;
+  href: string | null;
+}
+
+const Step = ({ num, Icon, title, text, href }: StepProps) => {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div
-      className={`w-16 h-16 rounded-full border-2 flex items-center justify-center mx-auto relative bg-background transition-colors duration-200 ${clickable ? 'group-hover:border-accent-warm' : ''}`}
-      style={{ borderColor: 'hsl(var(--accent-warm))' }}
+      className="relative cursor-pointer rounded-xl p-8 border border-border transition-all duration-200 min-h-[220px]"
+      style={{
+        background: hovered ? "hsl(var(--primary))" : "hsl(var(--card))",
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => href && navigate(href)}
+      role={href ? "link" : undefined}
     >
-      <span className={`font-serif text-xl font-medium text-accent-warm absolute transition-opacity duration-300 ${hovered ? 'opacity-0' : 'opacity-100'}`}>
+      <span
+        className="font-serif text-5xl font-light absolute top-6 left-6 transition-opacity duration-200"
+        style={{ opacity: hovered ? 0 : 0.2, color: "hsl(var(--primary))" }}
+      >
         {num}
       </span>
-      <div className={`absolute transition-opacity duration-300 ${hovered ? 'opacity-100' : 'opacity-0'}`}>
-        <Icon size={24} className="text-accent-warm" />
+      <div
+        className="absolute top-6 left-6 transition-opacity duration-200"
+        style={{ opacity: hovered ? 1 : 0 }}
+      >
+        <Icon size={32} color="white" />
+      </div>
+      <div className="mt-16">
+        <h3
+          className="font-serif text-xl font-medium transition-colors duration-200"
+          style={{ color: hovered ? "white" : "hsl(var(--foreground))" }}
+        >
+          {title}
+        </h3>
+        <p
+          className="text-sm mt-2 leading-relaxed transition-colors duration-200"
+          style={{ color: hovered ? "rgba(255,255,255,0.85)" : "hsl(var(--muted-foreground))" }}
+        >
+          {text}
+        </p>
       </div>
     </div>
   );
 };
 
-const HowItWorks = () => {
-  const navigate = useNavigate();
-
-  return (
-    <section className="py-20 md:py-32 px-6 bg-secondary">
-      <div className="container mx-auto">
-        <AnimatedSection className="text-center mb-16">
-          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así de fácil</h2>
-          <span className="section-line" />
-          <p className="mt-6 text-muted-foreground font-light max-w-lg mx-auto text-base">
-            Sin obras, sin montadores, sin estrés — solo tú eligiendo lo que te gusta.
-          </p>
-        </AnimatedSection>
-
-        <div className="relative max-w-4xl mx-auto">
-          <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-px border-t border-dashed" style={{ borderColor: 'hsl(var(--accent-warm))' }} />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 relative">
-            {STEPS.map((step, i) => (
-              <AnimatedSection key={i} delay={i * 0.15} className="text-center">
-                <div
-                  className={`group ${step.link ? 'cursor-pointer' : 'cursor-default'}`}
-                  onClick={() => step.link && navigate(step.link)}
-                  role={step.link ? 'link' : undefined}
-                >
-                  <StepCircle num={step.num} Icon={step.Icon} clickable={!!step.link} />
-                  <h3 className="mt-5 font-serif text-lg font-medium text-foreground">{step.title}</h3>
-                  <p className="mt-2 text-base text-muted-foreground font-light leading-relaxed max-w-xs mx-auto">
-                    {step.desc}
-                  </p>
-                  {step.link && (
-                    <ArrowRight size={14} className="mx-auto mt-3 text-accent-warm opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                  )}
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
+const HowItWorks = () => (
+  <section className="py-20 md:py-32 px-6 bg-secondary">
+    <div className="container mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así de fácil</h2>
+        <span className="section-line" />
+        <p className="mt-6 text-muted-foreground font-light max-w-lg mx-auto text-base">
+          Sin obras, sin montadores, sin estrés — solo tú eligiendo lo que te gusta.
+        </p>
       </div>
-    </section>
-  );
-};
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {STEPS.map((s) => (
+          <Step key={s.num} {...s} />
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
 export default HowItWorks;
