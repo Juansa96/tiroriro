@@ -873,16 +873,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </div>
                 )}
               </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Material patas</p>
-                <SelectWrapper>
-                  <select value={mesaLegs} onChange={(e) => setMesaLegs(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar material...</option>
-                    {MESA_LEGS.map(l => <option key={l} value={l}>{l}</option>)}
-                  </select>
-                </SelectWrapper>
-              </div>
             </>
+          )}
+          {/* Material patas removed — only forma, medidas, tela y acabado */}
+          {productType === 'mesa' && false && (
+            <div />
+          )}
+          {productType !== 'mesa' && false && (
+            <div />
           )}
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
