@@ -473,6 +473,7 @@ const ProductConfigurator = () => {
               benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
               puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
               cushionSize={cushionSize} setCushionSize={setCushionSize}
+              mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
               fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
               finish={finish} setFinish={(f) => { setFinish(f); }}
               vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
@@ -491,6 +492,7 @@ const ProductConfigurator = () => {
               benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
               puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
               cushionSize={cushionSize} setCushionSize={setCushionSize}
+              mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
               fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
               finish={finish} setFinish={(f) => { setFinish(f); }}
               vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
@@ -517,6 +519,7 @@ const ProductConfigurator = () => {
           benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
           puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
           cushionSize={cushionSize} setCushionSize={setCushionSize}
+          mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
           fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
           finish={finish} setFinish={(f) => { setFinish(f); }}
           vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
