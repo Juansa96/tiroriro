@@ -140,10 +140,16 @@ const ProductConfigurator = () => {
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
 
+  const [hasVisitedBefore, setHasVisitedBefore] = useState(false);
+  const [showAddedConfirm, setShowAddedConfirm] = useState(false);
+
   const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
 
   // Mark configurator as visited
   useEffect(() => {
+    const visited = localStorage.getItem('tiro_configurador_visited') === 'true';
+    setHasVisitedBefore(visited);
+    localStorage.setItem('tiro_configurador_visited', 'true');
     localStorage.setItem('configurador_visitado', 'true');
   }, []);
 
