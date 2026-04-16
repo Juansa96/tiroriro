@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Check, Loader2, ChevronDown, MessageCircle } from "lucide-react";
+import { Check, Loader2, MessageCircle } from "lucide-react";
 
-const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Mesa de centro", "Varios", "Otro"];
+const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Mesa de centro", "Otro"];
 
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
@@ -28,11 +28,12 @@ const ContactForm = () => {
 
   const [form, setForm] = useState({
     name: "",
+    lastName: "",
     phone: "",
     email: "",
-    product: "",
     details: "",
   });
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [rgpd, setRgpd] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
