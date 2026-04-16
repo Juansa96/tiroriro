@@ -228,13 +228,18 @@ const ProductConfigurator = () => {
     if (productType === 'banco') o.length = benchLength;
     if (productType === 'cojin') o.size = cushionSize;
     if (productType === 'puff') o.puffSize = puffDiameter === '40cm' ? 'Pequeño' : puffDiameter === '50cm' ? 'Mediano' : puffDiameter === '60cm' ? 'Grande' : '';
+    if (productType === 'mesa') {
+      o.shape = shape;
+      o.size = mesaSize;
+      if (mesaLegs) o.legs = mesaLegs;
+    }
     if (finish) o.finish = finish;
     if (fabricId) o.color = fabricId;
     if (extraPatas) o.patas = 'true';
     if (extraRelleno) o.relleno = 'true';
     if (extraExpress) o.express = 'true';
     return o;
-  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, mesaSize, mesaLegs, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -247,6 +252,7 @@ const ProductConfigurator = () => {
       : productType === 'banco' ? !!benchLength
       : productType === 'puff' ? !!puffDiameter
       : productType === 'cojin' ? !!cushionSize
+      : productType === 'mesa' ? !!mesaSize
       : false,
     fabric: !!fabricId,
     finish: !!finish,
@@ -270,6 +276,10 @@ const ProductConfigurator = () => {
   if (productType === 'banco') chips.push(benchLength || "—");
   if (productType === 'puff') chips.push(puffDiameter || "—");
   if (productType === 'cojin') chips.push(cushionSize || "—");
+  if (productType === 'mesa') {
+    chips.push(MESA_SHAPES.find(s => s.id === shape)?.name || "—");
+    chips.push(mesaSize || "—");
+  }
   chips.push(fabric?.name || "—");
   const finishObj = FINISHES.find(f => f.id === finish);
   if (finishObj) chips.push(finishObj.name);
