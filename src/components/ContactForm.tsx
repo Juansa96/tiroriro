@@ -151,8 +151,9 @@ const ContactForm = () => {
 
         {hasConfigParams && (
           <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30 rounded-md">
-            <p className="text-sm font-medium text-foreground flex items-center gap-2">
-              <span className="text-accent-warm">✦</span> Hemos recuperado tu selección del configurador
+            <p className="text-sm font-medium text-foreground flex items-start gap-2">
+              <span className="text-accent-warm">✦</span>
+              <span>Hemos recuperado tu selección del configurador — los campos ya están rellenados. Puedes modificarlos.</span>
             </p>
             {configTags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
@@ -285,10 +286,11 @@ const ContactForm = () => {
               className="mt-1 w-4 h-4 accent-accent-warm cursor-pointer shrink-0"
             />
             <label htmlFor="rgpd" className="text-xs text-muted-foreground font-light leading-relaxed cursor-pointer">
-              He leído y acepto la{" "}
+              Acepto la{" "}
               <Link to="/privacidad" className="underline hover:text-foreground transition-colors">
-                Política de Privacidad
+                política de privacidad
               </Link>
+              . Mis datos se usarán únicamente para responder a esta solicitud.
             </label>
           </div>
           {touched.rgpd && errors.rgpd && (
