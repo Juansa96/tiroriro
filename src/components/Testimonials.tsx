@@ -45,7 +45,7 @@ const Testimonials = () => (
               <div className="flex items-center gap-4 mb-4">
                 <img
                   src={t.photo}
-                  alt={`Foto de ${t.name}, cliente de TIRO·RIRO en ${t.location}`}
+                  alt={`Foto de ${t.name}, cliente de Tiroriro en ${t.location}`}
                   className="w-16 h-16 rounded-full object-cover"
                   loading="lazy"
                   decoding="async"

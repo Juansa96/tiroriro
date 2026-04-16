@@ -13,7 +13,7 @@ const WhyTiroRiro = () => (
   <section className="py-20 md:py-32 px-6">
     <div className="container mx-auto">
       <AnimatedSection className="text-center mb-16">
-        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Por qué TIRO·RIRO</h2>
+        <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Por qué Tiroriro</h2>
         <span className="section-line" />
       </AnimatedSection>
 

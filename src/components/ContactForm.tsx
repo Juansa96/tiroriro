@@ -122,7 +122,7 @@ const ContactForm = () => {
   }
 
   const hasError = (field: string) => touched[field] && errors[field];
-  const inputBase = "w-full bg-background border border-border rounded-md px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
+  const inputBase = "w-full bg-background border border-border rounded-lg px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
 
   // Build config tags from URL params
   const configTags: { label: string; value: string }[] = [];
@@ -302,7 +302,7 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={sending}
-              className="w-full px-8 py-4 bg-accent-warm text-white text-sm tracking-widest uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-md inline-flex items-center justify-center gap-2"
+              className="w-full px-8 py-4 bg-accent-warm text-white text-sm tracking-widest uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-lg inline-flex items-center justify-center gap-2"
             >
               {sending ? (
                 <>

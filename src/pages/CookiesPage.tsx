@@ -18,7 +18,7 @@ const CookiesPage = () => (
 
             <div>
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">¿Qué cookies utilizamos?</h2>
-              <p>En TIRO·RIRO solo utilizamos cookies técnicas estrictamente necesarias para el correcto funcionamiento de la web. Estas cookies no recogen información personal ni se utilizan con fines publicitarios.</p>
+              <p>En Tiroriro solo utilizamos cookies técnicas estrictamente necesarias para el correcto funcionamiento de la web. Estas cookies no recogen información personal ni se utilizan con fines publicitarios.</p>
               <ul className="mt-3 list-disc list-inside space-y-1">
                 <li><strong>cookies_accepted</strong> — Recuerda si has aceptado el aviso de cookies (localStorage)</li>
               </ul>

@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Paleta basada en el logo TIRO·RIRO — azul petróleo profundo (#1a4b5b) sobre crema cálido */
+    /* Paleta basada en el logo Tiroriro — azul petróleo profundo (#1a4b5b) sobre crema cálido */
     --background: 38 35% 96%;          /* crema cálido */
     --foreground: 195 56% 17%;         /* azul petróleo del logo, casi negro */
 

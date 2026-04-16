@@ -7,13 +7,14 @@ const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/productos", label: "Productos" },
   { to: "/configurador", label: "Diseña el tuyo" },
-  { to: "/contacto", label: "Solicita información" },
   { to: "/#equipo", label: "Quiénes somos" },
+  { to: "/contacto", label: "Solicita información", highlight: true },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [hoveredCircle, setHoveredCircle] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
 
@@ -60,12 +61,13 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-20 md:h-24 px-6">
-        <Link to="/" className="flex items-center" aria-label="TIRO·RIRO inicio">
+        <Link to="/" className="flex items-center" aria-label="Tiroriro inicio">
           <Logo
             className={onHero ? "text-white" : "text-primary"}
             style={{
               width: typeof window !== "undefined" && window.innerWidth >= 768 ? 200 : 140,
               height: "auto",
+              display: "block",
               filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined,
             }}
           />
@@ -73,21 +75,57 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={(e) => {
-                if (handleClick(link.to)) e.preventDefault();
-              }}
-              className={`nav-link-underline text-sm tracking-extra-wide uppercase hover:opacity-80 transition-colors font-body font-light pb-0.5 ${
-                onHero ? "text-white" : "text-foreground"
-              }`}
-              style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : undefined}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const isHighlight = link.highlight;
+            const showCircle = isHighlight && scrolled;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={(e) => {
+                  if (handleClick(link.to)) e.preventDefault();
+                }}
+                onMouseEnter={() => isHighlight && setHoveredCircle(true)}
+                onMouseLeave={() => isHighlight && setHoveredCircle(false)}
+                className={`nav-link-underline text-sm tracking-extra-wide uppercase hover:opacity-80 transition-colors font-body font-light pb-0.5 ${
+                  onHero ? "text-white" : "text-foreground"
+                } ${isHighlight ? "relative px-3 py-1" : ""}`}
+                style={{
+                  ...(onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}),
+                  ...(isHighlight
+                    ? {
+                        transform: showCircle && hoveredCircle ? "scale(1.08)" : "scale(1)",
+                        transition: "transform 0.3s ease",
+                      }
+                    : {}),
+                }}
+              >
+                {link.label}
+                {isHighlight && (
+                  <svg
+                    className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
+                    aria-hidden="true"
+                  >
+                    <ellipse
+                      cx="50%"
+                      cy="50%"
+                      rx="calc(50% + 10px)"
+                      ry="calc(50% + 8px)"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeDasharray="300"
+                      strokeDashoffset={showCircle ? 0 : 300}
+                      style={{
+                        transition: "stroke-dashoffset 0.6s ease, opacity 0.3s ease",
+                        opacity: showCircle ? 1 : 0,
+                      }}
+                    />
+                  </svg>
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Mobile toggle */}

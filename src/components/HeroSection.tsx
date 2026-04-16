@@ -40,8 +40,8 @@ const HeroSection = () => (
       </div>
 
       <p
-        className="mt-6 text-white font-medium"
-        style={{ fontSize: "1.1rem", letterSpacing: "0.02em" }}
+        className="mt-6 text-white font-light"
+        style={{ fontSize: "1.1rem", letterSpacing: "0.02em", fontWeight: 300 }}
       >
         Cabeceros desde 180€ · Bancos desde 120€ · Precio exacto en el configurador
       </p>

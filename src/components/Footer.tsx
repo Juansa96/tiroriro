@@ -5,7 +5,7 @@ import Logo from "./Logo";
 const Footer = () => (
   <footer className="bg-secondary py-16 md:py-20">
     <div className="container mx-auto px-6 text-center">
-      <Link to="/" className="inline-flex" aria-label="TIRO·RIRO inicio">
+      <Link to="/" className="inline-flex" aria-label="Tiroriro inicio">
         <Logo
           className="text-primary"
           style={{ width: 200, height: "auto" }}
@@ -16,12 +16,12 @@ const Footer = () => (
         Hecho a mano en España · Envío a toda la península · contacto@tiroriro.com
       </p>
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs tracking-extra-wide uppercase text-muted-foreground">
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs tracking-widest uppercase text-muted-foreground font-light">
         <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
         <Link to="/configurador" className="hover:text-foreground transition-colors">Diseña el tuyo</Link>
-        <Link to="/contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
         <Link to="/#equipo" className="hover:text-foreground transition-colors">Quiénes somos</Link>
-        <a href="https://instagram.com/tiroriro" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Instagram de TIRO·RIRO">
+        <Link to="/contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
+        <a href="https://instagram.com/tiroriro" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Instagram de Tiroriro">
           <Instagram size={18} />
         </a>
       </div>
@@ -39,7 +39,7 @@ const Footer = () => (
       </div>
 
       <p className="mt-10 text-xs text-muted-foreground/60">
-        © {new Date().getFullYear()} TIRO·RIRO. Todos los derechos reservados.
+        © {new Date().getFullYear()} Tiroriro. Todos los derechos reservados.
       </p>
     </div>
   </footer>
