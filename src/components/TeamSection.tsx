@@ -3,22 +3,6 @@ import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
 
 const COUPLES = [
   {
-    photo: juanBeaPhoto,
-    photoAlt: "Juan y Beatriz, pareja fundadora de Tiroriro",
-    members: [
-      {
-        name: "Juan",
-        role: "EL TECNOLÓGICO",
-        desc: "Juan es el responsable de que puedas leer esto — de que la web funcione, de que el configurador calcule bien y de que los datos digan lo que tienen que decir — probablemente el único del equipo que sabe cuántas personas han llegado hasta esta frase.",
-      },
-      {
-        name: "Beatriz",
-        role: "LA ESTRATEGA",
-        desc: "Bea convierte una idea en una lista de tareas antes de que termines la frase — necesita que las cosas pasen, que se decidan y que se acaben — y si le preguntas si prefiere una idea perfecta en tres semanas o una buena idea mañana, ya sabes la respuesta.",
-      },
-    ],
-  },
-  {
     photo: inakiRocioPhoto,
     photoAlt: "Iñaki y Rocío, pareja fundadora de Tiroriro",
     members: [
@@ -31,6 +15,22 @@ const COUPLES = [
         name: "Rocío",
         role: "LA CREATIVA",
         desc: "Rocío podría rediseñar un cabecero, elegir telas para tres pedidos y pensar en la próxima colección al mismo tiempo — sin parpadear — porque si pudiera vivir exclusivamente de imaginar cómo quedan las cosas, lo haría sin dudarlo un segundo.",
+      },
+    ],
+  },
+  {
+    photo: juanBeaPhoto,
+    photoAlt: "Juan y Beatriz, pareja fundadora de Tiroriro",
+    members: [
+      {
+        name: "Juan",
+        role: "EL TECNOLÓGICO",
+        desc: "Juan es el responsable de que puedas leer esto — de que la web funcione, de que el configurador calcule bien y de que los datos digan lo que tienen que decir — probablemente el único del equipo que sabe cuántas personas han llegado hasta esta frase.",
+      },
+      {
+        name: "Beatriz",
+        role: "LA ESTRATEGA",
+        desc: "Bea convierte una idea en una lista de tareas antes de que termines la frase — necesita que las cosas pasen, que se decidan y que se acaben — y si le preguntas si prefiere una idea perfecta en tres semanas o una buena idea mañana, ya sabes la respuesta.",
       },
     ],
   },

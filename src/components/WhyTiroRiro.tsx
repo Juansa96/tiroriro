@@ -36,7 +36,7 @@ const WhyTiroRiro = () => (
                   {r.num}
                 </span>
                 <div>
-                  <h3 className="font-serif text-lg font-medium text-foreground">{r.title}</h3>
+                  <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{r.title}</h3>
                   <p className="mt-2 text-base text-muted-foreground font-light leading-relaxed italic">
                     "{r.text}"
                   </p>

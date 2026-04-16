@@ -27,13 +27,14 @@ const HeroSection = () => (
       <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
         <Link
           to="/configurador"
-          className="px-8 py-4 bg-primary text-primary-foreground text-base font-bold tracking-wide uppercase hover:opacity-90 transition-opacity rounded-sm"
+          className="px-8 py-4 bg-primary text-primary-foreground text-base font-medium tracking-normal uppercase hover:opacity-100 transition-opacity rounded-lg"
+          style={{ opacity: 0.92 }}
         >
           Personaliza el tuyo
         </Link>
         <Link
           to="/productos"
-          className="px-8 py-4 border-2 border-white text-white text-base font-medium tracking-wide uppercase hover:bg-white/10 transition-colors rounded-sm"
+          className="px-8 py-4 border-2 border-white text-white text-base font-medium tracking-normal uppercase hover:bg-white/10 transition-colors rounded-lg"
         >
           Ver productos
         </Link>

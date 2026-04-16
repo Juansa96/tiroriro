@@ -95,6 +95,12 @@
   .nav-link-underline:hover::after {
     @apply scale-x-100;
   }
+  .nav-link-underline.underline-white::after {
+    background-color: #ffffff;
+  }
+  .nav-link-underline.underline-primary::after {
+    background-color: hsl(var(--primary));
+  }
 
   .cta-link {
     color: hsl(var(--accent-warm));
