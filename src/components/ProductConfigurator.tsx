@@ -553,41 +553,19 @@ const ProductConfigurator = () => {
 
       {/* MOBILE: fixed bottom bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
-        {!showAddedConfirm ? (
-          <>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
-                <p className="text-xs text-muted-foreground">IVA incluido</p>
-              </div>
-              <button
-                onClick={handleOrder}
-                disabled={!productType}
-                className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
-              >
-                Lo quiero →
-              </button>
-            </div>
-            <button
-              onClick={handleReset}
-              className="w-full mt-2 text-xs text-muted-foreground text-center hover:text-foreground transition-colors"
-            >
-              Configurar otro producto
-            </button>
-          </>
-        ) : (
-          <div className="text-center">
-            <p className="text-sm text-foreground font-medium mb-2">✓ Añadido a tu solicitud</p>
-            <div className="flex gap-2 justify-center">
-              <button onClick={scrollToForm} className="flex-1 bg-foreground text-background px-4 py-2.5 text-sm hover:opacity-90 transition-opacity">
-                Ir al formulario →
-              </button>
-              <button onClick={handleReset} className="flex-1 border border-border text-sm px-4 py-2.5 text-muted-foreground hover:text-foreground hover:border-foreground transition-colors">
-                Seguir eligiendo
-              </button>
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
+            <p className="text-xs text-muted-foreground">IVA incluido</p>
           </div>
-        )}
+          <button
+            onClick={handleOrder}
+            disabled={!productType}
+            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+          >
+            Lo quiero →
+          </button>
+        </div>
       </div>
     </div>
   );
