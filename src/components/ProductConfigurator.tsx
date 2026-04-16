@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
+
 import {
   Accordion,
   AccordionContent,
@@ -59,8 +59,8 @@ const FINISHES = [
 const HEADBOARD_SHAPES = [
   { id: "recto", name: "Recto", svgPreview: "M 5 35 L 5 8 L 55 8 L 55 35 Z" },
   { id: "semicirculo", name: "Semicírculo", svgPreview: "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z" },
-  { id: "corona-simple", name: "Corona simple", svgPreview: "M 5 35 L 5 18 Q 17 6 30 12 Q 43 6 55 18 L 55 35 Z" },
-  { id: "corona-doble", name: "Corona doble", svgPreview: "M 5 35 L 5 20 Q 13 10 20 15 Q 30 4 40 15 Q 47 10 55 20 L 55 35 Z" },
+  { id: "corona-simple", name: "Corona simple", svgPreview: "M 5 35 L 5 22 L 12 22 C 12 18, 14 16, 16 15 C 21 10, 26 7, 30 6 C 34 7, 39 10, 44 15 C 46 16, 48 18, 48 22 L 55 22 L 55 35 Z" },
+  { id: "corona-doble", name: "Corona doble", svgPreview: "M 5 35 L 5 25 C 9 17, 16 7, 22 11 C 26 13, 29 17, 30 19 C 31 17, 34 13, 38 11 C 44 7, 51 17, 55 25 L 55 35 Z" },
 ];
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
@@ -147,15 +147,10 @@ const ProductConfigurator = () => {
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
 
-  const [hasVisitedBefore, setHasVisitedBefore] = useState(false);
-  const [showAddedConfirm, setShowAddedConfirm] = useState(false);
-
   const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
 
-  // Mark configurator as visited
+  // Mark configurator as visited (kept for analytics / future use)
   useEffect(() => {
-    const visited = localStorage.getItem('tiro_configurador_visited') === 'true';
-    setHasVisitedBefore(visited);
     localStorage.setItem('tiro_configurador_visited', 'true');
     localStorage.setItem('configurador_visitado', 'true');
   }, []);
@@ -335,22 +330,7 @@ const ProductConfigurator = () => {
 
   const handleOrder = () => {
     if (!productType) return;
-    toast.success("✓ Añadido a tu solicitud");
-    setShowAddedConfirm(true);
-  };
-
-  const handleReset = () => {
-    setProductType(null);
-    resetConfiguracion();
-    setShowAddedConfirm(false);
-    if (isMobile) {
-      setOpenAccordion('type');
-    } else {
-      setOpenAccordion(['type']);
-    }
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    navigate(buildOrderUrl());
   };
 
   const selectionLabel = (step: Step): React.ReactNode => {
@@ -422,16 +402,7 @@ const ProductConfigurator = () => {
 
   return (
     <div className="min-h-screen">
-      {hasVisitedBefore && (
-        <div className="container mx-auto px-4 md:px-6 pt-4">
-          <div className="bg-secondary/50 rounded-lg p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              Vemos que ya has estado explorando — ¿seguimos donde lo dejaste?
-            </p>
-          </div>
-        </div>
-      )}
-      <div className="container mx-auto px-4 md:px-6 pt-3">
+      <div className="container mx-auto px-4 md:px-6 pt-6">
         <p className="text-sm italic text-muted-foreground text-center">
           ¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.
         </p>
@@ -481,35 +452,15 @@ const ProductConfigurator = () => {
             <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
           </div>
 
-          {!showAddedConfirm ? (
-            <div className="flex flex-col gap-3 mt-6">
-              <button
-                onClick={handleOrder}
-                disabled={!productType}
-                className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
-              >
-                Lo quiero — solicitar presupuesto
-              </button>
-              <button
-                onClick={handleReset}
-                className="w-full px-6 py-3 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors text-center"
-              >
-                Quiero configurar otro producto
-              </button>
-            </div>
-          ) : (
-            <div className="mt-6 p-4 bg-accent-warm/10 border border-accent-warm/30 rounded text-center">
-              <p className="text-sm text-foreground font-medium">✓ Añadido a tu solicitud</p>
-              <div className="flex gap-3 justify-center mt-4 flex-wrap">
-                <button onClick={scrollToForm} className="px-5 py-2.5 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors">
-                  Ir al formulario →
-                </button>
-                <button onClick={handleReset} className="px-5 py-2.5 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors">
-                  Seguir eligiendo
-                </button>
-              </div>
-            </div>
-          )}
+          <div className="flex flex-col gap-3 mt-6">
+            <button
+              onClick={handleOrder}
+              disabled={!productType}
+              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+            >
+              Lo quiero — solicitar presupuesto
+            </button>
+          </div>
         </div>
 
         {/* Zone B: Accordions */}
@@ -588,41 +539,19 @@ const ProductConfigurator = () => {
 
       {/* MOBILE: fixed bottom bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
-        {!showAddedConfirm ? (
-          <>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
-                <p className="text-xs text-muted-foreground">IVA incluido</p>
-              </div>
-              <button
-                onClick={handleOrder}
-                disabled={!productType}
-                className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
-              >
-                Lo quiero →
-              </button>
-            </div>
-            <button
-              onClick={handleReset}
-              className="w-full mt-2 text-xs text-muted-foreground text-center hover:text-foreground transition-colors"
-            >
-              Configurar otro producto
-            </button>
-          </>
-        ) : (
-          <div className="text-center">
-            <p className="text-sm text-foreground font-medium mb-2">✓ Añadido a tu solicitud</p>
-            <div className="flex gap-2 justify-center">
-              <button onClick={scrollToForm} className="flex-1 bg-foreground text-background px-4 py-2.5 text-sm hover:opacity-90 transition-opacity">
-                Ir al formulario →
-              </button>
-              <button onClick={handleReset} className="flex-1 border border-border text-sm px-4 py-2.5 text-muted-foreground hover:text-foreground hover:border-foreground transition-colors">
-                Seguir eligiendo
-              </button>
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
+            <p className="text-xs text-muted-foreground">IVA incluido</p>
           </div>
-        )}
+          <button
+            onClick={handleOrder}
+            disabled={!productType}
+            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+          >
+            Lo quiero →
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -873,15 +802,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </div>
                 )}
               </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Material patas</p>
-                <SelectWrapper>
-                  <select value={mesaLegs} onChange={(e) => setMesaLegs(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar material...</option>
-                    {MESA_LEGS.map(l => <option key={l} value={l}>{l}</option>)}
-                  </select>
-                </SelectWrapper>
-              </div>
             </>
           )}
           {!productType && (
@@ -937,7 +857,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-3">
-          {FINISHES.map(f => (
+          {FINISHES.filter(f => {
+            // Puff and Mesa: only "liso" and "vivo-simple"
+            if (productType === 'puff' || productType === 'mesa') {
+              return f.id === 'liso' || f.id === 'vivo-simple';
+            }
+            return true;
+          }).map(f => (
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
