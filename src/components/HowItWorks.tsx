@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Palette, Phone, Package } from "lucide-react";
+import { Palette, Phone, Package, type LucideIcon } from "lucide-react";
 
 const STEPS = [
   {
@@ -28,7 +28,7 @@ const STEPS = [
 
 interface StepProps {
   num: string;
-  Icon: React.ComponentType<{ size?: number; color?: string }>;
+  Icon: LucideIcon;
   title: string;
   text: string;
   href: string | null;
