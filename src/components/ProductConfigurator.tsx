@@ -880,24 +880,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
-          {productType && (
-            <>
-              <button onClick={() => advanceTo('fabric')} className="mt-2 text-sm text-accent-warm font-light hover:underline">
-                Siguiente: Tela y color →
-              </button>
-              <div className="mt-4 pt-3 border-t border-border/40">
-                <p className="text-xs text-muted-foreground italic">
-                  ¿No tienes las medidas a mano?
-                  <a href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, no tengo las medidas exactas. ¿Me podéis ayudar?")}`} target="_blank" rel="noopener noreferrer" className="underline text-accent-warm ml-1">
-                    Escríbenos y te ayudamos →
-                  </a>
-                </p>
-                <p className="text-xs text-muted-foreground/60 mt-1">
-                  También puedes poner medidas aproximadas y las confirmamos por teléfono.
-                </p>
-              </div>
-            </>
-          )}
         </AccordionContent>
       </AccordionItem>
 
