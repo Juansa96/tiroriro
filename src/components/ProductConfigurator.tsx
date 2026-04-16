@@ -612,6 +612,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             {productCard('banco', 'Banco')}
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
+            {productCard('mesa', 'Mesa de centro')}
           </div>
           <div className="mt-4 pt-4 border-t border-border/40">
             <a
