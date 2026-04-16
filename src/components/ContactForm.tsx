@@ -241,42 +241,32 @@ const ContactForm = () => {
             </div>
           </div>
 
-          {/* Email */}
+          {/* Producto — multi-select chips */}
           <div>
-            <label htmlFor="contact-email" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
-              Email *
-            </label>
-            <input
-              id="contact-email"
-              type="email"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              placeholder="tu@email.com"
-              className={`${inputBase} ${hasError('email') ? 'border-destructive' : ''}`}
-            />
-            {hasError('email') && <p className="text-xs mt-1 text-destructive">{errors.email}</p>}
-          </div>
-
-          {/* Producto */}
-          <div>
-            <label htmlFor="contact-product" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
-              Tipo de producto *
-            </label>
-            <div className="relative">
-              <select
-                id="contact-product"
-                value={form.product}
-                onChange={(e) => update("product", e.target.value)}
-                className={`${inputBase} appearance-none cursor-pointer pr-10 ${hasError('product') ? 'border-destructive' : ''}`}
-              >
-                <option value="">Seleccionar...</option>
-                {PRODUCT_OPTIONS.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-              <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            <span className="block text-xs tracking-wide uppercase text-muted-foreground mb-3 font-medium">
+              Tipo de producto * <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(puedes elegir varios)</span>
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {PRODUCT_OPTIONS.map((p) => {
+                const active = selectedProducts.includes(p);
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => toggleProduct(p)}
+                    aria-pressed={active}
+                    className={`min-h-[40px] px-4 py-2 text-sm rounded-full border transition-all ${
+                      active
+                        ? 'border-accent-warm bg-accent-warm/10 text-accent-warm font-medium'
+                        : 'border-border bg-background text-foreground hover:border-foreground/60'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
             </div>
-            {hasError('product') && <p className="text-xs mt-1 text-destructive">{errors.product}</p>}
+            {hasError('product') && <p className="text-xs mt-2 text-destructive">{errors.product}</p>}
           </div>
 
           {/* Detalles */}
@@ -297,24 +287,10 @@ const ContactForm = () => {
             </p>
           </div>
 
-          {/* Sección de pago */}
-          <div className="p-4 bg-secondary rounded-md">
-            <p className="text-xs tracking-wide uppercase text-muted-foreground font-medium mb-3">Métodos de pago</p>
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
-                <span>📱</span> Bizum
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
-                <span>💳</span> Stripe
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
-                <span>🏦</span> Transferencia bancaria
-              </span>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground italic">
-              50% al confirmar · 50% a la entrega
-            </p>
-          </div>
+          {/* Métodos de pago — texto discreto */}
+          <p className="text-xs text-muted-foreground font-light mt-2">
+            Pago por Bizum, Stripe o Transferencia bancaria · 50% al confirmar · 50% a la entrega
+          </p>
 
           {/* RGPD */}
           <div className="flex items-start gap-3 pt-2">
