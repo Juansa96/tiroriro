@@ -862,7 +862,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-3">
-          {FINISHES.map(f => (
+          {FINISHES.filter(f => {
+            // Puff and Mesa: only "liso" and "vivo-simple"
+            if (productType === 'puff' || productType === 'mesa') {
+              return f.id === 'liso' || f.id === 'vivo-simple';
+            }
+            return true;
+          }).map(f => (
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
