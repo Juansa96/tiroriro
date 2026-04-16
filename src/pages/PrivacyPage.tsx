@@ -13,7 +13,7 @@ const PrivacyPage = () => (
           <div className="mt-12 space-y-10 text-sm text-muted-foreground font-light leading-relaxed">
             <div>
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">1. ¿Quién es el responsable del tratamiento?</h2>
-              <p>TIRO·RIRO, proyecto gestionado por Beatriz [Apellido] y Rocío [Apellido].</p>
+              <p>Tiroriro, proyecto gestionado por Beatriz [Apellido] y Rocío [Apellido].</p>
               <p className="mt-1">Email de contacto: contacto@tiroriro.com</p>
             </div>
 

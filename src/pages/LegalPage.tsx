@@ -25,7 +25,7 @@ const LegalPage = () => (
 
             <div>
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">Propiedad intelectual</h2>
-              <p>Todos los textos, imágenes, diseños y contenidos de este sitio web son propiedad de TIRO·RIRO o se utilizan con la debida autorización. Queda prohibida su reproducción total o parcial sin consentimiento previo.</p>
+              <p>Todos los textos, imágenes, diseños y contenidos de este sitio web son propiedad de Tiroriro o se utilizan con la debida autorización. Queda prohibida su reproducción total o parcial sin consentimiento previo.</p>
             </div>
 
             <div>

@@ -5,7 +5,7 @@ interface LogoProps {
 }
 
 /**
- * TIRO·RIRO logo as inline SVG so it scales perfectly and can be styled with CSS.
+ * Tiroriro logo as inline SVG so it scales perfectly and can be styled with CSS.
  * Uses currentColor so the parent can control the color via text-* utilities.
  */
 const Logo = ({ className, style, monochrome = true }: LogoProps) => {
@@ -20,7 +20,7 @@ const Logo = ({ className, style, monochrome = true }: LogoProps) => {
       className={className}
       style={style}
       role="img"
-      aria-label="TIRO·RIRO"
+      aria-label="Tiroriro"
     >
       <g>
         {/* Letras "TIRO RIRO" */}

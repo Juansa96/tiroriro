@@ -117,7 +117,7 @@ const CategoryPage = () => {
                   <div className="overflow-hidden">
                     <img
                       src={model.photo}
-                      alt={`${model.name} - ${cat.title} de TIRO·RIRO`}
+                      alt={`${model.name} - ${cat.title} de Tiroriro`}
                       className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                       decoding="async"
