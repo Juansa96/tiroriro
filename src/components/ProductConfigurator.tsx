@@ -310,8 +310,8 @@ const ProductConfigurator = () => {
     }
   };
 
-  const handleOrder = () => {
-    if (!productType) return;
+  const buildOrderUrl = () => {
+    if (!productType) return '/#contacto';
     const product = PRODUCTS.find(p => p.type === productType);
     const summary = buildConfigSummary(productType, options);
     const params = new URLSearchParams({
@@ -319,16 +319,30 @@ const ProductConfigurator = () => {
       config: `Me interesa: ${summary} (aprox. ${price}€)`,
     });
     if (extraExpress) params.set('express', 'true');
-    navigate(`/?${params.toString()}#contacto`);
+    return `/?${params.toString()}#contacto`;
+  };
+
+  const scrollToForm = () => {
+    navigate(buildOrderUrl());
+  };
+
+  const handleOrder = () => {
+    if (!productType) return;
+    toast.success("✓ Añadido a tu solicitud");
+    setShowAddedConfirm(true);
   };
 
   const handleReset = () => {
     setProductType(null);
     resetConfiguracion();
+    setShowAddedConfirm(false);
     if (isMobile) {
       setOpenAccordion('type');
     } else {
       setOpenAccordion(['type']);
+    }
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
