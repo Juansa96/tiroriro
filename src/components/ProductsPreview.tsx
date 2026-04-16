@@ -102,9 +102,6 @@ const ProductsPreview = () => (
       <AnimatedSection className="text-center mb-8">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
         <span className="section-line" />
-        <p className="font-light italic text-muted-foreground text-base max-w-2xl mx-auto text-center mt-6 leading-relaxed">
-          Cada pieza que sale de nuestro taller ha pasado por las manos de alguien que sabe lo que hace. Elegimos los materiales con cuidado, cortamos y tapizamos a medida, y embalamos con la misma atención que pondríamos si fuera para nuestra propia casa. Porque creemos que los detalles se notan — y que una pieza bien hecha dura toda la vida.
-        </p>
       </AnimatedSection>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto mt-12">
