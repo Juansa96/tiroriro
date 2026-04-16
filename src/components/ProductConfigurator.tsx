@@ -960,7 +960,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </AccordionItem>
 
       {/* Step 5: Extras */}
-      <AccordionItem value="extras" className="border-b border-border">
+      <AccordionItem value="extras" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.extras}</span>
