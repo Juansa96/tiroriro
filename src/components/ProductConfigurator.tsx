@@ -993,11 +993,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             </div>
             <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
           </div>
-        </AccordionContent>
-      </AccordionItem>
-    </>
-  );
-};
+          <p className="text-xs text-muted-foreground italic pt-2 border-t border-border/40">
+            Instalación disponible bajo consulta.
+          </p>
 
 // Single accordion for mobile
 interface SingleAccordionProps extends AccordionContentSharedProps {
