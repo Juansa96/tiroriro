@@ -34,92 +34,61 @@ const EmptyState = () => (
   </svg>
 );
 
-// Vivo rendering for each shape
-const VivoForShape = ({ forma, x, y, w, h, finish, vivoColor }: { forma: string; x: number; y: number; w: number; h: number; finish: string; vivoColor: string }) => {
-  const inset1 = 10;
-  const inset2 = 18;
-
-  if (finish === 'vivo-simple') {
-    if (forma === 'arco') {
-      return <path d={`M${x + inset1},${y + h} L${x + inset1},${y + h * 0.35} Q${x + w / 2},${y + 10} ${x + w - inset1},${y + h * 0.35} L${x + w - inset1},${y + h} Z`} fill="none" stroke={vivoColor} strokeWidth="3" className="transition-all duration-300" />;
-    }
-    if (forma === 'alto') {
-      return <rect x={x + inset1} y={y + inset1} width={w - inset1 * 2} height={h - inset1 * 2} rx={3} fill="none" stroke={vivoColor} strokeWidth="3" className="transition-all duration-300" />;
-    }
-    if (forma === 'con-patas') {
-      return <rect x={x + inset1} y={y + inset1} width={w - inset1 * 2} height={h - 30 - inset1} rx={3} fill="none" stroke={vivoColor} strokeWidth="3" className="transition-all duration-300" />;
-    }
-    // recto default
-    return <rect x={x + inset1} y={y + inset1} width={w - inset1 * 2} height={h - inset1 * 2} rx={3} fill="none" stroke={vivoColor} strokeWidth="3" className="transition-all duration-300" />;
+// Vivo (ribete) path for each headboard shape
+const headboardVivoPath = (forma: string): string => {
+  switch (forma) {
+    case 'semicirculo':
+      return "M 20 160 L 20 95 Q 150 20 280 95 L 280 160 Z";
+    case 'corona-simple':
+      return "M 20 160 L 20 80 Q 75 30 150 55 Q 225 30 280 80 L 280 160 Z";
+    case 'corona-doble':
+      return "M 20 160 L 20 90 Q 60 40 100 70 Q 150 20 200 70 Q 240 40 280 90 L 280 160 Z";
+    case 'recto':
+    default:
+      return "M 20 50 L 280 50 L 280 160 L 20 160 Z";
   }
+};
 
+const VivoForHeadboard = ({ forma, finish, vivoColor }: { forma: string; finish: string; vivoColor: string }) => {
+  if (finish !== 'vivo-simple' && finish !== 'vivo-doble') return null;
+  const d = headboardVivoPath(forma);
+  if (finish === 'vivo-simple') {
+    return <path d={d} fill="none" stroke={vivoColor} strokeWidth="3" className="transition-all duration-300" />;
+  }
+  // doble — outer + inner offset
+  return (
+    <>
+      <path d={d} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
+      <path d={d} fill="none" stroke={vivoColor} strokeWidth="2" transform="translate(0, 8) scale(0.96, 0.94)" transform-origin="150 100" className="transition-all duration-300" />
+    </>
+  );
+};
+
+// Vivo for non-cabecero (rectangle-based) shapes
+const VivoForRect = ({ x, y, w, h, finish, vivoColor, rx = 3 }: { x: number; y: number; w: number; h: number; finish: string; vivoColor: string; rx?: number }) => {
+  if (finish === 'vivo-simple') {
+    return <rect x={x + 10} y={y + 10} width={w - 20} height={h - 20} rx={rx} fill="none" stroke={vivoColor} strokeWidth="3" className="transition-all duration-300" />;
+  }
   if (finish === 'vivo-doble') {
-    if (forma === 'arco') {
-      return (
-        <>
-          <path d={`M${x + inset1},${y + h} L${x + inset1},${y + h * 0.35} Q${x + w / 2},${y + 8} ${x + w - inset1},${y + h * 0.35} L${x + w - inset1},${y + h} Z`} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-          <path d={`M${x + inset2},${y + h - 5} L${x + inset2},${y + h * 0.4} Q${x + w / 2},${y + 18} ${x + w - inset2},${y + h * 0.4} L${x + w - inset2},${y + h - 5} Z`} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-        </>
-      );
-    }
-    if (forma === 'alto') {
-      return (
-        <>
-          <rect x={x + inset1} y={y + inset1} width={w - inset1 * 2} height={h - inset1 * 2} rx={3} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-          <rect x={x + inset2} y={y + inset2} width={w - inset2 * 2} height={h - inset2 * 2} rx={3} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-        </>
-      );
-    }
-    if (forma === 'con-patas') {
-      const bodyH = h - 30;
-      return (
-        <>
-          <rect x={x + inset1} y={y + inset1} width={w - inset1 * 2} height={bodyH - inset1} rx={3} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-          <rect x={x + inset2} y={y + inset2} width={w - inset2 * 2} height={bodyH - inset2} rx={3} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-        </>
-      );
-    }
-    // recto default
     return (
       <>
-        <rect x={x + inset1} y={y + inset1} width={w - inset1 * 2} height={h - inset1 * 2} rx={3} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
-        <rect x={x + inset2} y={y + inset2} width={w - inset2 * 2} height={h - inset2 * 2} rx={3} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
+        <rect x={x + 8} y={y + 8} width={w - 16} height={h - 16} rx={rx} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
+        <rect x={x + 16} y={y + 16} width={w - 32} height={h - 32} rx={rx} fill="none" stroke={vivoColor} strokeWidth="2" className="transition-all duration-300" />
       </>
     );
   }
-
   return null;
 };
 
 const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { color: string; finish: string; vivoColor: string; forma?: string; widthCm?: number; heightCm?: number }) => {
-  const baseW = widthCm ? Math.min(290, Math.max(80, (widthCm / 150) * 280)) : 280;
-  const baseH = heightCm ? Math.min(175, Math.max(60, (heightCm / 80) * 130)) : 130;
-  const x = (300 - baseW) / 2;
-  const y = 170 - baseH;
-
-  const renderShape = () => {
-    switch (forma) {
-      case 'arco':
-        return <path d={`M${x},170 L${x},${y + baseH * 0.5} Q${150},${y - 10} ${x + baseW},${y + baseH * 0.5} L${x + baseW},170 Z`} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />;
-      case 'alto':
-        return <rect x={x + 10} y={10} width={baseW - 20} height={175} rx={3} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />;
-      case 'con-patas':
-        return (
-          <>
-            <rect x={x} y={y} width={baseW} height={baseH - 10} rx={3} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />
-            <rect x={x + 15} y={y + baseH - 10} width={18} height={38} rx={2} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />
-            <rect x={x + baseW - 33} y={y + baseH - 10} width={18} height={38} rx={2} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />
-          </>
-        );
-      default: // recto
-        return <rect x={x} y={y} width={baseW} height={baseH} rx={3} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />;
-    }
-  };
+  const f = forma || 'recto';
+  // Use full viewBox-based path so silhouette is consistent with vivo path
+  const fillPath = headboardVivoPath(f);
 
   return (
     <svg viewBox="0 0 300 200" className="w-full max-w-[280px] mx-auto">
-      {renderShape()}
-      <VivoForShape forma={forma || 'recto'} x={x} y={y} w={baseW} h={baseH} finish={finish} vivoColor={vivoColor} />
+      <path d={fillPath} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" className="transition-all duration-400" />
+      <VivoForHeadboard forma={f} finish={finish} vivoColor={vivoColor} />
       {widthCm && widthCm > 200 && (
         <text x="150" y="195" textAnchor="middle" fontSize="10" fill="currentColor" className="text-muted-foreground">{widthCm} cm</text>
       )}

@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
@@ -56,10 +57,10 @@ const FINISHES = [
 ];
 
 const HEADBOARD_SHAPES = [
-  { id: "recto", name: "Recto Clásico", svgPreview: "M 5 35 L 5 5 L 55 5 L 55 35 Z" },
-  { id: "arco", name: "Arco Suave", svgPreview: "M 5 35 L 5 18 Q 30 0 55 18 L 55 35 Z" },
-  { id: "alto", name: "Alto Moderno", svgPreview: "M 10 35 L 10 2 L 50 2 L 50 35 Z" },
-  { id: "con-patas", name: "Con Patas", svgPreview: "M 5 30 L 5 5 L 55 5 L 55 30 Z M 10 30 L 10 38 M 50 30 L 50 38" },
+  { id: "recto", name: "Recto", svgPreview: "M 5 35 L 5 8 L 55 8 L 55 35 Z" },
+  { id: "semicirculo", name: "Semicírculo", svgPreview: "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z" },
+  { id: "corona-simple", name: "Corona simple", svgPreview: "M 5 35 L 5 18 Q 17 6 30 12 Q 43 6 55 18 L 55 35 Z" },
+  { id: "corona-doble", name: "Corona doble", svgPreview: "M 5 35 L 5 20 Q 13 10 20 15 Q 30 4 40 15 Q 47 10 55 20 L 55 35 Z" },
 ];
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
@@ -104,6 +105,13 @@ function parseCm(selectVal: string, customVal: string): number | undefined {
     return isNaN(n) ? undefined : n;
   }
   if (selectVal) {
+    // Spanish meter notation: "1m" -> 100, "1'20m" -> 120, "1'30m" -> 130
+    const meterMatch = selectVal.match(/^(\d+)(?:'(\d+))?m$/);
+    if (meterMatch) {
+      const meters = parseInt(meterMatch[1]);
+      const cms = meterMatch[2] ? parseInt(meterMatch[2]) : 0;
+      return meters * 100 + cms;
+    }
     const n = parseInt(selectVal);
     return isNaN(n) ? undefined : n;
   }
@@ -139,10 +147,16 @@ const ProductConfigurator = () => {
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
 
+  const [hasVisitedBefore, setHasVisitedBefore] = useState(false);
+  const [showAddedConfirm, setShowAddedConfirm] = useState(false);
+
   const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
 
   // Mark configurator as visited
   useEffect(() => {
+    const visited = localStorage.getItem('tiro_configurador_visited') === 'true';
+    setHasVisitedBefore(visited);
+    localStorage.setItem('tiro_configurador_visited', 'true');
     localStorage.setItem('configurador_visitado', 'true');
   }, []);
 
@@ -303,8 +317,8 @@ const ProductConfigurator = () => {
     }
   };
 
-  const handleOrder = () => {
-    if (!productType) return;
+  const buildOrderUrl = () => {
+    if (!productType) return '/#contacto';
     const product = PRODUCTS.find(p => p.type === productType);
     const summary = buildConfigSummary(productType, options);
     const params = new URLSearchParams({
@@ -312,16 +326,30 @@ const ProductConfigurator = () => {
       config: `Me interesa: ${summary} (aprox. ${price}€)`,
     });
     if (extraExpress) params.set('express', 'true');
-    navigate(`/?${params.toString()}#contacto`);
+    return `/?${params.toString()}#contacto`;
+  };
+
+  const scrollToForm = () => {
+    navigate(buildOrderUrl());
+  };
+
+  const handleOrder = () => {
+    if (!productType) return;
+    toast.success("✓ Añadido a tu solicitud");
+    setShowAddedConfirm(true);
   };
 
   const handleReset = () => {
     setProductType(null);
     resetConfiguracion();
+    setShowAddedConfirm(false);
     if (isMobile) {
       setOpenAccordion('type');
     } else {
       setOpenAccordion(['type']);
+    }
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -394,6 +422,20 @@ const ProductConfigurator = () => {
 
   return (
     <div className="min-h-screen">
+      {hasVisitedBefore && (
+        <div className="container mx-auto px-4 md:px-6 pt-4">
+          <div className="bg-secondary/50 rounded-lg p-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              Vemos que ya has estado explorando — ¿seguimos donde lo dejaste?
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="container mx-auto px-4 md:px-6 pt-3">
+        <p className="text-sm italic text-muted-foreground text-center">
+          ¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.
+        </p>
+      </div>
       {/* MOBILE: sticky preview */}
       <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
         <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
@@ -439,21 +481,35 @@ const ProductConfigurator = () => {
             <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
           </div>
 
-          <div className="flex flex-col gap-3 mt-6">
-            <button
-              onClick={handleOrder}
-              disabled={!productType}
-              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
-            >
-              Lo quiero — solicitar presupuesto
-            </button>
-            <button
-              onClick={handleReset}
-              className="w-full px-6 py-3 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors text-center"
-            >
-              Quiero configurar otro producto
-            </button>
-          </div>
+          {!showAddedConfirm ? (
+            <div className="flex flex-col gap-3 mt-6">
+              <button
+                onClick={handleOrder}
+                disabled={!productType}
+                className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+              >
+                Lo quiero — solicitar presupuesto
+              </button>
+              <button
+                onClick={handleReset}
+                className="w-full px-6 py-3 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors text-center"
+              >
+                Quiero configurar otro producto
+              </button>
+            </div>
+          ) : (
+            <div className="mt-6 p-4 bg-accent-warm/10 border border-accent-warm/30 rounded text-center">
+              <p className="text-sm text-foreground font-medium">✓ Añadido a tu solicitud</p>
+              <div className="flex gap-3 justify-center mt-4 flex-wrap">
+                <button onClick={scrollToForm} className="px-5 py-2.5 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors">
+                  Ir al formulario →
+                </button>
+                <button onClick={handleReset} className="px-5 py-2.5 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors">
+                  Seguir eligiendo
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Zone B: Accordions */}
@@ -532,25 +588,41 @@ const ProductConfigurator = () => {
 
       {/* MOBILE: fixed bottom bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
-            <p className="text-xs text-muted-foreground">IVA incluido</p>
+        {!showAddedConfirm ? (
+          <>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
+                <p className="text-xs text-muted-foreground">IVA incluido</p>
+              </div>
+              <button
+                onClick={handleOrder}
+                disabled={!productType}
+                className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+              >
+                Lo quiero →
+              </button>
+            </div>
+            <button
+              onClick={handleReset}
+              className="w-full mt-2 text-xs text-muted-foreground text-center hover:text-foreground transition-colors"
+            >
+              Configurar otro producto
+            </button>
+          </>
+        ) : (
+          <div className="text-center">
+            <p className="text-sm text-foreground font-medium mb-2">✓ Añadido a tu solicitud</p>
+            <div className="flex gap-2 justify-center">
+              <button onClick={scrollToForm} className="flex-1 bg-foreground text-background px-4 py-2.5 text-sm hover:opacity-90 transition-opacity">
+                Ir al formulario →
+              </button>
+              <button onClick={handleReset} className="flex-1 border border-border text-sm px-4 py-2.5 text-muted-foreground hover:text-foreground hover:border-foreground transition-colors">
+                Seguir eligiendo
+              </button>
+            </div>
           </div>
-          <button
-            onClick={handleOrder}
-            disabled={!productType}
-            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
-          >
-            Lo quiero →
-          </button>
-        </div>
-        <button
-          onClick={handleReset}
-          className="w-full mt-2 text-xs text-muted-foreground text-center hover:text-foreground transition-colors"
-        >
-          Configurar otro producto
-        </button>
+        )}
       </div>
     </div>
   );
@@ -602,6 +674,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     advanceTo, needsVivo,
   } = props;
 
+  const productSelected = !!productType;
+  const disabledClass = productSelected ? '' : 'opacity-40 pointer-events-none';
+
   return (
     <>
       {/* Step 1: Product type */}
@@ -620,24 +695,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             {productCard('cojin', 'Cojines')}
             {productCard('mesa', 'Mesa de centro')}
           </div>
-          <div className="mt-4 pt-4 border-t border-border/40">
-            <a
-              href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, no sé muy bien qué producto necesito y me gustaría que me ayudarais.")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-accent-warm transition-colors"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 shrink-0">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-              No sé muy bien qué quiero — ayudadme a elegir
-            </a>
-          </div>
         </AccordionContent>
       </AccordionItem>
 
       {/* Step 2: Measures */}
-      <AccordionItem value="measures" className="border-b border-border">
+      <AccordionItem value="measures" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.measures}</span>
@@ -663,28 +725,30 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho de cama</p>
                 <SelectWrapper>
-                  <select value={bedWidth} onChange={(e) => { setBedWidth(e.target.value); setCustomWidth(''); }} className={selectClass}>
+                  <select value={bedWidth} onChange={(e) => { setBedWidth(e.target.value); if (e.target.value !== 'custom') setCustomWidth(''); }} className={selectClass}>
                     <option value="">Seleccionar ancho...</option>
-                    <option value="90cm">90 cm</option>
-                    <option value="105cm">105 cm</option>
-                    <option value="135cm">135 cm</option>
-                    <option value="150cm">150 cm</option>
-                    <option value="160cm">160 cm</option>
-                    <option value="180cm">180 cm</option>
-                    <option value="custom">Personalizado</option>
+                    <option value="1m">1 m</option>
+                    <option value="1'20m">1'20 m</option>
+                    <option value="1'30m">1'30 m</option>
+                    <option value="custom">Otra medida</option>
                   </select>
                 </SelectWrapper>
                 {bedWidth === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={60} max={220} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
-                  </div>
+                  <>
+                    <div className="mt-3 flex items-center gap-2">
+                      <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    {parseInt(customWidth) > 250 && (
+                      <p className="text-sm text-destructive mt-1">El ancho máximo es 250cm. Consúltanos para medidas especiales.</p>
+                    )}
+                  </>
                 )}
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
                 <SelectWrapper>
-                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); setCustomHeight(''); }} className={selectClass}>
+                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); if (e.target.value !== 'custom') setCustomHeight(''); }} className={selectClass}>
                     <option value="">Seleccionar alto...</option>
                     <option value="60cm">60 cm</option>
                     <option value="70cm">70 cm</option>
@@ -694,10 +758,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </select>
                 </SelectWrapper>
                 {bedHeight === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={40} max={150} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
-                  </div>
+                  <>
+                    <div className="mt-3 flex items-center gap-2">
+                      <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    {parseInt(customHeight) > 120 && (
+                      <p className="text-sm text-destructive mt-1">El alto máximo habitual es 120cm. Escríbenos para confirmar.</p>
+                    )}
+                  </>
                 )}
               </div>
             </>
@@ -818,29 +887,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
-          {productType && (
-            <>
-              <button onClick={() => advanceTo('fabric')} className="mt-2 text-sm text-accent-warm font-light hover:underline">
-                Siguiente: Tela y color →
-              </button>
-              <div className="mt-4 pt-3 border-t border-border/40">
-                <p className="text-xs text-muted-foreground italic">
-                  ¿No tienes las medidas a mano?
-                  <a href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, no tengo las medidas exactas. ¿Me podéis ayudar?")}`} target="_blank" rel="noopener noreferrer" className="underline text-accent-warm ml-1">
-                    Escríbenos y te ayudamos →
-                  </a>
-                </p>
-                <p className="text-xs text-muted-foreground/60 mt-1">
-                  También puedes poner medidas aproximadas y las confirmamos por teléfono.
-                </p>
-              </div>
-            </>
-          )}
         </AccordionContent>
       </AccordionItem>
 
       {/* Step 3: Fabric */}
-      <AccordionItem value="fabric" className="border-b border-border">
+      <AccordionItem value="fabric" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.fabric}</span>
@@ -878,7 +929,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </AccordionItem>
 
       {/* Step 4: Finish */}
-      <AccordionItem value="finish" className="border-b border-border">
+      <AccordionItem value="finish" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.finish}</span>
@@ -916,7 +967,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </AccordionItem>
 
       {/* Step 5: Extras */}
-      <AccordionItem value="extras" className="border-b border-border">
+      <AccordionItem value="extras" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.extras}</span>
@@ -949,6 +1000,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             </div>
             <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
           </div>
+          <p className="text-xs text-muted-foreground italic pt-2 border-t border-border/40">
+            Instalación disponible bajo consulta.
+          </p>
         </AccordionContent>
       </AccordionItem>
     </>
