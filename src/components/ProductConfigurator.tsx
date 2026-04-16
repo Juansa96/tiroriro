@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
