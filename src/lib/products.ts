@@ -74,12 +74,12 @@ export const MESA_LEGS = ['Madera natural', 'Madera lacada', 'Metal negro', 'Sin
 
 export const HEADBOARD_SHAPES = [
   { id: 'recto', name: 'Recto' },
-  { id: 'arco', name: 'Arco' },
-  { id: 'alto', name: 'Alto' },
-  { id: 'con-patas', name: 'Con patas' },
+  { id: 'semicirculo', name: 'Semicírculo' },
+  { id: 'corona-simple', name: 'Corona simple' },
+  { id: 'corona-doble', name: 'Corona doble' },
 ];
 
-export const BED_SIZES = ['90 cm', '105 cm', '135 cm', '150 cm', '160 cm', '180 cm'];
+export const BED_SIZES = ['1m', "1'20m", "1'30m"];
 export const HEADBOARD_HEIGHTS = ['60 cm', '70 cm', '80 cm', '90 cm'];
 export const BENCH_LENGTHS = ['80 cm', '100 cm', '120 cm', '140 cm', 'Personalizado'];
 export const CUSHION_SHAPES = ['Cuadrado', 'Rectangular'];
