@@ -34,6 +34,14 @@ const PRODUCTS_DATA = [
     alt: 'Puff tapizado elegante en salón con luz natural',
     link: '/productos/puffs',
   },
+  {
+    id: 'mesas',
+    name: 'Mesas de centro',
+    tagline: 'Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.',
+    image: 'https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80&fit=crop&crop=center',
+    alt: 'Mesa de centro tapizada artesanal en salón',
+    link: '/productos/mesas',
+  },
 ];
 
 const ProductsPreview = () => (

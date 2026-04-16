@@ -8,6 +8,7 @@ const CATEGORIES = [
   { id: 'bancos', name: 'Bancos entelados', tagline: 'Para el pie de la cama o la entrada', image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=600&q=80&fit=crop&crop=center', price: 95 },
   { id: 'cojines', name: 'Cojines y almohadones', tagline: 'Los detalles que lo cambian todo', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&q=80&fit=crop&crop=center', price: 30 },
   { id: 'puffs', name: 'Puffs elegantes', tagline: 'Asiento, reposapiés, escultura', image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80&fit=crop&crop=center', price: 95 },
+  { id: 'mesas', name: 'Mesas de centro', tagline: 'Tapizadas a medida, con estructura artesanal', image: 'https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80&fit=crop&crop=center', price: 290 },
 ];
 
 const ProductsPage = () => (
