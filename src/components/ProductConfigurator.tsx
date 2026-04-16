@@ -474,21 +474,35 @@ const ProductConfigurator = () => {
             <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
           </div>
 
-          <div className="flex flex-col gap-3 mt-6">
-            <button
-              onClick={handleOrder}
-              disabled={!productType}
-              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
-            >
-              Lo quiero — solicitar presupuesto
-            </button>
-            <button
-              onClick={handleReset}
-              className="w-full px-6 py-3 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors text-center"
-            >
-              Quiero configurar otro producto
-            </button>
-          </div>
+          {!showAddedConfirm ? (
+            <div className="flex flex-col gap-3 mt-6">
+              <button
+                onClick={handleOrder}
+                disabled={!productType}
+                className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+              >
+                Lo quiero — solicitar presupuesto
+              </button>
+              <button
+                onClick={handleReset}
+                className="w-full px-6 py-3 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors text-center"
+              >
+                Quiero configurar otro producto
+              </button>
+            </div>
+          ) : (
+            <div className="mt-6 p-4 bg-accent-warm/10 border border-accent-warm/30 rounded text-center">
+              <p className="text-sm text-foreground font-medium">✓ Añadido a tu solicitud</p>
+              <div className="flex gap-3 justify-center mt-4 flex-wrap">
+                <button onClick={scrollToForm} className="px-5 py-2.5 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors">
+                  Ir al formulario →
+                </button>
+                <button onClick={handleReset} className="px-5 py-2.5 border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-colors">
+                  Seguir eligiendo
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Zone B: Accordions */}
