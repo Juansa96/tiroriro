@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
+import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary, MESA_SHAPES, MESA_SIZES, MESA_LEGS } from "@/lib/products";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
