@@ -18,16 +18,13 @@ const Index = () => (
       <HeroSection />
       <TrustBanner />
       <ProductsPreview />
-      <SectionCTA to="/configurador" label="Diseña el tuyo" />
-      <HowItWorks />
-      <SectionCTA to="/configurador" label="Empieza ahora" />
-      <WhyTiroRiro />
-      <SectionCTA to="/#contacto" label="Encarga el tuyo" />
       <TeamSection />
-      <SectionCTA to="/#contacto" label="Hablamos" />
+      <WhyTiroRiro />
+      <HowItWorks />
+      <SectionCTA to="/configurador" label="Diseña el tuyo" />
+      <ContactForm />
       <Testimonials />
       <FAQSection />
-      <ContactForm />
     </main>
     <Footer />
   </>

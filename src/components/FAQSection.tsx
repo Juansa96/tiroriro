@@ -25,7 +25,7 @@ const FAQS = [
   },
   {
     q: "¿Cómo funciona el pago?",
-    a: "Puedes pagar por Bizum o con tarjeta (Visa/Mastercard). El pago se realiza tras confirmar los detalles por teléfono. No pedimos ningún anticipo hasta que estés seguro/a de tu elección.",
+    a: "Aceptamos Bizum, Stripe y transferencia bancaria. El pago se realiza tras confirmar los detalles por teléfono. No pedimos ningún anticipo hasta que estés seguro/a de tu elección.",
   },
   {
     q: "¿El cabecero viene montado o hay que ensamblarlo?",

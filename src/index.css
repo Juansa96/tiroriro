@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,54 +6,55 @@
 
 @layer base {
   :root {
-    --background: 40 33% 96%;
-    --foreground: 0 0% 13%;
+    /* Paleta basada en el logo TIRO·RIRO — azul petróleo profundo (#1a4b5b) sobre crema cálido */
+    --background: 38 35% 96%;          /* crema cálido */
+    --foreground: 195 56% 17%;         /* azul petróleo del logo, casi negro */
 
-    --card: 40 30% 94%;
-    --card-foreground: 0 0% 13%;
+    --card: 38 30% 94%;
+    --card-foreground: 195 56% 17%;
 
-    --popover: 40 33% 96%;
-    --popover-foreground: 0 0% 13%;
+    --popover: 38 35% 96%;
+    --popover-foreground: 195 56% 17%;
 
-    --primary: 0 0% 13%;
-    --primary-foreground: 40 33% 96%;
+    --primary: 195 56% 23%;            /* #1a4b5b — color dominante del logo */
+    --primary-foreground: 38 35% 96%;
 
-    --secondary: 35 25% 88%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 35 25% 90%;
+    --secondary-foreground: 195 56% 17%;
 
-    --muted: 35 20% 91%;
-    --muted-foreground: 25 10% 45%;
+    --muted: 35 22% 92%;
+    --muted-foreground: 195 18% 38%;
 
-    --accent: 30 30% 82%;
-    --accent-foreground: 0 0% 13%;
+    --accent: 195 30% 85%;             /* azul muy clarito */
+    --accent-foreground: 195 56% 17%;
 
-    --accent-warm: 29 43% 59%;
-    --accent-warm-foreground: 0 0% 100%;
+    --accent-warm: 195 56% 23%;        /* mismo que primary, para mantener clases existentes */
+    --accent-warm-foreground: 38 35% 96%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 38 35% 96%;
 
-    --border: 35 20% 85%;
-    --input: 35 20% 85%;
-    --ring: 0 0% 13%;
+    --border: 195 20% 82%;
+    --input: 195 20% 82%;
+    --ring: 195 56% 23%;
 
     --radius: 0.25rem;
 
     --earth: 25 35% 45%;
-    --earth-foreground: 40 33% 96%;
-    --bone: 40 30% 94%;
-    --cream: 40 33% 96%;
-    --charcoal: 0 0% 13%;
-    --warm-overlay: 30 20% 10%;
+    --earth-foreground: 38 35% 96%;
+    --bone: 38 30% 94%;
+    --cream: 38 35% 96%;
+    --charcoal: 195 56% 17%;
+    --warm-overlay: 195 30% 10%;
 
-    --sidebar-background: 40 30% 94%;
-    --sidebar-foreground: 0 0% 13%;
-    --sidebar-primary: 0 0% 13%;
-    --sidebar-primary-foreground: 40 33% 96%;
-    --sidebar-accent: 35 25% 88%;
-    --sidebar-accent-foreground: 0 0% 13%;
-    --sidebar-border: 35 20% 85%;
-    --sidebar-ring: 0 0% 13%;
+    --sidebar-background: 38 30% 94%;
+    --sidebar-foreground: 195 56% 17%;
+    --sidebar-primary: 195 56% 23%;
+    --sidebar-primary-foreground: 38 35% 96%;
+    --sidebar-accent: 35 25% 90%;
+    --sidebar-accent-foreground: 195 56% 17%;
+    --sidebar-border: 195 20% 82%;
+    --sidebar-ring: 195 56% 23%;
   }
 }
 
@@ -110,8 +111,5 @@
 
   .field-input {
     @apply w-full bg-transparent text-sm text-foreground focus:outline-none font-light;
-  }
-  .field-input:focus {
-    /* handled by parent border */
   }
 }

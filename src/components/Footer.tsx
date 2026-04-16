@@ -1,27 +1,34 @@
 import { Link } from "react-router-dom";
 import { Instagram } from "lucide-react";
-import logo from "@/assets/logo-tiroriro.png";
+import Logo from "./Logo";
 
 const Footer = () => (
   <footer className="bg-secondary py-16 md:py-20">
     <div className="container mx-auto px-6 text-center">
-      <Link to="/">
-        <img src={logo} alt="TIRO·RIRO" className="h-11 w-auto mx-auto object-contain" />
+      <Link to="/" className="inline-flex" aria-label="TIRO·RIRO inicio">
+        <Logo
+          className="text-primary"
+          style={{ width: 200, height: "auto" }}
+        />
       </Link>
 
       <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">
         Hecho a mano en España · Envío a toda la península · contacto@tiroriro.com
       </p>
 
-      <div className="mt-8 flex items-center justify-center gap-8 text-xs tracking-extra-wide uppercase text-muted-foreground">
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs tracking-extra-wide uppercase text-muted-foreground">
         <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
-        <Link to="/#equipo" className="hover:text-foreground transition-colors">Quiénes somos</Link>
         <Link to="/configurador" className="hover:text-foreground transition-colors">Diseña el tuyo</Link>
-        <Link to="/#contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
+        <Link to="/contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
+        <Link to="/#equipo" className="hover:text-foreground transition-colors">Quiénes somos</Link>
         <a href="https://instagram.com/tiroriro" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="Instagram de TIRO·RIRO">
           <Instagram size={18} />
         </a>
       </div>
+
+      <p className="mt-6 text-xs text-muted-foreground">
+        Métodos de pago: Bizum · Stripe · Transferencia bancaria
+      </p>
 
       <div className="mt-6 flex items-center justify-center gap-4 text-xs text-muted-foreground">
         <Link to="/aviso-legal" className="hover:text-foreground transition-colors">Aviso Legal</Link>
