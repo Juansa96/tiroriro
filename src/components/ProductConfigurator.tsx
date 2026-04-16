@@ -82,6 +82,8 @@ const ProductIcon = ({ type }: { type: string }) => {
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><ellipse cx="20" cy="17" rx="16" ry="11" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
       return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'mesa':
+      return <svg viewBox="0 0 40 28" className="w-8 h-6"><rect x="3" y="6" width="34" height="8" rx="1.5" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="7" y1="14" x2="7" y2="24" stroke="currentColor" strokeWidth="2" /><line x1="33" y1="14" x2="33" y2="24" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
       return null;
   }
