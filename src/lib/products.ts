@@ -1,4 +1,4 @@
-export type ProductType = 'cabecero' | 'banco' | 'cojin' | 'puff';
+export type ProductType = 'cabecero' | 'banco' | 'cojin' | 'puff' | 'mesa';
 
 export interface Product {
   id: string;
@@ -53,7 +53,24 @@ export const PRODUCTS: Product[] = [
     basePrice: 95,
     image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
   },
+  {
+    id: 'mesa-centro',
+    type: 'mesa',
+    name: 'Mesas de centro',
+    tagline: 'Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.',
+    basePrice: 290,
+    image: 'https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=800&q=80',
+  },
 ];
+
+export const MESA_SHAPES = [
+  { id: 'rectangular', name: 'Rectangular' },
+  { id: 'cuadrada', name: 'Cuadrada' },
+  { id: 'redonda', name: 'Redonda' },
+];
+
+export const MESA_SIZES = ['60×60 cm', '80×40 cm', '100×50 cm', '120×60 cm', 'Personalizada'];
+export const MESA_LEGS = ['Madera natural', 'Madera lacada', 'Metal negro', 'Sin patas'];
 
 export const HEADBOARD_SHAPES = [
   { id: 'recto', name: 'Recto' },
