@@ -590,6 +590,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
     cushionSize, setCushionSize,
+    mesaSize, setMesaSize, mesaLegs, setMesaLegs,
     fabricId, setFabricId,
     finish, setFinish,
     vivoColorId, setVivoColorId,
