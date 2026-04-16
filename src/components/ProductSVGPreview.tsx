@@ -34,15 +34,15 @@ const EmptyState = () => (
   </svg>
 );
 
-// Headboard shape paths (viewBox 0 0 300 190)
+// Headboard shape paths (viewBox 0 0 300 200)
 const headboardPath = (forma: string): string => {
   switch (forma) {
     case 'semicirculo':
       return "M 15 185 L 15 110 Q 150 25 285 110 L 285 185 Z";
     case 'corona-simple':
-      return "M 15 185 L 15 115 L 55 115 C 55 95, 70 82, 82 80 C 105 55, 130 38, 150 35 C 170 38, 195 55, 218 80 C 230 82, 245 95, 245 115 L 285 115 L 285 185 Z";
+      return "M 10 185 L 10 118 L 52 118 C 52 118 52 100 60 88 C 72 65 100 40 150 28 C 200 40 228 65 240 88 C 248 100 248 118 248 118 L 290 118 L 290 185 Z";
     case 'corona-doble':
-      return "M 15 185 L 15 130 C 30 90, 65 35, 110 55 C 130 65, 145 85, 150 95 C 155 85, 170 65, 190 55 C 235 35, 270 90, 285 130 L 285 185 Z";
+      return "M 10 185 L 10 148 C 12 128 22 105 44 98 C 58 92 68 100 72 112 C 73 116 74 120 75 124 C 77 118 82 106 90 94 C 102 70 122 44 150 32 C 178 44 198 70 210 94 C 218 106 223 118 225 124 C 226 120 227 116 228 112 C 232 100 242 92 256 98 C 278 105 288 128 290 148 L 290 185 Z";
     case 'recto':
     default:
       return "M 15 50 L 285 50 L 285 185 L 15 185 Z";
@@ -67,13 +67,17 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
       </defs>
       <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 185px', transition: 'transform 0.4s ease' }}>
         <path d={path} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        {(finish === 'vivo-simple' || finish === 'vivo-doble') && (
+        {finish === 'vivo-simple' && (
           <g clipPath={`url(#hb-${clipId})`}>
-            <path d={path} fill="none" stroke={vivoColor} strokeWidth={finish === 'vivo-doble' ? 2.5 : 3} />
-            {finish === 'vivo-doble' && (
-              <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5"
-                style={{ transform: 'scale(0.93)', transformOrigin: '150px 100px' }} />
-            )}
+            <path d={path} fill="none" stroke={vivoColor} strokeWidth="3" />
+          </g>
+        )}
+        {finish === 'vivo-doble' && (
+          <g clipPath={`url(#hb-${clipId})`}>
+            <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5" />
+            <g style={{ transform: 'translate(150px, 100px) scale(0.9) translate(-150px, -100px)' }}>
+              <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5" />
+            </g>
           </g>
         )}
       </g>
@@ -119,28 +123,33 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
 };
 
 const PuffSVG = ({ color, finish, vivoColor, diameter, heightCm }: { color: string; finish: string; vivoColor: string; diameter?: number; heightCm?: number }) => {
-  const r = diameter ? Math.min(90, Math.max(40, (diameter / 50) * 80)) : 80;
   const scaleY = heightCm ? Math.min(1.4, Math.max(0.7, heightCm / 35)) : 1;
+  const scaleX = diameter ? Math.min(1.2, Math.max(0.7, diameter / 50)) : 1;
   const clipId = useId();
-  const cx = 100, cy = 105;
-  const ry = r * 0.69;
+  // Cube/box shape — viewBox 0 0 300 220
+  const x = 35, y = 55, w = 230, h = 135, rx = 28;
+  const adjustedColor = darken(color, 30);
 
   return (
-    <svg viewBox="0 0 200 180" className="w-full max-w-[220px] mx-auto">
+    <svg viewBox="0 0 300 220" className="w-full max-w-[260px] mx-auto">
       <defs>
         <clipPath id={`pf-${clipId}`}>
-          <ellipse cx={cx} cy={cy} rx={r} ry={ry} />
+          <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} />
         </clipPath>
       </defs>
-      <g style={{ transform: `scale(1, ${scaleY})`, transformOrigin: `${cx}px 155px`, transition: 'transform 0.4s ease' }}>
-        <ellipse cx={cx} cy={cy} rx={r} ry={ry} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <ellipse cx={cx} cy={cy - r * 0.25} rx={r * 0.94} ry={r * 0.22} fill={lighten(color)} />
+      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 190px', transition: 'transform 0.4s ease' }}>
+        <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        {/* horizontal seam */}
+        <line x1={x} y1={y + h / 2} x2={x + w} y2={y + h / 2} stroke={adjustedColor} strokeWidth="1.5" opacity="0.3" />
+        {/* vertical seam */}
+        <line x1={150} y1={y} x2={150} y2={y + h} stroke={adjustedColor} strokeWidth="1.5" opacity="0.3" />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#pf-${clipId})`}>
-            <ellipse cx={cx} cy={cy} rx={r} ry={ry} fill="none" stroke={vivoColor} strokeWidth="3" />
+            <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
-        <ellipse cx={cx} cy="155" rx={r * 0.69} ry={6} fill="rgba(0,0,0,0.06)" />
+        {/* shadow */}
+        <ellipse cx={150} cy={200} rx={w * 0.4} ry={5} fill="rgba(0,0,0,0.08)" />
       </g>
     </svg>
   );
@@ -197,54 +206,71 @@ const MesaSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { color
   const clipId = useId();
 
   if (forma === 'redonda') {
-    const r = widthCm ? Math.min(85, Math.max(40, (widthCm / 80) * 70)) : 70;
-    const cx = 100, cy = 85;
-    const ry = r * 0.45;
+    // Round table: top ellipse + 4 visible legs (viewBox 0 0 300 220)
+    const cx = 150, cy = 80;
+    const rx = widthCm ? Math.min(125, Math.max(80, (widthCm / 80) * 115)) : 115;
+    const ry = 48;
     return (
-      <svg viewBox="0 0 200 160" className="w-full max-w-[220px] mx-auto">
+      <svg viewBox="0 0 300 220" className="w-full max-w-[280px] mx-auto">
         <defs>
           <clipPath id={`ms-${clipId}`}>
-            <ellipse cx={cx} cy={cy} rx={r} ry={ry} />
+            <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />
           </clipPath>
         </defs>
-        <ellipse cx={cx} cy={cy} rx={r} ry={ry} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <ellipse cx={cx} cy={cy - r * 0.18} rx={r * 0.95} ry={r * 0.18} fill={lighten(color)} />
+        {/* Tabletop with thickness */}
+        <ellipse cx={cx} cy={cy + 10} rx={rx} ry={ry} fill={darken(color, 25)} />
+        <rect x={cx - rx} y={cy} width={rx * 2} height="12" fill={darken(color, 15)} />
+        <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        <ellipse cx={cx} cy={cy - ry * 0.4} rx={rx * 0.95} ry={ry * 0.4} fill={lighten(color)} opacity="0.4" />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#ms-${clipId})`}>
-            <ellipse cx={cx} cy={cy} rx={r} ry={ry} fill="none" stroke={vivoColor} strokeWidth="3" />
+            <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
-        <ellipse cx={cx} cy="135" rx={r * 0.7} ry={5} fill="rgba(0,0,0,0.06)" />
+        {/* 4 legs */}
+        <rect x={cx - 75} y="100" width="11" height="90" rx="5" fill={darken(color, 40)} />
+        <rect x={cx + 64} y="100" width="11" height="90" rx="5" fill={darken(color, 40)} />
+        <rect x={cx - 42} y="106" width="11" height="84" rx="5" fill={darken(color, 50)} />
+        <rect x={cx + 31} y="106" width="11" height="84" rx="5" fill={darken(color, 50)} />
+        {/* shadow */}
+        <ellipse cx={cx} cy={200} rx={rx * 0.7} ry={5} fill="rgba(0,0,0,0.08)" />
       </svg>
     );
   }
 
-  // rectangular / cuadrada
+  // rectangular / cuadrada — viewBox 0 0 300 220
   const baseW = widthCm
-    ? Math.min(260, Math.max(100, (widthCm / 100) * 200))
+    ? Math.min(240, Math.max(120, (widthCm / 100) * 200))
     : forma === 'cuadrada' ? 160 : 220;
   const baseH = forma === 'cuadrada'
     ? baseW * 0.55
-    : (heightCm ? Math.min(110, Math.max(40, (heightCm / 50) * 75)) : 70);
+    : (heightCm ? Math.min(95, Math.max(45, (heightCm / 50) * 70)) : 70);
   const x = (300 - baseW) / 2;
-  const y = 30;
+  const y = 50;
 
   return (
-    <svg viewBox="0 0 300 160" className="w-full max-w-[280px] mx-auto">
+    <svg viewBox="0 0 300 220" className="w-full max-w-[280px] mx-auto">
       <defs>
         <clipPath id={`ms-${clipId}`}>
           <rect x={x} y={y} width={baseW} height={baseH} rx="6" />
         </clipPath>
       </defs>
+      {/* Tabletop with thickness */}
+      <rect x={x} y={y + baseH - 4} width={baseW} height="10" fill={darken(color, 20)} />
       <rect x={x} y={y} width={baseW} height={baseH} rx="6" fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-      <rect x={x} y={y} width={baseW} height="10" rx="5" fill={lighten(color)} />
+      <rect x={x} y={y} width={baseW} height="10" rx="5" fill={lighten(color)} opacity="0.4" />
       {finish === 'vivo-simple' && (
         <g clipPath={`url(#ms-${clipId})`}>
           <rect x={x} y={y} width={baseW} height={baseH} rx="6" fill="none" stroke={vivoColor} strokeWidth="3" />
         </g>
       )}
-      <rect x={x + 8} y={y + baseH} width="6" height="40" rx="1.5" fill="rgba(0,0,0,0.35)" />
-      <rect x={x + baseW - 14} y={y + baseH} width="6" height="40" rx="1.5" fill="rgba(0,0,0,0.35)" />
+      {/* 4 legs */}
+      <rect x={x + 8} y={y + baseH + 5} width="10" height="80" rx="3" fill={darken(color, 40)} />
+      <rect x={x + baseW - 18} y={y + baseH + 5} width="10" height="80" rx="3" fill={darken(color, 40)} />
+      <rect x={x + 30} y={y + baseH + 8} width="10" height="76" rx="3" fill={darken(color, 50)} />
+      <rect x={x + baseW - 40} y={y + baseH + 8} width="10" height="76" rx="3" fill={darken(color, 50)} />
+      {/* shadow */}
+      <ellipse cx={150} cy={200} rx={baseW * 0.4} ry={4} fill="rgba(0,0,0,0.08)" />
     </svg>
   );
 };
