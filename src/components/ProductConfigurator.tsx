@@ -105,6 +105,13 @@ function parseCm(selectVal: string, customVal: string): number | undefined {
     return isNaN(n) ? undefined : n;
   }
   if (selectVal) {
+    // Spanish meter notation: "1m" -> 100, "1'20m" -> 120, "1'30m" -> 130
+    const meterMatch = selectVal.match(/^(\d+)(?:'(\d+))?m$/);
+    if (meterMatch) {
+      const meters = parseInt(meterMatch[1]);
+      const cms = meterMatch[2] ? parseInt(meterMatch[2]) : 0;
+      return meters * 100 + cms;
+    }
     const n = parseInt(selectVal);
     return isNaN(n) ? undefined : n;
   }
