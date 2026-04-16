@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import AnimatedSection from "./AnimatedSection";
 import { toast } from "sonner";
-import { Check, Loader2, ChevronDown } from "lucide-react";
+import { Check, Loader2, ChevronDown, MessageCircle } from "lucide-react";
 
-const PRODUCT_OPTIONS = ["Cabecero", "Banco", "Cojines", "Puff", "Varios"];
+const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Mesa de centro", "Varios", "Otro"];
+
+const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
+
+function mapProductName(name: string): string {
+  const n = name.toLowerCase();
+  if (n.includes('cabecero')) return 'Cabecero';
+  if (n.includes('banco')) return 'Banco tapizado';
+  if (n.includes('cojin') || n.includes('cojín')) return 'Cojines';
+  if (n.includes('puff')) return 'Puff';
+  if (n.includes('mesa')) return 'Mesa de centro';
+  return 'Varios';
+}
 
 const ContactForm = () => {
   const [searchParams] = useSearchParams();
@@ -14,7 +25,6 @@ const ContactForm = () => {
   const priceParam = searchParams.get('precio');
 
   const hasConfigParams = !!(prefilledProduct || fromConfig || priceParam);
-  const configuradorVisitado = typeof window !== 'undefined' && localStorage.getItem('configurador_visitado') === 'true';
 
   const [form, setForm] = useState({
     name: "",
@@ -22,7 +32,6 @@ const ContactForm = () => {
     email: "",
     product: "",
     details: "",
-    source: "",
   });
   const [rgpd, setRgpd] = useState(false);
   const [sending, setSending] = useState(false);
@@ -52,9 +61,7 @@ const ContactForm = () => {
   const validate = (): Record<string, string> => {
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = "El nombre es obligatorio";
-    if (!form.phone.trim()) {
-      errs.phone = "El teléfono es obligatorio";
-    } else if (!/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) {
+    if (form.phone.trim() && !/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) {
       errs.phone = "Introduce un teléfono español válido (9 dígitos)";
     }
     if (!form.email.trim()) {
@@ -83,7 +90,7 @@ const ContactForm = () => {
       return;
     }
     setSending(true);
-    // TODO: Save to database
+    // TODO: Save to database (Lovable Cloud)
     await new Promise((r) => setTimeout(r, 800));
     setSent(true);
     setSending(false);
@@ -101,10 +108,10 @@ const ContactForm = () => {
           </h2>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light text-lg">
-            Te llamamos antes de 24 horas laborables.
+            Te respondemos en menos de 24 horas laborables.
           </p>
           <button
-            onClick={() => { setSent(false); setForm({ name: '', phone: '', email: '', product: '', details: '', source: '' }); setRgpd(false); setTouched({}); setErrors({}); }}
+            onClick={() => { setSent(false); setForm({ name: '', phone: '', email: '', product: '', details: '' }); setRgpd(false); setTouched({}); setErrors({}); }}
             className="mt-8 px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity rounded-full"
           >
             Volver al inicio
@@ -115,238 +122,220 @@ const ContactForm = () => {
   }
 
   const hasError = (field: string) => touched[field] && errors[field];
-  const borderColor = (field: string) => hasError(field) ? 'border-destructive' : 'border-border focus-within:border-accent-warm';
+  const inputBase = "w-full bg-background border border-border rounded-md px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
 
-  const showConfigSuggestion = !hasConfigParams && !configuradorVisitado && (form.product === 'Cabecero' || form.product === 'Banco');
-  const showConfigReminder = !hasConfigParams && configuradorVisitado;
+  // Build config tags from URL params
+  const configTags: { label: string; value: string }[] = [];
+  if (prefilledProduct) configTags.push({ label: 'Producto', value: mapProductName(prefilledProduct) });
+  if (fromConfig) {
+    // Parse summary string like "Me interesa: Cabeceros tapizados · Arco · Cama 150cm · Color: Lino Natural (aprox. 255€)"
+    const cleaned = fromConfig.replace(/^Me interesa:\s*/i, '').replace(/\s*\(aprox\.[^)]+\)\s*$/, '');
+    const parts = cleaned.split('·').map(p => p.trim()).filter(Boolean);
+    parts.slice(1).forEach((p) => {
+      configTags.push({ label: '', value: p });
+    });
+  }
+  if (priceParam) configTags.push({ label: 'Precio aprox.', value: `${priceParam}€` });
+  if (expressParam === 'true') configTags.push({ label: 'Extras', value: 'Express 7 días (+35€)' });
 
   return (
     <section id="contacto" className="py-20 md:py-32 px-6 bg-background">
-      <div className="container mx-auto max-w-5xl">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 overflow-hidden rounded-lg border border-border/40">
-          {/* Left column - editorial image (desktop only) */}
-          <div className="hidden lg:block lg:col-span-2 relative">
-            <img
-              src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80"
-              alt="Dormitorio con cabecero tapizado artesanal"
-              className="w-full h-full object-cover min-h-[400px]"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <p className="font-serif text-2xl font-light text-white leading-snug">
-                "El cabecero que llevas meses imaginando — en 15 días en tu habitación."
-              </p>
+      <div className="container mx-auto max-w-[600px]">
+        <div className="text-center mb-10">
+          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground">Cuéntanos qué buscas</h2>
+          <span className="section-line" />
+          <p className="mt-4 text-base text-muted-foreground font-light italic">
+            Te respondemos en menos de 24 horas — sin compromiso ni presión.
+          </p>
+        </div>
+
+        {hasConfigParams && (
+          <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30 rounded-md">
+            <p className="text-sm font-medium text-foreground flex items-center gap-2">
+              <span className="text-accent-warm">✦</span> Hemos recuperado tu selección del configurador
+            </p>
+            {configTags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {configTags.map((t, i) => (
+                  <span key={i} className="text-xs px-2.5 py-1 bg-background border border-border rounded-full text-foreground">
+                    {t.label && <span className="text-muted-foreground mr-1">{t.label}:</span>}
+                    {t.value}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          {/* Nombre + Teléfono */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label htmlFor="contact-name" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                Nombre *
+              </label>
+              <input
+                id="contact-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => update("name", e.target.value)}
+                placeholder="Tu nombre"
+                className={`${inputBase} ${hasError('name') ? 'border-destructive' : ''}`}
+              />
+              {hasError('name') && <p className="text-xs mt-1 text-destructive">{errors.name}</p>}
+            </div>
+            <div>
+              <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                Teléfono / WhatsApp
+              </label>
+              <input
+                id="contact-phone"
+                type="tel"
+                value={form.phone}
+                onChange={(e) => update("phone", e.target.value)}
+                placeholder="600 000 000"
+                className={`${inputBase} ${hasError('phone') ? 'border-destructive' : ''}`}
+              />
+              {hasError('phone') && <p className="text-xs mt-1 text-destructive">{errors.phone}</p>}
             </div>
           </div>
 
-          {/* Right column - form */}
-          <div className="lg:col-span-3 bg-background px-6 md:px-8 py-10">
-            {hasConfigParams && (
-              <div className="mb-6 p-4 bg-accent-warm/10 border border-accent-warm/30 rounded">
-                <p className="text-sm font-medium text-foreground">
-                  ✓ Tu configuración está guardada
-                </p>
-                {fromConfig && (
-                  <p className="text-xs text-muted-foreground mt-1">{fromConfig}</p>
-                )}
-                {expressParam === 'true' && (
-                  <span className="block mt-1 text-xs text-accent-warm">+ Entrega express (7 días) +35€</span>
-                )}
-              </div>
-            )}
-
-            {showConfigReminder && (
-              <div className="mb-4 text-xs text-muted-foreground italic">
-                Vemos que has estado explorando el configurador. Si tienes dudas con las medidas, <Link to="/configurador" className="underline text-accent-warm">vuelve a él</Link> cuando quieras.
-              </div>
-            )}
-
-            <h2 className="font-serif text-2xl font-light text-foreground">Cuéntanos qué buscas</h2>
-            <p className="text-sm text-muted-foreground italic mt-1 mb-8">Te llamamos en 24 horas — sin compromiso ni presión.</p>
-
-            <form onSubmit={handleSubmit} className="space-y-10" noValidate>
-              {/* Nombre */}
-              <div className={`relative border-b transition-colors ${borderColor('name')}`}>
-                <input
-                  id="contact-name"
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => update("name", e.target.value)}
-                  className="peer w-full bg-transparent pt-6 pb-2 text-base text-foreground placeholder-transparent focus:outline-none"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="contact-name"
-                  className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
-                >
-                  Nombre *
-                </label>
-                {hasError('name') && <p className="text-xs mt-1 font-light text-destructive">{errors.name}</p>}
-              </div>
-
-              {/* Teléfono */}
-              <div className={`relative border-b transition-colors ${borderColor('phone')}`}>
-                <input
-                  id="contact-phone"
-                  type="tel"
-                  value={form.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                  className="peer w-full bg-transparent pt-6 pb-2 text-base text-foreground placeholder-transparent focus:outline-none"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="contact-phone"
-                  className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
-                >
-                  Teléfono * (te llamamos nosotros)
-                </label>
-                {hasError('phone') && <p className="text-xs mt-1 font-light text-destructive">{errors.phone}</p>}
-              </div>
-
-              {/* Email */}
-              <div className={`relative border-b transition-colors ${borderColor('email')}`}>
-                <input
-                  id="contact-email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => update("email", e.target.value)}
-                  className="peer w-full bg-transparent pt-6 pb-2 text-base text-foreground placeholder-transparent focus:outline-none"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="contact-email"
-                  className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
-                >
-                  Email *
-                </label>
-                {hasError('email') && <p className="text-xs mt-1 font-light text-destructive">{errors.email}</p>}
-              </div>
-
-              {/* Producto */}
-              <div className={`relative border-b transition-colors ${borderColor('product')}`}>
-                <label htmlFor="contact-product" className="block text-xs tracking-wide uppercase text-muted-foreground mb-1">
-                  Producto de interés *
-                </label>
-                <div className="relative">
-                  <select
-                    id="contact-product"
-                    value={form.product}
-                    onChange={(e) => update("product", e.target.value)}
-                    className="w-full bg-transparent pb-2 text-base text-foreground focus:outline-none appearance-none cursor-pointer pr-8"
-                  >
-                    <option value="">Seleccionar...</option>
-                    {PRODUCT_OPTIONS.map((p) => (
-                      <option key={p} value={p}>{p}</option>
-                    ))}
-                  </select>
-                  <ChevronDown size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                </div>
-                {hasError('product') && <p className="text-xs mt-1 font-light text-destructive">{errors.product}</p>}
-              </div>
-
-              {/* Configurator suggestion */}
-              {showConfigSuggestion && (
-                <div className="p-3 bg-secondary rounded flex items-center justify-between gap-3">
-                  <p className="text-xs text-muted-foreground">
-                    ¿Sabes las medidas y la tela que quieres? Usa nuestro configurador para ver el precio exacto antes de enviarnos el formulario.
-                  </p>
-                  <Link to="/configurador" className="text-xs whitespace-nowrap text-accent-warm underline underline-offset-2 font-medium">
-                    Ir al configurador →
-                  </Link>
-                </div>
-              )}
-
-              {/* Detalles */}
-              <div className="relative border-b border-border transition-colors focus-within:border-accent-warm">
-                <textarea
-                  id="contact-details"
-                  value={form.details}
-                  onChange={(e) => update("details", e.target.value)}
-                  rows={4}
-                  className="peer w-full bg-transparent pt-6 pb-2 text-base text-foreground placeholder-transparent focus:outline-none resize-none"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="contact-details"
-                  className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
-                >
-                  Cuéntanos un poco más
-                </label>
-              </div>
-
-              {/* Fuente */}
-              <div className="relative border-b border-border transition-colors focus-within:border-accent-warm">
-                <input
-                  id="contact-source"
-                  type="text"
-                  value={form.source}
-                  onChange={(e) => update("source", e.target.value)}
-                  className="peer w-full bg-transparent pt-6 pb-2 text-base text-foreground placeholder-transparent focus:outline-none"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="contact-source"
-                  className="absolute left-0 top-2 text-xs tracking-wide uppercase text-muted-foreground transition-all duration-200 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-wide peer-focus:uppercase peer-focus:text-accent-warm"
-                >
-                  ¿Cómo nos has conocido? (opcional)
-                </label>
-              </div>
-
-              {/* RGPD */}
-              <div className="flex items-start gap-3 pt-2">
-                <input
-                  id="rgpd"
-                  type="checkbox"
-                  checked={rgpd}
-                  onChange={(e) => { setRgpd(e.target.checked); setTouched(t => ({ ...t, rgpd: true })); }}
-                  className="mt-1 w-4 h-4 accent-accent-warm cursor-pointer shrink-0"
-                />
-                <label htmlFor="rgpd" className="text-xs text-muted-foreground font-light leading-relaxed cursor-pointer">
-                  He leído y acepto la{" "}
-                  <Link to="/privacidad" className="underline hover:text-foreground transition-colors">
-                    Política de Privacidad
-                  </Link>
-                </label>
-              </div>
-              {touched.rgpd && errors.rgpd && (
-                <p className="text-xs font-light text-destructive">{errors.rgpd}</p>
-              )}
-
-              <div className="pt-4 text-center">
-                <button
-                  type="submit"
-                  disabled={sending}
-                  className="px-10 py-4 bg-accent-warm text-white text-sm tracking-widest uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-full inline-flex items-center gap-2"
-                >
-                  {sending ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      Enviando...
-                    </>
-                  ) : (
-                    "Quiero el mío →"
-                  )}
-                </button>
-                <p className="mt-4 text-xs text-muted-foreground font-light italic">
-                  Te llamamos en menos de 24 horas laborables — sin compromiso.
-                </p>
-              </div>
-            </form>
+          {/* Email */}
+          <div>
+            <label htmlFor="contact-email" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+              Email *
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              value={form.email}
+              onChange={(e) => update("email", e.target.value)}
+              placeholder="tu@email.com"
+              className={`${inputBase} ${hasError('email') ? 'border-destructive' : ''}`}
+            />
+            {hasError('email') && <p className="text-xs mt-1 text-destructive">{errors.email}</p>}
           </div>
+
+          {/* Producto */}
+          <div>
+            <label htmlFor="contact-product" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+              Tipo de producto *
+            </label>
+            <div className="relative">
+              <select
+                id="contact-product"
+                value={form.product}
+                onChange={(e) => update("product", e.target.value)}
+                className={`${inputBase} appearance-none cursor-pointer pr-10 ${hasError('product') ? 'border-destructive' : ''}`}
+              >
+                <option value="">Seleccionar...</option>
+                {PRODUCT_OPTIONS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+              <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            </div>
+            {hasError('product') && <p className="text-xs mt-1 text-destructive">{errors.product}</p>}
+          </div>
+
+          {/* Detalles */}
+          <div>
+            <label htmlFor="contact-details" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+              Detalles del proyecto
+            </label>
+            <textarea
+              id="contact-details"
+              value={form.details}
+              onChange={(e) => update("details", e.target.value)}
+              rows={5}
+              placeholder="Cuéntanos: medidas aproximadas, material o tela que te gusta, estilo de tu espacio, colores, plazo... Cuanto más nos cuentes, más ajustado será el presupuesto."
+              className={`${inputBase} resize-none`}
+            />
+            <p className="mt-2 text-xs text-muted-foreground italic font-light">
+              Medidas, tela, color, forma — todo va aquí. Si no lo sabes aún, sin problema.
+            </p>
+          </div>
+
+          {/* Sección de pago */}
+          <div className="p-4 bg-secondary rounded-md">
+            <p className="text-xs tracking-wide uppercase text-muted-foreground font-medium mb-3">Métodos de pago</p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
+                <span>📱</span> Bizum
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
+                <span>💳</span> Stripe
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-background border border-border rounded-full text-foreground">
+                <span>🏦</span> Transferencia bancaria
+              </span>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground italic">
+              50% al confirmar · 50% a la entrega
+            </p>
+          </div>
+
+          {/* RGPD */}
+          <div className="flex items-start gap-3 pt-2">
+            <input
+              id="rgpd"
+              type="checkbox"
+              checked={rgpd}
+              onChange={(e) => { setRgpd(e.target.checked); setTouched(t => ({ ...t, rgpd: true })); }}
+              className="mt-1 w-4 h-4 accent-accent-warm cursor-pointer shrink-0"
+            />
+            <label htmlFor="rgpd" className="text-xs text-muted-foreground font-light leading-relaxed cursor-pointer">
+              He leído y acepto la{" "}
+              <Link to="/privacidad" className="underline hover:text-foreground transition-colors">
+                Política de Privacidad
+              </Link>
+            </label>
+          </div>
+          {touched.rgpd && errors.rgpd && (
+            <p className="text-xs text-destructive">{errors.rgpd}</p>
+          )}
+
+          {/* Botón enviar */}
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={sending}
+              className="w-full px-8 py-4 bg-accent-warm text-white text-sm tracking-widest uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-md inline-flex items-center justify-center gap-2"
+            >
+              {sending ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                "Enviar solicitud →"
+              )}
+            </button>
+            <p className="mt-3 text-xs text-muted-foreground font-light text-center">
+              Respondemos en menos de 24h · Sin compromiso
+            </p>
+          </div>
+        </form>
+
+        {/* WhatsApp footer */}
+        <div className="mt-10 pt-8 border-t border-border/40 text-center">
+          <p className="text-sm text-muted-foreground font-light">
+            ¿Prefieres hablar?{" "}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-accent-warm hover:underline font-medium"
+            >
+              <MessageCircle size={14} />
+              Escríbenos por WhatsApp
+            </a>
+            {" "}— respondemos en minutos.
+          </p>
         </div>
       </div>
     </section>
   );
 };
-
-function mapProductName(name: string): string {
-  if (name.toLowerCase().includes('cabecero')) return 'Cabecero';
-  if (name.toLowerCase().includes('banco')) return 'Banco';
-  if (name.toLowerCase().includes('cojin') || name.toLowerCase().includes('cojín')) return 'Cojines';
-  if (name.toLowerCase().includes('puff')) return 'Puff';
-  return 'Varios';
-}
 
 export default ContactForm;

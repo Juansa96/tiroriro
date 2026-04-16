@@ -53,6 +53,17 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       { name: "Puff Gigante", photo: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80", desc: "El más contundente. Para salones y zonas de estar.", price: 150 },
     ],
   },
+  mesas: {
+    title: "Mesas de centro",
+    subtitle: "Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.",
+    models: [
+      { name: "Mesa baja rectangular", photo: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80", desc: "Patas torneadas, tapizado en tela. La más versátil.", price: 290, configParam: "rectangular" },
+      { name: "Mesa baja cuadrada", photo: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80", desc: "Patas metálicas, tapizado en bouclé. Líneas limpias y contemporáneas.", price: 310, configParam: "cuadrada" },
+      { name: "Mesa baja redonda", photo: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=600&q=80", desc: "Base tapizada en terciopelo, sin patas visibles. Pieza de carácter.", price: 360, configParam: "redonda" },
+      { name: "Mesa con bandeja extraíble", photo: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&q=80", desc: "Tapizado en lino con bandeja superior extraíble. Funcional y elegante.", price: 380, configParam: "rectangular" },
+      { name: "Mesa XXL", photo: "https://images.unsplash.com/photo-1565374395542-0ce18882c857?w=600&q=80", desc: "Gran formato, tapizado personalizable. Para salones amplios.", price: 450, configParam: "rectangular" },
+    ],
+  },
 };
 
 const CategoryPage = () => {
@@ -77,6 +88,7 @@ const CategoryPage = () => {
     bancos: 'banco',
     cojines: 'cojin',
     puffs: 'puff',
+    mesas: 'mesa',
   };
 
   return (

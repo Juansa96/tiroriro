@@ -1,4 +1,4 @@
-export type ProductType = 'cabecero' | 'banco' | 'cojin' | 'puff';
+export type ProductType = 'cabecero' | 'banco' | 'cojin' | 'puff' | 'mesa';
 
 export interface Product {
   id: string;
@@ -53,7 +53,24 @@ export const PRODUCTS: Product[] = [
     basePrice: 95,
     image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
   },
+  {
+    id: 'mesa-centro',
+    type: 'mesa',
+    name: 'Mesas de centro',
+    tagline: 'Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.',
+    basePrice: 290,
+    image: 'https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=800&q=80',
+  },
 ];
+
+export const MESA_SHAPES = [
+  { id: 'rectangular', name: 'Rectangular' },
+  { id: 'cuadrada', name: 'Cuadrada' },
+  { id: 'redonda', name: 'Redonda' },
+];
+
+export const MESA_SIZES = ['60×60 cm', '80×40 cm', '100×50 cm', '120×60 cm', 'Personalizada'];
+export const MESA_LEGS = ['Madera natural', 'Madera lacada', 'Metal negro', 'Sin patas'];
 
 export const HEADBOARD_SHAPES = [
   { id: 'recto', name: 'Recto' },
@@ -114,6 +131,19 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     if (options.puffSize === 'Grande') price += 90;
   }
 
+  if (type === 'mesa') {
+    const sizeMap: Record<string, number> = {
+      '60×60 cm': 290, '80×40 cm': 310, '100×50 cm': 360, '120×60 cm': 410,
+    };
+    const sizePrice = sizeMap[options.size];
+    if (sizePrice) {
+      price = sizePrice;
+      if (finish) price += finish.extra;
+    }
+    if (options.size === 'Personalizada') price += 80;
+    if (options.legs && options.legs !== 'Sin patas') price += 30;
+  }
+
   // Extras
   if (options.patas === 'true') price += 15;
   if (options.relleno === 'true') price += 20;
@@ -144,6 +174,12 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
   }
   if (type === 'puff') {
     if (options.puffSize) parts.push(options.puffSize);
+  }
+  if (type === 'mesa') {
+    const shapeName = MESA_SHAPES.find(s => s.id === options.shape)?.name;
+    if (shapeName) parts.push(shapeName);
+    if (options.size) parts.push(options.size);
+    if (options.legs) parts.push(`Patas: ${options.legs}`);
   }
   if (finishName && type !== 'puff') parts.push(finishName);
   if (colorName) parts.push(`Color: ${colorName}`);

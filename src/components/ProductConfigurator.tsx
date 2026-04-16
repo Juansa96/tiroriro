@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
+import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary, MESA_SHAPES, MESA_SIZES, MESA_LEGS } from "@/lib/products";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -82,6 +82,8 @@ const ProductIcon = ({ type }: { type: string }) => {
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><ellipse cx="20" cy="17" rx="16" ry="11" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
       return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'mesa':
+      return <svg viewBox="0 0 40 28" className="w-8 h-6"><rect x="3" y="6" width="34" height="8" rx="1.5" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="7" y1="14" x2="7" y2="24" stroke="currentColor" strokeWidth="2" /><line x1="33" y1="14" x2="33" y2="24" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
       return null;
   }
@@ -125,6 +127,8 @@ const ProductConfigurator = () => {
   const [puffDiameter, setPuffDiameter] = useState("");
   const [puffHeight, setPuffHeight] = useState("");
   const [cushionSize, setCushionSize] = useState("");
+  const [mesaSize, setMesaSize] = useState("");
+  const [mesaLegs, setMesaLegs] = useState("");
   const [fabricId, setFabricId] = useState("");
   const [finish, setFinish] = useState("");
   const [vivoColorId, setVivoColorId] = useState("");
@@ -154,7 +158,7 @@ const ProductConfigurator = () => {
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
-    if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puff', 'mesa'].includes(tipo)) {
       setProductType(tipo as ProductType);
       if (isMobile) {
         setOpenAccordion('measures');
@@ -166,7 +170,7 @@ const ProductConfigurator = () => {
   }, [searchParams]);
 
   const resetConfiguracion = (newType?: ProductType) => {
-    setShape(newType === 'cabecero' ? 'recto' : 'recto');
+    setShape(newType === 'mesa' ? 'rectangular' : 'recto');
     setBedWidth('');
     setBedHeight('');
     setBenchLength('');
@@ -175,6 +179,8 @@ const ProductConfigurator = () => {
     setPuffDiameter('');
     setPuffHeight('');
     setCushionSize('');
+    setMesaSize('');
+    setMesaLegs('');
     setFabricId('');
     setFinish('');
     setVivoColorId('');
@@ -201,10 +207,12 @@ const ProductConfigurator = () => {
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth, customWidth)
     : productType === 'banco' ? parseCm(benchLength, '')
     : productType === 'puff' ? parseCm(puffDiameter, '')
+    : productType === 'mesa' ? (mesaSize && mesaSize !== 'Personalizada' ? parseInt(mesaSize) : (customWidth ? parseInt(customWidth) : undefined))
     : undefined;
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight, customHeight)
     : productType === 'banco' ? parseCm(benchHeight, '')
     : productType === 'puff' ? parseCm(puffHeight, '')
+    : productType === 'mesa' ? (mesaSize && mesaSize.includes('×') ? parseInt(mesaSize.split('×')[1]) : undefined)
     : undefined;
 
   // For cushion, pass size info via forma
@@ -220,13 +228,18 @@ const ProductConfigurator = () => {
     if (productType === 'banco') o.length = benchLength;
     if (productType === 'cojin') o.size = cushionSize;
     if (productType === 'puff') o.puffSize = puffDiameter === '40cm' ? 'Pequeño' : puffDiameter === '50cm' ? 'Mediano' : puffDiameter === '60cm' ? 'Grande' : '';
+    if (productType === 'mesa') {
+      o.shape = shape;
+      o.size = mesaSize;
+      if (mesaLegs) o.legs = mesaLegs;
+    }
     if (finish) o.finish = finish;
     if (fabricId) o.color = fabricId;
     if (extraPatas) o.patas = 'true';
     if (extraRelleno) o.relleno = 'true';
     if (extraExpress) o.express = 'true';
     return o;
-  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, mesaSize, mesaLegs, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -239,6 +252,7 @@ const ProductConfigurator = () => {
       : productType === 'banco' ? !!benchLength
       : productType === 'puff' ? !!puffDiameter
       : productType === 'cojin' ? !!cushionSize
+      : productType === 'mesa' ? !!mesaSize
       : false,
     fabric: !!fabricId,
     finish: !!finish,
@@ -262,6 +276,10 @@ const ProductConfigurator = () => {
   if (productType === 'banco') chips.push(benchLength || "—");
   if (productType === 'puff') chips.push(puffDiameter || "—");
   if (productType === 'cojin') chips.push(cushionSize || "—");
+  if (productType === 'mesa') {
+    chips.push(MESA_SHAPES.find(s => s.id === shape)?.name || "—");
+    chips.push(mesaSize || "—");
+  }
   chips.push(fabric?.name || "—");
   const finishObj = FINISHES.find(f => f.id === finish);
   if (finishObj) chips.push(finishObj.name);
@@ -317,6 +335,7 @@ const ProductConfigurator = () => {
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
         if (productType === 'puff') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> Ø{puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {cushionSize}</span>;
+        if (productType === 'mesa') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {MESA_SHAPES.find(s => s.id === shape)?.name} · {mesaSize}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
@@ -454,6 +473,7 @@ const ProductConfigurator = () => {
               benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
               puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
               cushionSize={cushionSize} setCushionSize={setCushionSize}
+              mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
               fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
               finish={finish} setFinish={(f) => { setFinish(f); }}
               vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
@@ -472,6 +492,7 @@ const ProductConfigurator = () => {
               benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
               puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
               cushionSize={cushionSize} setCushionSize={setCushionSize}
+              mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
               fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
               finish={finish} setFinish={(f) => { setFinish(f); }}
               vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
@@ -498,6 +519,7 @@ const ProductConfigurator = () => {
           benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
           puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
           cushionSize={cushionSize} setCushionSize={setCushionSize}
+          mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
           fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
           finish={finish} setFinish={(f) => { setFinish(f); }}
           vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
@@ -548,6 +570,8 @@ interface AccordionContentSharedProps {
   puffDiameter: string; setPuffDiameter: (v: string) => void;
   puffHeight: string; setPuffHeight: (v: string) => void;
   cushionSize: string; setCushionSize: (v: string) => void;
+  mesaSize: string; setMesaSize: (v: string) => void;
+  mesaLegs: string; setMesaLegs: (v: string) => void;
   fabricId: string; setFabricId: (v: string) => void;
   finish: string; setFinish: (v: string) => void;
   vivoColorId: string; setVivoColorId: (v: string) => void;
@@ -569,6 +593,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
     cushionSize, setCushionSize,
+    mesaSize, setMesaSize, mesaLegs, setMesaLegs,
     fabricId, setFabricId,
     finish, setFinish,
     vivoColorId, setVivoColorId,
@@ -593,6 +618,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             {productCard('banco', 'Banco')}
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
+            {productCard('mesa', 'Mesa de centro')}
           </div>
           <div className="mt-4 pt-4 border-t border-border/40">
             <a
@@ -750,6 +776,44 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 </select>
               </SelectWrapper>
             </div>
+          )}
+          {productType === 'mesa' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {MESA_SHAPES.map(s => (
+                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all text-xs font-light ${shape === s.id ? "border-foreground bg-foreground/5 text-foreground" : "border-border text-muted-foreground hover:border-foreground/60"}`}>
+                      {s.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medidas</p>
+                <SelectWrapper>
+                  <select value={mesaSize} onChange={(e) => setMesaSize(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar medidas...</option>
+                    {MESA_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </SelectWrapper>
+                {mesaSize === 'Personalizada' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={40} max={200} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-32 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Material patas</p>
+                <SelectWrapper>
+                  <select value={mesaLegs} onChange={(e) => setMesaLegs(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar material...</option>
+                    {MESA_LEGS.map(l => <option key={l} value={l}>{l}</option>)}
+                  </select>
+                </SelectWrapper>
+              </div>
+            </>
           )}
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>

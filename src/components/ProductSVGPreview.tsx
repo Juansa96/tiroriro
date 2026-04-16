@@ -186,6 +186,38 @@ const CushionSVG = ({ color, finish, vivoColor, size }: { color: string; finish:
   );
 };
 
+const MesaSVG = ({ color, forma, widthCm, heightCm }: { color: string; forma?: string; widthCm?: number; heightCm?: number }) => {
+  // forma: rectangular | cuadrada | redonda
+  if (forma === 'redonda') {
+    const r = widthCm ? Math.min(85, Math.max(40, (widthCm / 80) * 70)) : 70;
+    return (
+      <svg viewBox="0 0 200 160" className="w-full max-w-[220px] mx-auto">
+        <ellipse cx="100" cy="85" rx={r} ry={r * 0.45} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" className="transition-all duration-300" />
+        <ellipse cx="100" cy={85 - r * 0.18} rx={r * 0.95} ry={r * 0.18} fill={lighten(color)} className="transition-all duration-300" />
+        <ellipse cx="100" cy="135" rx={r * 0.7} ry={5} fill="rgba(0,0,0,0.06)" />
+      </svg>
+    );
+  }
+  // rectangular / cuadrada
+  const baseW = widthCm
+    ? Math.min(260, Math.max(100, (widthCm / 100) * 200))
+    : forma === 'cuadrada' ? 160 : 220;
+  const baseH = forma === 'cuadrada'
+    ? baseW * 0.55
+    : (heightCm ? Math.min(110, Math.max(40, (heightCm / 50) * 75)) : 70);
+  const x = (300 - baseW) / 2;
+  const y = 30;
+  return (
+    <svg viewBox="0 0 300 160" className="w-full max-w-[280px] mx-auto">
+      <rect x={x} y={y} width={baseW} height={baseH} rx={6} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" className="transition-all duration-300" />
+      <rect x={x} y={y} width={baseW} height={10} rx={5} fill={lighten(color)} className="transition-all duration-300" />
+      {/* legs */}
+      <rect x={x + 8} y={y + baseH} width={6} height={40} rx={1.5} fill="rgba(0,0,0,0.35)" />
+      <rect x={x + baseW - 14} y={y + baseH} width={6} height={40} rx={1.5} fill="rgba(0,0,0,0.35)" />
+    </svg>
+  );
+};
+
 const ProductSVGPreview = ({ type, color, finish, vivoColor, forma, widthCm, heightCm }: Props) => {
   const vc = vivoColor || darken(color);
   const [opacity, setOpacity] = useState(1);
@@ -210,6 +242,7 @@ const ProductSVGPreview = ({ type, color, finish, vivoColor, forma, widthCm, hei
       {type === 'banco' && <BenchSVG color={color} finish={finish} vivoColor={vc} widthCm={widthCm} heightCm={heightCm} />}
       {type === 'puff' && <PuffSVG color={color} diameter={widthCm} />}
       {type === 'cojin' && <CushionSVG color={color} finish={finish} vivoColor={vc} size={forma} />}
+      {type === 'mesa' && <MesaSVG color={color} forma={currentForma} widthCm={widthCm} heightCm={heightCm} />}
     </div>
   );
 };
