@@ -62,8 +62,8 @@ const ProductCard = ({ product, index }: { product: typeof PRODUCTS_DATA[number]
             <span className="text-white text-sm tracking-widest uppercase">Explorar →</span>
           </div>
         </div>
-        <div className="mt-4 p-1">
-          <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">
+        <div className="mt-4 p-1 h-12 flex items-start">
+          <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">
             {product.name}
           </h3>
         </div>
