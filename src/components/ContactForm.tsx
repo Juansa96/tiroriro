@@ -320,7 +320,7 @@ const ContactForm = () => {
         <div className="mt-10 pt-8 border-t border-border/40 text-center">
           <p className="text-sm text-muted-foreground font-light">
             ¿Prefieres hablar?{" "}
-            
+            <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
