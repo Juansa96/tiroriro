@@ -57,18 +57,19 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   },
 };
 
+const productTypeMap: Record<string, string> = {
+  cabeceros: 'cabecero',
+  bancos: 'banco',
+  cojines: 'cojin',
+  puffs: 'puff',
+};
+
 const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   const [hovered, setHovered] = useState(false);
-  const productTypeMap: Record<string, string> = {
-    cabeceros: 'cabecero',
-    bancos: 'banco',
-    cojines: 'cojin',
-    puffs: 'puff',
-  };
 
   return (
     <div
-      className="flex flex-col border border-border/40 rounded overflow-hidden"
+      className="flex flex-col h-full border border-border/40 rounded overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -142,10 +143,12 @@ const CategoryPage = () => {
             <p className="mt-3 text-muted-foreground font-light italic">{cat.subtitle}</p>
             <span className="section-line" />
           </AnimatedSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {cat.models.map((model, i) => (
-              <AnimatedSection key={model.name} delay={i * 0.08} className="flex flex-col">
-                <ModelCard model={model} category={category || ''} />
+              <AnimatedSection key={model.name} delay={i * 0.08} className="h-full">
+                <div className="h-full">
+                  <ModelCard model={model} category={category || ''} />
+                </div>
               </AnimatedSection>
             ))}
           </div>
