@@ -6,7 +6,6 @@ const PRODUCTS_DATA = [
   {
     id: 'cabeceros',
     name: 'Cabeceros tapizados',
-    tagline: 'El punto de partida de cualquier dormitorio que merece la pena',
     image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80&fit=crop&crop=center',
     alt: 'Cabecero tapizado en lino natural sobre cama de matrimonio',
     link: '/productos/cabeceros',
@@ -14,7 +13,6 @@ const PRODUCTS_DATA = [
   {
     id: 'bancos',
     name: 'Bancos entelados',
-    tagline: 'Para el pie de la cama, la entrada o donde quieras que aterrice la vista',
     image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=600&q=80&fit=crop&crop=center',
     alt: 'Banco entelado al pie de cama en tela beige',
     link: '/productos/bancos',
@@ -22,26 +20,16 @@ const PRODUCTS_DATA = [
   {
     id: 'cojines',
     name: 'Cojines y almohadones',
-    tagline: 'Los últimos detalles que convierten una cama en la tuya',
     image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&q=80&fit=crop&crop=center',
     alt: 'Cojines y almohadones decorativos en tonos neutros sobre cama',
     link: '/productos/cojines',
   },
   {
     id: 'puffs',
-    name: 'Puffs elegantes',
-    tagline: 'Asiento, reposapiés, escultura — según cómo lo mires',
+    name: 'Puffs y mesas de centro',
     image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80&fit=crop&crop=center',
     alt: 'Puff tapizado elegante en salón con luz natural',
     link: '/productos/puffs',
-  },
-  {
-    id: 'mesas',
-    name: 'Mesas de centro',
-    tagline: 'Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.',
-    image: 'https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80&fit=crop&crop=center',
-    alt: 'Mesa de centro tapizada artesanal en salón',
-    link: '/productos/mesas',
   },
 ];
 
@@ -69,27 +57,15 @@ const ProductCard = ({ product, index }: { product: typeof PRODUCTS_DATA[number]
           />
           <div
             style={{ opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }}
-            className="absolute inset-0 bg-black/15 flex items-center justify-center pointer-events-none"
+            className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none"
           >
             <span className="text-white text-sm tracking-widest uppercase">Explorar →</span>
           </div>
         </div>
-        <div className="mt-5 p-1">
+        <div className="mt-4 p-1">
           <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">
             {product.name}
           </h3>
-          <p className="mt-1.5 text-base text-muted-foreground font-light italic">
-            "{product.tagline}"
-          </p>
-          <span
-            className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-foreground border-b border-foreground pb-0.5 transition-colors"
-            style={{
-              color: hovered ? 'hsl(var(--accent-warm))' : undefined,
-              borderColor: hovered ? 'hsl(var(--accent-warm))' : undefined,
-            }}
-          >
-            Explorar
-          </span>
         </div>
       </Link>
     </AnimatedSection>
@@ -103,7 +79,6 @@ const ProductsPreview = () => (
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
         <span className="section-line" />
       </AnimatedSection>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto mt-12">
         {PRODUCTS_DATA.map((product, i) => (
           <ProductCard key={product.id} product={product} index={i} />
