@@ -40,9 +40,9 @@ const headboardPath = (forma: string): string => {
     case 'semicirculo':
       return "M 15 185 L 15 110 Q 150 25 285 110 L 285 185 Z";
     case 'corona-simple':
-      return "M 10 185 L 10 118 L 52 118 C 52 118 52 100 60 88 C 72 65 100 40 150 28 C 200 40 228 65 240 88 C 248 100 248 118 248 118 L 290 118 L 290 185 Z";
+      return "M 15 185 L 15 110 C 15 110 55 88 90 78 C 120 70 140 55 150 38 C 160 55 180 70 210 78 C 245 88 285 110 285 110 L 285 185 Z";
     case 'corona-doble':
-      return "M 10 185 L 10 148 C 12 128 22 105 44 98 C 58 92 68 100 72 112 C 73 116 74 120 75 124 C 77 118 82 106 90 94 C 102 70 122 44 150 32 C 178 44 198 70 210 94 C 218 106 223 118 225 124 C 226 120 227 116 228 112 C 232 100 242 92 256 98 C 278 105 288 128 290 148 L 290 185 Z";
+      return "M 15 185 L 15 125 C 15 95 40 70 70 70 C 100 70 120 95 125 120 C 130 80 140 35 150 35 C 160 35 170 80 175 120 C 180 95 200 70 230 70 C 260 70 285 95 285 125 L 285 185 Z";
     case 'recto':
     default:
       return "M 15 50 L 285 50 L 285 185 L 15 185 Z";
@@ -112,11 +112,9 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
             <path d="M 24 67 L 276 67 L 276 163 L 24 163 Z" fill="none" stroke={vivoColor} strokeWidth="2" />
           </g>
         )}
-        {/* legs */}
-        <rect x="22" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
-        <rect x="100" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
-        <rect x="193" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
-        <rect x="271" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
+        {/* legs — two wide rectangular legs at the sides */}
+        <rect x="22" y="175" width="38" height="42" rx="3" fill="rgba(0,0,0,0.35)" />
+        <rect x="240" y="175" width="38" height="42" rx="3" fill="rgba(0,0,0,0.35)" />
       </g>
     </svg>
   );
