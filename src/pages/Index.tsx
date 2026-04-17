@@ -22,8 +22,8 @@ const Index = () => (
       <WhyTiroRiro />
       <HowItWorks />
       <SectionCTA to="/configurador" label="Diseña el tuyo" />
-      <ContactForm />
       <Testimonials />
+      <ContactForm />
       <FAQSection />
     </main>
     <Footer />
