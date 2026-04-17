@@ -1,6 +1,6 @@
 import inakiRocioPhoto from "@/assets/team/inaki-rocio.jpeg";
 import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const COUPLES = [
   {
@@ -38,14 +38,46 @@ const COUPLES = [
 ];
 
 const POLL_OPTIONS = [
-  { id: "rocio", label: "Rocío", emoji: "🎨" },
-  { id: "inaki", label: "Iñaki", emoji: "🤝" },
-  { id: "bea", label: "Beatriz", emoji: "📋" },
-  { id: "juan", label: "Juan", emoji: "💻" },
+  { id: "inaki-rocio", label: "Iñaki y Rocío", emoji: "❤️" },
+  { id: "juan-bea", label: "Juan y Bea", emoji: "❤️" },
 ];
+
+const getCurrentMonth = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${now.getMonth()}`;
+};
 
 const TeamSection = () => {
   const [voted, setVoted] = useState<string | null>(null);
+  const [votes, setVotes] = useState({ "inaki-rocio": 0, "juan-bea": 0 });
+
+  useEffect(() => {
+    const currentMonth = getCurrentMonth();
+    const stored = localStorage.getItem("tiroriro-poll");
+    if (stored) {
+      const data = JSON.parse(stored);
+      if (data.month === currentMonth) {
+        setVotes(data.votes);
+        setVoted(data.userVote || null);
+      } else {
+        localStorage.removeItem("tiroriro-poll");
+      }
+    }
+  }, []);
+
+  const handleVote = (id: string) => {
+    if (voted) return;
+    const newVotes = { ...votes, [id]: votes[id as keyof typeof votes] + 1 };
+    setVotes(newVotes);
+    setVoted(id);
+    localStorage.setItem("tiroriro-poll", JSON.stringify({
+      month: getCurrentMonth(),
+      votes: newVotes,
+      userVote: id,
+    }));
+  };
+
+  const total = votes["inaki-rocio"] + votes["juan-bea"];
 
   return (
     <section id="equipo" className="py-20 md:py-32 px-6 bg-secondary">
@@ -84,32 +116,45 @@ const TeamSection = () => {
 
         {/* Poll */}
         <div className="mt-20 text-center max-w-2xl mx-auto">
-          <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground">¿Quién te cae mejor?</h3>
+          <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground">¿A quién le dais el like este mes?</h3>
           <p className="mt-3 text-sm text-muted-foreground font-light">
-            Estamos haciendo una encuesta interna. El que pierda invita a comer al resto.<br />
-            <span className="italic">La presión es real.</span>
+            Encuesta mensual — el matrimonio que pierda invita a comer al otro.<br />
+            <span className="italic">Los resultados se resetean el primero de cada mes. La presión es real.</span>
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {POLL_OPTIONS.map((opt) => (
-              <button
-                key={opt.id}
-                onClick={() => setVoted(opt.id)}
-                className={`px-6 py-3 rounded-full border text-sm font-light tracking-wide transition-all duration-200 ${
-                  voted === opt.id
-                    ? "bg-accent-warm text-white border-accent-warm scale-105"
-                    : "border-border text-foreground hover:border-accent-warm hover:text-accent-warm"
-                }`}
-              >
-                {opt.emoji} {opt.label}
-              </button>
-            ))}
+          <div className="mt-8 flex flex-wrap justify-center gap-12">
+            {POLL_OPTIONS.map((opt) => {
+              const count = votes[opt.id as keyof typeof votes];
+              const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+              return (
+                <div key={opt.id} className="flex flex-col items-center gap-3">
+                  <span className="font-serif text-lg text-foreground">{opt.label}</span>
+                  <button
+                    onClick={() => handleVote(opt.id)}
+                    disabled={!!voted}
+                    className={`w-14 h-14 rounded-full border-2 flex items-center justify-center text-2xl transition-all duration-200 ${
+                      voted === opt.id
+                        ? "border-accent-warm bg-accent-warm/10 scale-110"
+                        : voted
+                        ? "border-border opacity-40 cursor-not-allowed"
+                        : "border-border hover:border-accent-warm hover:scale-105 cursor-pointer"
+                    }`}
+                  >
+                    {opt.emoji}
+                  </button>
+                  {voted && (
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-sm font-light text-foreground">{pct}%</span>
+                      <span className="text-xs text-muted-foreground font-light">{count} {count === 1 ? "voto" : "votos"}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
           {voted && (
-            <p className="mt-6 text-sm text-muted-foreground font-light italic animate-fade-in-up">
-              {voted === "rocio" && "Buen gusto. Rocío ya está eligiendo el restaurante."}
-              {voted === "inaki" && "Iñaki ya está llamando para confirmar la reserva."}
-              {voted === "bea" && "Bea ya tiene el Excel de quién debe cuánto."}
-              {voted === "juan" && "Juan ya ha calculado el porcentaje de probabilidad de que gane."}
+            <p className="mt-8 text-sm text-muted-foreground font-light italic animate-fade-in-up">
+              {voted === "inaki-rocio" && "Iñaki ya está buscando restaurante. Rocío ya tiene la decoración de la mesa pensada."}
+              {voted === "juan-bea" && "Bea ya tiene el Excel de la comanda. Juan ya ha calculado la propina exacta."}
             </p>
           )}
         </div>
