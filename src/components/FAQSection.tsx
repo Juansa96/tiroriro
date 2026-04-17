@@ -34,13 +34,12 @@ const FAQS = [
 ];
 
 const FAQSection = () => (
-  <section className="py-20 md:py-32 px-6 bg-secondary">
+  <section className="pt-20 md:pt-32 pb-10 md:pb-14 px-6 bg-secondary">
     <div className="container mx-auto max-w-3xl">
       <AnimatedSection className="text-center mb-16">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Preguntas frecuentes</h2>
         <span className="section-line" />
       </AnimatedSection>
-
       <AnimatedSection delay={0.1}>
         <Accordion type="single" collapsible className="space-y-2">
           {FAQS.map((faq, i) => (
