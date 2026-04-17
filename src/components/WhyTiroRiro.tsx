@@ -2,11 +2,21 @@ import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 
 const REASONS = [
-  { num: "01", title: "El origen", text: "Dos amigas de toda la vida, dos bebés casi a la vez, dos casas nuevas que decorar — y ninguna web que tuviera lo que buscaban sin costar una fortuna o parecer el catálogo de un hotel de aeropuerto." },
-  { num: "02", title: "La filosofía", text: "Hay piezas que no deberían ser iguales en todos los hogares — y si vas a ver ese cabecero cada noche durante diez años, merece que sea exactamente el que querías desde el principio." },
-  { num: "03", title: "Sin complicaciones", text: "Decorar bien no debería requerir saber de obras, de proveedores ni de montar nada — solo tener claro lo que te gusta y dejar que nuestro equipo haga el resto." },
-  { num: "04", title: "Lo que no encuentras en otro sitio", text: "Un cabecero tapizado a medida, con la tela que tú eliges y el acabado que tú decides, no lo tiene ningún catálogo masivo — y el precio tampoco tiene que ser el de una boutique de lujo." },
-  { num: "05", title: "Para quien no tiene tiempo", text: "Tú tienes trabajo, tienes vida y tienes cosas mejores que hacer que buscar tapiceros, pedir presupuestos y coordinar entregas — nuestro equipo hace todo eso para que tú solo tengas que abrir la puerta." },
+  {
+    num: "01",
+    title: "Nació de una necesidad real",
+    text: "Dos amigas, dos casas nuevas, ninguna web con lo que buscaban a un precio razonable. Así empezó Tiroriro — y ese problema sigue siendo la razón por la que existimos.",
+  },
+  {
+    num: "02",
+    title: "Hecho para ti, no para un catálogo",
+    text: "Si vas a ver ese cabecero cada noche durante diez años, merece ser exactamente el que querías. Tú eliges la tela, el tamaño y el acabado — nosotros lo construimos a mano.",
+  },
+  {
+    num: "03",
+    title: "Tú solo abres la puerta",
+    text: "Sin buscar tapiceros, sin pedir presupuestos, sin coordinar entregas. Nuestro equipo gestiona todo para que el resultado llegue listo a tu casa en 15 días.",
+  },
 ];
 
 const WhyTiroRiro = () => (
@@ -17,8 +27,8 @@ const WhyTiroRiro = () => (
         <span className="section-line" />
       </AnimatedSection>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-        <AnimatedSection className="lg:self-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-stretch">
+        <AnimatedSection className="h-full">
           <img
             src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&q=85"
             alt="Manos artesanas trabajando en tapicería de muebles"
@@ -28,7 +38,7 @@ const WhyTiroRiro = () => (
           />
         </AnimatedSection>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col justify-center">
           {REASONS.map((r, i) => (
             <AnimatedSection key={i} delay={i * 0.08}>
               <div className={`flex gap-5 py-8 ${i < REASONS.length - 1 ? "border-b border-border" : ""}`}>
@@ -37,21 +47,24 @@ const WhyTiroRiro = () => (
                 </span>
                 <div>
                   <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{r.title}</h3>
-                  <p className="mt-2 text-base text-muted-foreground font-light leading-relaxed italic">
-                    "{r.text}"
+                  <p className="mt-2 text-base text-muted-foreground font-light leading-relaxed">
+                    {r.text}
                   </p>
                 </div>
               </div>
             </AnimatedSection>
           ))}
-
-          <AnimatedSection delay={0.5} className="mt-6">
-            <Link to="/#equipo" className="cta-link">
-              Conoce nuestra historia →
-            </Link>
-          </AnimatedSection>
         </div>
       </div>
+
+      <AnimatedSection delay={0.2} className="mt-12 text-center">
+        <Link
+          to="/configurador"
+          className="inline-block px-8 py-3 rounded-lg bg-primary text-primary-foreground font-serif text-base tracking-normal transition-all duration-300 hover:scale-105 hover:bg-primary/90"
+        >
+          Diseña el tuyo
+        </Link>
+      </AnimatedSection>
     </div>
   </section>
 );
