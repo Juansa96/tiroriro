@@ -15,17 +15,13 @@ const Footer = () => (
       <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">
         Hecho a mano en España · Envío a toda la península · contacto@tiroriro.com
       </p>
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs tracking-widest uppercase text-muted-foreground font-light">
-        <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
-        <Link to="/configurador" className="hover:text-foreground transition-colors">Diseña el tuyo</Link>
-        <Link to="/#equipo" className="hover:text-foreground transition-colors">Quiénes somos</Link>
-        <Link to="/contacto" className="hover:text-foreground transition-colors">Solicita información</Link>
-        <a
+      <div className="mt-8 flex items-center justify-center">
+        
           href="https://instagram.com/tiroriro"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Instagram de Tiroriro"
-          className="flex items-center gap-2 hover:text-foreground transition-colors"
+          className="flex items-center gap-2 text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors font-light"
         >
           <Instagram size={16} />
           @tiroriro
