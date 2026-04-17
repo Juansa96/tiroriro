@@ -3,7 +3,7 @@ import { Instagram } from "lucide-react";
 import Logo from "./Logo";
 
 const Footer = () => (
-  <footer className="bg-secondary py-16 md:py-20">
+  <footer className="bg-secondary pt-8 pb-16 md:pt-10 md:pb-20">
     <div className="container mx-auto px-6 text-center">
       <Link to="/" className="inline-flex" aria-label="Tiroriro inicio">
         <Logo
