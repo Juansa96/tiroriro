@@ -40,9 +40,9 @@ const headboardPath = (forma: string): string => {
     case 'semicirculo':
       return "M 15 185 L 15 110 Q 150 25 285 110 L 285 185 Z";
     case 'corona-simple':
-      return "M 15 185 L 15 110 C 15 110 55 88 90 78 C 120 70 140 55 150 38 C 160 55 180 70 210 78 C 245 88 285 110 285 110 L 285 185 Z";
+      return "M 15 185 C 15 185 15 115 15 115 C 35 125 55 120 75 100 C 100 70 125 50 150 50 C 175 50 200 70 225 100 C 245 120 265 125 285 115 C 285 115 285 185 285 185 Z";
     case 'corona-doble':
-      return "M 15 185 L 15 125 C 15 95 40 70 70 70 C 100 70 120 95 125 120 C 130 80 140 35 150 35 C 160 35 170 80 175 120 C 180 95 200 70 230 70 C 260 70 285 95 285 125 L 285 185 Z";
+      return "M 15 185 C 15 185 15 120 15 120 C 30 85 55 65 80 65 C 110 65 130 90 135 120 C 138 95 144 45 150 45 C 156 45 162 95 165 120 C 170 90 190 65 220 65 C 245 65 270 85 285 120 C 285 120 285 185 285 185 Z";
     case 'recto':
     default:
       return "M 15 50 L 285 50 L 285 185 L 15 185 Z";
@@ -89,32 +89,46 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
   const scaleX = widthCm ? Math.min(1.2, Math.max(0.7, widthCm / 110)) : 1;
   const scaleY = heightCm ? Math.min(1.25, Math.max(0.8, heightCm / 42)) : 1;
   const clipId = useId();
-  // Base rect: x=12, y=55, w=276, h=120 (top of seat to bottom)
-  const seatPath = "M 12 55 L 288 55 L 288 175 L 12 175 Z";
+
+  // Waterfall upholstered bench — single continuous piece with isometric depth
+  const x = 20, y = 55, w = 260, h = 150;
+  const dx = 14, dy = -10;
+  const legW = 36;
+  const legH = 30;
+  const cutLeftX = x + 18;
+  const cutRightX = x + w - 18 - legW;
+  const cutY = y + h - legH;
+
+  const frontPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w} ${y + h} L ${cutRightX + legW} ${y + h} L ${cutRightX + legW} ${cutY} Q ${cutRightX + legW} ${cutY - 4} ${cutRightX + legW - 6} ${cutY - 4} L ${cutRightX + 6} ${cutY - 4} Q ${cutRightX} ${cutY - 4} ${cutRightX} ${cutY} L ${cutRightX} ${y + h} L ${cutLeftX + legW} ${y + h} L ${cutLeftX + legW} ${cutY} Q ${cutLeftX + legW} ${cutY - 4} ${cutLeftX + legW - 6} ${cutY - 4} L ${cutLeftX + 6} ${cutY - 4} Q ${cutLeftX} ${cutY - 4} ${cutLeftX} ${cutY} L ${cutLeftX} ${y + h} L ${x} ${y + h} Z`;
+  const topPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + dx} ${y + dy} Z`;
+  const sidePath = `M ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + w + dx} ${y + h + dy} L ${x + w} ${y + h} Z`;
+
+  const topColor = lighten(color, 18);
+  const sideColor = darken(color, 18);
 
   return (
     <svg viewBox="0 0 300 230" className="w-full max-w-[300px] mx-auto">
       <defs>
         <clipPath id={`bn-${clipId}`}>
-          <path d={seatPath} />
+          <path d={frontPath} />
         </clipPath>
       </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 175px', transition: 'transform 0.4s ease' }}>
-        <rect x="12" y="55" width="276" height="120" rx="4" fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 205px', transition: 'transform 0.4s ease' }}>
+        <ellipse cx={150 + dx / 2} cy={y + h + 12} rx={w * 0.45} ry={4} fill="rgba(0,0,0,0.1)" />
+        <path d={sidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        <path d={frontPath} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        <line x1={x + 6} y1={y + h - legH - 8} x2={x + w - 6} y2={y + h - legH - 8} stroke={darken(color, 25)} strokeWidth="1" opacity="0.18" />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#bn-${clipId})`}>
-            <path d="M 12 55 L 288 55 L 288 175 L 12 175 Z" fill="none" stroke={vivoColor} strokeWidth="3" />
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
         {finish === 'vivo-doble' && (
           <g clipPath={`url(#bn-${clipId})`}>
-            <path d="M 12 55 L 288 55 L 288 175 L 12 175 Z" fill="none" stroke={vivoColor} strokeWidth="2.5" />
-            <path d="M 24 67 L 276 67 L 276 163 L 24 163 Z" fill="none" stroke={vivoColor} strokeWidth="2" />
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.5" />
           </g>
         )}
-        {/* legs — two wide rectangular legs at the sides */}
-        <rect x="22" y="175" width="38" height="42" rx="3" fill="rgba(0,0,0,0.35)" />
-        <rect x="240" y="175" width="38" height="42" rx="3" fill="rgba(0,0,0,0.35)" />
       </g>
     </svg>
   );
