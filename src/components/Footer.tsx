@@ -12,11 +12,9 @@ const Footer = () => (
           style={{ width: 200, height: "auto" }}
         />
       </Link>
-
       <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">
         Hecho a mano en España · Envío a toda la península · contacto@tiroriro.com
       </p>
-
       <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs tracking-widest uppercase text-muted-foreground font-light">
         <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
         <Link to="/configurador" className="hover:text-foreground transition-colors">Diseña el tuyo</Link>
@@ -26,19 +24,6 @@ const Footer = () => (
           <Instagram size={18} />
         </a>
       </div>
-
-      <p className="mt-6 text-xs text-muted-foreground">
-        Métodos de pago: Bizum · Stripe · Transferencia bancaria
-      </p>
-
-      <div className="mt-6 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-        <Link to="/aviso-legal" className="hover:text-foreground transition-colors">Aviso Legal</Link>
-        <span>·</span>
-        <Link to="/privacidad" className="hover:text-foreground transition-colors">Política de Privacidad</Link>
-        <span>·</span>
-        <Link to="/cookies" className="hover:text-foreground transition-colors">Política de Cookies</Link>
-      </div>
-
       <p className="mt-10 text-xs text-muted-foreground/60">
         © {new Date().getFullYear()} Tiroriro. Todos los derechos reservados.
       </p>
