@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
@@ -9,11 +9,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary, MESA_SHAPES, MESA_SIZES, MESA_LEGS } from "@/lib/products";
+import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// --- Fabric data ---
 const FABRIC_GROUPS = [
   {
     label: "Linos",
@@ -83,8 +82,6 @@ const ProductIcon = ({ type }: { type: string }) => {
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><ellipse cx="20" cy="17" rx="16" ry="11" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
       return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
-    case 'mesa':
-      return <svg viewBox="0 0 40 28" className="w-8 h-6"><rect x="3" y="6" width="34" height="8" rx="1.5" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="7" y1="14" x2="7" y2="24" stroke="currentColor" strokeWidth="2" /><line x1="33" y1="14" x2="33" y2="24" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
       return null;
   }
@@ -105,7 +102,6 @@ function parseCm(selectVal: string, customVal: string): number | undefined {
     return isNaN(n) ? undefined : n;
   }
   if (selectVal) {
-    // Spanish meter notation: "1m" -> 100, "1'20m" -> 120, "1'30m" -> 130
     const meterMatch = selectVal.match(/^(\d+)(?:'(\d+))?m$/);
     if (meterMatch) {
       const meters = parseInt(meterMatch[1]);
@@ -117,8 +113,6 @@ function parseCm(selectVal: string, customVal: string): number | undefined {
   }
   return undefined;
 }
-
-const WHATSAPP_BASE = "https://wa.me/34645363323";
 
 const ProductConfigurator = () => {
   const navigate = useNavigate();
@@ -134,9 +128,9 @@ const ProductConfigurator = () => {
   const [benchHeight, setBenchHeight] = useState("");
   const [puffDiameter, setPuffDiameter] = useState("");
   const [puffHeight, setPuffHeight] = useState("");
+  const [puffLength, setPuffLength] = useState("");
+  const [puffDepth, setPuffDepth] = useState("");
   const [cushionSize, setCushionSize] = useState("");
-  const [mesaSize, setMesaSize] = useState("");
-  const [mesaLegs, setMesaLegs] = useState("");
   const [fabricId, setFabricId] = useState("");
   const [finish, setFinish] = useState("");
   const [vivoColorId, setVivoColorId] = useState("");
@@ -149,13 +143,11 @@ const ProductConfigurator = () => {
 
   const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
 
-  // Mark configurator as visited (kept for analytics / future use)
   useEffect(() => {
     localStorage.setItem('tiro_configurador_visited', 'true');
     localStorage.setItem('configurador_visitado', 'true');
   }, []);
 
-  // Update accordion type when breakpoint changes
   useEffect(() => {
     if (isMobile) {
       setOpenAccordion(prev => Array.isArray(prev) ? (prev[0] || 'type') : prev);
@@ -167,8 +159,9 @@ const ProductConfigurator = () => {
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
-    if (tipo && ['cabecero', 'banco', 'cojin', 'puff', 'mesa'].includes(tipo)) {
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
       setProductType(tipo as ProductType);
+      if (tipo === 'puff' && !forma) setShape('redondo');
       if (isMobile) {
         setOpenAccordion('measures');
       } else {
@@ -176,10 +169,10 @@ const ProductConfigurator = () => {
       }
     }
     if (forma) setShape(forma);
-  }, [searchParams]);
+  }, [searchParams, isMobile]);
 
   const resetConfiguracion = (newType?: ProductType) => {
-    setShape(newType === 'mesa' ? 'rectangular' : 'recto');
+    setShape(newType === 'puff' ? 'redondo' : 'recto');
     setBedWidth('');
     setBedHeight('');
     setBenchLength('');
@@ -187,9 +180,9 @@ const ProductConfigurator = () => {
     setBenchHeight('');
     setPuffDiameter('');
     setPuffHeight('');
+    setPuffLength('');
+    setPuffDepth('');
     setCushionSize('');
-    setMesaSize('');
-    setMesaLegs('');
     setFabricId('');
     setFinish('');
     setVivoColorId('');
@@ -215,16 +208,13 @@ const ProductConfigurator = () => {
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth, customWidth)
     : productType === 'banco' ? parseCm(benchLength, '')
-    : productType === 'puff' ? parseCm(puffDiameter, '')
-    : productType === 'mesa' ? (mesaSize && mesaSize !== 'Personalizada' ? parseInt(mesaSize) : (customWidth ? parseInt(customWidth) : undefined))
+    : productType === 'puff' ? (shape === 'rectangular' ? parseCm(puffLength, '') : parseCm(puffDiameter, ''))
     : undefined;
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight, customHeight)
     : productType === 'banco' ? parseCm(benchHeight, '')
-    : productType === 'puff' ? parseCm(puffHeight, '')
-    : productType === 'mesa' ? (mesaSize && mesaSize.includes('×') ? parseInt(mesaSize.split('×')[1]) : undefined)
+    : productType === 'puff' ? (shape === 'rectangular' ? parseCm(puffDepth, '') : parseCm(puffHeight, ''))
     : undefined;
 
-  // For cushion, pass size info via forma
   const svgForma = productType === 'cojin' ? cushionSize : shape;
 
   const options = useMemo(() => {
@@ -236,11 +226,14 @@ const ProductConfigurator = () => {
     }
     if (productType === 'banco') o.length = benchLength;
     if (productType === 'cojin') o.size = cushionSize;
-    if (productType === 'puff') o.puffSize = puffDiameter === '40cm' ? 'Pequeño' : puffDiameter === '50cm' ? 'Mediano' : puffDiameter === '60cm' ? 'Grande' : '';
-    if (productType === 'mesa') {
-      o.shape = shape;
-      o.size = mesaSize;
-      if (mesaLegs) o.legs = mesaLegs;
+    if (productType === 'puff') {
+      o.puffShape = shape;
+      if (shape === 'rectangular') {
+        if (puffLength) o.puffLength = puffLength;
+        if (puffDepth) o.puffDepth = puffDepth;
+      } else {
+        o.puffSize = puffDiameter === '40cm' ? 'Pequeño' : puffDiameter === '50cm' ? 'Mediano' : puffDiameter === '60cm' ? 'Grande' : puffDiameter === '70cm' ? 'Extra Grande' : '';
+      }
     }
     if (finish) o.finish = finish;
     if (fabricId) o.color = fabricId;
@@ -248,7 +241,7 @@ const ProductConfigurator = () => {
     if (extraRelleno) o.relleno = 'true';
     if (extraExpress) o.express = 'true';
     return o;
-  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, mesaSize, mesaLegs, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, puffLength, puffDepth, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -259,9 +252,8 @@ const ProductConfigurator = () => {
     type: !!productType,
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
       : productType === 'banco' ? !!benchLength
-      : productType === 'puff' ? !!puffDiameter
+      : productType === 'puff' ? (shape === 'rectangular' ? !!puffLength && !!puffDepth : !!puffDiameter)
       : productType === 'cojin' ? !!cushionSize
-      : productType === 'mesa' ? !!mesaSize
       : false,
     fabric: !!fabricId,
     finish: !!finish,
@@ -283,12 +275,15 @@ const ProductConfigurator = () => {
     chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
   }
   if (productType === 'banco') chips.push(benchLength || "—");
-  if (productType === 'puff') chips.push(puffDiameter || "—");
-  if (productType === 'cojin') chips.push(cushionSize || "—");
-  if (productType === 'mesa') {
-    chips.push(MESA_SHAPES.find(s => s.id === shape)?.name || "—");
-    chips.push(mesaSize || "—");
+  if (productType === 'puff') {
+    if (shape === 'rectangular') {
+      chips.push(puffLength || "—");
+      chips.push(puffDepth || "—");
+    } else {
+      chips.push(puffDiameter || "—");
+    }
   }
+  if (productType === 'cojin') chips.push(cushionSize || "—");
   chips.push(fabric?.name || "—");
   const finishObj = FINISHES.find(f => f.id === finish);
   if (finishObj) chips.push(finishObj.name);
@@ -324,10 +319,6 @@ const ProductConfigurator = () => {
     return `/?${params.toString()}#contacto`;
   };
 
-  const scrollToForm = () => {
-    navigate(buildOrderUrl());
-  };
-
   const handleOrder = () => {
     if (!productType) return;
     navigate(buildOrderUrl());
@@ -341,9 +332,11 @@ const ProductConfigurator = () => {
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
-        if (productType === 'puff') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> Ø{puffDiameter}</span>;
+        if (productType === 'puff') {
+          if (shape === 'rectangular') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffLength} × {puffDepth}</span>;
+          return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> Ø{puffDiameter}</span>;
+        }
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {cushionSize}</span>;
-        if (productType === 'mesa') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {MESA_SHAPES.find(s => s.id === shape)?.name} · {mesaSize}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
@@ -400,14 +393,33 @@ const ProductConfigurator = () => {
     setOpenAccordion(val || (isMobile ? '' : []));
   };
 
+  const sharedAccordionProps = {
+    selectionLabel,
+    productType, productCard,
+    shape, setShape,
+    bedWidth, setBedWidth, bedHeight, setBedHeight,
+    benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
+    puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
+    puffLength, setPuffLength, puffDepth, setPuffDepth,
+    cushionSize, setCushionSize,
+    fabricId, setFabricId: (id: string) => { setFabricId(id); },
+    finish, setFinish: (f: string) => { setFinish(f); },
+    vivoColorId, setVivoColorId,
+    customWidth, setCustomWidth, customHeight, setCustomHeight,
+    extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
+    extraExpress, setExtraExpress,
+    advanceTo, needsVivo,
+  };
+
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 md:px-6 pt-6">
-        <p className="text-sm italic text-muted-foreground text-center">
+      <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
+        <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-3">Diseña el tuyo</h1>
+        <p className="text-sm text-muted-foreground font-light">
           ¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.
         </p>
       </div>
-      {/* MOBILE: sticky preview */}
+
       <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
         <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
@@ -425,9 +437,7 @@ const ProductConfigurator = () => {
         </div>
       </div>
 
-      {/* TABLET + DESKTOP: 2-col layout */}
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
-        {/* Zone A: Preview */}
         <div className="w-[40%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
           <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: '#F0EDE8' }}>
             <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
@@ -463,81 +473,31 @@ const ProductConfigurator = () => {
           </div>
         </div>
 
-        {/* Zone B: Accordions */}
         <div className="w-[60%] lg:w-1/2">
           <div className="mb-6">
-            <h1 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Diseña el tuyo</h1>
+            <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
             <p className="mt-2 text-base text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
           </div>
           <ProgressBar className="mb-6" />
-          {isMobile ? (
-            <ConfigAccordionsSingle
-              openAccordion={typeof accordionValue === 'string' ? accordionValue : ''} setOpenAccordion={(v) => handleAccordionChange(v)}
-              selectionLabel={selectionLabel}
-              productType={productType} productCard={productCard}
-              shape={shape} setShape={setShape}
-              bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
-              benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
-              puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
-              cushionSize={cushionSize} setCushionSize={setCushionSize}
-              mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
-              fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
-              finish={finish} setFinish={(f) => { setFinish(f); }}
-              vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
-              customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
-              extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
-              extraExpress={extraExpress} setExtraExpress={setExtraExpress}
-              advanceTo={advanceTo} needsVivo={needsVivo}
-            />
-          ) : (
-            <ConfigAccordionsMultiple
-              openAccordion={Array.isArray(accordionValue) ? accordionValue : [accordionValue as string]} setOpenAccordion={(v) => handleAccordionChange(v)}
-              selectionLabel={selectionLabel}
-              productType={productType} productCard={productCard}
-              shape={shape} setShape={setShape}
-              bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
-              benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
-              puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
-              cushionSize={cushionSize} setCushionSize={setCushionSize}
-              mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
-              fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
-              finish={finish} setFinish={(f) => { setFinish(f); }}
-              vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
-              customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
-              extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
-              extraExpress={extraExpress} setExtraExpress={setExtraExpress}
-              advanceTo={advanceTo} needsVivo={needsVivo}
-            />
-          )}
+          <ConfigAccordionsMultiple
+            openAccordion={Array.isArray(accordionValue) ? accordionValue : [accordionValue as string]}
+            setOpenAccordion={(v) => handleAccordionChange(v)}
+            {...sharedAccordionProps}
+          />
         </div>
       </div>
 
-      {/* MOBILE: accordion content */}
       <div className="md:hidden px-4 pb-28 pt-4">
         <div className="mb-4">
-          <h1 className="font-serif text-2xl font-light text-foreground">Diseña el tuyo</h1>
+          <h2 className="font-serif text-2xl font-light text-foreground">Configura tu pieza</h2>
         </div>
         <ConfigAccordionsSingle
-          openAccordion={typeof accordionValue === 'string' ? accordionValue : ''} setOpenAccordion={(v) => handleAccordionChange(v)}
-          selectionLabel={selectionLabel}
-          productType={productType} productCard={productCard}
-          shape={shape} setShape={setShape}
-          bedWidth={bedWidth} setBedWidth={setBedWidth} bedHeight={bedHeight} setBedHeight={setBedHeight}
-          benchLength={benchLength} setBenchLength={setBenchLength} benchDepth={benchDepth} setBenchDepth={setBenchDepth} benchHeight={benchHeight} setBenchHeight={setBenchHeight}
-          puffDiameter={puffDiameter} setPuffDiameter={setPuffDiameter} puffHeight={puffHeight} setPuffHeight={setPuffHeight}
-          cushionSize={cushionSize} setCushionSize={setCushionSize}
-          mesaSize={mesaSize} setMesaSize={setMesaSize} mesaLegs={mesaLegs} setMesaLegs={setMesaLegs}
-          fabricId={fabricId} setFabricId={(id) => { setFabricId(id); }}
-          finish={finish} setFinish={(f) => { setFinish(f); }}
-          vivoColorId={vivoColorId} setVivoColorId={setVivoColorId}
-          customWidth={customWidth} setCustomWidth={setCustomWidth} customHeight={customHeight} setCustomHeight={setCustomHeight}
-          extraPatas={extraPatas} setExtraPatas={setExtraPatas} extraRelleno={extraRelleno} setExtraRelleno={setExtraRelleno}
-          extraExpress={extraExpress} setExtraExpress={setExtraExpress}
-          advanceTo={advanceTo} needsVivo={needsVivo}
+          openAccordion={typeof accordionValue === 'string' ? accordionValue : ''}
+          setOpenAccordion={(v) => handleAccordionChange(v)}
+          {...sharedAccordionProps}
         />
       </div>
 
-      {/* MOBILE: fixed bottom bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -557,7 +517,6 @@ const ProductConfigurator = () => {
   );
 };
 
-// --- Accordion content shared ---
 interface AccordionContentSharedProps {
   selectionLabel: (step: Step) => React.ReactNode;
   productType: ProductType | null;
@@ -570,9 +529,9 @@ interface AccordionContentSharedProps {
   benchHeight: string; setBenchHeight: (v: string) => void;
   puffDiameter: string; setPuffDiameter: (v: string) => void;
   puffHeight: string; setPuffHeight: (v: string) => void;
+  puffLength: string; setPuffLength: (v: string) => void;
+  puffDepth: string; setPuffDepth: (v: string) => void;
   cushionSize: string; setCushionSize: (v: string) => void;
-  mesaSize: string; setMesaSize: (v: string) => void;
-  mesaLegs: string; setMesaLegs: (v: string) => void;
   fabricId: string; setFabricId: (v: string) => void;
   finish: string; setFinish: (v: string) => void;
   vivoColorId: string; setVivoColorId: (v: string) => void;
@@ -593,8 +552,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
+    puffLength, setPuffLength, puffDepth, setPuffDepth,
     cushionSize, setCushionSize,
-    mesaSize, setMesaSize, mesaLegs, setMesaLegs,
     fabricId, setFabricId,
     finish, setFinish,
     vivoColorId, setVivoColorId,
@@ -608,7 +567,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
 
   return (
     <>
-      {/* Step 1: Product type */}
       <AccordionItem value="type" className="border-b border-border">
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
@@ -622,12 +580,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             {productCard('banco', 'Banco')}
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
-            {productCard('mesa', 'Mesa de centro')}
           </div>
         </AccordionContent>
       </AccordionItem>
 
-      {/* Step 2: Measures */}
       <AccordionItem value="measures" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
@@ -659,7 +615,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="1m">1 m</option>
                     <option value="1'20m">1'20 m</option>
                     <option value="1'30m">1'30 m</option>
-                    <option value="custom">Otra medida</option>
+                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
                 {bedWidth === 'custom' && (
@@ -683,7 +639,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="70cm">70 cm</option>
                     <option value="80cm">80 cm</option>
                     <option value="90cm">90 cm</option>
-                    <option value="custom">Personalizado</option>
+                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
                 {bedHeight === 'custom' && (
@@ -711,6 +667,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="100cm">100 cm</option>
                     <option value="120cm">120 cm</option>
                     <option value="140cm">140 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -722,6 +679,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="35cm">35 cm</option>
                     <option value="40cm">40 cm</option>
                     <option value="45cm">45 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -732,6 +690,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="">Seleccionar alto...</option>
                     <option value="40cm">40 cm</option>
                     <option value="45cm">45 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -740,23 +699,83 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {productType === 'puff' && (
             <>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Diámetro</p>
-                <SelectWrapper>
-                  <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar diámetro...</option>
-                    <option value="40cm">40 cm</option>
-                    <option value="50cm">50 cm</option>
-                    <option value="60cm">60 cm</option>
-                  </select>
-                </SelectWrapper>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => { setShape('redondo'); setPuffLength(''); setPuffDepth(''); }}
+                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape !== 'rectangular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                  >
+                    <svg viewBox="0 0 40 40" className="w-8 h-8">
+                      <ellipse cx="20" cy="20" rx="16" ry="13" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                    <span className="text-xs font-light">Redondo</span>
+                  </button>
+                  <button
+                    onClick={() => { setShape('rectangular'); setPuffDiameter(''); }}
+                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'rectangular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                  >
+                    <svg viewBox="0 0 50 35" className="w-10 h-7">
+                      <rect x="4" y="7" width="42" height="21" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                    <span className="text-xs font-light">Rectangular</span>
+                  </button>
+                </div>
               </div>
+              {shape !== 'rectangular' && (
+                <div>
+                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Diámetro</p>
+                  <SelectWrapper>
+                    <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
+                      <option value="">Seleccionar diámetro...</option>
+                      <option value="40cm">40 cm — Pequeño</option>
+                      <option value="50cm">50 cm — Mediano</option>
+                      <option value="60cm">60 cm — Grande</option>
+                      <option value="70cm">70 cm — Extra grande</option>
+                      <option value="custom">No tengo claras las medidas</option>
+                    </select>
+                  </SelectWrapper>
+                </div>
+              )}
+              {shape === 'rectangular' && (
+                <>
+                  <div>
+                    <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
+                    <SelectWrapper>
+                      <select value={puffLength} onChange={(e) => setPuffLength(e.target.value)} className={selectClass}>
+                        <option value="">Seleccionar largo...</option>
+                        <option value="70cm">70 cm</option>
+                        <option value="80cm">80 cm</option>
+                        <option value="90cm">90 cm</option>
+                        <option value="100cm">100 cm</option>
+                        <option value="120cm">120 cm</option>
+                        <option value="custom">No tengo claras las medidas</option>
+                      </select>
+                    </SelectWrapper>
+                  </div>
+                  <div>
+                    <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
+                    <SelectWrapper>
+                      <select value={puffDepth} onChange={(e) => setPuffDepth(e.target.value)} className={selectClass}>
+                        <option value="">Seleccionar fondo...</option>
+                        <option value="40cm">40 cm</option>
+                        <option value="50cm">50 cm</option>
+                        <option value="60cm">60 cm</option>
+                        <option value="custom">No tengo claras las medidas</option>
+                      </select>
+                    </SelectWrapper>
+                  </div>
+                </>
+              )}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
                 <SelectWrapper>
                   <select value={puffHeight} onChange={(e) => setPuffHeight(e.target.value)} className={selectClass}>
                     <option value="">Seleccionar alto...</option>
                     <option value="30cm">30 cm</option>
+                    <option value="35cm">35 cm</option>
                     <option value="40cm">40 cm</option>
+                    <option value="45cm">45 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -775,42 +794,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </SelectWrapper>
             </div>
           )}
-          {productType === 'mesa' && (
-            <>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
-                <div className="grid grid-cols-3 gap-3">
-                  {MESA_SHAPES.map(s => (
-                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all text-xs font-light ${shape === s.id ? "border-foreground bg-foreground/5 text-foreground" : "border-border text-muted-foreground hover:border-foreground/60"}`}>
-                      {s.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medidas</p>
-                <SelectWrapper>
-                  <select value={mesaSize} onChange={(e) => setMesaSize(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar medidas...</option>
-                    {MESA_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </SelectWrapper>
-                {mesaSize === 'Personalizada' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={40} max={200} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-32 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
         </AccordionContent>
       </AccordionItem>
 
-      {/* Step 3: Fabric */}
       <AccordionItem value="fabric" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
@@ -840,15 +829,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               {ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}
             </p>
           )}
-          <p className="text-xs text-muted-foreground font-light">
-            {"¿No encuentras tu tela? "}
-            <a href={`${WHATSAPP_BASE}?text=${encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.")}`} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Escríbenos</a>
-            {" — trabajamos con más de 80 referencias."}
-          </p>
         </AccordionContent>
       </AccordionItem>
 
-      {/* Step 4: Finish */}
       <AccordionItem value="finish" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
@@ -858,8 +841,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-3">
           {FINISHES.filter(f => {
-            // Puff and Mesa: only "liso" and "vivo-simple"
-            if (productType === 'puff' || productType === 'mesa') {
+            if (productType === 'puff') {
               return f.id === 'liso' || f.id === 'vivo-simple';
             }
             return true;
@@ -892,7 +874,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionContent>
       </AccordionItem>
 
-      {/* Step 5: Extras */}
       <AccordionItem value="extras" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
@@ -935,7 +916,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
   );
 };
 
-// Single accordion for mobile
 interface SingleAccordionProps extends AccordionContentSharedProps {
   openAccordion: string;
   setOpenAccordion: (v: string) => void;
@@ -950,7 +930,6 @@ const ConfigAccordionsSingle = (props: SingleAccordionProps) => {
   );
 };
 
-// Multiple accordion for desktop
 interface MultipleAccordionProps extends AccordionContentSharedProps {
   openAccordion: string[];
   setOpenAccordion: (v: string[]) => void;
