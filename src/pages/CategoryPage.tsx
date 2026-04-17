@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -44,26 +45,67 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     ],
   },
   puffs: {
-    title: "Puffs elegantes",
-    subtitle: "Asiento, reposapiés, escultura — según cómo lo mires.",
+    title: "Puffs y mesas de centro",
+    subtitle: "Asiento, reposapiés, mesa — según cómo lo mires.",
     models: [
       { name: "Puff Redondo", photo: "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80", desc: "El clásico. Versátil y fácil de mover.", price: 95 },
       { name: "Puff Cuadrado", photo: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80", desc: "Líneas rectas para ambientes más estructurados.", price: 110 },
       { name: "Puff Alto (taburete)", photo: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80", desc: "Altura de asiento. Perfecto junto a un tocador.", price: 120 },
       { name: "Puff Gigante", photo: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80", desc: "El más contundente. Para salones y zonas de estar.", price: 150 },
+      { name: "Mesa de centro", photo: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80", desc: "Estructura tapizada, con opción de cristal superior. Misma artesanía, otro uso.", price: 290, configParam: "mesa-centro" },
     ],
   },
-  mesas: {
-    title: "Mesas de centro",
-    subtitle: "Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.",
-    models: [
-      { name: "Mesa baja rectangular", photo: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80", desc: "Patas torneadas, tapizado en tela. La más versátil.", price: 290, configParam: "rectangular" },
-      { name: "Mesa baja cuadrada", photo: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80", desc: "Patas metálicas, tapizado en bouclé. Líneas limpias y contemporáneas.", price: 310, configParam: "cuadrada" },
-      { name: "Mesa baja redonda", photo: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=600&q=80", desc: "Base tapizada en terciopelo, sin patas visibles. Pieza de carácter.", price: 360, configParam: "redonda" },
-      { name: "Mesa con bandeja extraíble", photo: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&q=80", desc: "Tapizado en lino con bandeja superior extraíble. Funcional y elegante.", price: 380, configParam: "rectangular" },
-      { name: "Mesa XXL", photo: "https://images.unsplash.com/photo-1565374395542-0ce18882c857?w=600&q=80", desc: "Gran formato, tapizado personalizable. Para salones amplios.", price: 450, configParam: "rectangular" },
-    ],
-  },
+};
+
+const ModelCard = ({ model, category }: { model: Model; category: string }) => {
+  const [hovered, setHovered] = useState(false);
+  const productTypeMap: Record<string, string> = {
+    cabeceros: 'cabecero',
+    bancos: 'banco',
+    cojines: 'cojin',
+    puffs: 'puff',
+  };
+
+  return (
+    <div
+      className="flex flex-col border border-border/40 rounded overflow-hidden"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="relative overflow-hidden">
+        <img
+          src={model.photo}
+          alt={model.name}
+          className="w-full aspect-[4/3] object-cover"
+          style={{
+            transform: hovered ? 'scale(1.04)' : 'scale(1)',
+            transition: 'transform 0.4s ease',
+          }}
+          loading="lazy"
+          decoding="async"
+        />
+        <div
+          style={{ opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }}
+          className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none"
+        >
+          <span className="text-white text-sm tracking-widest uppercase">Personalizar →</span>
+        </div>
+      </div>
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
+        <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-base text-foreground font-medium">Desde {model.price}€</p>
+          <Link
+            to={`/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ''}`}
+            className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 hover:opacity-80 transition-opacity"
+          >
+            Personalizar
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const CategoryPage = () => {
@@ -83,18 +125,10 @@ const CategoryPage = () => {
     );
   }
 
-  const productTypeMap: Record<string, string> = {
-    cabeceros: 'cabecero',
-    bancos: 'banco',
-    cojines: 'cojin',
-    puffs: 'puff',
-    mesas: 'mesa',
-  };
-
   return (
     <>
       <Navbar />
-      <main className="pt-24 pb-20 px-6">
+      <main className="pt-32 pb-20 px-6">
         <div className="container mx-auto">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-8">
             <Link to="/" className="hover:text-foreground transition-colors">Inicio</Link>
@@ -103,38 +137,15 @@ const CategoryPage = () => {
             <ChevronRight size={12} />
             <span className="text-foreground">{cat.title}</span>
           </div>
-
           <AnimatedSection className="text-center mb-12">
             <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground">{cat.title}</h1>
             <p className="mt-3 text-muted-foreground font-light italic">{cat.subtitle}</p>
             <span className="section-line" />
           </AnimatedSection>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {cat.models.map((model, i) => (
-              <AnimatedSection key={model.name} delay={i * 0.08}>
-                <div className="group border border-border/40 rounded overflow-hidden">
-                  <div className="overflow-hidden">
-                    <img
-                      src={model.photo}
-                      alt={`${model.name} - ${cat.title} de Tiroriro`}
-                      className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
-                    <p className="mt-1 text-base text-muted-foreground font-light italic">{model.desc}</p>
-                    <p className="mt-2 text-base text-foreground font-medium">Desde {model.price}€</p>
-                    <Link
-                      to={`/configurador?tipo=${productTypeMap[category || '']}${model.configParam ? `&forma=${model.configParam}` : ''}`}
-                      className="mt-3 inline-block text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 hover:opacity-80 transition-opacity"
-                    >
-                      Personalizar
-                    </Link>
-                  </div>
-                </div>
+              <AnimatedSection key={model.name} delay={i * 0.08} className="flex flex-col">
+                <ModelCard model={model} category={category || ''} />
               </AnimatedSection>
             ))}
           </div>
