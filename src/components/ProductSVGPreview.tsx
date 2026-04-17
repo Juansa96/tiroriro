@@ -92,17 +92,36 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
   const scaleY = heightCm ? Math.min(1.25, Math.max(0.8, heightCm / 42)) : 1;
   const clipId = useId();
 
-  // Waterfall upholstered bench — single continuous piece with isometric depth
-  const x = 20, y = 55, w = 260, h = 150;
-  const dx = 14, dy = -10;
-  const legW = 36;
-  const legH = 30;
-  const cutLeftX = x + 18;
-  const cutRightX = x + w - 18 - legW;
-  const cutY = y + h - legH;
+  // Wide & low waterfall bench (ratio ~2.5:1). viewBox 0 0 300 230
+  // Front: full width top band + two thick legs (~1/4 width each) + center cutout
+  const x = 25, y = 70;
+  const w = 250;          // total width
+  const h = 110;          // total height (ratio 250/110 ≈ 2.27)
+  const topBand = 55;     // upholstered seat band height
+  const legW = 62;        // ~1/4 of width — thick legs
+  const cornerR = 6;
+  const dx = 12, dy = -10; // isometric offset for depth
 
-  const frontPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w} ${y + h} L ${cutRightX + legW} ${y + h} L ${cutRightX + legW} ${cutY} Q ${cutRightX + legW} ${cutY - 4} ${cutRightX + legW - 6} ${cutY - 4} L ${cutRightX + 6} ${cutY - 4} Q ${cutRightX} ${cutY - 4} ${cutRightX} ${cutY} L ${cutRightX} ${y + h} L ${cutLeftX + legW} ${y + h} L ${cutLeftX + legW} ${cutY} Q ${cutLeftX + legW} ${cutY - 4} ${cutLeftX + legW - 6} ${cutY - 4} L ${cutLeftX + 6} ${cutY - 4} Q ${cutLeftX} ${cutY - 4} ${cutLeftX} ${cutY} L ${cutLeftX} ${y + h} L ${x} ${y + h} Z`;
+  // Front silhouette — single continuous piece with center cutout between legs
+  const leftLegX = x;
+  const rightLegX = x + w - legW;
+  const cutTop = y + topBand;
+  const frontPath =
+    `M ${x + cornerR} ${y} ` +
+    `L ${x + w - cornerR} ${y} ` +
+    `Q ${x + w} ${y} ${x + w} ${y + cornerR} ` +
+    `L ${x + w} ${y + h} ` +
+    `L ${rightLegX} ${y + h} ` +
+    `L ${rightLegX} ${cutTop} ` +
+    `L ${leftLegX + legW} ${cutTop} ` +
+    `L ${leftLegX + legW} ${y + h} ` +
+    `L ${x} ${y + h} ` +
+    `L ${x} ${y + cornerR} ` +
+    `Q ${x} ${y} ${x + cornerR} ${y} Z`;
+
+  // Top face (seat top) in slight isometric perspective
   const topPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + dx} ${y + dy} Z`;
+  // Right side face (depth)
   const sidePath = `M ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + w + dx} ${y + h + dy} L ${x + w} ${y + h} Z`;
 
   const topColor = lighten(color, 18);
@@ -115,12 +134,16 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
           <path d={frontPath} />
         </clipPath>
       </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 205px', transition: 'transform 0.4s ease' }}>
-        <ellipse cx={150 + dx / 2} cy={y + h + 12} rx={w * 0.45} ry={4} fill="rgba(0,0,0,0.1)" />
+      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 200px', transition: 'transform 0.4s ease' }}>
+        {/* ground shadow */}
+        <ellipse cx={150 + dx / 2} cy={y + h + 10} rx={w * 0.45} ry={4} fill="rgba(0,0,0,0.1)" />
+        {/* depth faces */}
         <path d={sidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        {/* front continuous upholstered piece */}
         <path d={frontPath} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <line x1={x + 6} y1={y + h - legH - 8} x2={x + w - 6} y2={y + h - legH - 8} stroke={darken(color, 25)} strokeWidth="1" opacity="0.18" />
+        {/* subtle seam between seat band and legs */}
+        <line x1={x + 4} y1={cutTop} x2={x + w - 4} y2={cutTop} stroke={darken(color, 25)} strokeWidth="1" opacity="0.15" />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#bn-${clipId})`}>
             <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
