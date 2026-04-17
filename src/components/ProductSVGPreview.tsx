@@ -112,11 +112,9 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
             <path d="M 24 67 L 276 67 L 276 163 L 24 163 Z" fill="none" stroke={vivoColor} strokeWidth="2" />
           </g>
         )}
-        {/* legs */}
-        <rect x="22" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
-        <rect x="100" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
-        <rect x="193" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
-        <rect x="271" y="175" width="7" height="38" rx="2" fill="rgba(0,0,0,0.3)" />
+        {/* legs — two wide rectangular legs at the sides */}
+        <rect x="22" y="175" width="38" height="42" rx="3" fill="rgba(0,0,0,0.35)" />
+        <rect x="240" y="175" width="38" height="42" rx="3" fill="rgba(0,0,0,0.35)" />
       </g>
     </svg>
   );
