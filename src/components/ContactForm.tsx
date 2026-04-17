@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Check, Loader2, MessageCircle } from "lucide-react";
 
-const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Mesa de centro", "Otro"];
+const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Otro"];
 
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
@@ -13,7 +13,6 @@ function mapProductName(name: string): string {
   if (n.includes('banco')) return 'Banco tapizado';
   if (n.includes('cojin') || n.includes('cojín')) return 'Cojines';
   if (n.includes('puff')) return 'Puff';
-  if (n.includes('mesa')) return 'Mesa de centro';
   return 'Varios';
 }
 
@@ -99,7 +98,6 @@ const ContactForm = () => {
       return;
     }
     setSending(true);
-    // TODO: Save to database (Lovable Cloud)
     await new Promise((r) => setTimeout(r, 800));
     setSent(true);
     setSending(false);
@@ -133,11 +131,9 @@ const ContactForm = () => {
   const hasError = (field: string) => touched[field] && errors[field];
   const inputBase = "w-full bg-background border border-border rounded-lg px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
 
-  // Build config tags from URL params
   const configTags: { label: string; value: string }[] = [];
   if (prefilledProduct) configTags.push({ label: 'Producto', value: mapProductName(prefilledProduct) });
   if (fromConfig) {
-    // Parse summary string like "Me interesa: Cabeceros tapizados · Arco · Cama 150cm · Color: Lino Natural (aprox. 255€)"
     const cleaned = fromConfig.replace(/^Me interesa:\s*/i, '').replace(/\s*\(aprox\.[^)]+\)\s*$/, '');
     const parts = cleaned.split('·').map(p => p.trim()).filter(Boolean);
     parts.slice(1).forEach((p) => {
@@ -178,7 +174,6 @@ const ContactForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-          {/* Nombre + Apellidos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label htmlFor="contact-name" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
@@ -209,7 +204,6 @@ const ContactForm = () => {
             </div>
           </div>
 
-          {/* Teléfono + Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
@@ -241,7 +235,6 @@ const ContactForm = () => {
             </div>
           </div>
 
-          {/* Producto — multi-select chips */}
           <div>
             <span className="block text-xs tracking-wide uppercase text-muted-foreground mb-3 font-medium">
               Tipo de producto * <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(puedes elegir varios)</span>
@@ -269,7 +262,6 @@ const ContactForm = () => {
             {hasError('product') && <p className="text-xs mt-2 text-destructive">{errors.product}</p>}
           </div>
 
-          {/* Detalles */}
           <div>
             <label htmlFor="contact-details" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
               Detalles del proyecto
@@ -287,12 +279,6 @@ const ContactForm = () => {
             </p>
           </div>
 
-          {/* Métodos de pago — texto discreto */}
-          <p className="text-xs text-muted-foreground font-light mt-2">
-            Pago por Bizum, Stripe o Transferencia bancaria · 50% al confirmar · 50% a la entrega
-          </p>
-
-          {/* RGPD */}
           <div className="flex items-start gap-3 pt-2">
             <input
               id="rgpd"
@@ -313,7 +299,6 @@ const ContactForm = () => {
             <p className="text-xs text-destructive">{errors.rgpd}</p>
           )}
 
-          {/* Botón enviar */}
           <div className="pt-4">
             <button
               type="submit"
@@ -326,20 +311,16 @@ const ContactForm = () => {
                   Enviando...
                 </>
               ) : (
-                "Enviar solicitud →"
+                "Enviar solicitud"
               )}
             </button>
-            <p className="mt-3 text-xs text-muted-foreground font-light text-center">
-              Respondemos en menos de 24h · Sin compromiso
-            </p>
           </div>
         </form>
 
-        {/* WhatsApp footer */}
         <div className="mt-10 pt-8 border-t border-border/40 text-center">
           <p className="text-sm text-muted-foreground font-light">
             ¿Prefieres hablar?{" "}
-            <a
+            
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
