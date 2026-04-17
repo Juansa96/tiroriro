@@ -65,7 +65,7 @@ const Navbar = () => {
             className={onHero ? "text-white" : "text-primary"}
             viewBox="100 335 730 225"
             style={{
-              width: typeof window !== "undefined" && window.innerWidth >= 768 ? 200 : 140,
+              width: typeof window !== "undefined" && window.innerWidth >= 768 ? 150 : 120,
               height: "auto",
               display: "block",
               filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined,
