@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 
 const TESTIMONIALS = [
@@ -64,6 +65,15 @@ const Testimonials = () => (
             </div>
           </AnimatedSection>
         ))}
+      </div>
+
+      <div className="mt-12 text-center">
+        <Link
+          to="/configurador"
+          className="inline-block px-8 py-3 rounded-lg bg-primary text-primary-foreground font-serif text-base tracking-normal transition-all duration-300 hover:scale-105 hover:bg-primary/90"
+        >
+          Diseña el tuyo
+        </Link>
       </div>
     </div>
   </section>
