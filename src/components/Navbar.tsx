@@ -66,7 +66,7 @@ const Navbar = () => {
             viewBox="100 335 730 225"
             style={{
               width: typeof window !== "undefined" && window.innerWidth >= 768 ? 130 : 90,
-marginTop: "-15px",
+marginTop: "-30px",
               height: "auto",
               display: "block",
               filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined,
