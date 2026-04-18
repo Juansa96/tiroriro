@@ -1,5 +1,5 @@
 import { ProductType } from "@/lib/products";
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect, useRef, useId } from "react";
 
 interface Props {
   type: ProductType | null;
@@ -34,13 +34,20 @@ const EmptyState = () => (
   </svg>
 );
 
+// B = coordenada Y del fondo de la base (varía con la altura)
+// Las curvas de la corona están fijas por encima de y=120
 const headboardPath = (forma: string, B: number): string => {
   switch (forma) {
     case 'semicirculo':
       return `M 15 ${B} L 15 110 Q 150 25 285 110 L 285 ${B} Z`;
     case 'corona-simple':
-      return `M 15 ${B} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${B} Z`;
+      // 1 Q por lado — hombro amplio, mismo domo
+      return `M 15 ${B} L 15 120 Q 99 120 99 78 A 51 22 0 0 1 201 78 Q 201 120 285 120 L 285 ${B} Z`;
     case 'corona-doble':
+      // 2 Q por lado — misma inclinación horizontal→vertical
+      return `M 15 ${B} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${B} Z`;
+    case 'corona-triple':
+      // 3 Q por lado — dx=28 dy=14 exactamente iguales
       return `M 15 ${B} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${B} Z`;
     case 'recto':
     default:
@@ -54,12 +61,40 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
 
   const scaleX = widthCm ? Math.min(1.25, Math.max(0.75, widthCm / 150)) : 1;
 
+  // Solo la base crece/encoge — la corona siempre tiene el mismo tamaño
   const BASE_SVG_REF = 65;
   const REF_HEIGHT_CM = 90;
-  const baseH = heightCm
+  const totalHTarget = 120 + (heightCm
     ? Math.round(BASE_SVG_REF * Math.min(1.55, Math.max(0.52, heightCm / REF_HEIGHT_CM)))
-    : BASE_SVG_REF;
-  const totalH = 120 + baseH;
+    : BASE_SVG_REF);
+
+  // Animación suave de altura (igual que la transición de anchura)
+  const [totalH, setTotalH] = useState(totalHTarget);
+  const animRef = useRef<number | null>(null);
+  const currentHRef = useRef(totalHTarget);
+
+  useEffect(() => {
+    const to = totalHTarget;
+    const from = currentHRef.current;
+    if (from === to) return;
+
+    if (animRef.current) cancelAnimationFrame(animRef.current);
+    const startTime = performance.now();
+    const dur = 400;
+
+    const step = (now: number) => {
+      const p = Math.min((now - startTime) / dur, 1);
+      const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+      const val = Math.round(from + (to - from) * ease);
+      currentHRef.current = val;
+      setTotalH(val);
+      if (p < 1) animRef.current = requestAnimationFrame(step);
+      else { currentHRef.current = to; setTotalH(to); }
+    };
+
+    animRef.current = requestAnimationFrame(step);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, [totalHTarget]);
 
   const path = headboardPath(f, totalH);
 
