@@ -40,7 +40,6 @@ const headboardPath = (forma: string): string => {
       return "M 15 185 L 15 110 Q 150 25 285 110 L 285 185 Z";
 case 'corona-simple':
   return "M 15 185 L 15 145 C 58 162 86 160 88 118 A 62 36 0 0 1 212 118 C 214 160 242 162 285 145 L 285 185 Z";
-
 case 'corona-doble':
   return "M 15 185 L 15 145 Q 44 145 44 126 Q 88 126 88 110 A 62 36 0 0 1 212 110 Q 212 126 256 126 Q 256 145 285 145 L 285 185 Z";
     case 'recto':
