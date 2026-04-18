@@ -58,8 +58,8 @@ const FINISHES = [
 const HEADBOARD_SHAPES = [
   { id: "recto", name: "Recto", svgPreview: "M 5 35 L 5 8 L 55 8 L 55 35 Z" },
   { id: "semicirculo", name: "Semicírculo", svgPreview: "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z" },
-  { id: "corona-simple", name: "Corona simple", svgPreview: "M 3 37 L 3 29 C 11.6 32.4 17.2 32 17.6 23.6 A 12.4 7.2 0 0 1 42.4 23.6 C 42.8 32 48.4 32.4 57 29 L 57 37 Z" },
-  { id: "corona-doble", name: "Corona doble", svgPreview: "M 3 37 L 3 29 Q 8.8 29 8.8 25.2 Q 17.6 25.2 17.6 22 A 12.4 7.2 0 0 1 42.4 22 Q 42.4 25.2 51.2 25.2 Q 51.2 29 57 29 L 57 37 Z" },
+  { id: "corona-simple", name: "Corona simple", svgPreview: "M 3 37 L 3 26 C 11.6 28.8 19.4 28.4 20.4 23.2 A 9.6 4.8 0 0 1 39.6 23.2 C 40.6 28.4 48.4 28.8 57 26 L 57 37 Z" },
+  { id: "corona-doble", name: "Corona doble", svgPreview: "M 3 37 L 3 26 Q 11.4 26 11.4 22.8 Q 19.8 22.8 19.8 19.2 A 10.2 5.2 0 0 1 40.2 19.2 Q 40.2 22.8 48.6 22.8 Q 48.6 26 57 26 L 57 37 Z" },
 ];
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
