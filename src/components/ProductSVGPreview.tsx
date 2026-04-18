@@ -39,9 +39,9 @@ const headboardPath = (forma: string): string => {
     case 'semicirculo':
       return "M 15 185 L 15 110 Q 150 25 285 110 L 285 185 Z";
 case 'corona-simple':
-  return "M 15 185 L 15 132 C 58 144 97 142 102 116 A 48 24 0 0 1 198 116 C 203 142 242 144 285 132 L 285 185 Z";
+  return "M 15 185 L 15 120 C 62 126 98 125 102 108 A 48 22 0 0 1 198 108 C 202 125 238 126 285 120 L 285 185 Z";
 case 'corona-doble':
-  return "M 15 185 L 15 132 Q 57 132 57 114 Q 99 114 99 96 A 51 26 0 0 1 201 96 Q 201 114 243 114 Q 243 132 285 132 L 285 185 Z";
+  return "M 15 185 L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 185 Z";
     case 'recto':
     default:
       return "M 15 50 L 285 50 L 285 185 L 15 185 Z";
