@@ -40,9 +40,9 @@ const headboardPath = (forma: string, B: number): string => {
   switch (forma) {
     case 'semicirculo':
       return `M 15 ${B} L 15 110 Q 150 25 285 110 L 285 ${B} Z`;
-    case 'corona-simple':
-      // 1 Q por lado — hombro amplio, mismo domo
-      return `M 15 ${B} L 15 120 Q 99 120 99 78 A 51 22 0 0 1 201 78 Q 201 120 285 120 L 285 ${B} Z`;
+      case 'corona-simple':
+         // 1 Q por lado — hombro amplio, mismo domo
+      return `M 15 ${B} L 15 120 Q 82 120 82 78 A 68 22 0 0 1 218 78 Q 218 120 285 120 L 285 ${B} Z`;
     case 'corona-doble':
       // 2 Q por lado — misma inclinación horizontal→vertical
       return `M 15 ${B} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${B} Z`;
