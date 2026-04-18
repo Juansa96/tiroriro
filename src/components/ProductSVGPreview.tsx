@@ -34,34 +34,43 @@ const EmptyState = () => (
   </svg>
 );
 
-const headboardPath = (forma: string): string => {
+const headboardPath = (forma: string, B: number): string => {
   switch (forma) {
     case 'semicirculo':
-      return "M 15 185 L 15 110 Q 150 25 285 110 L 285 185 Z";
-case 'corona-simple':
-  return "M 15 185 L 15 120 C 62 126 98 125 102 108 A 48 22 0 0 1 198 108 C 202 125 238 126 285 120 L 285 185 Z";
-case 'corona-doble':
-  return "M 15 185 L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 185 Z";
+      return `M 15 ${B} L 15 110 Q 150 25 285 110 L 285 ${B} Z`;
+    case 'corona-simple':
+      return `M 15 ${B} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${B} Z`;
+    case 'corona-doble':
+      return `M 15 ${B} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${B} Z`;
     case 'recto':
     default:
-      return "M 15 50 L 285 50 L 285 185 L 15 185 Z";
+      return `M 15 ${B} L 15 50 L 285 50 L 285 ${B} Z`;
   }
 };
 
 const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { color: string; finish: string; vivoColor: string; forma?: string; widthCm?: number; heightCm?: number }) => {
   const f = forma || 'recto';
-  const path = headboardPath(f);
   const clipId = useId();
+
   const scaleX = widthCm ? Math.min(1.25, Math.max(0.75, widthCm / 150)) : 1;
-  const scaleY = heightCm ? Math.min(1.25, Math.max(0.7, heightCm / 90)) : 1;
+
+  const BASE_SVG_REF = 65;
+  const REF_HEIGHT_CM = 90;
+  const baseH = heightCm
+    ? Math.round(BASE_SVG_REF * Math.min(1.55, Math.max(0.52, heightCm / REF_HEIGHT_CM)))
+    : BASE_SVG_REF;
+  const totalH = 120 + baseH;
+
+  const path = headboardPath(f, totalH);
+
   return (
-    <svg viewBox="0 0 300 200" className="w-full max-w-[300px] mx-auto">
+    <svg viewBox={`0 0 300 ${totalH}`} className="w-full max-w-[300px] mx-auto">
       <defs>
         <clipPath id={`hb-${clipId}`}>
           <path d={path} />
         </clipPath>
       </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 185px', transition: 'transform 0.4s ease' }}>
+      <g style={{ transform: `scaleX(${scaleX})`, transformOrigin: `150px ${totalH}px`, transition: 'transform 0.4s ease' }}>
         <path d={path} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#hb-${clipId})`}>
