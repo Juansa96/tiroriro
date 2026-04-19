@@ -34,20 +34,20 @@ const EmptyState = () => (
   </svg>
 );
 
-// B = coordenada Y del fondo de la base (varía con la altura)
-// Las curvas de la corona están fijas por encima de y=120
+// B = bottom Y of the base (variable with height)
+// Crown curves are fixed above y=120 — never distorted by height changes
 const headboardPath = (forma: string, B: number): string => {
   switch (forma) {
     case 'semicirculo':
       return `M 15 ${B} L 15 110 Q 150 25 285 110 L 285 ${B} Z`;
-      case 'corona-simple':
-         // 1 Q por lado — hombro amplio, mismo domo
-        return `M 15 ${B} L 15 120 C 68 120 90 100 94 84 A 56 16 0 0 1 206 84 C 210 100 232 120 285 120 L 285 ${B} Z`;
+    case 'corona-simple':
+      // 1 cubic bezier per side — smooth single-curve shoulder, ladera suave
+      return `M 15 ${B} L 15 120 C 68 120 90 100 94 84 A 56 16 0 0 1 206 84 C 210 100 232 120 285 120 L 285 ${B} Z`;
     case 'corona-doble':
-      // 2 Q por lado — misma inclinación horizontal→vertical
+      // 2 Q per side — horizontal→vertical inclination
       return `M 15 ${B} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${B} Z`;
     case 'corona-triple':
-      // 3 Q por lado — dx=28 dy=14 exactamente iguales
+      // 3 Q per side — identical dx=28/dy=14 steps
       return `M 15 ${B} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${B} Z`;
     case 'recto':
     default:
@@ -61,14 +61,12 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
 
   const scaleX = widthCm ? Math.min(1.25, Math.max(0.75, widthCm / 150)) : 1;
 
-  // Solo la base crece/encoge — la corona siempre tiene el mismo tamaño
   const BASE_SVG_REF = 65;
   const REF_HEIGHT_CM = 90;
   const totalHTarget = 120 + (heightCm
     ? Math.round(BASE_SVG_REF * Math.min(1.55, Math.max(0.52, heightCm / REF_HEIGHT_CM)))
     : BASE_SVG_REF);
 
-  // Animación suave de altura (igual que la transición de anchura)
   const [totalH, setTotalH] = useState(totalHTarget);
   const animRef = useRef<number | null>(null);
   const currentHRef = useRef(totalHTarget);
@@ -77,11 +75,9 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
     const to = totalHTarget;
     const from = currentHRef.current;
     if (from === to) return;
-
     if (animRef.current) cancelAnimationFrame(animRef.current);
     const startTime = performance.now();
     const dur = 400;
-
     const step = (now: number) => {
       const p = Math.min((now - startTime) / dur, 1);
       const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
@@ -91,7 +87,6 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
       if (p < 1) animRef.current = requestAnimationFrame(step);
       else { currentHRef.current = to; setTotalH(to); }
     };
-
     animRef.current = requestAnimationFrame(step);
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, [totalHTarget]);
@@ -115,7 +110,7 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
         {finish === 'vivo-doble' && (
           <g clipPath={`url(#hb-${clipId})`}>
             <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5" />
-            <g style={{ transform: 'translate(150px, 100px) scale(0.9) translate(-150px, -100px)' }}>
+            <g style={{ transform: `translate(150px, ${totalH}px) scale(0.93) translate(-150px, -${totalH}px)` }}>
               <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5" />
             </g>
           </g>
@@ -133,7 +128,7 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
   const w = 250;
   const h = 110;
   const topBand = 55;
-  const legW = 62;
+  const legW = 40;
   const cornerR = 6;
   const dx = 12, dy = -10;
   const leftLegX = x;
@@ -168,6 +163,8 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
         <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         <path d={frontPath} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         <line x1={x + 4} y1={cutTop} x2={x + w - 4} y2={cutTop} stroke={darken(color, 25)} strokeWidth="1" opacity="0.15" />
+        <line x1={leftLegX + legW} y1={cutTop} x2={leftLegX + legW + dx} y2={cutTop + dy} stroke={darken(color, 30)} strokeWidth="1.5" opacity="0.35" />
+        <line x1={rightLegX} y1={cutTop} x2={rightLegX + dx} y2={cutTop + dy} stroke={darken(color, 30)} strokeWidth="1.5" opacity="0.35" />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#bn-${clipId})`}>
             <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
@@ -183,12 +180,19 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
   );
 };
 
-const PuffSVG = ({ color, finish, vivoColor, diameter, heightCm }: { color: string; finish: string; vivoColor: string; diameter?: number; heightCm?: number }) => {
+const PuffSVG = ({ color, finish, vivoColor, forma, diameter, heightCm }: { color: string; finish: string; vivoColor: string; forma?: string; diameter?: number; heightCm?: number }) => {
+  const isRect = forma === 'rectangular';
   const scaleY = heightCm ? Math.min(1.4, Math.max(0.7, heightCm / 35)) : 1;
   const scaleX = diameter ? Math.min(1.2, Math.max(0.7, diameter / 50)) : 1;
   const clipId = useId();
-  const x = 35, y = 55, w = 230, h = 135, rx = 28;
+  const x = 35, y = 68, w = 215, h = 112;
+  const rx = isRect ? 5 : 26;
+  const dx = 14, dy = -9;
+  const topColor = lighten(color, 18);
+  const sideColor = darken(color, 18);
   const adjustedColor = darken(color, 30);
+  const topPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + dx} ${y + dy} Z`;
+  const sidePath = `M ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + w + dx} ${y + h + dy} L ${x + w} ${y + h} Z`;
   return (
     <svg viewBox="0 0 300 220" className="w-full max-w-[260px] mx-auto">
       <defs>
@@ -197,15 +201,21 @@ const PuffSVG = ({ color, finish, vivoColor, diameter, heightCm }: { color: stri
         </clipPath>
       </defs>
       <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 190px', transition: 'transform 0.4s ease' }}>
+        <ellipse cx={150 + dx / 2} cy={y + h + 10} rx={w * 0.42} ry={4} fill="rgba(0,0,0,0.1)" />
+        <path d={sidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <line x1={x} y1={y + h / 2} x2={x + w} y2={y + h / 2} stroke={adjustedColor} strokeWidth="1.5" opacity="0.3" />
-        <line x1={150} y1={y} x2={150} y2={y + h} stroke={adjustedColor} strokeWidth="1.5" opacity="0.3" />
+        {!isRect && (
+          <>
+            <line x1={x} y1={y + h / 2} x2={x + w} y2={y + h / 2} stroke={adjustedColor} strokeWidth="1.5" opacity="0.3" />
+            <line x1={150} y1={y} x2={150} y2={y + h} stroke={adjustedColor} strokeWidth="1.5" opacity="0.3" />
+          </>
+        )}
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#pf-${clipId})`}>
             <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
-        <ellipse cx={150} cy={200} rx={w * 0.4} ry={5} fill="rgba(0,0,0,0.08)" />
       </g>
     </svg>
   );
@@ -226,15 +236,22 @@ const CushionSVG = ({ color, finish, vivoColor, size }: { color: string; finish:
   } else if (size?.startsWith('40')) {
     scaleX = 1; scaleY = 1;
   }
-  const x = 40, y = 40, w = 120, h = 120;
+  const x = 45, y = 48, w = 110, h = 110;
+  const dx = 12, dy = -10;
+  const topColor = lighten(color, 18);
+  const sideColor = darken(color, 18);
+  const topPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + dx} ${y + dy} Z`;
+  const sidePath = `M ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + w + dx} ${y + h + dy} L ${x + w} ${y + h} Z`;
   return (
-    <svg viewBox="0 0 200 200" className="w-full max-w-[200px] mx-auto">
+    <svg viewBox="0 0 220 200" className="w-full max-w-[200px] mx-auto">
       <defs>
         <clipPath id={`cu-${clipId}`}>
           <rect x={x} y={y} width={w} height={h} rx="12" />
         </clipPath>
       </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '100px 100px', transition: 'transform 0.4s ease' }}>
+      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '100px 103px', transition: 'transform 0.4s ease' }}>
+        <path d={sidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
+        <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         <rect x={x} y={y} width={w} height={h} rx="12" fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
         {finish === 'vivo-simple' && (
           <g clipPath={`url(#cu-${clipId})`}>
@@ -333,7 +350,7 @@ const ProductSVGPreview = ({ type, color, finish, vivoColor, forma, widthCm, hei
     <div className="transition-opacity duration-300" style={{ opacity }}>
       {type === 'cabecero' && <HeadboardSVG color={color} finish={finish} vivoColor={vc} forma={currentForma} widthCm={widthCm} heightCm={heightCm} />}
       {type === 'banco' && <BenchSVG color={color} finish={finish} vivoColor={vc} widthCm={widthCm} heightCm={heightCm} />}
-      {type === 'puff' && <PuffSVG color={color} finish={finish} vivoColor={vc} diameter={widthCm} heightCm={heightCm} />}
+      {type === 'puff' && <PuffSVG color={color} finish={finish} vivoColor={vc} forma={currentForma} diameter={widthCm} heightCm={heightCm} />}
       {type === 'cojin' && <CushionSVG color={color} finish={finish} vivoColor={vc} size={currentForma} />}
       {type === 'mesa' && <MesaSVG color={color} finish={finish} vivoColor={vc} forma={currentForma} widthCm={widthCm} heightCm={heightCm} />}
     </div>
