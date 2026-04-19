@@ -141,6 +141,7 @@ const ProductConfigurator = () => {
   const [extraPatas, setExtraPatas] = useState(false);
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
+  const [extraTopMaterial, setExtraTopMaterial] = useState("nada");
 
   const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
 
@@ -162,7 +163,7 @@ const ProductConfigurator = () => {
     const forma = searchParams.get('forma');
     if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
       setProductType(tipo as ProductType);
-      if (tipo === 'puff' && !forma) setShape('redondo');
+      if (tipo === 'puff' && !forma) setShape('cuadrado');
       if (isMobile) {
         setOpenAccordion('measures');
       } else {
@@ -173,31 +174,20 @@ const ProductConfigurator = () => {
   }, [searchParams, isMobile]);
 
   const resetConfiguracion = (newType?: ProductType) => {
-    setShape(newType === 'puff' ? 'redondo' : 'recto');
-    setBedWidth('');
-    setBedHeight('');
-    setBenchLength('');
-    setBenchDepth('');
-    setBenchHeight('');
-    setPuffDiameter('');
-    setPuffHeight('');
-    setPuffLength('');
-    setPuffDepth('');
+    setShape(newType === 'puff' ? 'cuadrado' : 'recto');
+    setBedWidth(''); setBedHeight('');
+    setBenchLength(''); setBenchDepth(''); setBenchHeight('');
+    setPuffDiameter(''); setPuffHeight('');
+    setPuffLength(''); setPuffDepth('');
     setCushionSize('');
-    setFabricId('');
-    setFinish('');
-    setVivoColorId('');
-    setCustomWidth('');
-    setCustomHeight('');
-    setExtraPatas(false);
-    setExtraRelleno(false);
-    setExtraExpress(false);
+    setFabricId(''); setFinish(''); setVivoColorId('');
+    setCustomWidth(''); setCustomHeight('');
+    setExtraPatas(false); setExtraRelleno(false); setExtraExpress(false);
+    setExtraTopMaterial('nada');
   };
 
   const handleProductChange = (type: ProductType) => {
-    if (type !== productType) {
-      resetConfiguracion(type);
-    }
+    if (type !== productType) resetConfiguracion(type);
     setProductType(type);
     advanceTo('measures');
   };
@@ -232,6 +222,7 @@ const ProductConfigurator = () => {
       if (shape === 'rectangular') {
         if (puffLength) o.puffLength = puffLength;
         if (puffDepth) o.puffDepth = puffDepth;
+        if (extraTopMaterial !== 'nada') o.topMaterial = extraTopMaterial;
       } else {
         o.puffSize = puffDiameter === '40cm' ? 'Pequeño' : puffDiameter === '50cm' ? 'Mediano' : puffDiameter === '60cm' ? 'Grande' : puffDiameter === '70cm' ? 'Extra Grande' : '';
       }
@@ -242,7 +233,7 @@ const ProductConfigurator = () => {
     if (extraRelleno) o.relleno = 'true';
     if (extraExpress) o.express = 'true';
     return o;
-  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, puffLength, puffDepth, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, puffLength, puffDepth, finish, fabricId, extraPatas, extraRelleno, extraExpress, extraTopMaterial, customWidth, customHeight]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -267,28 +258,20 @@ const ProductConfigurator = () => {
   const priceLabel = isIncomplete ? `desde ${price || (productType ? PRODUCTS.find(p => p.type === productType)?.basePrice || 0 : 180)}` : `${price}`;
 
   const chips: string[] = [];
-  if (productType) {
-    const pName = PRODUCTS.find(p => p.type === productType)?.name || '';
-    chips.push(pName.split(' ')[0]);
-  }
+  if (productType) chips.push((PRODUCTS.find(p => p.type === productType)?.name || '').split(' ')[0]);
   if (productType === 'cabecero') {
     chips.push(bedWidth || customWidth ? (bedWidth || `${customWidth} cm`) : "—");
     chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
   }
   if (productType === 'banco') chips.push(benchLength || "—");
   if (productType === 'puff') {
-    if (shape === 'rectangular') {
-      chips.push(puffLength || "—");
-      chips.push(puffDepth || "—");
-    } else {
-      chips.push(puffDiameter || "—");
-    }
+    if (shape === 'rectangular') { chips.push(puffLength || "—"); chips.push(puffDepth || "—"); }
+    else chips.push(puffDiameter || "—");
   }
   if (productType === 'cojin') chips.push(cushionSize || "—");
   chips.push(fabric?.name || "—");
   const finishObj = FINISHES.find(f => f.id === finish);
-  if (finishObj) chips.push(finishObj.name);
-  else chips.push("—");
+  chips.push(finishObj ? finishObj.name : "—");
 
   const previewLabel = [
     productType ? (PRODUCTS.find(p => p.type === productType)?.name.split(' ')[0] || '') : '',
@@ -328,24 +311,37 @@ const ProductConfigurator = () => {
   const selectionLabel = (step: Step): React.ReactNode => {
     switch (step) {
       case 'type':
-        return productType ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {PRODUCTS.find(p => p.type === productType)?.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+        return productType
+          ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {PRODUCTS.find(p => p.type === productType)?.name}</span>
+          : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'measures':
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
         if (productType === 'puff') {
           if (shape === 'rectangular') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffLength} × {puffDepth}</span>;
-          return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> Ø{puffDiameter}</span>;
+          return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         }
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {cushionSize}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
-        return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+        return fabric
+          ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span>
+          : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'finish':
-        return finishObj ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishObj.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+        return finishObj
+          ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishObj.name}</span>
+          : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'extras': {
-        const extras = [extraPatas && 'Patas', extraRelleno && 'Relleno', extraExpress && 'Express'].filter(Boolean);
-        return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
+        const extras = [
+          extraPatas && 'Patas',
+          extraRelleno && 'Relleno',
+          extraExpress && 'Express',
+          extraTopMaterial !== 'nada' && (extraTopMaterial === 'metacrilato' ? 'Metacrilato' : 'Cristal'),
+        ].filter(Boolean);
+        return extras.length > 0
+          ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span>
+          : <span className="text-muted-foreground italic">Opcional</span>;
       }
     }
   };
@@ -355,13 +351,7 @@ const ProductConfigurator = () => {
       <div className="flex gap-1">
         {STEPS.map((s) => (
           <div key={s} className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
-            <div
-              className="h-full rounded-full transition-all duration-300"
-              style={{
-                width: stepComplete[s] ? '100%' : '0%',
-                backgroundColor: 'hsl(var(--accent-warm))',
-              }}
-            />
+            <div className="h-full rounded-full transition-all duration-300" style={{ width: stepComplete[s] ? '100%' : '0%', backgroundColor: 'hsl(var(--accent-warm))' }} />
           </div>
         ))}
       </div>
@@ -374,13 +364,8 @@ const ProductConfigurator = () => {
   const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
 
   const productCard = (type: ProductType, label: string) => (
-    <button
-      key={type}
-      onClick={() => handleProductChange(type)}
-      className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
-        productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
-      }`}
-    >
+    <button key={type} onClick={() => handleProductChange(type)}
+      className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
       <ProductIcon type={type} />
       <span className="text-sm font-light text-foreground">{label}</span>
     </button>
@@ -395,8 +380,7 @@ const ProductConfigurator = () => {
   };
 
   const sharedAccordionProps = {
-    selectionLabel,
-    productType, productCard,
+    selectionLabel, productType, productCard,
     shape, setShape,
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
@@ -409,6 +393,7 @@ const ProductConfigurator = () => {
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
     extraExpress, setExtraExpress,
+    extraTopMaterial, setExtraTopMaterial,
     advanceTo, needsVivo,
   };
 
@@ -416,9 +401,7 @@ const ProductConfigurator = () => {
     <div className="min-h-screen">
       <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
         <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-3">Diseña el tuyo</h1>
-        <p className="text-sm text-muted-foreground font-light">
-          ¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.
-        </p>
+        <p className="text-sm text-muted-foreground font-light">¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.</p>
       </div>
 
       <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
@@ -428,13 +411,9 @@ const ProductConfigurator = () => {
             <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} />
           </div>
           <div className="flex flex-wrap gap-1.5 justify-center mt-2">
-            {chips.map((c, i) => (
-              <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>
-            ))}
+            {chips.map((c, i) => <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>)}
           </div>
-          <div className="mt-2 w-full">
-            <ProgressBar />
-          </div>
+          <div className="mt-2 w-full"><ProgressBar /></div>
         </div>
       </div>
 
@@ -445,30 +424,18 @@ const ProductConfigurator = () => {
             <div className="flex-1 flex items-center justify-center w-full">
               <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} />
             </div>
-            {!productType && (
-              <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
-            )}
+            {!productType && <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>}
           </div>
-
           <div className="flex flex-wrap gap-1.5 justify-center mt-4">
-            {chips.map((c, i) => (
-              <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>
-            ))}
+            {chips.map((c, i) => <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>)}
           </div>
-
           <div className="mt-6 text-center">
-            <p className="font-serif text-2xl lg:text-3xl font-light text-foreground transition-opacity duration-150" key={priceLabel}>
-              {priceLabel} €
-            </p>
+            <p className="font-serif text-2xl lg:text-3xl font-light text-foreground transition-opacity duration-150" key={priceLabel}>{priceLabel} €</p>
             <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
           </div>
-
           <div className="flex flex-col gap-3 mt-6">
-            <button
-              onClick={handleOrder}
-              disabled={!productType}
-              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
-            >
+            <button onClick={handleOrder} disabled={!productType}
+              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40">
               Lo quiero — solicitar presupuesto
             </button>
           </div>
@@ -489,9 +456,7 @@ const ProductConfigurator = () => {
       </div>
 
       <div className="md:hidden px-4 pb-28 pt-4">
-        <div className="mb-4">
-          <h2 className="font-serif text-2xl font-light text-foreground">Configura tu pieza</h2>
-        </div>
+        <div className="mb-4"><h2 className="font-serif text-2xl font-light text-foreground">Configura tu pieza</h2></div>
         <ConfigAccordionsSingle
           openAccordion={typeof accordionValue === 'string' ? accordionValue : ''}
           setOpenAccordion={(v) => handleAccordionChange(v)}
@@ -505,11 +470,8 @@ const ProductConfigurator = () => {
             <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
             <p className="text-xs text-muted-foreground">IVA incluido</p>
           </div>
-          <button
-            onClick={handleOrder}
-            disabled={!productType}
-            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
-          >
+          <button onClick={handleOrder} disabled={!productType}
+            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40">
             Lo quiero →
           </button>
         </div>
@@ -541,25 +503,24 @@ interface AccordionContentSharedProps {
   extraPatas: boolean; setExtraPatas: (v: boolean) => void;
   extraRelleno: boolean; setExtraRelleno: (v: boolean) => void;
   extraExpress: boolean; setExtraExpress: (v: boolean) => void;
+  extraTopMaterial: string; setExtraTopMaterial: (v: string) => void;
   advanceTo: (step: Step) => void;
   needsVivo: boolean;
 }
 
 const AccordionItems = (props: AccordionContentSharedProps) => {
   const {
-    selectionLabel,
-    productType, productCard,
+    selectionLabel, productType, productCard,
     shape, setShape,
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
     puffLength, setPuffLength, puffDepth, setPuffDepth,
     cushionSize, setCushionSize,
-    fabricId, setFabricId,
-    finish, setFinish,
-    vivoColorId, setVivoColorId,
+    fabricId, setFabricId, finish, setFinish, vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
+    extraTopMaterial, setExtraTopMaterial,
     advanceTo, needsVivo,
   } = props;
 
@@ -600,9 +561,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {HEADBOARD_SHAPES.map(s => (
                     <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                      <svg viewBox="0 0 60 40" className="w-12 h-8">
-                        <path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                      </svg>
+                      <svg viewBox="0 0 60 40" className="w-12 h-8"><path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
                       <span className="text-xs font-light">{s.name}</span>
                     </button>
                   ))}
@@ -625,9 +584,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
                       <span className="text-xs text-muted-foreground">cm</span>
                     </div>
-                    {parseInt(customWidth) > 250 && (
-                      <p className="text-sm text-destructive mt-1">El ancho máximo es 250cm. Consúltanos para medidas especiales.</p>
-                    )}
+                    {parseInt(customWidth) > 250 && <p className="text-sm text-destructive mt-1">El ancho máximo es 250cm. Consúltanos para medidas especiales.</p>}
                   </>
                 )}
               </div>
@@ -649,9 +606,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
                       <span className="text-xs text-muted-foreground">cm</span>
                     </div>
-                    {parseInt(customHeight) > 120 && (
-                      <p className="text-sm text-destructive mt-1">El alto máximo habitual es 120cm. Escríbenos para confirmar.</p>
-                    )}
+                    {parseInt(customHeight) > 120 && <p className="text-sm text-destructive mt-1">El alto máximo habitual es 120cm. Escríbenos para confirmar.</p>}
                   </>
                 )}
               </div>
@@ -703,31 +658,28 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => { setShape('redondo'); setPuffLength(''); setPuffDepth(''); }}
+                    onClick={() => { setShape('cuadrado'); setPuffLength(''); setPuffDepth(''); }}
                     className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape !== 'rectangular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                   >
-                    <svg viewBox="0 0 40 40" className="w-8 h-8">
-                      <ellipse cx="20" cy="20" rx="16" ry="13" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
-                    <span className="text-xs font-light">Redondo</span>
+                    <svg viewBox="0 0 40 40" className="w-8 h-8"><rect x="6" y="6" width="28" height="28" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    <span className="text-xs font-light">Cuadrado</span>
                   </button>
                   <button
                     onClick={() => { setShape('rectangular'); setPuffDiameter(''); }}
                     className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'rectangular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                   >
-                    <svg viewBox="0 0 50 35" className="w-10 h-7">
-                      <rect x="4" y="7" width="42" height="21" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
+                    <svg viewBox="0 0 50 35" className="w-10 h-7"><rect x="4" y="7" width="42" height="21" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
                     <span className="text-xs font-light">Rectangular</span>
+                    <span className="text-[10px] text-muted-foreground">(Mesa de centro)</span>
                   </button>
                 </div>
               </div>
               {shape !== 'rectangular' && (
                 <div>
-                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Diámetro</p>
+                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
                   <SelectWrapper>
                     <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
-                      <option value="">Seleccionar diámetro...</option>
+                      <option value="">Seleccionar tamaño...</option>
                       <option value="40cm">40 cm — Pequeño</option>
                       <option value="50cm">50 cm — Mediano</option>
                       <option value="60cm">60 cm — Grande</option>
@@ -795,9 +747,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </SelectWrapper>
             </div>
           )}
-          {!productType && (
-            <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
-          )}
+          {!productType && <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>}
         </AccordionContent>
       </AccordionItem>
 
@@ -809,27 +759,27 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-6">
+          {productType === 'puff' && shape === 'rectangular' && (
+            <div className="border-l-2 border-accent-warm pl-3 py-1">
+              <p className="text-xs text-muted-foreground font-light italic">
+                Para mesas de centro usamos telas impermeables y resistentes al agua, perfectas para uso diario.
+              </p>
+            </div>
+          )}
           {FABRIC_GROUPS.map(group => (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
               <div className="flex flex-wrap gap-3">
                 {group.fabrics.map(f => (
                   <button key={f.id} onClick={() => setFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
-                    <div
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${fabricId === f.id ? "border-foreground ring-2 ring-offset-2 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
-                      style={{ backgroundColor: f.hex }}
-                    />
+                    <div className={`w-10 h-10 rounded-full border-2 transition-all ${fabricId === f.id ? "border-foreground ring-2 ring-offset-2 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`} style={{ backgroundColor: f.hex }} />
                     <span className="text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
                   </button>
                 ))}
               </div>
             </div>
           ))}
-          {fabricId && (
-            <p className="text-xs text-muted-foreground font-light">
-              {ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}
-            </p>
-          )}
+          {fabricId && <p className="text-xs text-muted-foreground font-light">{ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}</p>}
         </AccordionContent>
       </AccordionItem>
 
@@ -841,17 +791,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-3">
-          {FINISHES.filter(f => {
-            if (productType === 'puff') {
-              return f.id === 'liso' || f.id === 'vivo-simple';
-            }
-            return true;
-          }).map(f => (
-            <button
-              key={f.id}
-              onClick={() => setFinish(f.id)}
-              className={`w-full text-left px-5 py-4 border rounded transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
-            >
+          {FINISHES.filter(f => productType === 'puff' ? f.id === 'liso' || f.id === 'vivo-simple' : true).map(f => (
+            <button key={f.id} onClick={() => setFinish(f.id)}
+              className={`w-full text-left px-5 py-4 border rounded transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
               <span className="text-sm font-medium text-foreground">{f.name}</span>
               {f.extra && <span className="text-xs text-accent-warm ml-2">+{f.extra}€</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
@@ -863,10 +805,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="flex flex-wrap gap-2">
                 {ALL_FABRICS.map(f => (
                   <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
-                    <div
-                      className={`w-7 h-7 rounded-full border-2 transition-all ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
-                      style={{ backgroundColor: f.hex }}
-                    />
+                    <div className={`w-7 h-7 rounded-full border-2 transition-all ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`} style={{ backgroundColor: f.hex }} />
                   </button>
                 ))}
               </div>
@@ -884,21 +823,40 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-4">
           {productType === 'banco' && (
-            <div className="flex justify-between items-center py-2">
-              <div>
-                <p className="text-base text-foreground font-light">Patas de madera</p>
-                <p className="text-xs text-muted-foreground">+15€</p>
+            <>
+              <div className="flex justify-between items-center py-2">
+                <div>
+                  <p className="text-base text-foreground font-light">Patas de madera</p>
+                  <p className="text-xs text-muted-foreground">+15€</p>
+                </div>
+                <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
               </div>
-              <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
-            </div>
+              <div className="flex justify-between items-center py-2">
+                <div>
+                  <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
+                  <p className="text-xs text-muted-foreground">+20€</p>
+                </div>
+                <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
+              </div>
+            </>
           )}
-          {(productType === 'banco' || productType === 'puff') && (
-            <div className="flex justify-between items-center py-2">
-              <div>
-                <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
-                <p className="text-xs text-muted-foreground">+20€</p>
+          {productType === 'puff' && shape === 'rectangular' && (
+            <div className="py-2">
+              <p className="text-base text-foreground font-light mb-1">Superficie encima de la mesa</p>
+              <p className="text-xs text-muted-foreground mb-3">Añade una superficie rígida sobre el tapizado</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: 'nada', label: 'Sin superficie', price: null },
+                  { id: 'metacrilato', label: 'Metacrilato', price: '+35€' },
+                  { id: 'cristal', label: 'Cristal', price: '+55€' },
+                ].map(opt => (
+                  <button key={opt.id} onClick={() => setExtraTopMaterial(opt.id)}
+                    className={`border rounded p-3 text-center text-xs transition-all ${extraTopMaterial === opt.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/60'}`}>
+                    <span className="block font-light text-foreground">{opt.label}</span>
+                    {opt.price && <span className="block text-accent-warm mt-0.5">{opt.price}</span>}
+                  </button>
+                ))}
               </div>
-              <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
             </div>
           )}
           <div className="flex justify-between items-center py-2">
@@ -908,9 +866,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             </div>
             <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
           </div>
-          <p className="text-xs text-muted-foreground italic pt-2 border-t border-border/40">
-            Instalación disponible bajo consulta.
-          </p>
+          <p className="text-xs text-muted-foreground italic pt-2 border-t border-border/40">Instalación disponible bajo consulta.</p>
         </AccordionContent>
       </AccordionItem>
     </>
