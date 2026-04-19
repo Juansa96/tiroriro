@@ -22,9 +22,24 @@ const Navbar = () => {
       setScrolled(true);
       return;
     }
-    const handleScroll = () => setScrolled(window.scrollY > 80);
+    let ticking = false;
+    let lastScrolled = false;
+    const update = () => {
+      const next = window.scrollY > 80;
+      if (next !== lastScrolled) {
+        lastScrolled = next;
+        setScrolled(next);
+      }
+      ticking = false;
+    };
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    update();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
