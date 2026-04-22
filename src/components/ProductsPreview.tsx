@@ -73,7 +73,7 @@ const ProductCard = ({ product, index }: { product: typeof PRODUCTS_DATA[number]
 };
 
 const ProductsPreview = () => (
-  <section className="py-20 md:py-32 px-6">
+  <section className="pt-8 pb-20 md:py-32 px-6">
     <div className="container mx-auto">
       <AnimatedSection className="text-center mb-8">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
