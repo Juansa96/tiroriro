@@ -46,7 +46,7 @@ const HowItWorks = () => (
         {STEPS.map((s) => (
           <div
             key={s.num}
-            className={relative p-10 group transition-colors duration-300 ${
+            className={`relative p-10 group transition-colors duration-300 ${
               s.alt
                 ? "bg-muted hover:bg-secondary"
                 : "bg-secondary hover:bg-muted"
