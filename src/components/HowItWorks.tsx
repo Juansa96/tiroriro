@@ -38,9 +38,9 @@ const HowItWorks = () => (
         <div>
           <span className="block w-5 h-px bg-primary mb-3" />
           <p className="text-[10px] tracking-[0.14em] uppercase text-muted-foreground mb-2">El proceso</p>
-          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground">Así funciona</h2>
+          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así funciona</h2>
         </div>
-        <p className="text-sm text-muted-foreground font-light max-w-[200px] md:text-right leading-relaxed">
+        <p className="text-base text-muted-foreground font-light max-w-[200px] md:text-right leading-relaxed">
           Sin obras, sin montadores, sin estrés.
         </p>
       </div>
@@ -57,8 +57,8 @@ const HowItWorks = () => (
             <span className="block font-serif text-6xl font-light text-border leading-none mb-6 select-none">
               {s.num}
             </span>
-            <h3 className="font-serif text-xl font-medium text-foreground mb-3">{s.title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground font-light">{s.text}</p>
+            <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground mb-3">{s.title}</h3>
+            <p className="text-base leading-relaxed text-muted-foreground font-light">{s.text}</p>
             <span className="absolute bottom-6 right-6 text-border group-hover:text-muted-foreground transition-colors duration-300 text-lg">
               ↗
             </span>
