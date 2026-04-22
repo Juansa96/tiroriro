@@ -1,23 +1,26 @@
 import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
+import francescaPhoto from "@/assets/testimonials/francesca-cirenei.jpeg";
+import gabrielPhoto from "@/assets/testimonials/gabriel-di-stefano.png";
+import almuPhoto from "@/assets/testimonials/almu-alonso.jpeg";
 
 const TESTIMONIALS = [
   {
-    name: "Sara M.",
+    name: "Francesca Cirenei",
     location: "Madrid",
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80",
+    photo: francescaPhoto,
     text: "Pedí un cabecero en lino crudo para una cama de 150 y quedó exactamente como lo imaginaba. Beatriz me llamó al día siguiente de rellenar el formulario y en 12 días lo tenía en casa. El acabado es precioso — y el precio, muy por debajo de lo que esperaba.",
   },
   {
-    name: "Alejandro R.",
+    name: "Gabriel Di Stefano",
     location: "Barcelona",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
+    photo: gabrielPhoto,
     text: "Llevaba meses buscando un banco para el pie de la cama que no pareciese de catálogo. Lo encontré aquí. Me dejaron elegir la tela, el color y la altura — y llegó en dos semanas con un embalaje muy cuidado. Repetiré sin duda.",
   },
   {
-    name: "Cristina L.",
+    name: "Almu Alonso",
     location: "Valencia",
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80",
+    photo: almuPhoto,
     text: "Tenía dudas porque es una compra importante sin verlo en persona. Rocío me mandó muestras de tela antes de confirmar y resolvió todas mis dudas por teléfono. El resultado es espectacular. Mi dormitorio ha cambiado por completo.",
   },
 ];

@@ -29,7 +29,7 @@ const FAQS = [
   },
   {
     q: "¿El cabecero viene montado o hay que ensamblarlo?",
-    a: "Los cabeceros llegan listos para colocar. Por defecto, el producto no incluye anclaje a pared. Puedes añadir, con coste adicional: patas (para apoyarlo directamente sobre el somier) o piezas específicas para fijarlo a la pared. Además, ofrecemos servicio de instalación únicamente en la Comunidad de Madrid (también con coste adicional). Te explicamos todas las opciones antes de confirmar el pedido.",
+    a: "Los cabeceros llegan listos para colocar. Por defecto, no incluyen anclaje a pared. Tienes varias opciones: colocarlo sobre el somier, sin necesidad de fijarlo (sin coste adicional, aunque no lo recomendamos); añadir patas para apoyarlo directamente en el suelo (coste adicional); o solicitar piezas específicas para anclarlo a la pared (coste adicional). También ofrecemos servicio de instalación en la Comunidad de Madrid (con coste adicional). Antes de confirmar el pedido, te explicamos todas las opciones por teléfono.",
   },
 ];
 
