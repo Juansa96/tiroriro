@@ -18,14 +18,14 @@ const STEPS = [
   {
     num: "03",
     title: "Muestras a casa",
-    text: "Antes de confirmar, te mandamos muestras de tela para que veas el color y la textura real.",
+    text: "Antes de confirmar, te mandamos muestras de tela (con coste, que se descuenta de tu pedido si compras) para que veas el color real.",
     href: null,
     alt: true,
   },
   {
     num: "04",
     title: "Lo recibes en casa",
-    text: "En 15 días tu pedido llega listo para poner. Hecho a mano, embalado con cuidado, sin montaje.",
+    text: "En 15 días llega listo para colocar. Sin anclaje incluido por defecto: añade patas, fijación a pared o instalación (solo Madrid) si lo necesitas.",
     href: null,
     alt: false,
   },

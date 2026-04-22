@@ -15,8 +15,8 @@ const COUPLES = [
       },
       {
         name: "Iñaki",
-        role: "EL QUE LO VENDE TODO",
-        desc: "Iñaki podría vender mantas en agosto y sombrillas en enero — y los clientes le darían las gracias — es el que habla con cada persona que llega a Tiroriro, entiende lo que necesitan antes que ellas mismas y se asegura de que todo llegue donde tiene que llegar.",
+        role: "EL DE LA LOGÍSTICA",
+        desc: "Iñaki podría organizar una mudanza intercontinental con tres post-its y una hoja de Excel — y llegaría todo antes de tiempo — es el que se asegura de que cada pedido salga, vuele y aterrice donde tiene que aterrizar, en el día exacto y sin un solo arañazo.",
       },
     ],
   },
