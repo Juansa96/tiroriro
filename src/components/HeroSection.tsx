@@ -35,8 +35,14 @@ const HeroSection = () => {
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
-        <video autoPlay muted loop playsInline poster="/hero-portada.jpg"
-          className="w-full h-full object-cover object-center">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/hero-portada.jpg"
+          className="w-full h-full object-cover object-center"
+        >
           <source src="/Herovideo.mp4" type="video/mp4" />
         </video>
       </div>
@@ -44,8 +50,13 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black/20 md:bg-black/45" />
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto pb-20 md:pb-0">
-        <div className="hidden md:block transition-all duration-700 ease-out mb-4"
-          style={{ opacity: showRest ? 1 : 0, transform: showRest ? "translateY(0)" : "translateY(12px)" }}>
+        <div
+          className="hidden md:block transition-all duration-700 ease-out mb-4"
+          style={{
+            opacity: showRest ? 1 : 0,
+            transform: showRest ? "translateY(0)" : "translateY(12px)",
+          }}
+        >
           <p className="text-xs tracking-[0.18em] uppercase text-white/55 font-light">
             Tapizado artesanal · España
           </p>
@@ -57,16 +68,27 @@ const HeroSection = () => {
           <em className="italic font-light">{part2 || "\u00A0"}</em>
         </h1>
 
-        <div className="hidden md:block transition-all duration-700 ease-out"
-          style={{ opacity: showRest ? 1 : 0, transform: showRest ? "translateY(0)" : "translateY(16px)" }}>
-          <p className="mt-6 text-sm md:text-base text-white/75 font-light max-w-xl mx-auto leading-relaxed">
+        <div
+          className="transition-all duration-700 ease-out"
+          style={{
+            opacity: showRest ? 1 : 0,
+            transform: showRest ? "translateY(0)" : "translateY(16px)",
+          }}
+        >
+          <p className="hidden md:block mt-6 text-sm md:text-base text-white/75 font-light max-w-xl mx-auto leading-relaxed">
             Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 15 días lo tienes en casa.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/configurador" className="px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors">
+          <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
+            <Link
+              to="/configurador"
+              className="px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
+            >
               Personaliza el tuyo
             </Link>
-            <Link to="/productos" className="px-8 py-4 border border-white/50 text-white text-xs font-medium tracking-[0.1em] uppercase hover:border-white hover:bg-white/10 transition-colors">
+            <Link
+              to="/productos"
+              className="px-8 py-4 border border-white/50 text-white text-xs font-medium tracking-[0.1em] uppercase hover:border-white hover:bg-white/10 transition-colors"
+            >
               Ver productos
             </Link>
           </div>
@@ -76,6 +98,7 @@ const HeroSection = () => {
         </div>
       </div>
 
+      {/* Franja inferior con iconos — solo móvil */}
       <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-4 px-6">
         <div className="flex items-start justify-around">
           <div className="flex flex-col items-center gap-1.5 text-center">
