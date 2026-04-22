@@ -83,7 +83,7 @@ const Navbar = () => {
             viewBox="100 335 730 225"
             style={{
               width: typeof window !== "undefined" && window.innerWidth >= 768 ? 130 : 90,
-              marginTop: "-30px",
+              marginTop: typeof window !== "undefined" && window.innerWidth >= 768 ? "-30px" : "-18px",
               height: "auto",
               display: "block",
               filter:
