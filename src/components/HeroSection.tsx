@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Award, Hand, Truck } from "lucide-react";
 
 const useTypewriter = (text: string, startDelay: number, speed = 60) => {
   const [displayed, setDisplayed] = useState("");
@@ -32,7 +33,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative mt-20 md:mt-0 h-[calc(100vh-5rem)] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative mt-20 md:mt-0 h-[72vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <video
           autoPlay
@@ -97,10 +98,27 @@ const HeroSection = () => {
         </div>
       </div>
 
-      <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-3 px-4">
-        <p className="text-center text-xs text-foreground/60 font-light tracking-wide">
-          Más de 150 piezas entregadas · Hecho a mano en España · Entrega en 15 días
-        </p>
+      {/* Franja inferior con iconos — solo móvil */}
+      <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-4 px-6">
+        <div className="flex items-start justify-around">
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <Award size={18} className="text-foreground/50" />
+            <span className="text-xs font-medium text-foreground leading-tight">+150 piezas</span>
+            <span className="text-[10px] text-foreground/45 font-light">entregadas</span>
+          </div>
+          <div className="w-px self-stretch bg-foreground/10" />
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <Hand size={18} className="text-foreground/50" />
+            <span className="text-xs font-medium text-foreground leading-tight">Hecho a mano</span>
+            <span className="text-[10px] text-foreground/45 font-light">en España</span>
+          </div>
+          <div className="w-px self-stretch bg-foreground/10" />
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <Truck size={18} className="text-foreground/50" />
+            <span className="text-xs font-medium text-foreground leading-tight">Entrega</span>
+            <span className="text-[10px] text-foreground/45 font-light">en 15 días</span>
+          </div>
+        </div>
       </div>
     </section>
   );
