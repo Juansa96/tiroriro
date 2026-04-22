@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
@@ -16,6 +15,15 @@ export default {
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         body: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'display': ['clamp(2.5rem, 5vw, 4.5rem)', { lineHeight: '1.05', letterSpacing: '-0.01em', fontWeight: '300' }],
+        'h1':      ['clamp(1.75rem, 3vw, 2.25rem)', { lineHeight: '1.15', fontWeight: '400' }],
+        'h2':      ['clamp(1.2rem, 2vw, 1.4rem)',   { lineHeight: '1.3',  fontWeight: '400' }],
+        'label':   ['0.625rem',                      { lineHeight: '1.4',  letterSpacing: '0.14em', fontWeight: '500' }],
+        'body-md': ['0.9375rem',                     { lineHeight: '1.75', fontWeight: '300' }],
+        'body-sm': ['0.8125rem',                     { lineHeight: '1.7',  fontWeight: '300' }],
+        'caption': ['0.75rem',                       { lineHeight: '1.5',  fontWeight: '300' }],
       },
       colors: {
         border: "hsl(var(--border))",
