@@ -104,7 +104,7 @@ const TeamSection = () => {
                   <div key={m.name}>
                     <h3 className="font-serif text-2xl font-medium text-foreground">{m.name}</h3>
                     <p className="mt-1 text-xs tracking-ultra-wide uppercase text-muted-foreground">{m.role}</p>
-                    <p className="mt-3 text-base text-muted-foreground font-light leading-relaxed italic">
+                    <p className="mt-3 text-base text-muted-foreground font-light leading-relaxed">
                       "{m.desc}"
                     </p>
                   </div>
@@ -114,10 +114,9 @@ const TeamSection = () => {
           ))}
         </div>
 
-        {/* Poll */}
         <div className="mt-20 text-center max-w-2xl mx-auto">
-          <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground">¿A quién le dais el like este mes?</h3>
-          <p className="mt-3 text-sm text-muted-foreground font-light">
+          <h3 className="font-serif text-2xl md:text-3xl font-medium text-foreground">¿A quién le dais el like este mes?</h3>
+          <p className="mt-3 text-base text-muted-foreground font-light">
             Encuesta mensual — el matrimonio que pierda invita a comer al otro.<br />
             <span className="italic">Los resultados se resetean el primero de cada mes. La presión es real.</span>
           </p>
@@ -127,7 +126,7 @@ const TeamSection = () => {
               const pct = total > 0 ? Math.round((count / total) * 100) : 0;
               return (
                 <div key={opt.id} className="flex flex-col items-center gap-3">
-                  <span className="font-serif text-lg text-foreground">{opt.label}</span>
+                  <span className="font-serif text-lg font-medium text-foreground">{opt.label}</span>
                   <button
                     onClick={() => handleVote(opt.id)}
                     disabled={!!voted}
@@ -143,8 +142,8 @@ const TeamSection = () => {
                   </button>
                   {voted && (
                     <div className="flex flex-col items-center gap-1">
-                      <span className="text-sm font-light text-foreground">{pct}%</span>
-                      <span className="text-xs text-muted-foreground font-light">{count} {count === 1 ? "voto" : "votos"}</span>
+                      <span className="text-base font-light text-foreground">{pct}%</span>
+                      <span className="text-sm text-muted-foreground font-light">{count} {count === 1 ? "voto" : "votos"}</span>
                     </div>
                   )}
                 </div>
@@ -152,13 +151,12 @@ const TeamSection = () => {
             })}
           </div>
           {voted && (
-            <p className="mt-8 text-sm text-muted-foreground font-light italic animate-fade-in-up">
+            <p className="mt-8 text-base text-muted-foreground font-light italic animate-fade-in-up">
               {voted === "inaki-rocio" && "Iñaki ya está buscando restaurante. Rocío ya tiene la decoración de la mesa pensada."}
               {voted === "juan-bea" && "Bea ya tiene el Excel de la comanda. Juan ya ha calculado la propina exacta."}
             </p>
           )}
         </div>
-
       </div>
     </section>
   );
