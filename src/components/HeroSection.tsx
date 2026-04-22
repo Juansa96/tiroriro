@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-portada.jpg";
 
 const HeroSection = () => (
   <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div className="absolute inset-0">
-      <img
-        src={heroImage}
-        alt="Tapizado artesanal TIRO·RIRO"
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster="/src/assets/hero-portada.jpg"
         className="w-full h-full object-cover object-center"
-      />
+      >
+        <source src="/src/assets/Herovideo.mp4" type="video/mp4" />
+      </video>
     </div>
     <div className="absolute inset-0 bg-black/45" />
     <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
