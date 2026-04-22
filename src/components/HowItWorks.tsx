@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 const STEPS = [
   {
     num: "01",
@@ -29,6 +30,7 @@ const STEPS = [
     alt: false,
   },
 ];
+
 const HowItWorks = () => (
   <section className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
@@ -50,7 +52,7 @@ const HowItWorks = () => (
               s.alt
                 ? "bg-muted hover:bg-secondary"
                 : "bg-secondary hover:bg-muted"
-            }}
+            }`}
           >
             <span className="block font-serif text-6xl font-light text-border leading-none mb-6 select-none">
               {s.num}
@@ -74,4 +76,5 @@ const HowItWorks = () => (
     </div>
   </section>
 );
+
 export default HowItWorks;
