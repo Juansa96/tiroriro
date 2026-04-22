@@ -297,7 +297,7 @@ const ProductConfigurator = () => {
     const summary = buildConfigSummary(productType, options);
     const params = new URLSearchParams({
       product: product?.name || '',
-      config: `Me interesa: ${summary} (aprox. ${price}€)`,
+      config: `Me interesa: ${summary} (aprox. xx€)`,
     });
     if (extraExpress) params.set('express', 'true');
     return `/?${params.toString()}#contacto`;
@@ -430,7 +430,7 @@ const ProductConfigurator = () => {
             {chips.map((c, i) => <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>)}
           </div>
           <div className="mt-6 text-center">
-            <p className="font-serif text-2xl lg:text-3xl font-light text-foreground transition-opacity duration-150" key={priceLabel}>{priceLabel} €</p>
+            <p className="font-serif text-2xl lg:text-3xl font-light text-foreground transition-opacity duration-150">xx €</p>
             <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
           </div>
           <div className="flex flex-col gap-3 mt-6">
@@ -467,7 +467,7 @@ const ProductConfigurator = () => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
+            <p className="font-serif text-xl text-foreground">xx €</p>
             <p className="text-xs text-muted-foreground">IVA incluido</p>
           </div>
           <button onClick={handleOrder} disabled={!productType}
@@ -795,7 +795,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <button key={f.id} onClick={() => setFinish(f.id)}
               className={`w-full text-left px-5 py-4 border rounded transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
               <span className="text-sm font-medium text-foreground">{f.name}</span>
-              {f.extra && <span className="text-xs text-accent-warm ml-2">+{f.extra}€</span>}
+              {f.extra && <span className="text-xs text-accent-warm ml-2">+xx€</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
           ))}
@@ -827,14 +827,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="flex justify-between items-center py-2">
                 <div>
                   <p className="text-base text-foreground font-light">Patas de madera</p>
-                  <p className="text-xs text-muted-foreground">+15€</p>
+                  <p className="text-xs text-muted-foreground">+xx€</p>
                 </div>
                 <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
               </div>
               <div className="flex justify-between items-center py-2">
                 <div>
                   <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
-                  <p className="text-xs text-muted-foreground">+20€</p>
+                  <p className="text-xs text-muted-foreground">+xx€</p>
                 </div>
                 <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
               </div>
@@ -847,8 +847,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: 'nada', label: 'Sin superficie', price: null },
-                  { id: 'metacrilato', label: 'Metacrilato', price: '+35€' },
-                  { id: 'cristal', label: 'Cristal', price: '+55€' },
+                  { id: 'metacrilato', label: 'Metacrilato', price: '+xx€' },
+                  { id: 'cristal', label: 'Cristal', price: '+xx€' },
                 ].map(opt => (
                   <button key={opt.id} onClick={() => setExtraTopMaterial(opt.id)}
                     className={`border rounded p-3 text-center text-xs transition-all ${extraTopMaterial === opt.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/60'}`}>
@@ -862,7 +862,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="flex justify-between items-center py-2">
             <div>
               <p className="text-base text-foreground font-light">Entrega express 7 días</p>
-              <p className="text-xs text-muted-foreground">+35€</p>
+              <p className="text-xs text-muted-foreground">+xx€</p>
             </div>
             <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
           </div>
