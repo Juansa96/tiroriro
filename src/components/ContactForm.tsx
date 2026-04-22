@@ -43,7 +43,7 @@ const ContactForm = () => {
     if (prefilledProduct || fromConfig) {
       let details = fromConfig || '';
       if (expressParam === 'true') {
-        details += '\nEnvío express en 7 días: Sí (+35€)';
+        details += '\nEnvío express en 7 días: Sí (+xx€)';
       }
       if (prefilledProduct) {
         const mapped = mapProductName(prefilledProduct);
@@ -140,8 +140,8 @@ const ContactForm = () => {
       configTags.push({ label: '', value: p });
     });
   }
-  if (priceParam) configTags.push({ label: 'Precio aprox.', value: `${priceParam}€` });
-  if (expressParam === 'true') configTags.push({ label: 'Extras', value: 'Express 7 días (+35€)' });
+  if (priceParam) configTags.push({ label: 'Precio aprox.', value: `xx€` });
+  if (expressParam === 'true') configTags.push({ label: 'Extras', value: 'Express 7 días (+xx€)' });
 
   return (
     <section id="contacto" className="py-20 md:py-32 px-6 bg-background">

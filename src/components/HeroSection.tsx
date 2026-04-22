@@ -101,9 +101,9 @@ const HeroSection = () => {
               Ver productos
             </Link>
           </div>
-          <div className="mt-5 flex flex-col items-center gap-1 text-white/45">
-            <span className="text-[11px] font-light tracking-widest uppercase">Cabeceros desde 180€ · Bancos desde 120€</span>
-            <span className="text-[11px] font-light tracking-widest uppercase">Puffs desde 90€ · Cojines desde 30€</span>
+          <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Cabeceros desde xx€ · Bancos desde xx€</span>
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Puffs desde xx€ · Cojines desde xx€</span>
           </div>
         </div>
       </div>
@@ -113,8 +113,8 @@ const HeroSection = () => {
         <div className="flex items-start justify-around">
           <div className="flex flex-col items-center gap-1.5 text-center">
             <Award size={18} className="text-foreground/50" />
-            <span className="text-xs font-medium text-foreground leading-tight">+150 piezas</span>
-            <span className="text-[10px] text-foreground/45 font-light">entregadas</span>
+            <span className="text-xs font-medium text-foreground leading-tight">Atención</span>
+            <span className="text-[10px] text-foreground/45 font-light">personalizada</span>
           </div>
           <div className="w-px self-stretch bg-foreground/10" />
           <div className="flex flex-col items-center gap-1.5 text-center">

@@ -45,7 +45,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
           <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">
             {cat.name}
           </h3>
-          <span className="text-sm text-muted-foreground font-light shrink-0 ml-4 mt-1">Desde {cat.price}€</span>
+          <span className="text-sm text-muted-foreground font-light shrink-0 ml-4 mt-1">Desde xx€</span>
         </div>
       </Link>
     </AnimatedSection>

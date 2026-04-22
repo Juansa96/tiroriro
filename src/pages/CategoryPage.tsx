@@ -98,7 +98,7 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
         <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-base text-foreground font-medium">Desde {model.price}€</p>
+          <p className="text-base text-foreground font-medium">Desde xx€</p>
           <span className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 group-hover:opacity-80 transition-opacity">
             Personalizar
           </span>
