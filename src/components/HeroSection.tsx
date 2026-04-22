@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
+import heroVideo from "@/assets/hero-video.mp4";
 import heroImage from "@/assets/hero-portada.jpg";
 
 const HeroSection = () => (
   <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div className="absolute inset-0">
-      <img
-        src={heroImage}
-        alt="Tapizado artesanal TIRO·RIRO"
+      <video
+        src={heroVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster={heroImage}
         className="w-full h-full object-cover object-center"
       />
     </div>
@@ -39,12 +44,6 @@ const HeroSection = () => (
       <p className="mt-6 text-xs text-white/40 font-light tracking-wide">
         Cabeceros desde 180€ · Bancos desde 120€
       </p>
-    </div>
-    <div className="absolute bottom-8 right-8 z-10 flex flex-col items-center gap-2">
-      <span className="text-[9px] tracking-[0.16em] uppercase text-white/30 rotate-90 mb-2">scroll</span>
-      <div className="w-px h-10 bg-white/20 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1/2 bg-white/60 animate-[scrollLine_2s_ease_infinite]" />
-      </div>
     </div>
   </section>
 );
