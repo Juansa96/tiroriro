@@ -13,8 +13,9 @@ const FloatingButtons = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-      {/* Instagram */}
-      <div className="relative">
+
+      {/* Instagram — solo desktop */}
+      <div className="hidden md:block relative">
         {igHovered && (
           <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-foreground text-background text-xs rounded px-2 py-1 whitespace-nowrap">
             Síguenos en Instagram
@@ -34,7 +35,7 @@ const FloatingButtons = () => {
         </a>
       </div>
 
-      {/* WhatsApp */}
+      {/* WhatsApp — siempre visible */}
       <div className="relative">
         {whatsappHovered && (
           <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-foreground text-background text-xs rounded px-2 py-1 whitespace-nowrap">
