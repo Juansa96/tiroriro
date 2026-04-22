@@ -5,10 +5,10 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const CATEGORIES = [
-  { id: 'cabeceros', name: 'Cabeceros tapizados', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80&fit=crop&crop=center', price: 180 },
-  { id: 'bancos', name: 'Bancos entelados', image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=600&q=80&fit=crop&crop=center', price: 95 },
-  { id: 'cojines', name: 'Cojines y almohadones', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&q=80&fit=crop&crop=center', price: 30 },
-  { id: 'puffs', name: 'Puffs y mesas de centro', image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80&fit=crop&crop=center', price: 95 },
+  { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG', price: 180 },
+  { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG', price: 95 },
+  { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2486.PNG', price: 30 },
+  { id: 'puffs', name: 'Puffs y mesas de centro', image: '/productos-fotos/puff/IMG_2497.PNG', price: 95 },
 ];
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
