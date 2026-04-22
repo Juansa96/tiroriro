@@ -24,11 +24,11 @@ const useTypewriter = (text: string, startDelay: number, speed = 60) => {
 const HeroSection = () => {
   const part1 = useTypewriter("Algunas cosas", 3000, 65);
   const part2 = useTypewriter(" merecen", 6000, 65);
-  const part3 = useTypewriter("hacerse a mano", 6000, 65);
+  const part3 = useTypewriter("hacerse a mano", 7000, 65);
   const [showRest, setShowRest] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowRest(true), 8200);
+    const t = setTimeout(() => setShowRest(true), 8000);
     return () => clearTimeout(t);
   }, []);
 
