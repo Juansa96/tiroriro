@@ -1,51 +1,53 @@
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-portada.jpg";
+import heroVideo from "@/assets/hero-video.mp4";
 
 const HeroSection = () => (
   <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div className="absolute inset-0">
-      <img
-        src={heroImage}
-        alt="Dormitorio elegante con cabecero tapizado artesanal, luz cálida lateral"
+      <video
+        src={heroVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
         className="w-full h-full object-cover object-center"
-        style={{ width: "100%", height: "100%" }}
-        loading="eager"
-        decoding="async"
       />
     </div>
-    <div className="absolute inset-0 bg-black/40" />
-
+    <div className="absolute inset-0 bg-black/45" />
     <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-      <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
-        Algunas cosas merecen hacerse a mano
-      </h1>
-
-      <p className="mt-6 text-base md:text-lg text-white/90 font-light max-w-xl mx-auto leading-relaxed">
-        Nuestro equipo construye, tapiza y envía — tú solo eliges la tela y el tamaño y en 15 días lo tienes en casa.
+      <p className="mb-4 text-xs tracking-[0.18em] uppercase text-white/55 font-light">
+        Tapizado artesanal · España
       </p>
-
+      <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
+        Algunas cosas merecen<br />
+        <em className="italic font-light">hacerse a mano</em>
+      </h1>
+      <p className="mt-6 text-sm md:text-base text-white/75 font-light max-w-xl mx-auto leading-relaxed">
+        Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 15 días lo tienes en casa.
+      </p>
       <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
         <Link
           to="/configurador"
-          className="px-8 py-4 bg-primary text-primary-foreground text-base font-medium tracking-normal uppercase hover:opacity-100 transition-opacity rounded-lg"
-          style={{ opacity: 0.92 }}
+          className="px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
         >
           Personaliza el tuyo
         </Link>
         <Link
           to="/productos"
-          className="px-8 py-4 border-2 border-white text-white text-base font-medium tracking-normal uppercase hover:bg-white/10 transition-colors rounded-lg"
+          className="px-8 py-4 border border-white/50 text-white text-xs font-medium tracking-[0.1em] uppercase hover:border-white hover:bg-white/10 transition-colors"
         >
           Ver productos
         </Link>
       </div>
-
-      <p
-        className="mt-6 text-white font-light"
-        style={{ fontSize: "1.1rem", letterSpacing: "0.02em", fontWeight: 300 }}
-      >
-        Cabeceros desde 180€ · Bancos desde 120€ · Precio exacto en el configurador
+      <p className="mt-6 text-xs text-white/40 font-light tracking-wide">
+        Cabeceros desde 180€ · Bancos desde 120€
       </p>
+    </div>
+    <div className="absolute bottom-8 right-8 z-10 flex flex-col items-center gap-2">
+      <span className="text-[9px] tracking-[0.16em] uppercase text-white/30 rotate-90 mb-2">scroll</span>
+      <div className="w-px h-10 bg-white/20 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1/2 bg-white/60 animate-[scrollLine_2s_ease_infinite]" />
+      </div>
     </div>
   </section>
 );
