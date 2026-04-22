@@ -22,9 +22,8 @@ const useTypewriter = (text: string, startDelay: number, speed = 60) => {
 };
 
 const HeroSection = () => {
-  const part1 = useTypewriter("Algunas cosas", 3000, 75);
-  const part2 = useTypewriter(" merecen", 6000, 75);
-  const part3 = useTypewriter("hacerse a mano", 6700, 75);
+  const part1 = useTypewriter("Algunas cosas", 3000, 55);
+  const part2 = useTypewriter("merecen hacerse a mano", 6000, 55);
   const [showRest, setShowRest] = useState(false);
 
   useEffect(() => {
@@ -63,9 +62,9 @@ const HeroSection = () => {
         </div>
 
         <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
-          <span>{part1}{part2}</span>
+          <span>{part1 || "\u00A0"}</span>
           <br />
-          <em className="italic font-light">{part3}</em>
+          <em className="italic font-light">{part2 || "\u00A0"}</em>
         </h1>
 
         <div
