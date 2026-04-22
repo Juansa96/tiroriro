@@ -81,7 +81,7 @@ const ProductsPreview = () => {
                     src={product.image}
                     alt={product.alt}
                     className="w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105"
-                    style={product.id === 'puffs' ? { objectPosition: 'center 15%' } : undefined}
+                    style={product.id === 'puffs' ? { objectPosition: 'center 0%' } : undefined}
                     loading="lazy"
                     decoding="async"
                   />
@@ -104,7 +104,7 @@ const ProductsPreview = () => {
                   src={PRODUCTS_DATA[current].image}
                   alt={PRODUCTS_DATA[current].alt}
                   className="w-full aspect-[3/4] object-cover max-h-80"
-                  style={PRODUCTS_DATA[current].id === 'puffs' ? { objectPosition: 'center 15%' } : undefined}
+                  style={PRODUCTS_DATA[current].id === 'puffs' ? { objectPosition: 'center 0%' } : undefined}
                   loading="lazy"
                   decoding="async"
                 />
