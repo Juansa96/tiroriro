@@ -43,14 +43,7 @@ export type Database = {
       }
     }
     Views: {
-      team_poll_current_month: {
-        Row: {
-          option_id: string | null
-          vote_count: number | null
-          vote_month: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
