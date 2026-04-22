@@ -32,7 +32,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative w-full aspect-video md:aspect-auto md:min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative mt-20 md:mt-0 h-[calc(100vh-5rem)] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <video
           autoPlay
@@ -45,12 +45,12 @@ const HeroSection = () => {
           <source src="/Herovideo.mp4" type="video/mp4" />
         </video>
       </div>
-      <div className="absolute inset-0 bg-black/45" />
 
-      <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+      <div className="absolute inset-0 hidden md:block bg-black/45" />
 
+      <div className="hidden md:block relative z-10 text-center px-6 max-w-3xl mx-auto">
         <div
-          className="hidden md:block transition-all duration-700 ease-out mb-4"
+          className="transition-all duration-700 ease-out mb-4"
           style={{
             opacity: showRest ? 1 : 0,
             transform: showRest ? "translateY(0)" : "translateY(12px)",
@@ -61,7 +61,7 @@ const HeroSection = () => {
           </p>
         </div>
 
-        <h1 className="font-serif text-2xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
+        <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
           <span>{part1 || "\u00A0"}</span>
           <br />
           <em className="italic font-light">{part2 || "\u00A0"}</em>
@@ -74,25 +74,33 @@ const HeroSection = () => {
             transform: showRest ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          <div className="mt-4 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
+          <p className="mt-6 text-sm md:text-base text-white/75 font-light max-w-xl mx-auto leading-relaxed">
+            Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 15 días lo tienes en casa.
+          </p>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/configurador"
-              className="px-6 md:px-8 py-2 md:py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
+              className="px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
             >
               Personaliza el tuyo
             </Link>
             <Link
               to="/productos"
-              className="px-6 md:px-8 py-2 md:py-4 border border-white/50 text-white text-xs font-medium tracking-[0.1em] uppercase hover:border-white hover:bg-white/10 transition-colors"
+              className="px-8 py-4 border border-white/50 text-white text-xs font-medium tracking-[0.1em] uppercase hover:border-white hover:bg-white/10 transition-colors"
             >
               Ver productos
             </Link>
           </div>
-          <p className="mt-3 md:mt-6 text-xs text-white/40 font-light tracking-wide">
+          <p className="mt-6 text-xs text-white/40 font-light tracking-wide">
             Cabeceros desde 180€ · Bancos desde 120€
           </p>
         </div>
+      </div>
 
+      <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-3 px-4">
+        <p className="text-center text-xs text-foreground/60 font-light tracking-wide">
+          Más de 150 piezas entregadas · Hecho a mano en España · Entrega en 15 días
+        </p>
       </div>
     </section>
   );
