@@ -27,7 +27,7 @@ export const PRODUCTS: Product[] = [
     name: 'Cabeceros tapizados',
     tagline: 'El punto de partida de cualquier dormitorio que merece la pena',
     basePrice: 180,
-    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80',
+    image: '/productos-fotos/cabeceros/IMG_2555.PNG',
   },
   {
     id: 'banco-entelado',
@@ -35,7 +35,7 @@ export const PRODUCTS: Product[] = [
     name: 'Bancos entelados',
     tagline: 'Para el pie de la cama, la entrada o donde quieras que aterrice la vista',
     basePrice: 120,
-    image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80',
+    image: '/productos-fotos/bancos/IMG_2552.PNG',
   },
   {
     id: 'cojin-almohadon',
@@ -43,7 +43,7 @@ export const PRODUCTS: Product[] = [
     name: 'Cojines y almohadones',
     tagline: 'Los últimos detalles que convierten una cama en la tuya',
     basePrice: 35,
-    image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&q=80',
+    image: '/productos-fotos/almohadones/IMG_2486.PNG',
   },
   {
     id: 'puff-elegante',
@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
     name: 'Puffs elegantes',
     tagline: 'Asiento, reposapiés, escultura — según cómo lo mires',
     basePrice: 95,
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+    image: '/productos-fotos/puff/IMG_2497.PNG',
   },
   {
     id: 'mesa-centro',
@@ -59,7 +59,7 @@ export const PRODUCTS: Product[] = [
     name: 'Mesas de centro',
     tagline: 'Tapizadas a medida, con estructura artesanal. Elige tela, forma y medidas.',
     basePrice: 290,
-    image: 'https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=800&q=80',
+    image: '/productos-fotos/puff/IMG_2497_1.PNG',
   },
 ];
 

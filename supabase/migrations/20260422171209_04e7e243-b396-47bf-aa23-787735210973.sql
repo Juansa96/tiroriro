@@ -1,0 +1,1 @@
+DROP VIEW IF EXISTS public.team_poll_current_month;
