@@ -1,28 +1,139 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tiroriro — Cabeceros y muebles tapizados a mano</title>
-    <meta name="description" content="Cabeceros tapizados, bancos, mesitas, cojines y puffs hechos a mano en España. Elige la tela, el tamaño y el acabado — en 15 días lo tienes en casa.">
-    <meta name="author" content="Tiroriro" />
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-    
-    
-    <meta property="og:type" content="website" />
-    
+@layer base {
+  :root {
+    --background: 38 35% 96%;
+    --foreground: 195 56% 17%;
+    --card: 38 30% 94%;
+    --card-foreground: 195 56% 17%;
+    --popover: 38 35% 96%;
+    --popover-foreground: 195 56% 17%;
+    --primary: 195 56% 23%;
+    --primary-foreground: 38 35% 96%;
+    --secondary: 35 25% 90%;
+    --secondary-foreground: 195 56% 17%;
+    --muted: 35 22% 92%;
+    --muted-foreground: 195 18% 38%;
+    --accent: 195 30% 85%;
+    --accent-foreground: 195 56% 17%;
+    --accent-warm: 195 56% 23%;
+    --accent-warm-foreground: 38 35% 96%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 38 35% 96%;
+    --border: 195 20% 82%;
+    --input: 195 20% 82%;
+    --ring: 195 56% 23%;
+    --radius: 0.25rem;
+    --earth: 25 35% 45%;
+    --earth-foreground: 38 35% 96%;
+    --bone: 38 30% 94%;
+    --cream: 38 35% 96%;
+    --charcoal: 195 56% 17%;
+    --warm-overlay: 195 30% 10%;
+    --sidebar-background: 38 30% 94%;
+    --sidebar-foreground: 195 56% 17%;
+    --sidebar-primary: 195 56% 23%;
+    --sidebar-primary-foreground: 38 35% 96%;
+    --sidebar-accent: 35 25% 90%;
+    --sidebar-accent-foreground: 195 56% 17%;
+    --sidebar-border: 195 20% 82%;
+    --sidebar-ring: 195 56% 23%;
+  }
+}
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    
-    <meta property="og:title" content="Tiroriro — Cabeceros y muebles tapizados a mano">
-  <meta name="twitter:title" content="Tiroriro — Cabeceros y muebles tapizados a mano">
-  <meta property="og:description" content="Cabeceros tapizados, bancos, mesitas, cojines y puffs hechos a mano en España. Elige la tela, el tamaño y el acabado — en 15 días lo tienes en casa.">
-  <meta name="twitter:description" content="Cabeceros tapizados, bancos, mesitas, cojines y puffs hechos a mano en España. Elige la tela, el tamaño y el acabado — en 15 días lo tienes en casa.">
-</head>
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .section-line {
+    @apply block w-[60px] h-px mx-auto mt-4;
+    background-color: hsl(var(--accent-warm));
+  }
+  .nav-link-underline {
+    @apply relative;
+  }
+  .nav-link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px origin-left scale-x-0 transition-transform duration-300;
+    background-color: hsl(var(--accent-warm));
+  }
+  .nav-link-underline:hover::after {
+    @apply scale-x-100;
+  }
+  .nav-link-underline.underline-white::after {
+    background-color: #ffffff;
+  }
+  .nav-link-underline.underline-primary::after {
+    background-color: hsl(var(--primary));
+  }
+  .cta-link {
+    color: hsl(var(--accent-warm));
+    @apply relative inline-flex items-center gap-1 text-sm tracking-extra-wide uppercase font-light transition-colors;
+  }
+  .cta-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px origin-left scale-x-0 transition-transform duration-300;
+    background-color: hsl(var(--accent-warm));
+  }
+  .cta-link:hover::after {
+    @apply scale-x-100;
+  }
+  .field-input {
+    @apply w-full bg-transparent text-sm text-foreground focus:outline-none font-light;
+  }
+
+  /* --- SISTEMA TIPOGRÁFICO TIRORIRO --- */
+
+  /* Nivel 1: Hero / Display — Cormorant, uso exclusivo del hero */
+  .type-display {
+    @apply font-serif text-display text-foreground;
+  }
+
+  /* Nivel 2: Títulos de sección — Cormorant */
+  .type-h1 {
+    @apply font-serif text-h1 text-foreground font-light;
+  }
+
+  /* Nivel 3: Títulos de card / subtítulos — Cormorant itálica */
+  .type-h2 {
+    @apply font-serif text-h2 text-foreground font-light;
+  }
+
+  /* Nivel 4: Eyebrow / Label — Inter uppercase */
+  .type-label {
+    @apply font-body text-label uppercase tracking-[0.14em] text-muted-foreground;
+  }
+
+  /* Nivel 5a: Cuerpo principal — Inter */
+  .type-body {
+    @apply font-body text-body-md text-muted-foreground;
+  }
+
+  /* Nivel 5b: Cuerpo secundario / cards — Inter */
+  .type-body-sm {
+    @apply font-body text-body-sm text-muted-foreground;
+  }
+
+  /* Nivel 6: Caption / precios pequeños — Inter */
+  .type-caption {
+    @apply font-body text-caption text-muted-foreground;
+  }
+}
