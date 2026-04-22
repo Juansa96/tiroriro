@@ -60,14 +60,14 @@ const ProductsPreview = () => {
           <button
             onClick={prev}
             aria-label="Anterior"
-            className="absolute -left-4 md:-left-10 top-[40%] z-10 w-10 h-10 bg-background border border-border flex items-center justify-center hover:bg-foreground hover:text-background transition-colors duration-200"
+            className="absolute -left-4 md:-left-10 top-[40%] z-10 w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-foreground hover:text-background transition-colors duration-200"
           >
             <ChevronLeft size={18} />
           </button>
           <button
             onClick={next}
             aria-label="Siguiente"
-            className="absolute -right-4 md:-right-10 top-[40%] z-10 w-10 h-10 bg-background border border-border flex items-center justify-center hover:bg-foreground hover:text-background transition-colors duration-200"
+            className="absolute -right-4 md:-right-10 top-[40%] z-10 w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-foreground hover:text-background transition-colors duration-200"
           >
             <ChevronRight size={18} />
           </button>
@@ -76,11 +76,12 @@ const ProductsPreview = () => {
           <div className="hidden md:grid grid-cols-3 gap-6">
             {desktopItems.map((product, idx) => (
               <Link key={`${product.id}-${idx}`} to={product.link} className="block group">
-                <div className="relative overflow-hidden border border-border/40 rounded-2xl">
+                <div className="relative overflow-hidden border border-border/40 rounded-lg">
                   <img
                     src={product.image}
                     alt={product.alt}
-                    className={`w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105 ${product.id === 'puffs' ? 'object-top' : ''}`}
+                    className="w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105"
+                    style={product.id === 'puffs' ? { objectPosition: 'center 15%' } : undefined}
                     loading="lazy"
                     decoding="async"
                   />
@@ -98,11 +99,12 @@ const ProductsPreview = () => {
           {/* Móvil: 1 tarjeta */}
           <div className="md:hidden">
             <Link to={PRODUCTS_DATA[current].link} className="block group">
-              <div className="relative overflow-hidden border border-border/40 rounded-2xl">
+              <div className="relative overflow-hidden border border-border/40 rounded-lg">
                 <img
                   src={PRODUCTS_DATA[current].image}
                   alt={PRODUCTS_DATA[current].alt}
-                  className={`w-full aspect-[3/4] object-cover max-h-80 ${PRODUCTS_DATA[current].id === 'puffs' ? 'object-top' : ''}`}
+                  className="w-full aspect-[3/4] object-cover max-h-80"
+                  style={PRODUCTS_DATA[current].id === 'puffs' ? { objectPosition: 'center 15%' } : undefined}
                   loading="lazy"
                   decoding="async"
                 />

@@ -21,14 +21,15 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="relative overflow-hidden border border-border/40 rounded-2xl">
+        <div className="relative overflow-hidden border border-border/40 rounded-lg">
           <img
             src={cat.image}
             alt={cat.name}
-            className={`w-full aspect-[3/4] object-cover max-h-72 ${cat.id === 'puffs' ? 'object-top' : ''}`}
+            className="w-full aspect-[3/4] object-cover max-h-72"
             style={{
               transform: hovered ? 'scale(1.04)' : 'scale(1)',
               transition: 'transform 0.4s ease',
+              objectPosition: cat.id === 'puffs' ? 'center 15%' : undefined,
             }}
             loading="lazy"
             decoding="async"
