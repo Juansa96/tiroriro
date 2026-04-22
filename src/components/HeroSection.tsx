@@ -22,13 +22,12 @@ const useTypewriter = (text: string, startDelay: number, speed = 60) => {
 };
 
 const HeroSection = () => {
-  const part1 = useTypewriter("Algunas cosas", 2000, 110);
-  const part2 = useTypewriter(" merecen", 3500, 110);
-  const part3 = useTypewriter("hacerse a mano", 4550, 110);
+  const line1 = useTypewriter("Algunas cosas merecen", 2000, 75);
+  const part3 = useTypewriter("hacerse a mano", 5800, 80);
   const [showRest, setShowRest] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowRest(true), 6800);
+    const t = setTimeout(() => setShowRest(true), 7500);
     return () => clearTimeout(t);
   }, []);
 
@@ -63,7 +62,7 @@ const HeroSection = () => {
         </div>
 
         <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
-          <span>{part1}{part2}</span>
+          <span>{line1}</span>
           <br />
           <em className="italic font-light">{part3}</em>
         </h1>
