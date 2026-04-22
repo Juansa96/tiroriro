@@ -57,7 +57,7 @@ const HowItWorks = () => (
             <span className="block font-serif text-6xl font-light text-border leading-none mb-6 select-none">
               {s.num}
             </span>
-            <h3 className="font-serif text-xl font-light text-foreground mb-3">{s.title}</h3>
+            <h3 className="font-serif text-xl font-medium text-foreground mb-3">{s.title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground font-light">{s.text}</p>
             <span className="absolute bottom-6 right-6 text-border group-hover:text-muted-foreground transition-colors duration-300 text-lg">
               ↗
