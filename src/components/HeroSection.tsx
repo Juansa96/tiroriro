@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Award, Hand, Truck } from "lucide-react";
+import { Award, Heart, Truck } from "lucide-react";
 
 const useTypewriter = (text: string, startDelay: number, speed = 60) => {
   const [displayed, setDisplayed] = useState("");
@@ -33,7 +33,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative mt-20 md:mt-0 h-[72vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <video
           autoPlay
@@ -98,7 +98,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Franja inferior con iconos — solo móvil */}
       <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-4 px-6">
         <div className="flex items-start justify-around">
           <div className="flex flex-col items-center gap-1.5 text-center">
@@ -108,7 +107,7 @@ const HeroSection = () => {
           </div>
           <div className="w-px self-stretch bg-foreground/10" />
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <Hand size={18} className="text-foreground/50" />
+            <Heart size={18} className="text-foreground/50" />
             <span className="text-xs font-medium text-foreground leading-tight">Hecho a mano</span>
             <span className="text-[10px] text-foreground/45 font-light">en España</span>
           </div>
