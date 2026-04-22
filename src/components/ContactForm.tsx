@@ -119,7 +119,7 @@ const ContactForm = () => {
           </p>
           <button
             onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setRgpd(false); setTouched({}); setErrors({}); }}
-            className="mt-8 px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity rounded-full"
+            className="mt-8 px-8 py-3 bg-primary text-primary-foreground text-xs tracking-[0.1em] uppercase font-light hover:opacity-90 transition-opacity"
           >
             Volver al inicio
           </button>
@@ -129,7 +129,7 @@ const ContactForm = () => {
   }
 
   const hasError = (field: string) => touched[field] && errors[field];
-  const inputBase = "w-full bg-background border border-border rounded-lg px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
+  const inputBase = "w-full bg-background border border-border px-4 py-3 text-base text-foreground placeholder:text-muted-foreground/50 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
 
   const configTags: { label: string; value: string }[] = [];
   if (prefilledProduct) configTags.push({ label: 'Producto', value: mapProductName(prefilledProduct) });
@@ -155,7 +155,7 @@ const ContactForm = () => {
         </div>
 
         {hasConfigParams && (
-          <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30 rounded-md">
+          <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30">
             <p className="text-sm font-medium text-foreground flex items-start gap-2">
               <span className="text-accent-warm">✦</span>
               <span>Hemos recuperado tu selección del configurador — los campos ya están rellenados. Puedes modificarlos.</span>
@@ -163,7 +163,7 @@ const ContactForm = () => {
             {configTags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {configTags.map((t, i) => (
-                  <span key={i} className="text-xs px-2.5 py-1 bg-background border border-border rounded-full text-foreground">
+                  <span key={i} className="text-xs px-2.5 py-1 bg-background border border-border text-foreground">
                     {t.label && <span className="text-muted-foreground mr-1">{t.label}:</span>}
                     {t.value}
                   </span>
@@ -248,7 +248,7 @@ const ContactForm = () => {
                     type="button"
                     onClick={() => toggleProduct(p)}
                     aria-pressed={active}
-                    className={`min-h-[40px] px-4 py-2 text-sm rounded-full border transition-all ${
+                    className={`min-h-[40px] px-4 py-2 text-sm border transition-all ${
                       active
                         ? 'border-accent-warm bg-accent-warm/10 text-accent-warm font-medium'
                         : 'border-border bg-background text-foreground hover:border-foreground/60'
@@ -303,7 +303,7 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={sending}
-              className="w-full px-8 py-4 bg-accent-warm text-white text-sm tracking-widest uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-50 rounded-lg inline-flex items-center justify-center gap-2"
+              className="w-full px-8 py-4 bg-primary text-primary-foreground text-xs tracking-[0.1em] uppercase font-light hover:opacity-90 transition-opacity disabled:opacity-50 inline-flex items-center justify-center gap-2"
             >
               {sending ? (
                 <>
