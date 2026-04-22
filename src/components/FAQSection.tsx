@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: "¿Puedo pedir una muestra de tela antes de decidir?",
-    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando que quieres muestras y te las enviamos por correo ordinario sin coste. Así ves el color y la textura real antes de confirmar.",
+    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando qué muestras quieres y te las enviamos a casa. Las muestras tienen un coste adicional, pero si finalmente realizas el pedido, ese importe se descuenta del precio final. Así ves el color y la textura real antes de confirmar.",
   },
   {
     q: "¿Hacéis envíos a toda España?",
@@ -29,7 +29,7 @@ const FAQS = [
   },
   {
     q: "¿El cabecero viene montado o hay que ensamblarlo?",
-    a: "Los cabeceros llegan listos para colgar. Incluimos instrucciones y los anclajes necesarios. La instalación es sencilla y no requiere obras ni montadores.",
+    a: "Los cabeceros llegan listos para colocar. Por defecto, el producto no incluye anclaje a pared. Puedes añadir, con coste adicional: patas (para apoyarlo directamente sobre el somier) o piezas específicas para fijarlo a la pared. Además, ofrecemos servicio de instalación únicamente en la Comunidad de Madrid (también con coste adicional). Te explicamos todas las opciones antes de confirmar el pedido.",
   },
 ];
 
