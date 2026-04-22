@@ -64,6 +64,20 @@ const ensureVoterCookie = (): string => {
   return cookie;
 };
 
+const readStoredVote = (month: string): string | null => {
+  try {
+    const stored = localStorage.getItem(VOTE_KEY);
+    if (!stored) return null;
+    const data = JSON.parse(stored);
+    if (data.month === month && typeof data.option === "string") {
+      return data.option;
+    }
+  } catch {
+    localStorage.removeItem(VOTE_KEY);
+  }
+  return null;
+};
+
 const TeamSection = () => {
   const [voted, setVoted] = useState<string | null>(null);
   const [votes, setVotes] = useState({ "inaki-rocio": 0, "juan-bea": 0 });
@@ -73,19 +87,9 @@ const TeamSection = () => {
     const currentMonth = getCurrentMonth();
     ensureVoterCookie();
 
-    // Restaurar voto local del mes en curso (para deshabilitar el botón al instante)
-    try {
-      const stored = localStorage.getItem(VOTE_KEY);
-      if (stored) {
-        const data = JSON.parse(stored);
-        if (data.month === currentMonth && data.option) {
-          setVoted(data.option);
-        } else {
-          localStorage.removeItem(VOTE_KEY);
-        }
-      }
-    } catch {
-      localStorage.removeItem(VOTE_KEY);
+    const storedVote = readStoredVote(currentMonth);
+    if (storedVote) {
+      setVoted(storedVote);
     }
 
     // Cargar conteos reales del servidor
@@ -113,21 +117,19 @@ const TeamSection = () => {
     const month = getCurrentMonth();
     setSubmitting(true);
 
-    // Optimista
-    setVoted(id);
-    setVotes((v) => ({ ...v, [id]: (v as Record<string, number>)[id] + 1 }));
-
     try {
       const { data, error } = await supabase.functions.invoke("team-poll-vote", {
         body: { action: "vote", option_id: id, voter_cookie: cookie },
       });
       if (error) throw error;
+      if (data?.voted) setVoted(data.voted);
       if (data?.counts) setVotes(data.counts);
-      localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: id }));
+      if (data?.voted) {
+        localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: data.voted }));
+      }
     } catch (err) {
       console.error("Error al votar", err);
-      // Mantenemos el estado optimista para no romper UX, pero registramos el error
-      localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: id }));
+      localStorage.removeItem(VOTE_KEY);
     } finally {
       setSubmitting(false);
     }

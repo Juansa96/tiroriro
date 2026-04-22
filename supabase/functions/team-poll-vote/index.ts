@@ -98,11 +98,25 @@ Deno.serve(async (req: Request) => {
           vote_month: month,
         })
 
+      let resolvedVote: OptionId = optionId
       if (insertError) {
         // 23505 = unique_violation => ya votó
         const alreadyVoted = (insertError as { code?: string }).code === '23505'
         if (!alreadyVoted) {
           console.error('Insert error:', insertError)
+        } else {
+          const { data: existingVote } = await supabase
+            .from('team_poll_votes')
+            .select('option_id')
+            .eq('vote_month', month)
+            .or(`voter_cookie.eq.${voterCookie},ip_hash.eq.${ipHash}`)
+            .order('created_at', { ascending: true })
+            .limit(1)
+            .maybeSingle()
+
+          if (existingVote?.option_id && VALID_OPTIONS.includes(existingVote.option_id as OptionId)) {
+            resolvedVote = existingVote.option_id as OptionId
+          }
         }
       }
 
@@ -120,7 +134,7 @@ Deno.serve(async (req: Request) => {
       }
 
       return new Response(
-        JSON.stringify({ month, counts, voted: optionId }),
+        JSON.stringify({ month, counts, voted: resolvedVote }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
