@@ -65,10 +65,12 @@ const productTypeMap: Record<string, string> = {
 
 const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   const [hovered, setHovered] = useState(false);
+  const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ''}`;
 
   return (
-    <div
-      className="flex flex-col h-full border border-border/40 rounded overflow-hidden"
+    <Link
+      to={configHref}
+      className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden group"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -80,6 +82,7 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
           style={{
             transform: hovered ? 'scale(1.04)' : 'scale(1)',
             transition: 'transform 0.4s ease',
+            objectPosition: category === 'puffs' ? 'center 0%' : undefined,
           }}
           loading="lazy"
           decoding="async"
@@ -96,15 +99,12 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
         <div className="mt-4 flex items-center justify-between">
           <p className="text-base text-foreground font-medium">Desde {model.price}€</p>
-          <Link
-            to={`/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ''}`}
-            className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 hover:opacity-80 transition-opacity"
-          >
+          <span className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 group-hover:opacity-80 transition-opacity">
             Personalizar
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
