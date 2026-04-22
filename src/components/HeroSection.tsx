@@ -1,35 +1,35 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const useTypewriter = (text: string, startDelay: number, speed = 55) => {
+const useTypewriter = (text: string, startDelay: number, speed = 60) => {
   const [displayed, setDisplayed] = useState("");
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    const delayTimer = setTimeout(() => setStarted(true), startDelay);
-    return () => clearTimeout(delayTimer);
+    const t = setTimeout(() => setStarted(true), startDelay);
+    return () => clearTimeout(t);
   }, [startDelay]);
 
   useEffect(() => {
-    if (!started) return;
-    if (displayed.length >= text.length) return;
-    const timer = setTimeout(() => {
+    if (!started || displayed.length >= text.length) return;
+    const t = setTimeout(() => {
       setDisplayed(text.slice(0, displayed.length + 1));
     }, speed);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(t);
   }, [started, displayed, text, speed]);
 
   return displayed;
 };
 
 const HeroSection = () => {
-  const line1 = useTypewriter("Algunas cosas merecen", 3000, 60);
-  const line2 = useTypewriter("hacerse a mano", 6000, 65);
+  const part1 = useTypewriter("Algunas cosas", 3000, 65);
+  const part2 = useTypewriter(" merecen", 6000, 65);
+  const part3 = useTypewriter("hacerse a mano", 6000, 65);
   const [showRest, setShowRest] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowRest(true), 8200);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setShowRest(true), 8200);
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -50,12 +50,24 @@ const HeroSection = () => {
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
 
-        <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight min-h-[1.2em]">
-          <span>{line1}</span>
-          {line2 && (
+        <div
+          className="transition-all duration-700 ease-out mb-4"
+          style={{
+            opacity: showRest ? 1 : 0,
+            transform: showRest ? "translateY(0)" : "translateY(12px)",
+          }}
+        >
+          <p className="text-xs tracking-[0.18em] uppercase text-white/55 font-light">
+            Tapizado artesanal · España
+          </p>
+        </div>
+
+        <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
+          <span>{part1}{part2}</span>
+          {part3 && (
             <>
               <br />
-              <em className="italic font-light">{line2}</em>
+              <em className="italic font-light">{part3}</em>
             </>
           )}
         </h1>
