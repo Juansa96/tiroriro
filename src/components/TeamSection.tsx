@@ -1,6 +1,7 @@
 import inakiRocioPhoto from "@/assets/team/inaki-rocio.jpeg";
 import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const COUPLES = [
   {
@@ -44,37 +45,92 @@ const POLL_OPTIONS = [
 
 const getCurrentMonth = () => {
   const now = new Date();
-  return `${now.getFullYear()}-${now.getMonth()}`;
+  return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+};
+
+const COOKIE_KEY = "tiroriro-poll-voter";
+const VOTE_KEY = "tiroriro-poll-vote";
+
+const ensureVoterCookie = (): string => {
+  let cookie = localStorage.getItem(COOKIE_KEY);
+  if (!cookie) {
+    cookie =
+      (crypto.randomUUID?.() ??
+        `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`) +
+      "-" +
+      Math.random().toString(36).slice(2, 8);
+    localStorage.setItem(COOKIE_KEY, cookie);
+  }
+  return cookie;
 };
 
 const TeamSection = () => {
   const [voted, setVoted] = useState<string | null>(null);
   const [votes, setVotes] = useState({ "inaki-rocio": 0, "juan-bea": 0 });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const currentMonth = getCurrentMonth();
-    const stored = localStorage.getItem("tiroriro-poll");
-    if (stored) {
-      const data = JSON.parse(stored);
-      if (data.month === currentMonth) {
-        setVotes(data.votes);
-        setVoted(data.userVote || null);
-      } else {
-        localStorage.removeItem("tiroriro-poll");
+    ensureVoterCookie();
+
+    // Restaurar voto local del mes en curso (para deshabilitar el botón al instante)
+    try {
+      const stored = localStorage.getItem(VOTE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data.month === currentMonth && data.option) {
+          setVoted(data.option);
+        } else {
+          localStorage.removeItem(VOTE_KEY);
+        }
       }
+    } catch {
+      localStorage.removeItem(VOTE_KEY);
     }
+
+    // Cargar conteos reales del servidor
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("team-poll-vote", {
+          body: { action: "counts" },
+        });
+        if (!cancelled && !error && data?.counts) {
+          setVotes(data.counts);
+        }
+      } catch (err) {
+        console.error("No se pudieron cargar los votos", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handleVote = (id: string) => {
-    if (voted) return;
-    const newVotes = { ...votes, [id]: votes[id as keyof typeof votes] + 1 };
-    setVotes(newVotes);
+  const handleVote = async (id: string) => {
+    if (voted || submitting) return;
+    const cookie = ensureVoterCookie();
+    const month = getCurrentMonth();
+    setSubmitting(true);
+
+    // Optimista
     setVoted(id);
-    localStorage.setItem("tiroriro-poll", JSON.stringify({
-      month: getCurrentMonth(),
-      votes: newVotes,
-      userVote: id,
-    }));
+    setVotes((v) => ({ ...v, [id]: (v as Record<string, number>)[id] + 1 }));
+
+    try {
+      const { data, error } = await supabase.functions.invoke("team-poll-vote", {
+        body: { action: "vote", option_id: id, voter_cookie: cookie },
+      });
+      if (error) throw error;
+      if (data?.counts) setVotes(data.counts);
+      localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: id }));
+    } catch (err) {
+      console.error("Error al votar", err);
+      // Mantenemos el estado optimista para no romper UX, pero registramos el error
+      localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: id }));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const total = votes["inaki-rocio"] + votes["juan-bea"];
