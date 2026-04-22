@@ -9,7 +9,6 @@ import Testimonials from "@/components/Testimonials";
 import FAQSection from "@/components/FAQSection";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
-import SectionCTA from "@/components/SectionCTA";
 
 const Index = () => (
   <>
@@ -21,7 +20,6 @@ const Index = () => (
       <TeamSection />
       <WhyTiroRiro />
       <HowItWorks />
-      <SectionCTA to="/configurador" label="Diseña el tuyo" />
       <Testimonials />
       <ContactForm />
       <FAQSection />
