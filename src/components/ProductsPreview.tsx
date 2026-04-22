@@ -27,7 +27,7 @@ const PRODUCTS_DATA = [
   },
   {
     id: 'puffs',
-    name: 'Puffs y mesas de centro',
+    name: 'Puffs',
     image: '/productos-fotos/puff/IMG_2497.PNG',
     alt: 'Puff tapizado a medida de Tiroriro',
     link: '/productos/puffs',
@@ -76,11 +76,11 @@ const ProductsPreview = () => {
           <div className="hidden md:grid grid-cols-3 gap-6">
             {desktopItems.map((product, idx) => (
               <Link key={`${product.id}-${idx}`} to={product.link} className="block group">
-                <div className="relative overflow-hidden border border-border/40">
+                <div className="relative overflow-hidden border border-border/40 rounded-2xl">
                   <img
                     src={product.image}
                     alt={product.alt}
-                    className="w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105"
+                    className={`w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105 ${product.id === 'puffs' ? 'object-top' : ''}`}
                     loading="lazy"
                     decoding="async"
                   />
@@ -98,11 +98,11 @@ const ProductsPreview = () => {
           {/* Móvil: 1 tarjeta */}
           <div className="md:hidden">
             <Link to={PRODUCTS_DATA[current].link} className="block group">
-              <div className="relative overflow-hidden border border-border/40">
+              <div className="relative overflow-hidden border border-border/40 rounded-2xl">
                 <img
                   src={PRODUCTS_DATA[current].image}
                   alt={PRODUCTS_DATA[current].alt}
-                  className="w-full aspect-[3/4] object-cover max-h-80"
+                  className={`w-full aspect-[3/4] object-cover max-h-80 ${PRODUCTS_DATA[current].id === 'puffs' ? 'object-top' : ''}`}
                   loading="lazy"
                   decoding="async"
                 />

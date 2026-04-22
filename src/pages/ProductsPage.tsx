@@ -8,7 +8,7 @@ const CATEGORIES = [
   { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG', price: 180 },
   { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG', price: 95 },
   { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2486.PNG', price: 30 },
-  { id: 'puffs', name: 'Puffs y mesas de centro', image: '/productos-fotos/puff/IMG_2497.PNG', price: 95 },
+  { id: 'puffs', name: 'Puffs', image: '/productos-fotos/puff/IMG_2497.PNG', price: 95 },
 ];
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
@@ -21,11 +21,11 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="relative overflow-hidden border border-border/40 rounded">
+        <div className="relative overflow-hidden border border-border/40 rounded-2xl">
           <img
             src={cat.image}
             alt={cat.name}
-            className="w-full aspect-[3/4] object-cover max-h-72"
+            className={`w-full aspect-[3/4] object-cover max-h-72 ${cat.id === 'puffs' ? 'object-top' : ''}`}
             style={{
               transform: hovered ? 'scale(1.04)' : 'scale(1)',
               transition: 'transform 0.4s ease',
