@@ -23,14 +23,23 @@ const useTypewriter = (text: string, startDelay: number, speed = 60) => {
 };
 
 const HeroSection = () => {
-  const part1 = useTypewriter("Algunas cosas", 3000, 55);
-  const part2 = useTypewriter("merecen hacerse a mano", 6000, 55);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55);
+  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55);
   const [showRest, setShowRest] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowRest(true), 8800);
+    const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
-  }, []);
+  }, [isMobile]);
 
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
