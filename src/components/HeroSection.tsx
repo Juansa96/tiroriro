@@ -39,10 +39,10 @@ const HeroSection = () => {
           muted
           loop
           playsInline
-          poster="/src/assets/hero-portada.jpg"
+          poster="/hero-portada.jpg"
           className="w-full h-full object-cover object-center"
         >
-          <source src="/src/assets/Herovideo.mp4" type="video/mp4" />
+          <source src="/Herovideo.mp4" type="video/mp4" />
         </video>
       </div>
       <div className="absolute inset-0 bg-black/45" />
