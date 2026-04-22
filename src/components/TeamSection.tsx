@@ -122,9 +122,11 @@ const TeamSection = () => {
         body: { action: "vote", option_id: id, voter_cookie: cookie },
       });
       if (error) throw error;
-      setVoted(id);
+      if (data?.voted) setVoted(data.voted);
       if (data?.counts) setVotes(data.counts);
-      localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: id }));
+      if (data?.voted) {
+        localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: data.voted }));
+      }
     } catch (err) {
       console.error("Error al votar", err);
       localStorage.removeItem(VOTE_KEY);
