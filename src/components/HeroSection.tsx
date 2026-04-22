@@ -81,7 +81,7 @@ const HeroSection = () => {
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               to="/configurador"
-              className="px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
+              className="hidden md:inline-flex px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
             >
               Personaliza el tuyo
             </Link>
@@ -92,9 +92,11 @@ const HeroSection = () => {
               Ver productos
             </Link>
           </div>
-          <p className="mt-6 text-xs text-white/40 font-light tracking-wide">
-            Cabeceros desde 180€ · Bancos desde 120€
-          </p>
+          <div className="mt-5 flex items-center justify-center gap-3 text-white/50">
+            <span className="text-xs font-light tracking-widest uppercase">Cabeceros desde 180€</span>
+            <span className="text-white/25">·</span>
+            <span className="text-xs font-light tracking-widest uppercase">Bancos desde 120€</span>
+          </div>
         </div>
       </div>
 
