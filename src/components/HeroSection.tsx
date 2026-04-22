@@ -87,15 +87,14 @@ const HeroSection = () => {
             </Link>
             <Link
               to="/productos"
-              className="px-8 py-4 border border-white/50 text-white text-xs font-medium tracking-[0.1em] uppercase hover:border-white hover:bg-white/10 transition-colors"
+              className="px-6 py-3 md:px-8 md:py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
             >
               Ver productos
             </Link>
           </div>
-          <div className="mt-5 flex items-center justify-center gap-3 text-white/50">
-            <span className="text-xs font-light tracking-widest uppercase">Cabeceros desde 180€</span>
-            <span className="text-white/25">·</span>
-            <span className="text-xs font-light tracking-widest uppercase">Bancos desde 120€</span>
+          <div className="mt-5 flex flex-col items-center gap-1 text-white/45">
+            <span className="text-[11px] font-light tracking-widest uppercase">Cabeceros desde 180€ · Bancos desde 120€</span>
+            <span className="text-[11px] font-light tracking-widest uppercase">Puffs desde 90€ · Cojines desde 30€</span>
           </div>
         </div>
       </div>
