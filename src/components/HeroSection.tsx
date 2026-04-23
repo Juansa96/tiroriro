@@ -78,9 +78,8 @@ const HeroSection = () => {
   }, [isMobile, hasSeenAnimation]);
 
   useEffect(() => {
-    if (!hasSeenAnimation) {
-      safeSessionStorageSet("hero_animation_seen", "true");
-    }
+    if (hasSeenAnimation) return;
+    safeSessionStorageSet("hero_animation_seen", "true");
   }, [hasSeenAnimation]);
 
   const handleScrollDown = () => {

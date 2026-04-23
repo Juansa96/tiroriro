@@ -5,11 +5,11 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const CATEGORIES = [
-  { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG' },
-  { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG' },
-  { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2514.PNG' },
-  { id: 'puffs', name: 'Puffs', image: '/productos-fotos/crops/puff-2497-tight.png' },
-  { id: 'mesas-centro', name: 'Mesas de centro', image: '/productos-fotos/crops/puff-2497-1-tight.png' },
+  { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG', priceLabel: 'Desde xx€' },
+  { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG', priceLabel: 'Desde xx€' },
+  { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2514.PNG', priceLabel: 'Desde xx€' },
+  { id: 'puffs', name: 'Puffs', image: '/productos-fotos/crops/puff-2497-tight.png', priceLabel: 'Desde xx€' },
+  { id: 'mesas-centro', name: 'Mesas de centro', image: '/productos-fotos/crops/puff-2497-1-tight.png', priceLabel: 'Desde xx€' },
 ];
 
 const imagePosition = (id: string) =>
@@ -49,6 +49,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
           <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">
             {cat.name}
           </h3>
+          <span className="text-sm text-muted-foreground font-light shrink-0 ml-4 mt-1">{cat.priceLabel}</span>
         </div>
       </Link>
     </AnimatedSection>

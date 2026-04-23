@@ -17,6 +17,14 @@ import CookiesPage from "./pages/CookiesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+const categoryRoutes = [
+  { path: "/productos/cabeceros", categoryKey: "cabeceros" },
+  { path: "/productos/bancos", categoryKey: "bancos" },
+  { path: "/productos/cojines", categoryKey: "cojines" },
+  { path: "/productos/puffs", categoryKey: "puffs" },
+  { path: "/productos/mesas-centro", categoryKey: "mesas-centro" },
+  { path: "/productos/mesitas-de-centro", categoryKey: "mesas-centro" },
+];
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -28,7 +36,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/productos" element={<ProductsPage />} />
-          <Route path="/productos/:category" element={<CategoryPage />} />
+          {categoryRoutes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={<CategoryPage categoryKey={route.categoryKey} />}
+            />
+          ))}
           <Route path="/configurador" element={<ConfiguratorPage />} />
           <Route path="/probador" element={<TryOnPage />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />

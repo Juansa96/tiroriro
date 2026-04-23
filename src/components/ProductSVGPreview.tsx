@@ -17,6 +17,14 @@ interface Props {
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const scaleRange = (value: number | undefined, inputMin: number, inputMax: number, outputMin: number, outputMax: number) => {
+  if (typeof value !== "number" || Number.isNaN(value)) {
+    return (outputMin + outputMax) / 2;
+  }
+  const ratio = (value - inputMin) / (inputMax - inputMin);
+  const scaled = outputMin + ratio * (outputMax - outputMin);
+  return clamp(scaled, Math.min(outputMin, outputMax), Math.max(outputMin, outputMax));
+};
 
 function darken(hex: string, amount = 40): string {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -277,14 +285,14 @@ const BenchSVG = ({
   const mode = variant || "madera";
   const patternId = useId();
   const clipId = useId();
-  const scaleX = widthCm ? clamp(widthCm / 110, 0.74, 1.25) : 1;
-  const scaleY = heightCm ? clamp(heightCm / 45, 0.75, 1.2) : 1;
-  const depthX = depthCm ? clamp((depthCm - 30) * 0.25 + 16, 14, 24) : 18;
+  const scaleX = scaleRange(widthCm, 40, 120, 0.72, 1.16);
+  const scaleY = scaleRange(heightCm, 30, 50, 0.8, 1.14);
+  const depthX = scaleRange(depthCm, 30, 70, 14, 28);
   const depthY = -depthX * 0.75;
 
   const seatX = 52;
   const seatY = mode === "baul" ? 66 : 60;
-  const seatW = mode === "madera" ? 176 : 190;
+  const seatW = 190;
   const seatH = mode === "baul" ? 92 : 48;
   const seatTop = `M ${seatX} ${seatY} L ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + depthX} ${seatY + depthY} Z`;
   const seatSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + seatH + depthY} L ${seatX + seatW} ${seatY + seatH} Z`;
@@ -303,20 +311,20 @@ const BenchSVG = ({
   const woodColor = "#8E6C4E";
   const seatTopColor = lighten(color, 14);
   const seatSideColor = darken(color, 18);
-  const frontLeftX = seatX + 10;
-  const frontRightX = seatX + seatW - 22;
-  const backLeftX = seatX + depthX + 2;
-  const backRightX = seatX + seatW + depthX - 30;
   const frontLegTop = seatY + seatH;
   const backLegTop = seatY + seatH + depthY;
   const legHeight = 62;
+  const frontLegLeft = seatX + 14;
+  const frontLegRight = seatX + seatW - 26;
+  const backLegLeft = seatX + depthX + 16;
+  const backLegRight = seatX + seatW + depthX - 24;
 
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
         <clipPath id={`bn-${clipId}`}>
-          <path d={mode === "enteladas" ? uFrontPath : seatFrontRect} />
+          <path d={mode === "baul" ? seatFrontRect : uFrontPath} />
         </clipPath>
       </defs>
 
@@ -333,10 +341,14 @@ const BenchSVG = ({
           <>
             <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
             <path d={seatTop} fill="rgba(255,255,255,0.12)" />
-            <path d={rightOuterSide} fill={darken(woodColor, 6)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={innerLeftSide} fill={darken(woodColor, 8)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerRightSide} fill={darken(woodColor, 10)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={uFrontPath} fill={woodColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={rightOuterSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={innerLeftSide} fill={darken(color, 14)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerRightSide} fill={darken(color, 16)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={uFrontPath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <rect x={frontLegLeft} y={frontLegTop} width="12" height={legHeight} rx="4" fill={woodColor} />
+            <rect x={frontLegRight} y={frontLegTop} width="12" height={legHeight} rx="4" fill={woodColor} />
+            <rect x={backLegLeft} y={backLegTop} width="12" height={legHeight} rx="4" fill={darken(woodColor, 8)} />
+            <rect x={backLegRight} y={backLegTop} width="12" height={legHeight} rx="4" fill={darken(woodColor, 8)} />
           </>
         )}
 
@@ -365,7 +377,7 @@ const BenchSVG = ({
 
         {finish === "vivo-simple" && (
           <g clipPath={`url(#bn-${clipId})`}>
-            <path d={mode === "enteladas" ? uFrontPath : seatFrontRect} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+            <path d={mode === "baul" ? seatFrontRect : uFrontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
           </g>
         )}
       </g>
@@ -397,9 +409,9 @@ const PuffSVG = ({
   const clipId = useId();
 
   if (isCircular) {
-    const topRx = widthCm ? clamp(widthCm * 0.9, 50, 84) : 68;
+    const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = heightCm ? clamp(heightCm * 1.5, 58, 118) : 86;
+    const bodyH = scaleRange(heightCm, 30, 50, 62, 112);
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
@@ -439,9 +451,9 @@ const PuffSVG = ({
     );
   }
 
-  const baseW = widthCm ? clamp(widthCm * 2, 108, 190) : 148;
-  const baseH = heightCm ? clamp(heightCm * 1.7, 68, 122) : 92;
-  const depthX = depthCm ? clamp((depthCm - 30) * 0.25 + 16, 14, 24) : 18;
+  const baseW = scaleRange(widthCm, 40, 120, 112, 190);
+  const baseH = scaleRange(heightCm, 30, 50, 72, 118);
+  const depthX = scaleRange(depthCm, 30, 70, 14, 26);
   const depthY = -depthX * 0.7;
   const x = (300 - baseW) / 2;
   const y = 72;
@@ -494,8 +506,8 @@ const CushionSVG = ({
   const clipId = useId();
 
   if (kind === "cilindro") {
-    const length = widthCm ? clamp(widthCm * 2.9, 130, 240) : 196;
-    const radius = heightCm ? clamp(heightCm * 1.05, 24, 42) : 30;
+    const length = scaleRange(widthCm, 30, 100, 140, 240);
+    const radius = scaleRange(heightCm, 15, 50, 22, 40);
     const x = (300 - length) / 2;
     const y = 72;
     return (
@@ -520,8 +532,8 @@ const CushionSVG = ({
   }
 
   if (kind === "rectangular") {
-    const scaleX = widthCm ? clamp(widthCm / 50, 1.15, 1.85) : 1.55;
-    const scaleY = heightCm ? clamp(heightCm / 45, 0.58, 0.98) : 0.74;
+    const scaleX = scaleRange(widthCm, 30, 80, 1.05, 1.8);
+    const scaleY = scaleRange(heightCm, 20, 60, 0.55, 1.05);
     const outerPath =
       "M 42 54 Q 100 40 158 54 Q 170 54 170 66 Q 178 100 170 134 Q 170 146 158 146 Q 100 160 42 146 Q 30 146 30 134 Q 22 100 30 66 Q 30 54 42 54 Z";
     const innerPath =
@@ -554,8 +566,8 @@ const CushionSVG = ({
     );
   }
 
-  const scaleX = widthCm ? clamp(widthCm / 45, 0.9, 1.6) : kind === "rectangular" ? 1.3 : 1;
-  const scaleY = heightCm ? clamp(heightCm / 45, 0.68, 1.5) : kind === "rectangular" ? 0.82 : 1;
+  const scaleX = scaleRange(widthCm, 30, 80, 0.9, 1.45);
+  const scaleY = scaleRange(heightCm, 20, 80, 0.7, 1.35);
   const outerPath =
     "M 52 40 Q 100 28 148 40 Q 164 40 164 56 Q 174 100 164 144 Q 164 160 148 160 Q 100 172 52 160 Q 36 160 36 144 Q 26 100 36 56 Q 36 40 52 40 Z";
   const innerPath =
@@ -611,9 +623,9 @@ const MesaSVG = ({
   const mode = variant || "tipo-puff";
   const patternId = useId();
   const clipId = useId();
-  const baseW = widthCm ? clamp(widthCm * 1.65, 140, 230) : 196;
-  const baseH = heightCm ? clamp(heightCm * 1.25, 42, 82) : 58;
-  const depthX = depthCm ? clamp((depthCm - 35) * 0.22 + 18, 16, 26) : 20;
+  const baseW = scaleRange(widthCm, 50, 120, 150, 230);
+  const baseH = scaleRange(heightCm, 30, 50, 44, 82);
+  const depthX = scaleRange(depthCm, 30, 70, 16, 28);
   const depthY = -depthX * 0.72;
   const x = (300 - baseW) / 2;
   const y = 62;
@@ -740,7 +752,19 @@ const ProductSVGPreview = ({
           heightCm={heightCm}
         />
       )}
-      {type === "mesa" && (
+      {type === "mesa" && currentForma === "tipo-banco" && (
+        <BenchSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          variant="enteladas"
+          widthCm={widthCm}
+          heightCm={heightCm}
+          depthCm={depthCm}
+        />
+      )}
+      {type === "mesa" && currentForma !== "tipo-banco" && (
         <MesaSVG
           color={color}
           fabricImage={fabricImage}
