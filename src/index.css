@@ -6,47 +6,34 @@
 
 @layer base {
   :root {
-    /* Paleta basada en el logo Tiroriro — azul petróleo profundo (#1a4b5b) sobre crema cálido */
-    --background: 38 35% 96%;          /* crema cálido */
-    --foreground: 195 56% 17%;         /* azul petróleo del logo, casi negro */
-
+    --background: 38 35% 96%;
+    --foreground: 195 56% 17%;
     --card: 38 30% 94%;
     --card-foreground: 195 56% 17%;
-
     --popover: 38 35% 96%;
     --popover-foreground: 195 56% 17%;
-
-    --primary: 195 56% 23%;            /* #1a4b5b — color dominante del logo */
+    --primary: 195 56% 23%;
     --primary-foreground: 38 35% 96%;
-
     --secondary: 35 25% 90%;
     --secondary-foreground: 195 56% 17%;
-
     --muted: 35 22% 92%;
     --muted-foreground: 195 18% 38%;
-
-    --accent: 195 30% 85%;             /* azul muy clarito */
+    --accent: 195 30% 85%;
     --accent-foreground: 195 56% 17%;
-
-    --accent-warm: 195 56% 23%;        /* mismo que primary, para mantener clases existentes */
+    --accent-warm: 195 56% 23%;
     --accent-warm-foreground: 38 35% 96%;
-
     --destructive: 0 72% 50%;
     --destructive-foreground: 38 35% 96%;
-
     --border: 195 20% 82%;
     --input: 195 20% 82%;
     --ring: 195 56% 23%;
-
     --radius: 0.25rem;
-
     --earth: 25 35% 45%;
     --earth-foreground: 38 35% 96%;
     --bone: 38 30% 94%;
     --cream: 38 35% 96%;
     --charcoal: 195 56% 17%;
     --warm-overlay: 195 30% 10%;
-
     --sidebar-background: 38 30% 94%;
     --sidebar-foreground: 195 56% 17%;
     --sidebar-primary: 195 56% 23%;
@@ -62,17 +49,15 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
-
   h1, h2, h3, h4, h5, h6 {
-  @apply font-serif;
-}
-h3, h4, h5, h6 {
-  @apply font-medium;
-}
+    @apply font-serif;
+  }
+  h3, h4, h5, h6 {
+    @apply font-medium;
+  }
 }
 
 @layer utilities {
@@ -120,5 +105,22 @@ h3, h4, h5, h6 {
 
   .field-input {
     @apply w-full bg-transparent text-sm text-foreground focus:outline-none font-light;
+  }
+
+  .btn-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-sweep::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateX(-101%);
+    transition: transform 0.4s ease;
+    pointer-events: none;
+  }
+  .btn-sweep:hover::before {
+    transform: translateX(0);
   }
 }
