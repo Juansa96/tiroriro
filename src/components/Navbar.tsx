@@ -44,6 +44,11 @@ const Navbar = () => {
   }, [location]);
 
   const handleClick = (to: string) => {
+    if (to === "/" && location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setOpen(false);
+      return true;
+    }
     if (to.startsWith("/#") && location.pathname === "/") {
       const el = document.getElementById(to.slice(2));
       if (el) { el.scrollIntoView({ behavior: "smooth" }); setOpen(false); return true; }

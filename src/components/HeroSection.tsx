@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Award, Hammer, Truck } from "lucide-react";
+import { ArrowDown, Award, Hammer, Truck } from "lucide-react";
 
 const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
   const [displayed, setDisplayed] = useState(skip ? text : "");
@@ -26,6 +26,10 @@ const useTypewriter = (text: string, startDelay: number, speed = 60, skip = fals
 const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasSeenAnimation] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("hero_animation_seen") === "true";
+  });
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -60,14 +64,23 @@ const HeroSection = () => {
     };
   }, []);
 
-  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, false);
-  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, false);
-  const [showRest, setShowRest] = useState(false);
+  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, hasSeenAnimation);
+  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, hasSeenAnimation);
+  const [showRest, setShowRest] = useState(hasSeenAnimation);
 
   useEffect(() => {
+    if (hasSeenAnimation) {
+      setShowRest(true);
+      return;
+    }
     const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
-  }, [isMobile]);
+  }, [isMobile, hasSeenAnimation]);
+
+  const handleScrollDown = () => {
+    const target = document.getElementById("productos-home") || document.getElementById("equipo");
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
@@ -138,10 +151,14 @@ const HeroSection = () => {
 
       </div>
 
-      <div className="hidden md:flex absolute left-1/2 bottom-10 -translate-x-1/2 z-10 flex-col items-center gap-2 text-white/68 pointer-events-none">
-        <span className="text-[11px] tracking-[0.24em] uppercase font-light">Sigue bajando</span>
-        <span className="h-8 w-px bg-white/35" />
-      </div>
+      <button
+        type="button"
+        onClick={handleScrollDown}
+        className="hidden md:inline-flex absolute left-1/2 bottom-10 -translate-x-1/2 z-10 items-center gap-2 rounded-full border border-white/45 bg-white/10 px-5 py-2 text-[11px] tracking-[0.22em] uppercase font-light text-white backdrop-blur-sm transition-colors duration-300 hover:bg-white/18"
+      >
+        <span>Sigue bajando</span>
+        <ArrowDown size={14} />
+      </button>
 
       {/* Franja inferior con iconos — solo móvil */}
       <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-4 px-6">
@@ -170,3 +187,8 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("hero_animation_seen", "true");
+    }
+  }, []);

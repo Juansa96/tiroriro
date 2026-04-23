@@ -36,7 +36,7 @@ const ProductsPreview = () => {
   }, [api]);
 
   return (
-    <section className="pt-8 pb-20 md:py-32 px-6">
+    <section id="productos-home" className="pt-8 pb-20 md:py-32 px-6">
       <div className="container mx-auto">
         <AnimatedSection className="text-center mb-12">
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
@@ -78,13 +78,19 @@ const ProductsPreview = () => {
                         loading="lazy"
                         decoding="async"
                       />
+                      <div className="absolute inset-x-0 bottom-0 md:hidden bg-gradient-to-t from-black/60 via-black/15 to-transparent px-4 pb-4 pt-10 pointer-events-none">
+                        <h3 className="font-serif text-xl font-medium text-white leading-tight">{product.name}</h3>
+                        <span className="mt-2 inline-block rounded-full bg-white/18 px-2.5 py-1 text-[11px] tracking-wide text-white backdrop-blur-sm">
+                          Ver en catálogo
+                        </span>
+                      </div>
                       <div className="absolute inset-0 bg-black/10 md:bg-black/0 md:group-hover:bg-black/25 transition-colors duration-500 flex items-center justify-center pointer-events-none">
                         <span className="text-white text-sm tracking-widest uppercase opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">
                           Explorar →
                         </span>
                       </div>
                     </div>
-                    <div className="mt-4 h-12 flex items-start">
+                    <div className="mt-4 h-12 items-start hidden md:flex">
                       <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">{product.name}</h3>
                     </div>
                   </Link>

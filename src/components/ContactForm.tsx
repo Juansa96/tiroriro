@@ -37,6 +37,7 @@ const ContactForm = () => {
   const previewForma = searchParams.get("previewForma") || undefined;
   const previewColor = searchParams.get("previewColor") || "#D4C5A9";
   const previewTexture = searchParams.get("previewTexture") || undefined;
+  const previewLateralTexture = searchParams.get("previewLateralTexture") || undefined;
   const previewFinish = searchParams.get("previewFinish") || "";
   const previewVivo = searchParams.get("previewVivo") || undefined;
   const previewWidth = searchParams.get("previewWidth");
@@ -141,6 +142,7 @@ const ContactForm = () => {
                   type={previewType}
                   color={previewColor}
                   fabricImage={previewTexture}
+                  lateralFabricImage={previewLateralTexture}
                   finish={previewFinish}
                   vivoColor={previewVivo}
                   forma={previewForma}

@@ -529,6 +529,7 @@ const ProductConfigurator = () => {
       previewForma: previewForma || "",
       previewColor: fillColor,
       previewTexture: currentFabric?.image || "",
+      previewLateralTexture: productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image || "" : "",
       previewFinish: finish,
       previewVivo: needsVivo ? vivoColor : "",
       previewWidth: previewWidthValue ? String(previewWidthValue) : "",
@@ -722,6 +723,7 @@ const ProductConfigurator = () => {
               type={productType}
               color={fillColor}
               fabricImage={currentFabric?.image}
+              lateralFabricImage={productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image : undefined}
               finish={finish}
               vivoColor={vivoColor}
               forma={previewForma}
@@ -748,6 +750,7 @@ const ProductConfigurator = () => {
                 type={productType}
                 color={fillColor}
                 fabricImage={currentFabric?.image}
+                lateralFabricImage={productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image : undefined}
                 finish={finish}
                 vivoColor={vivoColor}
                 forma={previewForma}
