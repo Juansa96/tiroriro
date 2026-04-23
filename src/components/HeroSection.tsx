@@ -1,29 +1,40 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Award, Heart, Truck } from "lucide-react";
 
-const useTypewriter = (text: string, startDelay: number, speed = 60) => {
-  const [displayed, setDisplayed] = useState("");
-  const [started, setStarted] = useState(false);
+const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
+  const [displayed, setDisplayed] = useState(skip ? text : "");
+  const [started, setStarted] = useState(skip);
 
   useEffect(() => {
+    if (skip) return;
     const t = setTimeout(() => setStarted(true), startDelay);
     return () => clearTimeout(t);
-  }, [startDelay]);
+  }, [startDelay, skip]);
 
   useEffect(() => {
-    if (!started || displayed.length >= text.length) return;
+    if (skip || !started || displayed.length >= text.length) return;
     const t = setTimeout(() => {
       setDisplayed(text.slice(0, displayed.length + 1));
     }, speed);
     return () => clearTimeout(t);
-  }, [started, displayed, text, speed]);
+  }, [started, displayed, text, speed, skip]);
 
   return displayed;
 };
 
 const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Solo anima una vez por sesión
+  const [hasSeenAnimation] = useState(() => {
+    return typeof window !== "undefined" && sessionStorage.getItem("hero_animation_seen") === "true";
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("hero_animation_seen", "true");
+  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -32,25 +43,58 @@ const HeroSection = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55);
-  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55);
-  const [showRest, setShowRest] = useState(false);
+  // Forzar reproducción en móvil/iOS Safari
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const attemptPlay = () => {
+      video.play().catch(() => {});
+    };
+
+    if (video.readyState >= 2) {
+      attemptPlay();
+    } else {
+      video.addEventListener("loadeddata", attemptPlay, { once: true });
+    }
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        video.play().catch(() => {});
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, hasSeenAnimation);
+  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, hasSeenAnimation);
+  const [showRest, setShowRest] = useState(hasSeenAnimation);
 
   useEffect(() => {
+    if (hasSeenAnimation) return;
     const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
-  }, [isMobile]);
+  }, [isMobile, hasSeenAnimation]);
 
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
           poster="/hero-portada.jpg"
           className="w-full h-full object-cover object-center"
+          onPause={() => {
+            videoRef.current?.play().catch(() => {});
+          }}
         >
           <source src="/Herovideo.mp4" type="video/mp4" />
         </video>
@@ -88,15 +132,17 @@ const HeroSection = () => {
             Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 15 días lo tienes en casa.
           </p>
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
+            {/* Desktop only — azul (CTA principal) */}
             <Link
               to="/configurador"
-              className="hidden md:inline-flex px-8 py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
+              className="hidden md:inline-flex px-8 py-4 bg-[#1a4b5b] text-white text-xs font-medium tracking-[0.1em] uppercase hover:bg-[#1a4b5b]/85 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
             >
               Personaliza el tuyo
             </Link>
+            {/* Móvil: azul. Desktop: blanco */}
             <Link
               to="/productos"
-              className="px-6 py-3 md:px-8 md:py-4 bg-white text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:bg-white/90 transition-colors"
+              className="px-6 py-3 md:px-8 md:py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
             >
               Ver productos
             </Link>
