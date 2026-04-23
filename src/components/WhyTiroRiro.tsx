@@ -60,9 +60,9 @@ const WhyTiroRiro = () => (
       <AnimatedSection delay={0.2} className="mt-12 text-center">
         <Link
           to="/configurador"
-          className="inline-block px-8 py-3 bg-primary text-primary-foreground text-xs tracking-[0.1em] uppercase font-light transition-all duration-300 hover:opacity-90"
+          className="btn-sweep inline-flex items-center px-8 py-3 bg-primary text-primary-foreground text-xs tracking-[0.1em] uppercase font-light transition-all duration-300 hover:opacity-90"
         >
-          Diseña el tuyo
+          <span className="relative z-10">Diseña el tuyo</span>
         </Link>
       </AnimatedSection>
     </div>
