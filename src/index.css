@@ -123,4 +123,69 @@
   .btn-sweep:hover::before {
     transform: translateX(0);
   }
+
+  .btn-unir {
+    --btn-bg: hsl(var(--primary));
+    --btn-fg: hsl(var(--primary-foreground));
+    --btn-border: hsl(var(--primary));
+    --btn-hover-bg: hsl(var(--background));
+    --btn-hover-fg: hsl(var(--foreground));
+    --btn-hover-border: hsl(var(--primary));
+    background-color: var(--btn-bg);
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-border);
+    border-radius: 0;
+    box-shadow: none;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    isolation: isolate;
+    transition:
+      color 0.22s ease 0.12s,
+      border-color 0.28s ease,
+      transform 0.2s ease;
+  }
+
+  .btn-unir::before {
+    background: var(--btn-hover-bg);
+    transform: translateX(-102%);
+    transform-origin: left center;
+    transition: transform 0.36s cubic-bezier(0.22, 0.61, 0.36, 1);
+    z-index: 0;
+  }
+
+  .btn-unir:hover {
+    color: var(--btn-hover-fg);
+    border-color: var(--btn-hover-border);
+  }
+
+  .btn-unir:hover::before {
+    transform: translateX(0%);
+  }
+
+  .btn-unir > span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-unir-outline {
+    --btn-bg: hsl(var(--background));
+    --btn-fg: hsl(var(--foreground));
+    --btn-border: hsl(var(--primary));
+    --btn-hover-bg: hsl(var(--primary));
+    --btn-hover-fg: hsl(var(--primary-foreground));
+    --btn-hover-border: hsl(var(--primary));
+  }
+
+  .btn-unir-light {
+    --btn-bg: rgba(255, 255, 255, 0.04);
+    --btn-fg: #ffffff;
+    --btn-border: rgba(255, 255, 255, 0.82);
+    --btn-hover-bg: hsl(var(--primary));
+    --btn-hover-fg: #ffffff;
+    --btn-hover-border: hsl(var(--primary));
+  }
+
+  .btn-unir-home:hover {
+    transform: scale(1.05);
+  }
 }

@@ -92,7 +92,7 @@ const ContactForm = () => {
           <p className="mt-6 text-muted-foreground font-light text-lg">Te respondemos en menos de 24 horas laborables.</p>
           <button
             onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setRgpd(false); setTouched({}); setErrors({}); }}
-            className="btn-sweep mt-8 px-8 py-3 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-xs tracking-[0.1em] uppercase font-light md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
+            className="btn-sweep btn-unir btn-unir-outline mt-8 px-8 py-3 text-xs font-light"
           >
             <span className="relative z-10">Volver al inicio</span>
           </button>
@@ -211,7 +211,7 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={sending}
-              className="btn-sweep w-full px-8 py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-xs tracking-[0.1em] uppercase font-light md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200 disabled:opacity-50 inline-flex items-center justify-center gap-2"
+              className="btn-sweep btn-unir btn-unir-outline w-full px-8 py-4 text-xs font-light disabled:opacity-50 inline-flex items-center justify-center gap-2"
             >
               <span className="relative z-10 inline-flex items-center gap-2">
                 {sending ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>) : "Enviar solicitud"}

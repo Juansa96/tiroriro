@@ -87,7 +87,7 @@ const VirtualTryOn = () => {
               <button
                 onClick={handleTry}
                 disabled={!image || loading}
-                className="btn-sweep px-10 py-3.5 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-sm tracking-extra-wide uppercase font-medium md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200 disabled:opacity-40"
+                className="btn-sweep btn-unir btn-unir-outline px-10 py-3.5 text-sm font-medium disabled:opacity-40"
               >
                 <span className="relative z-10 inline-flex items-center gap-2">
                   {loading ? (<><Loader2 size={16} className="animate-spin" />Imaginando tu estancia...</>) : "Ver cómo queda"}
@@ -113,7 +113,7 @@ const VirtualTryOn = () => {
                   <div className="text-center mt-6">
                     <button
                       onClick={handleOrder}
-                      className="btn-sweep px-8 py-3 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-sm tracking-extra-wide uppercase font-medium md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
+                      className="btn-sweep btn-unir btn-unir-outline px-8 py-3 text-sm font-medium"
                     >
                       <span className="relative z-10">Quiero este — solicitar pedido</span>
                     </button>

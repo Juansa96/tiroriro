@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 
 const PRODUCTS_DATA = [
   { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG', alt: 'Cabecero tapizado artesanal de Tiroriro', link: '/productos/cabeceros' },
@@ -14,10 +15,45 @@ const VISIBLE_DESKTOP = 3;
 
 const ProductsPreview = () => {
   const [current, setCurrent] = useState(0);
+  const [mobileApi, setMobileApi] = useState<CarouselApi>();
   const total = PRODUCTS_DATA.length;
-  const prev = () => setCurrent((c) => (c - 1 + total) % total);
-  const next = () => setCurrent((c) => (c + 1) % total);
+  const prev = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768 && mobileApi) {
+      mobileApi.scrollPrev();
+      return;
+    }
+    setCurrent((c) => (c - 1 + total) % total);
+  };
+  const next = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768 && mobileApi) {
+      mobileApi.scrollNext();
+      return;
+    }
+    setCurrent((c) => (c + 1) % total);
+  };
   const desktopItems = Array.from({ length: VISIBLE_DESKTOP }, (_, i) => PRODUCTS_DATA[(current + i) % total]);
+
+  useEffect(() => {
+    if (!mobileApi) return;
+
+    const onSelect = () => setCurrent(mobileApi.selectedScrollSnap());
+    onSelect();
+    mobileApi.on("select", onSelect);
+    mobileApi.on("reInit", onSelect);
+
+    const autoplay = window.setInterval(() => {
+      if (mobileApi.canScrollNext()) {
+        mobileApi.scrollNext();
+      } else {
+        mobileApi.scrollTo(0);
+      }
+    }, 3500);
+
+    return () => {
+      window.clearInterval(autoplay);
+      mobileApi.off("select", onSelect);
+    };
+  }, [mobileApi]);
 
   return (
     <section className="pt-8 pb-20 md:py-32 px-6">
@@ -29,14 +65,14 @@ const ProductsPreview = () => {
 
         <div className="relative max-w-5xl mx-auto">
           <button onClick={prev} aria-label="Anterior"
-            className="btn-sweep absolute -left-4 md:-left-10 top-[40%] z-10 w-10 h-10 rounded-full bg-[#1a4b5b] text-white md:bg-background md:text-foreground border border-border flex items-center justify-center md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
+            className="absolute -left-5 md:-left-14 top-[40%] z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
           >
-            <span className="relative z-10"><ChevronLeft size={18} /></span>
+            <ChevronLeft size={18} />
           </button>
           <button onClick={next} aria-label="Siguiente"
-            className="btn-sweep absolute -right-4 md:-right-10 top-[40%] z-10 w-10 h-10 rounded-full bg-[#1a4b5b] text-white md:bg-background md:text-foreground border border-border flex items-center justify-center md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
+            className="absolute -right-5 md:-right-14 top-[40%] z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
           >
-            <span className="relative z-10"><ChevronRight size={18} /></span>
+            <ChevronRight size={18} />
           </button>
 
           {/* Desktop: 3 tarjetas */}
@@ -60,23 +96,35 @@ const ProductsPreview = () => {
             ))}
           </div>
 
-          {/* Móvil: 1 tarjeta */}
+          {/* Móvil: carrusel con autoplay y tarjetas laterales visibles */}
           <div className="md:hidden">
-            <Link to={PRODUCTS_DATA[current].link} className="block group">
-              <div className="relative overflow-hidden border border-border/40 rounded-lg">
-                <img src={PRODUCTS_DATA[current].image} alt={PRODUCTS_DATA[current].alt}
-                  className="w-full aspect-[3/4] object-cover max-h-80"
-                  style={PRODUCTS_DATA[current].id === 'puffs' ? { objectPosition: 'center 0%' } : undefined}
-                  loading="lazy" decoding="async"
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
-                  <span className="text-white text-sm tracking-widest uppercase">Explorar →</span>
-                </div>
-              </div>
-              <div className="mt-4 h-12 flex items-start">
-                <h3 className="font-serif text-xl font-medium text-foreground leading-tight">{PRODUCTS_DATA[current].name}</h3>
-              </div>
-            </Link>
+            <Carousel
+              setApi={setMobileApi}
+              opts={{ align: "center", loop: true }}
+              className="-mx-2"
+            >
+              <CarouselContent className="-ml-2">
+                {PRODUCTS_DATA.map((product) => (
+                  <CarouselItem key={product.id} className="pl-2 basis-[85%]">
+                    <Link to={product.link} className="block group">
+                      <div className="relative overflow-hidden border border-border/40 rounded-lg">
+                        <img src={product.image} alt={product.alt}
+                          className="w-full aspect-[3/4] object-cover max-h-80"
+                          style={product.id === 'puffs' ? { objectPosition: 'center 0%' } : undefined}
+                          loading="lazy" decoding="async"
+                        />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
+                          <span className="text-white text-sm tracking-widest uppercase">Explorar →</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 h-12 flex items-start">
+                        <h3 className="font-serif text-xl font-medium text-foreground leading-tight">{product.name}</h3>
+                      </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </div>
         </div>
 

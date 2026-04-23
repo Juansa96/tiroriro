@@ -31,7 +31,7 @@ const HowItWorks = () => (
       <div className="mt-12 text-center">
         <Link
           to="/configurador"
-          className="btn-sweep inline-flex items-center px-8 py-3 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-xs tracking-[0.1em] uppercase font-light md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
+          className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs font-light"
         >
           <span className="relative z-10">Diseña el tuyo</span>
         </Link>
