@@ -25,20 +25,14 @@ const VirtualTryOn = () => {
   const handleTry = async () => {
     if (!image) return;
     setLoading(true);
-    // TODO: Call Supabase Edge Function with HuggingFace API
-    // For now, show a placeholder result
     await new Promise((r) => setTimeout(r, 3000));
-    // Placeholder: show the user's own image with a tinted overlay
     setResultImage(image);
     setLoading(false);
   };
 
   const handleOrder = () => {
     const colorName = FABRIC_COLORS.find(c => c.id === color)?.name || '';
-    const params = new URLSearchParams({
-      product: product,
-      config: `${product} · Color: ${colorName}`,
-    });
+    const params = new URLSearchParams({ product: product, config: `${product} · Color: ${colorName}` });
     navigate(`/contacto?${params.toString()}`);
   };
 
@@ -46,9 +40,7 @@ const VirtualTryOn = () => {
     <section className="py-20 md:py-32 px-6 bg-secondary">
       <div className="container mx-auto max-w-3xl">
         <AnimatedSection className="text-center mb-12">
-          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">
-            Míralo en tu casa antes de decidir
-          </h2>
+          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Míralo en tu casa antes de decidir</h2>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light italic max-w-lg mx-auto">
             "Sube una foto de tu estancia, elige el producto y la tela, y nuestra IA te muestra cómo quedaría — en segundos."
@@ -57,7 +49,6 @@ const VirtualTryOn = () => {
 
         <AnimatedSection delay={0.1}>
           <div className="space-y-8">
-            {/* Upload */}
             <div
               onClick={() => fileRef.current?.click()}
               className="border-2 border-dashed border-border hover:border-accent-warm/40 transition-colors cursor-pointer p-10 text-center rounded-lg"
@@ -70,63 +61,37 @@ const VirtualTryOn = () => {
                   <span className="text-sm font-light">Subir foto de mi habitación</span>
                 </div>
               )}
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                onChange={handleImage}
-                className="hidden"
-              />
+              <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={handleImage} className="hidden" />
             </div>
 
-            {/* Product selector */}
             <div className="rounded p-4 border" style={{ backgroundColor: '#FDFAF5', borderColor: '#E8DCC8' }}>
               <label className="block text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Producto</label>
-              <select
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
-                className="field-input appearance-none cursor-pointer"
-              >
-                {PRODUCTS.map((p) => (
-                  <option key={p.id} value={p.name}>{p.name}</option>
-                ))}
+              <select value={product} onChange={(e) => setProduct(e.target.value)} className="field-input appearance-none cursor-pointer">
+                {PRODUCTS.map((p) => <option key={p.id} value={p.name}>{p.name}</option>)}
               </select>
             </div>
 
-            {/* Color selector */}
             <div>
               <label className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 block font-light">Tela y color</label>
               <div className="flex flex-wrap gap-3">
                 {FABRIC_COLORS.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setColor(c.id)}
-                    className={`w-10 h-10 rounded-sm border-2 transition-all ${
-                      color === c.id ? "border-accent-warm scale-110" : "border-transparent"
-                    }`}
-                    style={{ backgroundColor: c.hex }}
-                    title={c.name}
+                  <button key={c.id} onClick={() => setColor(c.id)}
+                    className={`w-10 h-10 rounded-sm border-2 transition-all ${color === c.id ? "border-accent-warm scale-110" : "border-transparent"}`}
+                    style={{ backgroundColor: c.hex }} title={c.name}
                   />
                 ))}
               </div>
             </div>
 
-            {/* CTA */}
             <div className="text-center pt-4">
               <button
                 onClick={handleTry}
                 disabled={!image || loading}
-                className="px-10 py-3.5 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+                className="btn-sweep px-10 py-3.5 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-sm tracking-extra-wide uppercase font-medium md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200 disabled:opacity-40"
               >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 size={16} className="animate-spin" />
-                    Imaginando tu estancia...
-                  </span>
-                ) : (
-                  "Ver cómo queda"
-                )}
+                <span className="relative z-10 inline-flex items-center gap-2">
+                  {loading ? (<><Loader2 size={16} className="animate-spin" />Imaginando tu estancia...</>) : "Ver cómo queda"}
+                </span>
               </button>
               {loading && (
                 <div className="mt-4">
@@ -138,7 +103,6 @@ const VirtualTryOn = () => {
               )}
             </div>
 
-            {/* Result */}
             {resultImage && !loading && (
               <AnimatedSection>
                 <div className="bg-background p-6 md:p-8 mt-4 rounded-lg">
@@ -149,9 +113,9 @@ const VirtualTryOn = () => {
                   <div className="text-center mt-6">
                     <button
                       onClick={handleOrder}
-                      className="inline-block px-8 py-3 bg-accent-warm text-white text-sm tracking-extra-wide uppercase font-medium hover:opacity-90 transition-opacity"
+                      className="btn-sweep px-8 py-3 bg-[#1a4b5b] text-white md:bg-white md:text-foreground border border-[#1a4b5b]/25 text-sm tracking-extra-wide uppercase font-medium md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
                     >
-                      Quiero este — solicitar pedido
+                      <span className="relative z-10">Quiero este — solicitar pedido</span>
                     </button>
                   </div>
                 </div>
