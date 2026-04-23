@@ -69,6 +69,22 @@ const TexturePattern = ({
 
 const patternFill = (patternId: string, fallback: string) => `url(#${patternId})`;
 
+const headboardSelectorPath = (forma: string) => {
+  switch (forma) {
+    case "semicirculo":
+      return "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z";
+    case "corona-simple":
+      return "M 3 37 L 3 24 C 13.6 24 18 20 18.8 16.8 A 11.2 3.2 0 0 1 41.2 16.8 C 42 20 46.4 24 57 24 L 57 37 Z";
+    case "corona-doble":
+      return "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z";
+    case "corona-triple":
+      return "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z";
+    case "recto":
+    default:
+      return "M 5 35 L 5 8 L 55 8 L 55 35 Z";
+  }
+};
+
 const headboardTopPoints = (forma: string) => {
   switch (forma) {
     case "semicirculo":
@@ -126,8 +142,8 @@ const headboardTopPoints = (forma: string) => {
     case "recto":
     default:
       return [
-        [24, 50],
-        [276, 50],
+        [15, 50],
+        [285, 50],
       ];
   }
 };
@@ -142,9 +158,19 @@ const buildTopFacePath = (points: number[][], dx: number, dy: number) => {
 };
 
 const headboardPath = (forma: string, bottomY: number) => {
-  const topPoints = headboardTopPoints(forma);
-  const top = topPoints.map(([x, y]) => `L ${x} ${y}`).join(" ");
-  return `M 24 ${bottomY} ${top} L 276 ${bottomY} Z`;
+  switch (forma) {
+    case "semicirculo":
+      return `M 15 ${bottomY} L 15 110 Q 150 25 285 110 L 285 ${bottomY} Z`;
+    case "corona-simple":
+      return `M 15 ${bottomY} L 15 120 C 68 120 90 100 94 84 A 56 16 0 0 1 206 84 C 210 100 232 120 285 120 L 285 ${bottomY} Z`;
+    case "corona-doble":
+      return `M 15 ${bottomY} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${bottomY} Z`;
+    case "corona-triple":
+      return `M 15 ${bottomY} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${bottomY} Z`;
+    case "recto":
+    default:
+      return `M 15 ${bottomY} L 15 50 L 285 50 L 285 ${bottomY} Z`;
+  }
 };
 
 const HeadboardSVG = ({

@@ -74,6 +74,22 @@ const HEADBOARD_SIDE_OPTIONS = [
   { id: "otra-tela", name: "Otra tela a elegir" },
 ];
 
+const headboardSelectorPath = (shape: string) => {
+  switch (shape) {
+    case "semicirculo":
+      return "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z";
+    case "corona-simple":
+      return "M 3 37 L 3 24 C 13.6 24 18 20 18.8 16.8 A 11.2 3.2 0 0 1 41.2 16.8 C 42 20 46.4 24 57 24 L 57 37 Z";
+    case "corona-doble":
+      return "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z";
+    case "corona-triple":
+      return "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z";
+    case "recto":
+    default:
+      return "M 5 35 L 5 8 L 55 8 L 55 35 Z";
+  }
+};
+
 const MESA_TYPES = [
   { id: "tipo-puff", name: "Mesa de centro tapizada" },
   { id: "tipo-banco", name: "Mesa de centro tipo banco" },
@@ -1070,7 +1086,10 @@ const AccordionItems = (props: SharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {HEADBOARD_SHAPES.map((shape) => (
-                    <button key={shape.id} type="button" onClick={() => setHeadboardShape(shape.id)} className={`border rounded p-3 text-center transition-all ${headboardShape === shape.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                    <button key={shape.id} type="button" onClick={() => setHeadboardShape(shape.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${headboardShape === shape.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                      <svg viewBox="0 0 60 40" className="w-12 h-8">
+                        <path d={headboardSelectorPath(shape.id)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      </svg>
                       <span className="text-xs font-light">{shape.name}</span>
                     </button>
                   ))}

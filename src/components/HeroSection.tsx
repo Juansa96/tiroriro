@@ -153,6 +153,14 @@ const HeroSection = () => {
               <span className="relative z-10">Ver productos</span>
             </Link>
           </div>
+          <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">
+              Cabeceros desde xx€ · Bancos desde xx€
+            </span>
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">
+              Puffs desde xx€ · Cojines desde xx€
+            </span>
+          </div>
         </div>
 
       </div>
