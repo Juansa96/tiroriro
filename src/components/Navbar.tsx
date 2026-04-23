@@ -64,8 +64,6 @@ const Navbar = () => {
     }`}>
       <div className="container mx-auto flex items-center justify-between h-20 md:h-24 px-6">
         <Link to="/" className="flex items-center" aria-label="Tiroriro inicio">
-
-          {/* Logo móvil */}
           <div className="md:hidden">
             <Logo
               className="text-foreground"
@@ -73,8 +71,6 @@ const Navbar = () => {
               style={{ width: 90, marginTop: "-10px", height: "auto" }}
             />
           </div>
-
-          {/* Logo desktop */}
           <div className="hidden md:block">
             <Logo
               className={onHero ? "text-white" : "text-primary"}
@@ -96,13 +92,15 @@ const Navbar = () => {
               return (
                 <Link key={link.to} to={link.to}
                   onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                  className={`text-sm tracking-extra-wide uppercase font-body font-light transition-all duration-300 ${
+                  className={`btn-sweep text-sm tracking-extra-wide uppercase font-body font-light transition-all duration-300 ${
                     scrolled
                       ? "border border-primary text-primary rounded-full px-4 py-1.5 hover:bg-primary hover:text-primary-foreground"
                       : "text-white px-0 py-0 border border-transparent hover:opacity-80"
                   }`}
                   style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
-                >{link.label}</Link>
+                >
+                  <span className="relative z-10">{link.label}</span>
+                </Link>
               );
             }
             return (
