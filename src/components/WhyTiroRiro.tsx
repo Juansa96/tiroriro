@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 
 const REASONS = [
-  { num: "01", title: "Nació de una necesidad real", text: "Dos amigas, dos casas nuevas, ninguna web con lo que buscaban a un precio razonable. Así empezó Tiroriro — y ese problema sigue siendo la razón por la que existimos." },
+  { num: "01", title: "Nació de una necesidad real", text: "Dos amigas, dos casas nuevas, ninguna web con lo que buscaban para que encajara de verdad. Así empezó Tiroriro — y ese problema sigue siendo la razón por la que existimos." },
   { num: "02", title: "Hecho para ti, no para un catálogo", text: "Si vas a ver ese cabecero cada noche durante diez años, merece ser exactamente el que querías. Tú eliges la tela, el tamaño y el acabado — nosotros lo construimos a mano." },
   { num: "03", title: "Tú solo abres la puerta", text: "Sin buscar tapiceros, sin pedir presupuestos, sin coordinar entregas. Nuestro equipo gestiona todo para que el resultado llegue listo a tu casa en 15 días." },
 ];

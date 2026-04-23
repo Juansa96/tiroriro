@@ -1,9 +1,10 @@
 import { ProductType } from "@/lib/products";
-import { useState, useEffect, useRef, useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 interface Props {
   type: ProductType | null;
   color: string;
+  fabricImage?: string;
   finish: string;
   vivoColor?: string;
   width?: number;
@@ -11,7 +12,10 @@ interface Props {
   forma?: string;
   widthCm?: number;
   heightCm?: number;
+  depthCm?: number;
 }
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 function darken(hex: string, amount = 40): string {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -30,77 +34,176 @@ function lighten(hex: string, amount = 30): string {
 const EmptyState = () => (
   <svg viewBox="0 0 300 200" className="w-full max-w-[280px] mx-auto">
     <rect x="20" y="30" width="260" height="150" rx="4" fill="#D4C5A9" stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
-    <text x="150" y="110" textAnchor="middle" fontSize="12" fill="#999" className="font-body">Tu pieza aparecerá aquí</text>
+    <text x="150" y="110" textAnchor="middle" fontSize="12" fill="#999" className="font-body">
+      Tu pieza aparecerá aquí
+    </text>
   </svg>
 );
 
-const headboardPath = (forma: string, B: number): string => {
+const TexturePattern = ({
+  id,
+  image,
+  color,
+  tile = 30,
+}: {
+  id: string;
+  image?: string;
+  color: string;
+  tile?: number;
+}) => (
+  <pattern id={id} patternUnits="userSpaceOnUse" width={tile} height={tile}>
+    <rect width={tile} height={tile} fill={color} />
+    {image ? (
+      <image
+        href={image}
+        x="0"
+        y="0"
+        width={tile}
+        height={tile}
+        preserveAspectRatio="none"
+      />
+    ) : null}
+  </pattern>
+);
+
+const patternFill = (patternId: string, fallback: string) => `url(#${patternId})`;
+
+const headboardTopPoints = (forma: string) => {
   switch (forma) {
-    case 'semicirculo':
-      return `M 15 ${B} L 15 110 Q 150 25 285 110 L 285 ${B} Z`;
-    case 'corona-simple':
-      return `M 15 ${B} L 15 120 C 68 120 90 100 94 84 A 56 16 0 0 1 206 84 C 210 100 232 120 285 120 L 285 ${B} Z`;
-    case 'corona-doble':
-      return `M 15 ${B} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${B} Z`;
-    case 'corona-triple':
-      return `M 15 ${B} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${B} Z`;
-    case 'recto':
+    case "semicirculo":
+      return [
+        [24, 116],
+        [88, 66],
+        [150, 40],
+        [212, 66],
+        [276, 116],
+      ];
+    case "corona-simple":
+      return [
+        [24, 120],
+        [72, 112],
+        [103, 88],
+        [150, 70],
+        [197, 88],
+        [228, 112],
+        [276, 120],
+      ];
+    case "corona-doble":
+      return [
+        [24, 122],
+        [65, 110],
+        [95, 84],
+        [126, 98],
+        [150, 70],
+        [174, 98],
+        [205, 84],
+        [235, 110],
+        [276, 122],
+      ];
+    case "corona-triple":
+      return [
+        [24, 124],
+        [55, 112],
+        [84, 92],
+        [112, 106],
+        [138, 74],
+        [162, 74],
+        [188, 106],
+        [216, 92],
+        [245, 112],
+        [276, 124],
+      ];
+    case "recto":
     default:
-      return `M 15 ${B} L 15 50 L 285 50 L 285 ${B} Z`;
+      return [
+        [24, 82],
+        [276, 82],
+      ];
   }
 };
 
-const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { color: string; finish: string; vivoColor: string; forma?: string; widthCm?: number; heightCm?: number }) => {
-  const f = forma || 'recto';
+const buildTopFacePath = (points: number[][], dx: number, dy: number) => {
+  const front = points.map(([x, y]) => `${x} ${y}`).join(" L ");
+  const back = [...points]
+    .reverse()
+    .map(([x, y]) => `${x + dx} ${y + dy}`)
+    .join(" L ");
+  return `M ${front} L ${back} Z`;
+};
+
+const headboardPath = (forma: string, bottomY: number) => {
+  const topPoints = headboardTopPoints(forma);
+  const top = topPoints.map(([x, y]) => `L ${x} ${y}`).join(" ");
+  return `M 24 ${bottomY} ${top} L 276 ${bottomY} Z`;
+};
+
+const HeadboardSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  forma,
+  widthCm,
+  heightCm,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  forma?: string;
+  widthCm?: number;
+  heightCm?: number;
+}) => {
+  const shape = forma || "recto";
+  const patternId = useId();
   const clipId = useId();
-  const scaleX = widthCm ? Math.min(1.25, Math.max(0.75, widthCm / 150)) : 1;
-  const BASE_SVG_REF = 65;
-  const REF_HEIGHT_CM = 90;
-  const totalHTarget = 120 + (heightCm
-    ? Math.round(BASE_SVG_REF * Math.min(1.55, Math.max(0.52, heightCm / REF_HEIGHT_CM)))
-    : BASE_SVG_REF);
-  const [totalH, setTotalH] = useState(totalHTarget);
-  const animRef = useRef<number | null>(null);
-  const currentHRef = useRef(totalHTarget);
-  useEffect(() => {
-    const to = totalHTarget;
-    const from = currentHRef.current;
-    if (from === to) return;
-    if (animRef.current) cancelAnimationFrame(animRef.current);
-    const startTime = performance.now();
-    const dur = 400;
-    const step = (now: number) => {
-      const p = Math.min((now - startTime) / dur, 1);
-      const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
-      const val = Math.round(from + (to - from) * ease);
-      currentHRef.current = val;
-      setTotalH(val);
-      if (p < 1) animRef.current = requestAnimationFrame(step);
-      else { currentHRef.current = to; setTotalH(to); }
-    };
-    animRef.current = requestAnimationFrame(step);
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
-  }, [totalHTarget]);
-  const path = headboardPath(f, totalH);
+  const scaleX = widthCm ? clamp(widthCm / 150, 0.72, 1.28) : 1;
+  const heightScale = heightCm ? clamp(heightCm / 120, 0.8, 1.14) : 1;
+  const bottomY = 188;
+  const dx = 18;
+  const dy = -14;
+  const frontPath = headboardPath(shape, bottomY);
+  const topPoints = headboardTopPoints(shape);
+  const firstTop = topPoints[0];
+  const lastTop = topPoints[topPoints.length - 1];
+  const topFacePath = buildTopFacePath(topPoints, dx, dy);
+  const leftSidePath = `M 24 ${bottomY} L ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${24 + dx} ${bottomY + dy} Z`;
+  const rightSidePath = `M 276 ${bottomY} L ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${276 + dx} ${bottomY + dy} Z`;
+  const topColor = lighten(color, 16);
+  const sideColor = darken(color, 18);
+
   return (
-    <svg viewBox={`0 0 300 ${totalH}`} className="w-full max-w-[300px] mx-auto">
+    <svg viewBox="0 0 330 220" className="w-full max-w-[320px] mx-auto">
       <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
         <clipPath id={`hb-${clipId}`}>
-          <path d={path} />
+          <path d={frontPath} />
         </clipPath>
       </defs>
-      <g style={{ transform: `scaleX(${scaleX})`, transformOrigin: `150px ${totalH}px`, transition: 'transform 0.4s ease' }}>
-        <path d={path} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        {finish === 'vivo-simple' && (
+
+      <g
+        style={{
+          transform: `scale(${scaleX}, ${heightScale})`,
+          transformOrigin: "150px 186px",
+          transition: "transform 0.4s ease",
+        }}
+      >
+        <ellipse cx="160" cy="203" rx="118" ry="8" fill="rgba(0,0,0,0.08)" />
+        <path d={topFacePath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={leftSidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={rightSidePath} fill={darken(color, 24)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+
+        {finish === "vivo-simple" && (
           <g clipPath={`url(#hb-${clipId})`}>
-            <path d={path} fill="none" stroke={vivoColor} strokeWidth="3" />
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
           </g>
         )}
-        {finish === 'vivo-doble' && (
+        {finish === "vivo-doble" && (
           <g clipPath={`url(#hb-${clipId})`}>
-            <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5" />
-            <g style={{ transform: `translate(150px, ${totalH}px) scale(0.93) translate(-150px, -${totalH}px)` }}>
-              <path d={path} fill="none" stroke={vivoColor} strokeWidth="2.5" />
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+            <g transform="translate(150 188) scale(0.94) translate(-150 -188)">
+              <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2" strokeLinejoin="round" />
             </g>
           </g>
         )}
@@ -109,48 +212,109 @@ const HeadboardSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { 
   );
 };
 
-const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: string; finish: string; vivoColor: string; widthCm?: number; heightCm?: number }) => {
-  const scaleX = widthCm ? Math.min(1.2, Math.max(0.7, widthCm / 110)) : 1;
-  const scaleY = heightCm ? Math.min(1.25, Math.max(0.8, heightCm / 42)) : 1;
+const BenchSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  variant,
+  widthCm,
+  heightCm,
+  depthCm,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  variant?: string;
+  widthCm?: number;
+  heightCm?: number;
+  depthCm?: number;
+}) => {
+  const mode = variant || "madera";
+  const patternId = useId();
   const clipId = useId();
-  const x = 25, y = 70, w = 250, h = 110, topBand = 55, legW = 40, cornerR = 6, dx = 12, dy = -10;
-  const leftLegX = x;
-  const rightLegX = x + w - legW;
-  const cutTop = y + topBand;
-  const frontPath =
-    `M ${x + cornerR} ${y} L ${x + w - cornerR} ${y} Q ${x + w} ${y} ${x + w} ${y + cornerR} ` +
-    `L ${x + w} ${y + h} L ${rightLegX} ${y + h} L ${rightLegX} ${cutTop} ` +
-    `L ${leftLegX + legW} ${cutTop} L ${leftLegX + legW} ${y + h} ` +
-    `L ${x} ${y + h} L ${x} ${y + cornerR} Q ${x} ${y} ${x + cornerR} ${y} Z`;
-  const topPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + dx} ${y + dy} Z`;
-  const sidePath = `M ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + w + dx} ${y + h + dy} L ${x + w} ${y + h} Z`;
-  const leftLegFacePath = `M ${x} ${cutTop} L ${x - 8} ${cutTop + 5} L ${x - 8} ${y + h + 5} L ${x} ${y + h} Z`;
-  const topColor = lighten(color, 18);
-  const sideColor = darken(color, 18);
+  const scaleX = widthCm ? clamp(widthCm / 110, 0.74, 1.25) : 1;
+  const scaleY = heightCm ? clamp(heightCm / 45, 0.75, 1.2) : 1;
+  const depthX = depthCm ? clamp((depthCm - 30) * 0.25 + 16, 14, 24) : 18;
+  const depthY = -depthX * 0.75;
+
+  const seatX = 52;
+  const seatY = mode === "baul" ? 66 : 60;
+  const seatW = mode === "madera" ? 176 : 190;
+  const seatH = mode === "baul" ? 92 : 48;
+  const seatTop = `M ${seatX} ${seatY} L ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + depthX} ${seatY + depthY} Z`;
+  const seatSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + seatH + depthY} L ${seatX + seatW} ${seatY + seatH} Z`;
+  const seatFrontRect = `M ${seatX + 8} ${seatY} H ${seatX + seatW - 8} Q ${seatX + seatW} ${seatY} ${seatX + seatW} ${seatY + 8} V ${seatY + seatH} H ${seatX} V ${seatY + 8} Q ${seatX} ${seatY} ${seatX + 8} ${seatY} Z`;
+
+  const openLegW = 38;
+  const cutTop = seatY + 52;
+  const uFrontPath =
+    `M ${seatX + 8} ${seatY} H ${seatX + seatW - 8} Q ${seatX + seatW} ${seatY} ${seatX + seatW} ${seatY + 8} ` +
+    `V ${seatY + 112} H ${seatX + seatW - openLegW} V ${cutTop} H ${seatX + openLegW} V ${seatY + 112} H ${seatX} V ${seatY + 8} ` +
+    `Q ${seatX} ${seatY} ${seatX + 8} ${seatY} Z`;
+  const rightOuterSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW} ${seatY + 112} Z`;
+  const innerBackPlane = `M ${seatX + openLegW + depthX} ${cutTop + depthY} H ${seatX + seatW - openLegW + depthX} V ${seatY + 112 + depthY} H ${seatX + openLegW + depthX} Z`;
+  const innerLeftSide = `M ${seatX + openLegW} ${cutTop} L ${seatX + openLegW + depthX} ${cutTop + depthY} L ${seatX + openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + openLegW} ${seatY + 112} Z`;
+  const innerRightSide = `M ${seatX + seatW - openLegW} ${cutTop} L ${seatX + seatW - openLegW + depthX} ${cutTop + depthY} L ${seatX + seatW - openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW - openLegW} ${seatY + 112} Z`;
+
+  const woodColor = "#8E6C4E";
+  const seatTopColor = lighten(color, 14);
+  const seatSideColor = darken(color, 18);
+
   return (
-    <svg viewBox="0 0 300 230" className="w-full max-w-[300px] mx-auto">
+    <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
       <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
         <clipPath id={`bn-${clipId}`}>
-          <path d={frontPath} />
+          <path d={mode === "enteladas" ? uFrontPath : seatFrontRect} />
         </clipPath>
       </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 200px', transition: 'transform 0.4s ease' }}>
-        <ellipse cx={150 + dx / 2} cy={y + h + 10} rx={w * 0.45} ry={4} fill="rgba(0,0,0,0.1)" />
-        <path d={leftLegFacePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <path d={sidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <path d={frontPath} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <line x1={x + 4} y1={cutTop} x2={x + w - 4} y2={cutTop} stroke={darken(color, 25)} strokeWidth="1" opacity="0.15" />
-        <line x1={leftLegX + legW} y1={cutTop} x2={leftLegX + legW + dx} y2={cutTop + dy} stroke={darken(color, 30)} strokeWidth="1.5" opacity="0.35" />
-        <line x1={rightLegX} y1={cutTop} x2={rightLegX + dx} y2={cutTop + dy} stroke={darken(color, 30)} strokeWidth="1.5" opacity="0.35" />
-        {finish === 'vivo-simple' && (
+
+      <g
+        style={{
+          transform: `scale(${scaleX}, ${scaleY})`,
+          transformOrigin: "150px 190px",
+          transition: "transform 0.4s ease",
+        }}
+      >
+        <ellipse cx={157} cy={204} rx={110} ry={8} fill="rgba(0,0,0,0.08)" />
+
+        {mode === "madera" && (
+          <>
+            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <rect x={70} y={108} width="12" height="66" rx="4" fill={woodColor} />
+            <rect x={202} y={108} width="12" height="66" rx="4" fill={woodColor} />
+            <rect x={102} y={112} width="12" height="62" rx="4" fill={darken(woodColor, 10)} />
+            <rect x={170} y={112} width="12" height="62" rx="4" fill={darken(woodColor, 10)} />
+          </>
+        )}
+
+        {mode === "baul" && (
+          <>
+            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <line x1={seatX + 8} y1={seatY + 24} x2={seatX + seatW - 8} y2={seatY + 24} stroke="rgba(0,0,0,0.14)" strokeWidth="1.5" />
+          </>
+        )}
+
+        {mode === "enteladas" && (
+          <>
+            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={rightOuterSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={innerBackPlane} fill={darken(color, 8)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerLeftSide} fill={darken(color, 14)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerRightSide} fill={darken(color, 16)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={uFrontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+          </>
+        )}
+
+        {finish === "vivo-simple" && (
           <g clipPath={`url(#bn-${clipId})`}>
-            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
-          </g>
-        )}
-        {finish === 'vivo-doble' && (
-          <g clipPath={`url(#bn-${clipId})`}>
-            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.5" />
+            <path d={mode === "enteladas" ? uFrontPath : seatFrontRect} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
           </g>
         )}
       </g>
@@ -158,148 +322,343 @@ const BenchSVG = ({ color, finish, vivoColor, widthCm, heightCm }: { color: stri
   );
 };
 
-const PuffSVG = ({ color, finish, vivoColor, forma, diameter, heightCm }: { color: string; finish: string; vivoColor: string; forma?: string; diameter?: number; heightCm?: number }) => {
-  const isRect = forma === 'rectangular';
-  const x = isRect ? 28 : 62, y = isRect ? 84 : 52, w = isRect ? 232 : 166, h = isRect ? 78 : 128, rx = isRect ? 4 : 8;
-  const scaleX = diameter ? Math.min(1.15, Math.max(0.75, diameter / 50)) : 1;
-  const scaleY = heightCm ? Math.min(1.3, Math.max(0.75, heightCm / 35)) : 1;
+const PuffSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  forma,
+  widthCm,
+  depthCm,
+  heightCm,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  forma?: string;
+  widthCm?: number;
+  depthCm?: number;
+  heightCm?: number;
+}) => {
+  const isCircular = forma === "circular";
+  const patternId = useId();
   const clipId = useId();
-  const dx = 14, dy = -9;
-  const topColor = lighten(color, 18);
-  const sideColor = darken(color, 18);
-  const topPath = `M ${x} ${y} L ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + dx} ${y + dy} Z`;
-  const sidePath = `M ${x + w} ${y} L ${x + w + dx} ${y + dy} L ${x + w + dx} ${y + h + dy} L ${x + w} ${y + h} Z`;
-  return (
-    <svg viewBox="0 0 300 220" className="w-full max-w-[260px] mx-auto">
-      <defs>
-        <clipPath id={`pf-${clipId}`}>
-          <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} />
-        </clipPath>
-      </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '150px 185px', transition: 'transform 0.4s ease' }}>
-        <ellipse cx={150 + dx / 2} cy={y + h + 10} rx={w * 0.42} ry={4} fill="rgba(0,0,0,0.1)" />
-        <path d={sidePath} fill={sideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <path d={topPath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} fill={color} stroke="rgba(0,0,0,0.15)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        {finish === 'vivo-simple' && (
-          <g clipPath={`url(#pf-${clipId})`}>
-            <rect x={x} y={y} width={w} height={h} rx={rx} ry={rx} fill="none" stroke={vivoColor} strokeWidth="3" />
-          </g>
-        )}
-      </g>
-    </svg>
-  );
-};
 
-const CushionSVG = ({ color, finish, vivoColor, size }: { color: string; finish: string; vivoColor: string; size?: string }) => {
-  const isLumbar = size?.includes('lumbar') || size?.includes('50×30');
-  const clipId = useId();
-  let scaleX = 1, scaleY = 1;
-  if (isLumbar) { scaleX = 1.35; scaleY = 0.6; }
-  else if (size?.startsWith('60')) { scaleX = 1.45; scaleY = 1.45; }
-  else if (size?.startsWith('50')) { scaleX = 1.25; scaleY = 1.25; }
-  else if (size?.startsWith('45')) { scaleX = 1.12; scaleY = 1.12; }
-  // Puffy pillow — sides bow outward, base 130×130 centered at (100,100)
-  const pillowPath =
-    "M 51 35 Q 100 26 149 35 Q 165 35 165 51 " +
-    "Q 174 100 165 149 Q 165 165 149 165 " +
-    "Q 100 174 51 165 Q 35 165 35 149 " +
-    "Q 26 100 35 51 Q 35 35 51 35 Z";
-  const innerPath =
-    "M 55 43 Q 100 36 145 43 Q 157 43 157 55 " +
-    "Q 164 100 157 145 Q 157 157 145 157 " +
-    "Q 100 164 55 157 Q 43 157 43 145 " +
-    "Q 36 100 43 55 Q 43 43 55 43 Z";
-  return (
-    <svg viewBox="0 0 200 200" className="w-full max-w-[200px] mx-auto">
-      <defs>
-        <clipPath id={`cu-${clipId}`}>
-          <path d={pillowPath} />
-        </clipPath>
-      </defs>
-      <g style={{ transform: `scale(${scaleX}, ${scaleY})`, transformOrigin: '100px 100px', transition: 'transform 0.4s ease' }}>
-        <ellipse cx="102" cy="106" rx="68" ry="64" fill="rgba(0,0,0,0.07)" />
-        <path d={pillowPath} fill={color} stroke="rgba(0,0,0,0.1)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <ellipse cx="78" cy="67" rx="30" ry="24" fill="white" opacity="0.12" transform="rotate(-15 78 67)" />
-        {finish === 'vivo-simple' && (
-          <g clipPath={`url(#cu-${clipId})`}>
-            <path d={pillowPath} fill="none" stroke={vivoColor} strokeWidth="3" />
-          </g>
-        )}
-        {finish === 'vivo-doble' && (
-          <g clipPath={`url(#cu-${clipId})`}>
-            <path d={pillowPath} fill="none" stroke={vivoColor} strokeWidth="2.5" />
-            <path d={innerPath} fill="none" stroke={vivoColor} strokeWidth="2" />
-          </g>
-        )}
-      </g>
-    </svg>
-  );
-};
-
-const MesaSVG = ({ color, finish, vivoColor, forma, widthCm, heightCm }: { color: string; finish: string; vivoColor: string; forma?: string; widthCm?: number; heightCm?: number }) => {
-  const clipId = useId();
-  if (forma === 'redonda') {
-    const cx = 150, cy = 80;
-    const rx = widthCm ? Math.min(125, Math.max(80, (widthCm / 80) * 115)) : 115;
-    const ry = 48;
+  if (isCircular) {
+    const topRx = widthCm ? clamp(widthCm * 0.9, 50, 84) : 68;
+    const topRy = clamp(topRx * 0.28, 18, 28);
+    const bodyH = heightCm ? clamp(heightCm * 1.5, 58, 118) : 86;
+    const topCx = 150;
+    const topCy = 72;
+    const bodyTop = topCy;
+    const bodyBottom = topCy + bodyH;
     return (
-      <svg viewBox="0 0 300 220" className="w-full max-w-[280px] mx-auto">
-        <defs><clipPath id={`ms-${clipId}`}><ellipse cx={cx} cy={cy} rx={rx} ry={ry} /></clipPath></defs>
-        <ellipse cx={cx} cy={cy + 10} rx={rx} ry={ry} fill={darken(color, 25)} />
-        <rect x={cx - rx} y={cy} width={rx * 2} height="12" fill={darken(color, 15)} />
-        <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-        <ellipse cx={cx} cy={cy - ry * 0.4} rx={rx * 0.95} ry={ry * 0.4} fill={lighten(color)} opacity="0.4" />
-        {finish === 'vivo-simple' && <g clipPath={`url(#ms-${clipId})`}><ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={vivoColor} strokeWidth="3" /></g>}
-        <rect x={cx - 75} y="100" width="11" height="90" rx="5" fill={darken(color, 40)} />
-        <rect x={cx + 64} y="100" width="11" height="90" rx="5" fill={darken(color, 40)} />
-        <rect x={cx - 42} y="106" width="11" height="84" rx="5" fill={darken(color, 50)} />
-        <rect x={cx + 31} y="106" width="11" height="84" rx="5" fill={darken(color, 50)} />
-        <ellipse cx={cx} cy={200} rx={rx * 0.7} ry={5} fill="rgba(0,0,0,0.08)" />
+      <svg viewBox="0 0 300 230" className="w-full max-w-[260px] mx-auto">
+        <defs>
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={28} />
+          <clipPath id={`pf-${clipId}`}>
+            <path
+              d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
+            />
+          </clipPath>
+        </defs>
+        <ellipse cx={150} cy={bodyBottom + 16} rx={topRx * 0.82} ry={8} fill="rgba(0,0,0,0.08)" />
+        <path
+          d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
+          fill={patternFill(patternId, color)}
+          stroke="rgba(0,0,0,0.16)"
+          strokeWidth="1"
+        />
+        <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill={lighten(color, 18)} opacity="0.35" />
+        <ellipse cx={168} cy={bodyTop + bodyH * 0.5} rx={topRx * 0.18} ry={bodyH * 0.36} fill="rgba(255,255,255,0.12)" />
+        <ellipse cx={150} cy={bodyBottom} rx={topRx} ry={topRy} fill={darken(color, 12)} opacity="0.18" />
+        {finish === "vivo-simple" && (
+          <g clipPath={`url(#pf-${clipId})`}>
+            <path
+              d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
+              fill="none"
+              stroke={vivoColor}
+              strokeWidth="3"
+            />
+          </g>
+        )}
       </svg>
     );
   }
-  const baseW = widthCm ? Math.min(240, Math.max(120, (widthCm / 100) * 200)) : forma === 'cuadrada' ? 160 : 220;
-  const baseH = forma === 'cuadrada' ? baseW * 0.55 : (heightCm ? Math.min(95, Math.max(45, (heightCm / 50) * 70)) : 70);
-  const x = (300 - baseW) / 2, y = 50;
+
+  const baseW = widthCm ? clamp(widthCm * 2, 108, 190) : 148;
+  const baseH = heightCm ? clamp(heightCm * 1.7, 68, 122) : 92;
+  const depthX = depthCm ? clamp((depthCm - 30) * 0.25 + 16, 14, 24) : 18;
+  const depthY = -depthX * 0.7;
+  const x = (300 - baseW) / 2;
+  const y = 72;
+  const frontPath = `M ${x + 10} ${y} H ${x + baseW - 10} Q ${x + baseW} ${y} ${x + baseW} ${y + 10} V ${y + baseH - 10} Q ${x + baseW} ${y + baseH} ${x + baseW - 10} ${y + baseH} H ${x + 10} Q ${x} ${y + baseH} ${x} ${y + baseH - 10} V ${y + 10} Q ${x} ${y} ${x + 10} ${y} Z`;
+  const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
+  const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
+
   return (
-    <svg viewBox="0 0 300 220" className="w-full max-w-[280px] mx-auto">
-      <defs><clipPath id={`ms-${clipId}`}><rect x={x} y={y} width={baseW} height={baseH} rx="6" /></clipPath></defs>
-      <rect x={x} y={y + baseH - 4} width={baseW} height="10" fill={darken(color, 20)} />
-      <rect x={x} y={y} width={baseW} height={baseH} rx="6" fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" style={{ transition: 'fill 0.3s ease' }} />
-      <rect x={x} y={y} width={baseW} height="10" rx="5" fill={lighten(color)} opacity="0.4" />
-      {finish === 'vivo-simple' && <g clipPath={`url(#ms-${clipId})`}><rect x={x} y={y} width={baseW} height={baseH} rx="6" fill="none" stroke={vivoColor} strokeWidth="3" /></g>}
-      <rect x={x + 8} y={y + baseH + 5} width="10" height="80" rx="3" fill={darken(color, 40)} />
-      <rect x={x + baseW - 18} y={y + baseH + 5} width="10" height="80" rx="3" fill={darken(color, 40)} />
-      <rect x={x + 30} y={y + baseH + 8} width="10" height="76" rx="3" fill={darken(color, 50)} />
-      <rect x={x + baseW - 40} y={y + baseH + 8} width="10" height="76" rx="3" fill={darken(color, 50)} />
-      <ellipse cx={150} cy={200} rx={baseW * 0.4} ry={4} fill="rgba(0,0,0,0.08)" />
+    <svg viewBox="0 0 320 230" className="w-full max-w-[270px] mx-auto">
+      <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
+        <clipPath id={`pf-${clipId}`}>
+          <path d={frontPath} />
+        </clipPath>
+      </defs>
+      <ellipse cx={158} cy={y + baseH + 14} rx={baseW * 0.45} ry={8} fill="rgba(0,0,0,0.08)" />
+      <path d={topPath} fill={lighten(color, 16)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+      <path d={sidePath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+      <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+      {finish === "vivo-simple" && (
+        <g clipPath={`url(#pf-${clipId})`}>
+          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+        </g>
+      )}
     </svg>
   );
 };
 
-const ProductSVGPreview = ({ type, color, finish, vivoColor, forma, widthCm, heightCm }: Props) => {
+const CushionSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  shape,
+  widthCm,
+  heightCm,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  shape?: string;
+  widthCm?: number;
+  heightCm?: number;
+}) => {
+  const kind = shape || "cuadrada";
+  const patternId = useId();
+  const clipId = useId();
+
+  if (kind === "cilindro") {
+    const length = widthCm ? clamp(widthCm * 2.9, 130, 240) : 196;
+    const radius = heightCm ? clamp(heightCm * 1.05, 24, 42) : 30;
+    const x = (300 - length) / 2;
+    const y = 72;
+    return (
+      <svg viewBox="0 0 300 180" className="w-full max-w-[300px] mx-auto">
+        <defs>
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={26} />
+          <clipPath id={`cy-${clipId}`}>
+            <rect x={x} y={y} width={length} height={radius * 2} rx={radius} />
+          </clipPath>
+        </defs>
+        <ellipse cx="150" cy={y + radius * 2 + 14} rx={length * 0.38} ry="8" fill="rgba(0,0,0,0.08)" />
+        <rect x={x} y={y} width={length} height={radius * 2} rx={radius} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <ellipse cx={x + 12} cy={y + radius} rx={12} ry={radius * 0.88} fill={darken(color, 18)} opacity="0.18" />
+        <ellipse cx={x + length - 12} cy={y + radius} rx={12} ry={radius * 0.88} fill={darken(color, 20)} opacity="0.18" />
+        {finish === "vivo-simple" && (
+          <g clipPath={`url(#cy-${clipId})`}>
+            <rect x={x} y={y} width={length} height={radius * 2} rx={radius} fill="none" stroke={vivoColor} strokeWidth="3" />
+          </g>
+        )}
+      </svg>
+    );
+  }
+
+  const scaleX = widthCm ? clamp(widthCm / 45, 0.9, 1.6) : kind === "rectangular" ? 1.3 : 1;
+  const scaleY = heightCm ? clamp(heightCm / 45, 0.68, 1.5) : kind === "rectangular" ? 0.82 : 1;
+  const outerPath =
+    "M 52 40 Q 100 28 148 40 Q 164 40 164 56 Q 174 100 164 144 Q 164 160 148 160 Q 100 172 52 160 Q 36 160 36 144 Q 26 100 36 56 Q 36 40 52 40 Z";
+  const innerPath =
+    "M 58 48 Q 100 38 142 48 Q 154 48 154 60 Q 162 100 154 140 Q 154 152 142 152 Q 100 162 58 152 Q 46 152 46 140 Q 38 100 46 60 Q 46 48 58 48 Z";
+
+  return (
+    <svg viewBox="0 0 200 200" className="w-full max-w-[220px] mx-auto">
+      <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={26} />
+        <clipPath id={`cu-${clipId}`}>
+          <path d={outerPath} />
+        </clipPath>
+      </defs>
+      <g
+        style={{
+          transform: `scale(${scaleX}, ${scaleY})`,
+          transformOrigin: "100px 100px",
+          transition: "transform 0.4s ease",
+        }}
+      >
+        <ellipse cx="102" cy="108" rx="64" ry="58" fill="rgba(0,0,0,0.07)" />
+        <path d={outerPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />
+        <path d={innerPath} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+        {finish === "vivo-simple" && (
+          <g clipPath={`url(#cu-${clipId})`}>
+            <path d={outerPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+          </g>
+        )}
+      </g>
+    </svg>
+  );
+};
+
+const MesaSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  variant,
+  widthCm,
+  heightCm,
+  depthCm,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  variant?: string;
+  widthCm?: number;
+  heightCm?: number;
+  depthCm?: number;
+}) => {
+  const mode = variant || "tipo-puff";
+  const patternId = useId();
+  const clipId = useId();
+  const baseW = widthCm ? clamp(widthCm * 1.65, 140, 230) : 196;
+  const baseH = heightCm ? clamp(heightCm * 1.25, 42, 82) : 58;
+  const depthX = depthCm ? clamp((depthCm - 35) * 0.22 + 18, 16, 26) : 20;
+  const depthY = -depthX * 0.72;
+  const x = (300 - baseW) / 2;
+  const y = 62;
+  const frontPath = `M ${x + 8} ${y} H ${x + baseW - 8} Q ${x + baseW} ${y} ${x + baseW} ${y + 8} V ${y + baseH - 8} Q ${x + baseW} ${y + baseH} ${x + baseW - 8} ${y + baseH} H ${x + 8} Q ${x} ${y + baseH} ${x} ${y + baseH - 8} V ${y + 8} Q ${x} ${y} ${x + 8} ${y} Z`;
+  const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
+  const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
+
+  return (
+    <svg viewBox="0 0 320 220" className="w-full max-w-[290px] mx-auto">
+      <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
+        <clipPath id={`ms-${clipId}`}>
+          <path d={frontPath} />
+        </clipPath>
+      </defs>
+      <ellipse cx="158" cy={y + baseH + 72} rx={baseW * 0.38} ry={8} fill="rgba(0,0,0,0.08)" />
+
+      {mode === "tipo-puff" ? (
+        <>
+          <path d={topPath} fill={lighten(color, 14)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={sidePath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+        </>
+      ) : (
+        <>
+          <path d={topPath} fill={lighten(color, 14)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={sidePath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={`M ${x + 10} ${y + baseH} V ${y + baseH + 70} H ${x + 58} V ${y + 30 + baseH} H ${x + baseW - 58} V ${y + baseH + 70} H ${x + baseW - 10} V ${y + baseH} Z`} fill={darken(color, 22)} opacity="0.95" />
+        </>
+      )}
+
+      {finish === "vivo-simple" && (
+        <g clipPath={`url(#ms-${clipId})`}>
+          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+        </g>
+      )}
+    </svg>
+  );
+};
+
+const ProductSVGPreview = ({
+  type,
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  forma,
+  widthCm,
+  heightCm,
+  depthCm,
+}: Props) => {
   const vc = vivoColor || darken(color);
   const [opacity, setOpacity] = useState(1);
   const [currentForma, setCurrentForma] = useState(forma);
+  const timeoutRef = useRef<number | null>(null);
+
   useEffect(() => {
-    if (forma !== currentForma) {
-      setOpacity(0);
-      const timer = setTimeout(() => { setCurrentForma(forma); setOpacity(1); }, 150);
-      return () => clearTimeout(timer);
-    }
+    if (forma === currentForma) return;
+    setOpacity(0.15);
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(() => {
+      setCurrentForma(forma);
+      setOpacity(1);
+    }, 120);
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    };
   }, [forma, currentForma]);
+
   if (!type) return <EmptyState />;
+
   return (
     <div className="transition-opacity duration-300" style={{ opacity }}>
-      {type === 'cabecero' && <HeadboardSVG color={color} finish={finish} vivoColor={vc} forma={currentForma} widthCm={widthCm} heightCm={heightCm} />}
-      {type === 'banco' && <BenchSVG color={color} finish={finish} vivoColor={vc} widthCm={widthCm} heightCm={heightCm} />}
-      {type === 'puff' && <PuffSVG color={color} finish={finish} vivoColor={vc} forma={currentForma} diameter={widthCm} heightCm={heightCm} />}
-      {type === 'cojin' && <CushionSVG color={color} finish={finish} vivoColor={vc} size={currentForma} />}
-      {type === 'mesa' && <MesaSVG color={color} finish={finish} vivoColor={vc} forma={currentForma} widthCm={widthCm} heightCm={heightCm} />}
+      {type === "cabecero" && (
+        <HeadboardSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          forma={currentForma}
+          widthCm={widthCm}
+          heightCm={heightCm}
+        />
+      )}
+      {type === "banco" && (
+        <BenchSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          variant={currentForma}
+          widthCm={widthCm}
+          heightCm={heightCm}
+          depthCm={depthCm}
+        />
+      )}
+      {type === "puff" && (
+        <PuffSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          forma={currentForma}
+          widthCm={widthCm}
+          heightCm={heightCm}
+          depthCm={depthCm}
+        />
+      )}
+      {type === "cojin" && (
+        <CushionSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          shape={currentForma}
+          widthCm={widthCm}
+          heightCm={heightCm}
+        />
+      )}
+      {type === "mesa" && (
+        <MesaSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          variant={currentForma}
+          widthCm={widthCm}
+          heightCm={heightCm}
+          depthCm={depthCm}
+        />
+      )}
     </div>
   );
 };
 
 export default ProductSVGPreview;
-export { darken };

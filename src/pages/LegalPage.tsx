@@ -15,7 +15,7 @@ const LegalPage = () => (
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">Titular del sitio web</h2>
               <p>[Nombre completo] · [DNI — completar manualmente]</p>
               <p className="mt-1">Domicilio: España</p>
-              <p>Email: contacto@tiroriro.com</p>
+              <p>Email: info@tiroriro.com</p>
             </div>
 
             <div>

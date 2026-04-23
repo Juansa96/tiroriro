@@ -16,8 +16,8 @@ const COUPLES = [
       },
       {
         name: "Iñaki",
-        role: "EL DE LA LOGÍSTICA",
-        desc: "Iñaki podría organizar una mudanza intercontinental con tres post-its y una hoja de Excel — y llegaría todo antes de tiempo — es el que se asegura de que cada pedido salga, vuele y aterrice donde tiene que aterrizar, en el día exacto y sin un solo arañazo.",
+        role: "EL LOGÍSTICO",
+        desc: "Iñaki podría organizar una mudanza intercontinental con tres post-its y una hoja de excel — y llegaría todo antes de tiempo — es quien se asegura de que cada pedido salga, vuele y aterrice donde tiene que aterrizar, en el día exacto y sin un solo arañazo.",
       },
     ],
   },
@@ -33,7 +33,7 @@ const COUPLES = [
       {
         name: "Juan",
         role: "EL TECNOLÓGICO",
-        desc: "Juan es el responsable de que puedas leer esto — de que la web funcione, de que el configurador calcule bien y de que los datos digan lo que tienen que decir — probablemente el único del equipo que sabe cuántas personas han llegado hasta esta frase.",
+        desc: "Juan es el responsable de que puedas leer esto — de que la web funcione, de que el presupuesto se calcule bien y de que los datos digan lo que tienen que decir — probablemente el único del equipo que sabe cuántas personas han llegado hasta esta frase.",
       },
     ],
   },
@@ -145,7 +145,7 @@ const TeamSection = () => {
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Quiénes somos</h2>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic text-base">
-            "Dos matrimonios, dos hermanos y dos amigas — y un proyecto que nació porque ninguna de las dos encontraba lo que buscaba para su casa."
+            "2 amigas, 2 casas, 2 bebés recién nacidos y un montón de cosas por encajar — así nació Tiroriro: porque ninguna encontraba lo que de verdad quería para su casa."
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-10 max-w-6xl mx-auto">
@@ -221,7 +221,7 @@ const TeamSection = () => {
           {voted && (
             <p className="mt-8 text-base text-muted-foreground font-light italic animate-fade-in-up">
               {voted === "inaki-rocio" && "Iñaki ya está buscando restaurante. Rocío ya tiene la decoración de la mesa pensada."}
-              {voted === "juan-bea" && "Bea ya tiene el Excel de la comanda. Juan ya ha calculado la propina exacta."}
+              {voted === "juan-bea" && "Bea ya tiene el excel de la comanda. Juan ya ha calculado la propina exacta."}
             </p>
           )}
         </div>

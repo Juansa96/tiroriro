@@ -5,10 +5,11 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const CATEGORIES = [
-  { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG', price: 180 },
-  { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG', price: 95 },
-  { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2486.PNG', price: 30 },
-  { id: 'puffs', name: 'Puffs', image: '/productos-fotos/puff/IMG_2497.PNG', price: 95 },
+  { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG' },
+  { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG' },
+  { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2514.PNG' },
+  { id: 'puffs', name: 'Puffs', image: '/productos-fotos/crops/puff-2497-tight.png' },
+  { id: 'mesas-centro', name: 'Mesas de centro', image: '/productos-fotos/crops/puff-2497-1-tight.png' },
 ];
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
@@ -29,7 +30,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
             style={{
               transform: hovered ? 'scale(1.04)' : 'scale(1)',
               transition: 'transform 0.4s ease',
-              objectPosition: cat.id === 'puffs' ? 'center 0%' : undefined,
+              objectPosition: cat.id === 'puffs' || cat.id === 'mesas-centro' ? 'center 18%' : undefined,
             }}
             loading="lazy"
             decoding="async"
@@ -45,7 +46,6 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
           <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">
             {cat.name}
           </h3>
-          <span className="text-sm text-muted-foreground font-light shrink-0 ml-4 mt-1">Desde xx€</span>
         </div>
       </Link>
     </AnimatedSection>

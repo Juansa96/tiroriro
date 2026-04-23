@@ -22,7 +22,7 @@ const FloatingButtons = () => {
           </div>
         )}
         <a
-          href="https://instagram.com/tiroriro"
+          href="https://www.instagram.com/tirorirohome/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Síguenos en Instagram"

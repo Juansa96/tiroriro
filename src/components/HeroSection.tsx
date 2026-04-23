@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Award, Heart, Truck } from "lucide-react";
+import { Award, Hammer, Truck } from "lucide-react";
 
 const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
   const [displayed, setDisplayed] = useState(skip ? text : "");
@@ -26,14 +26,6 @@ const useTypewriter = (text: string, startDelay: number, speed = 60, skip = fals
 const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  const [hasSeenAnimation] = useState(() => {
-    return typeof window !== "undefined" && sessionStorage.getItem("hero_animation_seen") === "true";
-  });
-
-  useEffect(() => {
-    sessionStorage.setItem("hero_animation_seen", "true");
-  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -68,15 +60,14 @@ const HeroSection = () => {
     };
   }, []);
 
-  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, hasSeenAnimation);
-  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, hasSeenAnimation);
-  const [showRest, setShowRest] = useState(hasSeenAnimation);
+  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, false);
+  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, false);
+  const [showRest, setShowRest] = useState(false);
 
   useEffect(() => {
-    if (hasSeenAnimation) return;
     const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
-  }, [isMobile, hasSeenAnimation]);
+  }, [isMobile]);
 
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
@@ -143,11 +134,13 @@ const HeroSection = () => {
               <span className="relative z-10">Ver productos</span>
             </Link>
           </div>
-          <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
-            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Cabeceros desde xx€ · Bancos desde xx€</span>
-            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Puffs desde xx€ · Cojines desde xx€</span>
-          </div>
         </div>
+
+      </div>
+
+      <div className="hidden md:flex absolute left-1/2 bottom-10 -translate-x-1/2 z-10 flex-col items-center gap-2 text-white/68 pointer-events-none">
+        <span className="text-[11px] tracking-[0.24em] uppercase font-light">Sigue bajando</span>
+        <span className="h-8 w-px bg-white/35" />
       </div>
 
       {/* Franja inferior con iconos — solo móvil */}
@@ -160,7 +153,7 @@ const HeroSection = () => {
           </div>
           <div className="w-px self-stretch bg-foreground/10" />
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <Heart size={18} className="text-foreground/50" />
+            <Hammer size={18} className="text-foreground/50" />
             <span className="text-xs font-medium text-foreground leading-tight">Hecho a mano</span>
             <span className="text-[10px] text-foreground/45 font-light">en España</span>
           </div>

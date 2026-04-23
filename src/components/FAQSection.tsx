@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: "¿Puedo pedir una muestra de tela antes de decidir?",
-    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando qué muestras quieres y te las enviamos a casa. Las muestras tienen un coste adicional, pero si finalmente realizas el pedido, ese importe se descuenta del precio final. Así ves el color y la textura real antes de confirmar.",
+    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando qué muestras quieres y te las enviamos a casa. Así ves el color y la textura real antes de confirmar.",
   },
   {
     q: "¿Hacéis envíos a toda España?",
@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: "¿Puedo devolver el producto si no me gusta?",
-    a: "Al ser productos hechos a medida y personalizados, no admitimos devoluciones por cambio de opinión. Sí cubrimos cualquier defecto de fabricación — si algo no está bien hecho, lo solucionamos sin coste.",
+    a: "Al ser productos hechos a medida y personalizados, no admitimos devoluciones por cambio de opinión. Sí cubrimos cualquier defecto de fabricación — si algo no está bien hecho, lo solucionamos.",
   },
   {
     q: "¿Cómo funciona el pago?",
@@ -29,7 +29,7 @@ const FAQS = [
   },
   {
     q: "¿El cabecero viene montado o hay que ensamblarlo?",
-    a: "Los cabeceros llegan listos para colocar. Por defecto, no incluyen anclaje a pared. Tienes varias opciones: colocarlo sobre el somier, sin necesidad de fijarlo (sin coste adicional, aunque no lo recomendamos); añadir patas para apoyarlo directamente en el suelo (coste adicional); o solicitar piezas específicas para anclarlo a la pared (coste adicional). También ofrecemos servicio de instalación en la Comunidad de Madrid (con coste adicional). Antes de confirmar el pedido, te explicamos todas las opciones por teléfono.",
+    a: "Los cabeceros llegan listos para colocar. Por defecto, no incluyen anclaje a pared. Tienes varias opciones: colocarlo sobre el somier, sin necesidad de fijarlo, añadir patas para apoyarlo directamente en el suelo, o solicitar piezas específicas para anclarlo a la pared. También ofrecemos servicio de instalación en la Comunidad de Madrid. Antes de confirmar el pedido, te explicamos todas las opciones por teléfono.",
   },
 ];
 

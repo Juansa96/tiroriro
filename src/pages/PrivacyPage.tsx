@@ -14,7 +14,7 @@ const PrivacyPage = () => (
             <div>
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">1. ¿Quién es el responsable del tratamiento?</h2>
               <p>Tiroriro, proyecto gestionado por Beatriz [Apellido] y Rocío [Apellido].</p>
-              <p className="mt-1">Email de contacto: contacto@tiroriro.com</p>
+              <p className="mt-1">Email de contacto: info@tiroriro.com</p>
             </div>
 
             <div>
@@ -34,7 +34,7 @@ const PrivacyPage = () => (
 
             <div>
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">5. ¿Cuáles son tus derechos?</h2>
-              <p>Tienes derecho de acceso, rectificación, supresión, oposición y portabilidad de tus datos. Para ejercer cualquiera de estos derechos, escríbenos a contacto@tiroriro.com.</p>
+              <p>Tienes derecho de acceso, rectificación, supresión, oposición y portabilidad de tus datos. Para ejercer cualquiera de estos derechos, escríbenos a info@tiroriro.com.</p>
             </div>
 
             <div>

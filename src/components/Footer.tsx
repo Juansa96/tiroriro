@@ -13,11 +13,11 @@ const Footer = () => (
         />
       </Link>
       <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">
-        Hecho a mano en España · Envío a toda la península · contacto@tiroriro.com
+        Hecho a mano en España · Envío a toda la península · info@tiroriro.com
       </p>
       <div className="mt-8 flex items-center justify-center">
         <a
-          href="https://instagram.com/tiroriro"
+          href="https://www.instagram.com/tirorirohome/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Instagram de Tiroriro"

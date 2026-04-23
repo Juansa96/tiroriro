@@ -5,7 +5,7 @@ const STEPS = [
   {
     num: "01",
     title: "Diseña y elige",
-    text: "Usa el configurador para elegir forma, medida y tela. El precio aparece al momento, sin sorpresas.",
+    text: "Usa el configurador para elegir forma, medida y tela. Todo queda claro desde el principio, sin pasos confusos.",
     Icon: PencilRuler,
     tone: "bg-[#F3EFE7] border-[#E0D9CD]",
     iconTone: "bg-white/80 text-primary border border-primary/8",
@@ -23,7 +23,7 @@ const STEPS = [
   {
     num: "03",
     title: "Lo recibes en casa",
-    text: "En unos 15 días llega listo para colocar. Puedes añadir patas, fijación a pared o instalación en Madrid.",
+    text: "En unos 15 días lo recibes listo para colocar, ya sea apoyado, colgado o tal y como lo hayas elegido. Y si estás en Madrid, también podemos instalarlo por ti.",
     Icon: House,
     tone: "bg-[#D7E0E1] border-[#C5D0D2]",
     iconTone: "bg-white/75 text-primary border border-primary/8",
@@ -38,7 +38,6 @@ const HowItWorks = () => (
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
           <div className="max-w-2xl">
             <span className="block w-5 h-px bg-primary mb-3" />
-            <p className="text-[10px] tracking-[0.14em] uppercase text-muted-foreground mb-3">El proceso</p>
             <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así funciona</h2>
             <p className="mt-5 text-base md:text-lg text-muted-foreground font-light leading-relaxed">
               Un recorrido sencillo, ordenado y claro. Sin formularios eternos, sin pasos confusos y sin sorpresas al final.

@@ -2,16 +2,18 @@ import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Check, Loader2, MessageCircle } from "lucide-react";
+import ProductSVGPreview from "./ProductSVGPreview";
 
-const PRODUCT_OPTIONS = ["Cabecero", "Banco tapizado", "Cojines", "Puff", "Otro"];
+const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Puffs", "Mesas de centro", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
 function mapProductName(name: string): string {
   const n = name.toLowerCase();
-  if (n.includes('cabecero')) return 'Cabecero';
-  if (n.includes('banco')) return 'Banco tapizado';
-  if (n.includes('cojin') || n.includes('cojín')) return 'Cojines';
-  if (n.includes('puff')) return 'Puff';
+  if (n.includes('cabecero')) return 'Cabeceros';
+  if (n.includes('banco')) return 'Bancos entelados';
+  if (n.includes('cojin') || n.includes('cojín') || n.includes('almohad')) return 'Cojines y almohadones';
+  if (n.includes('puff')) return 'Puffs';
+  if (n.includes('mesa')) return 'Mesas de centro';
   return 'Varios';
 }
 
@@ -20,21 +22,31 @@ const ContactForm = () => {
   const fromConfig = searchParams.get('config');
   const prefilledProduct = searchParams.get('product');
   const expressParam = searchParams.get('express');
-  const priceParam = searchParams.get('precio');
-  const hasConfigParams = !!(prefilledProduct || fromConfig || priceParam);
+  const hasConfigParams = !!(prefilledProduct || fromConfig);
 
   const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", details: "" });
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [rgpd, setRgpd] = useState(false);
+  const [otherProductDetail, setOtherProductDetail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puff" | "mesa" | null;
+  const previewForma = searchParams.get("previewForma") || undefined;
+  const previewColor = searchParams.get("previewColor") || "#D4C5A9";
+  const previewTexture = searchParams.get("previewTexture") || undefined;
+  const previewFinish = searchParams.get("previewFinish") || "";
+  const previewVivo = searchParams.get("previewVivo") || undefined;
+  const previewWidth = searchParams.get("previewWidth");
+  const previewHeight = searchParams.get("previewHeight");
+  const previewDepth = searchParams.get("previewDepth");
+
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
       let details = fromConfig || '';
-      if (expressParam === 'true') details += '\nEnvío express en 7 días: Sí (+xx€)';
+      if (expressParam === 'true') details += '\nEnvío express en 7 días: Sí';
       if (prefilledProduct) {
         const mapped = mapProductName(prefilledProduct);
         setSelectedProducts(prev => prev.includes(mapped) ? prev : [...prev, mapped]);
@@ -46,6 +58,9 @@ const ContactForm = () => {
   const toggleProduct = (p: string) => {
     setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
     setTouched(t => ({ ...t, product: true }));
+    if (p === "Otro" && selectedProducts.includes("Otro")) {
+      setOtherProductDetail("");
+    }
   };
 
   const update = (field: string, value: string) => {
@@ -60,19 +75,20 @@ const ContactForm = () => {
     if (!form.email.trim()) { errs.email = "El email es obligatorio"; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Introduce un email válido";
     if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
+    if (selectedProducts.includes("Otro") && !otherProductDetail.trim()) errs.other = "Cuéntanos qué quieres exactamente";
     if (!rgpd) errs.rgpd = "Debes aceptar la política de privacidad";
     return errs;
   };
 
   useEffect(() => {
     if (Object.keys(touched).length > 0) setErrors(validate());
-  }, [form, rgpd, selectedProducts, touched]);
+  }, [form, rgpd, selectedProducts, touched, otherProductDetail]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
-    setTouched({ name: true, phone: true, email: true, product: true, rgpd: true });
+    setTouched({ name: true, phone: true, email: true, product: true, other: true, rgpd: true });
     if (Object.keys(validationErrors).length > 0) { toast.error("Por favor, corrige los campos marcados en rojo."); return; }
     setSending(true);
     await new Promise((r) => setTimeout(r, 800));
@@ -91,7 +107,7 @@ const ContactForm = () => {
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light text-lg">Te respondemos en menos de 24 horas laborables.</p>
           <button
-            onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setRgpd(false); setTouched({}); setErrors({}); }}
+            onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setOtherProductDetail(''); setRgpd(false); setTouched({}); setErrors({}); }}
             className="btn-sweep btn-unir btn-unir-outline mt-8 px-8 py-3 text-xs font-light"
           >
             <span className="relative z-10">Volver al inicio</span>
@@ -103,16 +119,6 @@ const ContactForm = () => {
 
   const hasError = (field: string) => touched[field] && errors[field];
   const inputBase = "w-full bg-background border border-border px-4 py-3 text-base text-foreground placeholder:text-sm placeholder:text-muted-foreground/40 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
-
-  const configTags: { label: string; value: string }[] = [];
-  if (prefilledProduct) configTags.push({ label: 'Producto', value: mapProductName(prefilledProduct) });
-  if (fromConfig) {
-    const cleaned = fromConfig.replace(/^Me interesa:\s*/i, '').replace(/\s*\(aprox\.[^)]+\)\s*$/, '');
-    const parts = cleaned.split('·').map(p => p.trim()).filter(Boolean);
-    parts.slice(1).forEach((p) => { configTags.push({ label: '', value: p }); });
-  }
-  if (priceParam) configTags.push({ label: 'Precio aprox.', value: `xx€` });
-  if (expressParam === 'true') configTags.push({ label: 'Extras', value: 'Express 7 días (+xx€)' });
 
   return (
     <section id="contacto" className="py-20 md:py-32 px-6 bg-background">
@@ -129,14 +135,19 @@ const ContactForm = () => {
               <span className="text-accent-warm">✦</span>
               <span>Hemos recuperado tu selección del configurador — los campos ya están rellenados. Puedes modificarlos.</span>
             </p>
-            {configTags.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {configTags.map((t, i) => (
-                  <span key={i} className="text-xs px-2.5 py-1 bg-background border border-border text-foreground">
-                    {t.label && <span className="text-muted-foreground mr-1">{t.label}:</span>}
-                    {t.value}
-                  </span>
-                ))}
+            {previewType && (
+              <div className="mt-5 rounded-2xl border border-border bg-background px-4 py-5">
+                <ProductSVGPreview
+                  type={previewType}
+                  color={previewColor}
+                  fabricImage={previewTexture}
+                  finish={previewFinish}
+                  vivoColor={previewVivo}
+                  forma={previewForma}
+                  widthCm={previewWidth ? Number(previewWidth) : undefined}
+                  heightCm={previewHeight ? Number(previewHeight) : undefined}
+                  depthCm={previewDepth ? Number(previewDepth) : undefined}
+                />
               </div>
             )}
           </div>
@@ -186,7 +197,26 @@ const ContactForm = () => {
                 );
               })}
             </div>
+            {selectedProducts.includes("Otro") && (
+              <div className="mt-4 rounded-2xl border border-border bg-secondary/50 p-4">
+                <label htmlFor="other-product" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                  Cuéntanos qué te gustaría hacer
+                </label>
+                <input
+                  id="other-product"
+                  type="text"
+                  value={otherProductDetail}
+                  onChange={(e) => { setOtherProductDetail(e.target.value); setTouched(t => ({ ...t, other: true })); }}
+                  placeholder="Ej.: un asiento corrido, un panel tapizado, una pieza especial..."
+                  className={`${inputBase} ${hasError('other') ? 'border-destructive' : ''}`}
+                />
+                <p className="mt-2 text-xs text-muted-foreground font-light">
+                  Si no ves aquí tu producto, descríbelo y te orientamos.
+                </p>
+              </div>
+            )}
             {hasError('product') && <p className="text-xs mt-2 text-destructive">{errors.product}</p>}
+            {hasError('other') && <p className="text-xs mt-2 text-destructive">{errors.other}</p>}
           </div>
 
           <div>
