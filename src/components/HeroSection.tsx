@@ -27,7 +27,6 @@ const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Solo anima una vez por sesión
   const [hasSeenAnimation] = useState(() => {
     return typeof window !== "undefined" && sessionStorage.getItem("hero_animation_seen") === "true";
   });
@@ -43,7 +42,6 @@ const HeroSection = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Forzar reproducción en móvil/iOS Safari
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -132,19 +130,17 @@ const HeroSection = () => {
             Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 15 días lo tienes en casa.
           </p>
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
-            {/* Desktop only — azul (CTA principal) */}
             <Link
               to="/configurador"
-              className="hidden md:inline-flex px-8 py-4 bg-[#1a4b5b] text-white text-xs font-medium tracking-[0.1em] uppercase hover:bg-[#1a4b5b]/85 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
+              className="btn-sweep hidden md:inline-flex px-8 py-4 bg-[#1a4b5b] text-white text-xs font-medium tracking-[0.1em] uppercase hover:bg-[#1a4b5b]/85 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
             >
-              Personaliza el tuyo
+              <span className="relative z-10">Personaliza el tuyo</span>
             </Link>
-            {/* Móvil: azul. Desktop: blanco */}
             <Link
               to="/productos"
-              className="px-6 py-3 md:px-8 md:py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
+              className="btn-sweep px-6 py-3 md:px-8 md:py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
             >
-              Ver productos
+              <span className="relative z-10">Ver productos</span>
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
