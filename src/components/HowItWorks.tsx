@@ -1,40 +1,88 @@
 import { Link } from "react-router-dom";
+import { House, PencilRuler, PhoneCall } from "lucide-react";
 
 const STEPS = [
-  { num: "01", title: "Diseña y elige", text: "Usa el configurador para elegir forma, medida y tela. El precio aparece al momento — sin sorpresas.", alt: false },
-  { num: "02", title: "Te llamamos nosotros", text: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle. Pagas de forma segura.", alt: true },
-  { num: "03", title: "Muestras a casa", text: "Antes de confirmar, te mandamos muestras de tela (con coste, que se descuenta de tu pedido si compras) para que veas el color real.", alt: true },
-  { num: "04", title: "Lo recibes en casa", text: "En 15 días llega listo para colocar. Sin anclaje incluido por defecto: añade patas, fijación a pared o instalación (solo Madrid) si lo necesitas.", alt: false },
+  {
+    num: "01",
+    title: "Diseña y elige",
+    text: "Usa el configurador para elegir forma, medida y tela. El precio aparece al momento, sin sorpresas.",
+    Icon: PencilRuler,
+    tone: "bg-[#F3EFE7] border-[#E0D9CD]",
+    iconTone: "bg-white/80 text-primary border border-primary/8",
+    textTone: "text-foreground",
+  },
+  {
+    num: "02",
+    title: "Te llamamos nosotros",
+    text: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle y, si quieres, te mandamos telas a casa para que las veas antes de decidir.",
+    Icon: PhoneCall,
+    tone: "bg-[#E7E6DD] border-[#D6D5CA]",
+    iconTone: "bg-white/75 text-primary border border-primary/8",
+    textTone: "text-foreground",
+  },
+  {
+    num: "03",
+    title: "Lo recibes en casa",
+    text: "En unos 15 días llega listo para colocar. Puedes añadir patas, fijación a pared o instalación en Madrid.",
+    Icon: House,
+    tone: "bg-[#D7E0E1] border-[#C5D0D2]",
+    iconTone: "bg-white/75 text-primary border border-primary/8",
+    textTone: "text-foreground",
+  },
 ];
 
 const HowItWorks = () => (
   <section className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-4">
-        <div>
-          <span className="block w-5 h-px bg-primary mb-3" />
-          <p className="text-[10px] tracking-[0.14em] uppercase text-muted-foreground mb-2">El proceso</p>
-          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así funciona</h2>
-        </div>
-        <p className="text-base text-muted-foreground font-light max-w-[200px] md:text-right leading-relaxed">Sin obras, sin montadores, sin estrés.</p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border max-w-4xl mx-auto">
-        {STEPS.map((s) => (
-          <div key={s.num} className={`relative p-10 group transition-colors duration-300 ${s.alt ? "bg-muted hover:bg-secondary" : "bg-secondary hover:bg-muted"}`}>
-            <span className="block font-serif text-6xl font-light text-border leading-none mb-6 select-none">{s.num}</span>
-            <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground mb-3">{s.title}</h3>
-            <p className="text-base leading-relaxed text-muted-foreground font-light">{s.text}</p>
-            <span className="absolute bottom-6 right-6 text-border group-hover:text-muted-foreground transition-colors duration-300 text-lg">↗</span>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
+          <div className="max-w-2xl">
+            <span className="block w-5 h-px bg-primary mb-3" />
+            <p className="text-[10px] tracking-[0.14em] uppercase text-muted-foreground mb-3">El proceso</p>
+            <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así funciona</h2>
+            <p className="mt-5 text-base md:text-lg text-muted-foreground font-light leading-relaxed">
+              Un recorrido sencillo, ordenado y claro. Sin formularios eternos, sin pasos confusos y sin sorpresas al final.
+            </p>
           </div>
-        ))}
-      </div>
-      <div className="mt-12 text-center">
-        <Link
-          to="/configurador"
-          className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs font-light"
-        >
-          <span className="relative z-10">Diseña el tuyo</span>
-        </Link>
+          <p className="max-w-xs text-sm md:text-base text-muted-foreground font-light leading-relaxed md:text-right">
+            Diseñas online, revisamos contigo los detalles y lo recibes en casa con un proceso cuidado de principio a fin.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch">
+          {STEPS.map(({ num, title, text, Icon, tone, iconTone, textTone }) => (
+            <article
+              key={num}
+              className={`${tone} ${textTone} rounded-[2rem] border p-6 md:p-7 lg:p-8 shadow-[0_10px_30px_rgba(16,38,46,0.05)] transition-transform duration-300 hover:-translate-y-1 min-h-[320px] md:min-h-[380px] flex flex-col`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${iconTone}`}>
+                    <Icon size={18} strokeWidth={1.8} />
+                  </div>
+                  <span className="text-[11px] tracking-[0.28em] uppercase opacity-55">{num}</span>
+                </div>
+                <span className="text-lg opacity-25">↗</span>
+              </div>
+
+              <div className="mt-10 flex-1">
+                <h3 className="font-serif text-2xl md:text-[2rem] leading-tight text-balance">{title}</h3>
+                <p className="mt-4 text-base md:text-[1.05rem] leading-relaxed font-light opacity-80">
+                  {text}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            to="/configurador"
+            className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs font-light"
+          >
+            <span>Diseña el tuyo</span>
+          </Link>
+        </div>
       </div>
     </div>
   </section>
