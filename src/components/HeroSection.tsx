@@ -78,9 +78,9 @@ const HeroSection = () => {
   }, [isMobile, hasSeenAnimation]);
 
   useEffect(() => {
-    if (hasSeenAnimation) return;
+    if (hasSeenAnimation || !showRest) return;
     safeSessionStorageSet("hero_animation_seen", "true");
-  }, [hasSeenAnimation]);
+  }, [hasSeenAnimation, showRest]);
 
   const handleScrollDown = () => {
     const target = document.getElementById("productos-home") || document.getElementById("equipo");

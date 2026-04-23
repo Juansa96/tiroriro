@@ -527,6 +527,18 @@ const ProductConfigurator = () => {
     currentFabric?.name || "",
   ].filter(Boolean).join(" · ") || "Tu pieza aparecerá aquí";
 
+  const previewKey = [
+    productType || "empty",
+    previewForma || "",
+    previewWidthValue || 0,
+    previewHeightCm || 0,
+    previewDepthCm || 0,
+    finish || "",
+    currentFabric?.image || "",
+    productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image || "" : "",
+    vivoColor || "",
+  ].join("|");
+
   const advanceTo = (next: Step) => {
     if (isMobile) setOpenAccordion(next);
     else setOpenAccordion((prev) => {
@@ -737,6 +749,7 @@ const ProductConfigurator = () => {
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
           <div className="flex-1 flex items-center justify-center w-full">
             <ProductSVGPreview
+              key={previewKey}
               type={productType}
               color={fillColor}
               fabricImage={currentFabric?.image}
@@ -764,6 +777,7 @@ const ProductConfigurator = () => {
             <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
             <div className="flex-1 flex items-center justify-center w-full">
               <ProductSVGPreview
+                key={previewKey}
                 type={productType}
                 color={fillColor}
                 fabricImage={currentFabric?.image}

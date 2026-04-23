@@ -1,5 +1,5 @@
 import { ProductType } from "@/lib/products";
-import { useEffect, useId, useRef, useState } from "react";
+import { useId } from "react";
 
 interface Props {
   type: ProductType | null;
@@ -204,8 +204,8 @@ const HeadboardSVG = ({
   const patternId = useId();
   const lateralPatternId = useId();
   const clipId = useId();
-  const scaleX = widthCm ? clamp(widthCm / 150, 0.72, 1.02) : 1;
-  const heightScale = heightCm ? clamp(heightCm / 120, 0.8, 1.12) : 1;
+  const scaleX = scaleRange(widthCm, 90, 200, 0.72, 1.02);
+  const heightScale = scaleRange(heightCm, 100, 130, 0.82, 1.12);
   const bottomY = 188;
   const dx = 8;
   const dy = -5;
@@ -214,8 +214,8 @@ const HeadboardSVG = ({
   const firstTop = topPoints[0];
   const lastTop = topPoints[topPoints.length - 1];
   const topFacePath = buildTopFacePath(topPoints, dx, dy);
-  const leftSidePath = `M 24 ${bottomY} L ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${24 + dx} ${bottomY + dy} Z`;
-  const rightSidePath = `M 276 ${bottomY} L ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${276 + dx} ${bottomY + dy} Z`;
+  const leftSidePath = `M 15 ${bottomY} L ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${15 + dx} ${bottomY + dy} Z`;
+  const rightSidePath = `M 285 ${bottomY} L ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${285 + dx} ${bottomY + dy} Z`;
   const topColor = lighten(color, 16);
   const sideColor = darken(color, 18);
 
@@ -237,6 +237,18 @@ const HeadboardSVG = ({
         }}
       >
         <ellipse cx="160" cy="203" rx="118" ry="8" fill="rgba(0,0,0,0.08)" />
+        <path
+          d={frontPath}
+          transform={`translate(${dx} ${dy})`}
+          fill={patternFill(lateralPatternId, darken(color, 20))}
+          stroke="rgba(0,0,0,0.12)"
+          strokeWidth="1"
+        />
+        <path
+          d={frontPath}
+          transform={`translate(${dx} ${dy})`}
+          fill="rgba(0,0,0,0.10)"
+        />
         <path d={topFacePath} fill={patternFill(lateralPatternId, topColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={topFacePath} fill="rgba(255,255,255,0.12)" />
         <path d={leftSidePath} fill={patternFill(lateralPatternId, sideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
@@ -308,16 +320,8 @@ const BenchSVG = ({
   const innerLeftSide = `M ${seatX + openLegW} ${cutTop} L ${seatX + openLegW + depthX} ${cutTop + depthY} L ${seatX + openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + openLegW} ${seatY + 112} Z`;
   const innerRightSide = `M ${seatX + seatW - openLegW} ${cutTop} L ${seatX + seatW - openLegW + depthX} ${cutTop + depthY} L ${seatX + seatW - openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW - openLegW} ${seatY + 112} Z`;
 
-  const woodColor = "#8E6C4E";
   const seatTopColor = lighten(color, 14);
   const seatSideColor = darken(color, 18);
-  const frontLegTop = seatY + seatH;
-  const backLegTop = seatY + seatH + depthY;
-  const legHeight = 62;
-  const frontLegLeft = seatX + 14;
-  const frontLegRight = seatX + seatW - 26;
-  const backLegLeft = seatX + depthX + 16;
-  const backLegRight = seatX + seatW + depthX - 24;
 
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
@@ -337,31 +341,7 @@ const BenchSVG = ({
       >
         <ellipse cx={157} cy={204} rx={110} ry={8} fill="rgba(0,0,0,0.08)" />
 
-        {mode === "madera" && (
-          <>
-            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
-            <path d={rightOuterSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={innerLeftSide} fill={darken(color, 14)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerRightSide} fill={darken(color, 16)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={uFrontPath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <rect x={frontLegLeft} y={frontLegTop} width="12" height={legHeight} rx="4" fill={woodColor} />
-            <rect x={frontLegRight} y={frontLegTop} width="12" height={legHeight} rx="4" fill={woodColor} />
-            <rect x={backLegLeft} y={backLegTop} width="12" height={legHeight} rx="4" fill={darken(woodColor, 8)} />
-            <rect x={backLegRight} y={backLegTop} width="12" height={legHeight} rx="4" fill={darken(woodColor, 8)} />
-          </>
-        )}
-
-        {mode === "baul" && (
-          <>
-            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={`M ${seatX + seatW / 2 - 16} ${seatY + 42} Q ${seatX + seatW / 2} ${seatY + 54} ${seatX + seatW / 2 + 16} ${seatY + 42}`} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="2.2" strokeLinecap="round" />
-          </>
-        )}
-
-        {mode === "enteladas" && (
+        {(mode === "madera" || mode === "enteladas") && (
           <>
             <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
             <path d={seatTop} fill="rgba(255,255,255,0.12)" />
@@ -372,6 +352,15 @@ const BenchSVG = ({
             <path d={innerRightSide} fill={patternFill(patternId, darken(color, 16))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
             <path d={innerRightSide} fill="rgba(0,0,0,0.10)" />
             <path d={uFrontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+          </>
+        )}
+
+        {mode === "baul" && (
+          <>
+            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={`M ${seatX + seatW / 2 - 16} ${seatY + 42} Q ${seatX + seatW / 2} ${seatY + 54} ${seatX + seatW / 2 + 16} ${seatY + 42}`} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="2.2" strokeLinecap="round" />
           </>
         )}
 
@@ -684,27 +673,11 @@ const ProductSVGPreview = ({
   depthCm,
 }: Props) => {
   const vc = vivoColor || darken(color);
-  const [opacity, setOpacity] = useState(1);
-  const [currentForma, setCurrentForma] = useState(forma);
-  const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (forma === currentForma) return;
-    setOpacity(0.15);
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(() => {
-      setCurrentForma(forma);
-      setOpacity(1);
-    }, 120);
-    return () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    };
-  }, [forma, currentForma]);
 
   if (!type) return <EmptyState />;
 
   return (
-    <div className="transition-opacity duration-300" style={{ opacity }}>
+    <div className="transition-opacity duration-300" style={{ opacity: 1 }}>
       {type === "cabecero" && (
         <HeadboardSVG
           color={color}
@@ -712,7 +685,7 @@ const ProductSVGPreview = ({
           lateralFabricImage={lateralFabricImage}
           finish={finish}
           vivoColor={vc}
-          forma={currentForma}
+          forma={forma}
           widthCm={widthCm}
           heightCm={heightCm}
         />
@@ -723,7 +696,7 @@ const ProductSVGPreview = ({
           fabricImage={fabricImage}
           finish={finish}
           vivoColor={vc}
-          variant={currentForma}
+          variant={forma}
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
@@ -735,7 +708,7 @@ const ProductSVGPreview = ({
           fabricImage={fabricImage}
           finish={finish}
           vivoColor={vc}
-          forma={currentForma}
+          forma={forma}
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
@@ -747,12 +720,12 @@ const ProductSVGPreview = ({
           fabricImage={fabricImage}
           finish={finish}
           vivoColor={vc}
-          shape={currentForma}
+          shape={forma}
           widthCm={widthCm}
           heightCm={heightCm}
         />
       )}
-      {type === "mesa" && currentForma === "tipo-banco" && (
+      {type === "mesa" && forma === "tipo-banco" && (
         <BenchSVG
           color={color}
           fabricImage={fabricImage}
@@ -764,13 +737,13 @@ const ProductSVGPreview = ({
           depthCm={depthCm}
         />
       )}
-      {type === "mesa" && currentForma !== "tipo-banco" && (
+      {type === "mesa" && forma !== "tipo-banco" && (
         <MesaSVG
           color={color}
           fabricImage={fabricImage}
           finish={finish}
           vivoColor={vc}
-          variant={currentForma}
+          variant={forma}
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
