@@ -18,10 +18,7 @@ const Navbar = () => {
   const isHome = location.pathname === "/";
 
   useEffect(() => {
-    if (!isHome) {
-      setScrolled(true);
-      return;
-    }
+    if (!isHome) { setScrolled(true); return; }
     let ticking = false;
     let lastScrolled = false;
     const update = () => {
@@ -58,29 +55,18 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled
-        ? "bg-background/95 backdrop-blur-sm shadow-sm"
-        : "bg-white shadow-sm md:bg-transparent md:shadow-none"
+      scrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-white shadow-sm md:bg-transparent md:shadow-none"
     }`}>
       <div className="container mx-auto flex items-center justify-between h-20 md:h-24 px-6">
         <Link to="/" className="flex items-center" aria-label="Tiroriro inicio">
           <div className="md:hidden">
-            <Logo
-              className="text-foreground"
-              viewBox="100 335 730 225"
-              style={{ width: 90, marginTop: "-10px", height: "auto" }}
-            />
+            <Logo className="text-foreground" viewBox="100 335 730 225" style={{ width: 90, marginTop: "-10px", height: "auto" }} />
           </div>
           <div className="hidden md:block">
             <Logo
               className={onHero ? "text-white" : "text-primary"}
               viewBox="100 335 730 225"
-              style={{
-                width: 130,
-                marginTop: "-30px",
-                height: "auto",
-                filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined,
-              }}
+              style={{ width: 130, marginTop: "-30px", height: "auto", filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined }}
             />
           </div>
         </Link>
@@ -92,9 +78,9 @@ const Navbar = () => {
               return (
                 <Link key={link.to} to={link.to}
                   onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                  className={`btn-sweep text-sm tracking-extra-wide uppercase font-body font-light transition-all duration-300 ${
+                  className={`btn-sweep text-sm tracking-extra-wide uppercase font-body font-light transition-all duration-200 ${
                     scrolled
-                      ? "border border-primary text-primary rounded-full px-4 py-1.5 hover:bg-primary hover:text-primary-foreground"
+                      ? "border border-primary text-primary rounded-full px-4 py-1.5 hover:bg-[#1a4b5b] hover:text-white hover:scale-105"
                       : "text-white px-0 py-0 border border-transparent hover:opacity-80"
                   }`}
                   style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
