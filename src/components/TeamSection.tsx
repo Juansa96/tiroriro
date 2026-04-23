@@ -1,6 +1,7 @@
 import inakiRocioPhoto from "@/assets/team/inaki-rocio.jpeg";
 import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const COUPLES = [
@@ -170,6 +171,15 @@ const TeamSection = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-14 flex justify-center">
+          <Link
+            to="/productos"
+            className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.24em]"
+          >
+            <span>Ver productos</span>
+          </Link>
         </div>
 
         <div className="mt-20 text-center max-w-2xl mx-auto">

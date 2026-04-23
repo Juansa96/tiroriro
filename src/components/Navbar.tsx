@@ -66,7 +66,13 @@ const Navbar = () => {
             <Logo
               className={onHero ? "text-white" : "text-primary"}
               viewBox="100 335 730 225"
-              style={{ width: 130, marginTop: "-30px", height: "auto", filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined }}
+              style={{
+                width: 130,
+                height: "auto",
+                marginTop: "-14px",
+                display: "block",
+                filter: onHero ? "drop-shadow(0px 1px 3px rgba(0,0,0,0.4))" : undefined,
+              }}
             />
           </div>
         </Link>
@@ -78,10 +84,10 @@ const Navbar = () => {
               return (
                 <Link key={link.to} to={link.to}
                   onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                  className={`btn-sweep text-sm tracking-extra-wide uppercase font-body font-light transition-all duration-200 ${
+                  className={`btn-sweep btn-unir text-sm font-body font-light px-4 py-2 ${
                     scrolled
-                      ? "border border-primary text-primary rounded-full px-4 py-1.5 hover:bg-[#1a4b5b] hover:text-white hover:scale-105"
-                      : "text-white px-0 py-0 border border-transparent hover:opacity-80"
+                      ? "btn-unir-outline"
+                      : "btn-unir-light"
                   }`}
                   style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
                 >

@@ -66,6 +66,14 @@ const ProductsPage = () => (
             <CategoryCard key={cat.id} cat={cat} index={i} />
           ))}
         </div>
+        <AnimatedSection className="mt-16 flex justify-center" delay={0.15}>
+          <Link
+            to="/configurador"
+            className="btn-sweep btn-unir inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-[0.24em]"
+          >
+            <span>Personaliza el tuyo</span>
+          </Link>
+        </AnimatedSection>
       </div>
     </main>
     <Footer />
