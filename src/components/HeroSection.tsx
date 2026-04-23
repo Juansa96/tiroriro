@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, Award, Hammer, Truck } from "lucide-react";
+import { safeSessionStorageGet, safeSessionStorageSet } from "@/lib/safe-storage";
 
 const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
   const [displayed, setDisplayed] = useState(skip ? text : "");
@@ -27,8 +28,7 @@ const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasSeenAnimation] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return sessionStorage.getItem("hero_animation_seen") === "true";
+    return safeSessionStorageGet("hero_animation_seen") === "true";
   });
 
   useEffect(() => {
@@ -76,6 +76,12 @@ const HeroSection = () => {
     const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
   }, [isMobile, hasSeenAnimation]);
+
+  useEffect(() => {
+    if (!hasSeenAnimation) {
+      safeSessionStorageSet("hero_animation_seen", "true");
+    }
+  }, [hasSeenAnimation]);
 
   const handleScrollDown = () => {
     const target = document.getElementById("productos-home") || document.getElementById("equipo");
@@ -187,8 +193,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("hero_animation_seen", "true");
-    }
-  }, []);

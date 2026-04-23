@@ -3,6 +3,7 @@ import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { safeLocalStorageGet, safeLocalStorageRemove, safeLocalStorageSet } from "@/lib/safe-storage";
 
 const COUPLES = [
   {
@@ -52,29 +53,30 @@ const getCurrentMonth = () => {
 const COOKIE_KEY = "tiroriro-poll-voter";
 const VOTE_KEY = "tiroriro-poll-vote";
 
+const createFallbackId = () =>
+  `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}`;
+
 const ensureVoterCookie = (): string => {
-  let cookie = localStorage.getItem(COOKIE_KEY);
+  let cookie = safeLocalStorageGet(COOKIE_KEY);
   if (!cookie) {
-    cookie =
-      (crypto.randomUUID?.() ??
-        `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`) +
-      "-" +
-      Math.random().toString(36).slice(2, 8);
-    localStorage.setItem(COOKIE_KEY, cookie);
+    cookie = crypto.randomUUID?.() ?? createFallbackId();
+    safeLocalStorageSet(COOKIE_KEY, cookie);
   }
   return cookie;
 };
 
 const readStoredVote = (month: string): string | null => {
   try {
-    const stored = localStorage.getItem(VOTE_KEY);
+    const stored = safeLocalStorageGet(VOTE_KEY);
     if (!stored) return null;
     const data = JSON.parse(stored);
     if (data.month === month && typeof data.option === "string") {
       return data.option;
     }
   } catch {
-    localStorage.removeItem(VOTE_KEY);
+    safeLocalStorageRemove(VOTE_KEY);
   }
   return null;
 };
@@ -126,11 +128,11 @@ const TeamSection = () => {
       if (data?.voted) setVoted(data.voted);
       if (data?.counts) setVotes(data.counts);
       if (data?.voted) {
-        localStorage.setItem(VOTE_KEY, JSON.stringify({ month, option: data.voted }));
+        safeLocalStorageSet(VOTE_KEY, JSON.stringify({ month, option: data.voted }));
       }
     } catch (err) {
       console.error("Error al votar", err);
-      localStorage.removeItem(VOTE_KEY);
+      safeLocalStorageRemove(VOTE_KEY);
     } finally {
       setSubmitting(false);
     }

@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { safeLocalStorageGet, safeLocalStorageSet } from "@/lib/safe-storage";
 
 const CookieBanner = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const accepted = localStorage.getItem("cookies_accepted");
+    const accepted = safeLocalStorageGet("cookies_accepted");
     if (!accepted) setVisible(true);
   }, []);
 
   const accept = () => {
-    localStorage.setItem("cookies_accepted", "true");
+    safeLocalStorageSet("cookies_accepted", "true");
     setVisible(false);
   };
 

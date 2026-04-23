@@ -27,6 +27,7 @@ import {
   buildConfigSummary,
 } from "@/lib/products";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { safeLocalStorageSet } from "@/lib/safe-storage";
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
 
@@ -234,8 +235,8 @@ const ProductConfigurator = () => {
   const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
 
   useEffect(() => {
-    localStorage.setItem("tiro_configurador_visited", "true");
-    localStorage.setItem("configurador_visitado", "true");
+    safeLocalStorageSet("tiro_configurador_visited", "true");
+    safeLocalStorageSet("configurador_visitado", "true");
   }, []);
 
   useEffect(() => {
