@@ -13,7 +13,7 @@ const STEPS = [
   },
   {
     num: "02",
-    title: "Te llamamos nosotros",
+    title: "Te llamamos",
     text: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle y, si quieres, te mandamos telas a casa para que las veas antes de decidir.",
     Icon: PhoneCall,
     tone: "bg-[#E7E6DD] border-[#D6D5CA]",
