@@ -147,7 +147,7 @@ const TeamSection = () => {
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Quiénes somos</h2>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic text-base">
-            "2 amigas, 2 casas, 2 bebés recién nacidos y un montón de cosas por encajar — así nació Tiroriro: porque ninguna encontraba lo que de verdad quería para su casa."
+            "2 hermanos, 2 amigas, 2 casas, 2 bebés recién nacidos y un montón de cosas por encajar — así nació Tiroriro: porque ninguna encontraba lo que de verdad quería para su casa."
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-10 max-w-6xl mx-auto">

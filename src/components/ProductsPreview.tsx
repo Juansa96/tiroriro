@@ -67,22 +67,19 @@ const ProductsPreview = () => {
           >
             <CarouselContent className="-ml-3 md:-ml-6">
               {PRODUCTS_DATA.map((product) => (
-                <CarouselItem key={product.id} className="pl-3 basis-[82%] md:pl-6 md:basis-1/3">
+                <CarouselItem key={product.id} className="pl-3 basis-[86%] md:pl-6 md:basis-1/3">
                   <Link to={product.link} className="block group h-full">
                     <div className="relative overflow-hidden border border-border/40 rounded-lg">
                       <img
                         src={product.image}
                         alt={product.alt}
-                        className="w-full aspect-[3/4] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        style={{ objectPosition: product.id === "puffs" || product.id === "mesas-centro" ? "center 18%" : undefined }}
+                        className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        style={{ objectPosition: product.id === "puffs" || product.id === "mesas-centro" ? "center 8%" : undefined }}
                         loading="lazy"
                         decoding="async"
                       />
                       <div className="absolute inset-x-0 bottom-0 md:hidden bg-gradient-to-t from-black/60 via-black/15 to-transparent px-4 pb-4 pt-10 pointer-events-none">
                         <h3 className="font-serif text-xl font-medium text-white leading-tight">{product.name}</h3>
-                        <span className="mt-2 inline-block rounded-full bg-white/18 px-2.5 py-1 text-[11px] tracking-wide text-white backdrop-blur-sm">
-                          Ver en catálogo
-                        </span>
                       </div>
                       <div className="absolute inset-0 bg-black/10 md:bg-black/0 md:group-hover:bg-black/25 transition-colors duration-500 flex items-center justify-center pointer-events-none">
                         <span className="text-white text-sm tracking-widest uppercase opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">

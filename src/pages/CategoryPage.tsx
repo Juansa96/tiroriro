@@ -71,6 +71,9 @@ const productTypeMap: Record<string, string> = {
   'mesas-centro': 'mesa',
 };
 
+const imagePosition = (category: string) =>
+  category === "puffs" || category === "mesas-centro" ? "center 6%" : undefined;
+
 const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   const [hovered, setHovered] = useState(false);
   const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ''}`;
@@ -90,7 +93,7 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
           style={{
             transform: hovered ? 'scale(1.04)' : 'scale(1)',
             transition: 'transform 0.4s ease',
-            objectPosition: category === 'puffs' || category === 'mesas-centro' ? 'center 18%' : undefined,
+            objectPosition: imagePosition(category),
           }}
           loading="lazy"
           decoding="async"

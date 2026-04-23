@@ -4,10 +4,15 @@ import type { Database } from './types';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const safeStorage =
-  typeof window !== "undefined" && typeof window.localStorage !== "undefined"
-    ? window.localStorage
-    : undefined;
+const getSafeStorage = () => {
+  try {
+    if (typeof window === "undefined") return undefined;
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
+};
+const safeStorage = getSafeStorage();
 const hasSupabaseConfig =
   typeof SUPABASE_URL === "string" &&
   SUPABASE_URL.length > 0 &&

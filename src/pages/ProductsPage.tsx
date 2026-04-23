@@ -12,6 +12,9 @@ const CATEGORIES = [
   { id: 'mesas-centro', name: 'Mesas de centro', image: '/productos-fotos/crops/puff-2497-1-tight.png' },
 ];
 
+const imagePosition = (id: string) =>
+  id === "puffs" || id === "mesas-centro" ? "center 6%" : undefined;
+
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
   const [hovered, setHovered] = useState(false);
   return (
@@ -30,7 +33,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
             style={{
               transform: hovered ? 'scale(1.04)' : 'scale(1)',
               transition: 'transform 0.4s ease',
-              objectPosition: cat.id === 'puffs' || cat.id === 'mesas-centro' ? 'center 18%' : undefined,
+              objectPosition: imagePosition(cat.id),
             }}
             loading="lazy"
             decoding="async"

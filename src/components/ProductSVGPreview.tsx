@@ -45,7 +45,7 @@ const TexturePattern = ({
   id,
   image,
   color,
-  tile = 30,
+  tile = 18,
 }: {
   id: string;
   image?: string;
@@ -126,8 +126,8 @@ const headboardTopPoints = (forma: string) => {
     case "recto":
     default:
       return [
-        [15, 50],
-        [285, 50],
+        [24, 50],
+        [276, 50],
       ];
   }
 };
@@ -170,7 +170,7 @@ const HeadboardSVG = ({
   const patternId = useId();
   const lateralPatternId = useId();
   const clipId = useId();
-  const scaleX = widthCm ? clamp(widthCm / 150, 0.72, 1.28) : 1;
+  const scaleX = widthCm ? clamp(widthCm / 150, 0.72, 1.02) : 1;
   const heightScale = heightCm ? clamp(heightCm / 120, 0.8, 1.12) : 1;
   const bottomY = 188;
   const dx = 8;
@@ -188,8 +188,8 @@ const HeadboardSVG = ({
   return (
     <svg viewBox="0 0 330 220" className="w-full max-w-[320px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
-        <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={30} />
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
+        <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={18} />
         <clipPath id={`hb-${clipId}`}>
           <path d={frontPath} />
         </clipPath>
@@ -203,9 +203,12 @@ const HeadboardSVG = ({
         }}
       >
         <ellipse cx="160" cy="203" rx="118" ry="8" fill="rgba(0,0,0,0.08)" />
-        <path d={topFacePath} fill={topColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={topFacePath} fill={patternFill(lateralPatternId, topColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={topFacePath} fill="rgba(255,255,255,0.12)" />
         <path d={leftSidePath} fill={patternFill(lateralPatternId, sideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={leftSidePath} fill="rgba(0,0,0,0.08)" />
         <path d={rightSidePath} fill={patternFill(lateralPatternId, darken(color, 24))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={rightSidePath} fill="rgba(0,0,0,0.12)" />
         <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
 
         {finish === "vivo-simple" && (
@@ -285,7 +288,7 @@ const BenchSVG = ({
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
         <clipPath id={`bn-${clipId}`}>
           <path d={mode === "enteladas" ? uFrontPath : seatFrontRect} />
         </clipPath>
@@ -302,13 +305,12 @@ const BenchSVG = ({
 
         {mode === "madera" && (
           <>
-            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <rect x={frontLeftX} y={frontLegTop} width="12" height={legHeight} rx="4" fill={woodColor} />
-            <rect x={frontRightX} y={frontLegTop} width="12" height={legHeight} rx="4" fill={woodColor} />
-            <rect x={backLeftX} y={backLegTop} width="12" height={legHeight} rx="4" fill={darken(woodColor, 8)} />
-            <rect x={backRightX} y={backLegTop} width="12" height={legHeight} rx="4" fill={darken(woodColor, 8)} />
+            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
+            <path d={rightOuterSide} fill={darken(woodColor, 6)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={innerLeftSide} fill={darken(woodColor, 8)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerRightSide} fill={darken(woodColor, 10)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={uFrontPath} fill={woodColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
           </>
         )}
 
@@ -323,10 +325,14 @@ const BenchSVG = ({
 
         {mode === "enteladas" && (
           <>
-            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={rightOuterSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={innerLeftSide} fill={darken(color, 14)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerRightSide} fill={darken(color, 16)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
+            <path d={rightOuterSide} fill={patternFill(patternId, seatSideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={rightOuterSide} fill="rgba(0,0,0,0.10)" />
+            <path d={innerLeftSide} fill={patternFill(patternId, darken(color, 14))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerLeftSide} fill="rgba(0,0,0,0.08)" />
+            <path d={innerRightSide} fill={patternFill(patternId, darken(color, 16))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerRightSide} fill="rgba(0,0,0,0.10)" />
             <path d={uFrontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
           </>
         )}
@@ -375,7 +381,7 @@ const PuffSVG = ({
     return (
       <svg viewBox="0 0 300 230" className="w-full max-w-[260px] mx-auto">
         <defs>
-          <TexturePattern id={patternId} image={fabricImage} color={color} tile={28} />
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`pf-${clipId}`}>
             <path
               d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
@@ -389,7 +395,8 @@ const PuffSVG = ({
           stroke="rgba(0,0,0,0.16)"
           strokeWidth="1"
         />
-        <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill={lighten(color, 18)} opacity="0.35" />
+        <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill={patternFill(patternId, color)} />
+        <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill="rgba(255,255,255,0.14)" />
         <ellipse cx={168} cy={bodyTop + bodyH * 0.5} rx={topRx * 0.18} ry={bodyH * 0.36} fill="rgba(255,255,255,0.12)" />
         <ellipse cx={150} cy={bodyBottom} rx={topRx} ry={topRy} fill={darken(color, 12)} opacity="0.18" />
         {finish === "vivo-simple" && (
@@ -419,14 +426,16 @@ const PuffSVG = ({
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[270px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
         <clipPath id={`pf-${clipId}`}>
           <path d={frontPath} />
         </clipPath>
       </defs>
       <ellipse cx={158} cy={y + baseH + 14} rx={baseW * 0.45} ry={8} fill="rgba(0,0,0,0.08)" />
-      <path d={topPath} fill={lighten(color, 16)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-      <path d={sidePath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+      <path d={topPath} fill={patternFill(patternId, lighten(color, 16))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+      <path d={topPath} fill="rgba(255,255,255,0.12)" />
+      <path d={sidePath} fill={patternFill(patternId, darken(color, 18))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+      <path d={sidePath} fill="rgba(0,0,0,0.10)" />
       <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
       {finish === "vivo-simple" && (
         <g clipPath={`url(#pf-${clipId})`}>
@@ -466,7 +475,7 @@ const CushionSVG = ({
     return (
       <svg viewBox="0 0 300 180" className="w-full max-w-[300px] mx-auto">
         <defs>
-          <TexturePattern id={patternId} image={fabricImage} color={color} tile={26} />
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`cy-${clipId}`}>
             <rect x={x} y={y} width={length} height={radius * 2} rx={radius} />
           </clipPath>
@@ -494,7 +503,7 @@ const CushionSVG = ({
     return (
       <svg viewBox="0 0 200 200" className="w-full max-w-[230px] mx-auto">
         <defs>
-          <TexturePattern id={patternId} image={fabricImage} color={color} tile={26} />
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`cu-${clipId}`}>
             <path d={outerPath} />
           </clipPath>
@@ -529,7 +538,7 @@ const CushionSVG = ({
   return (
     <svg viewBox="0 0 200 200" className="w-full max-w-[220px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={26} />
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
         <clipPath id={`cu-${clipId}`}>
           <path d={outerPath} />
         </clipPath>
@@ -589,7 +598,7 @@ const MesaSVG = ({
   return (
     <svg viewBox="0 0 320 220" className="w-full max-w-[290px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={30} />
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
         <clipPath id={`ms-${clipId}`}>
           <path d={frontPath} />
         </clipPath>
@@ -598,14 +607,18 @@ const MesaSVG = ({
 
       {mode === "tipo-puff" ? (
         <>
-          <path d={topPath} fill={lighten(color, 14)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
-          <path d={sidePath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={topPath} fill={patternFill(patternId, lighten(color, 14))} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={topPath} fill="rgba(255,255,255,0.12)" />
+          <path d={sidePath} fill={patternFill(patternId, darken(color, 18))} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={sidePath} fill="rgba(0,0,0,0.10)" />
           <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
         </>
       ) : (
         <>
-          <path d={topPath} fill={lighten(color, 14)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
-          <path d={sidePath} fill={darken(color, 18)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={topPath} fill={patternFill(patternId, lighten(color, 14))} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={topPath} fill="rgba(255,255,255,0.12)" />
+          <path d={sidePath} fill={patternFill(patternId, darken(color, 18))} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <path d={sidePath} fill="rgba(0,0,0,0.10)" />
           <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
           <path d={`M ${x + 10} ${y + baseH} V ${y + baseH + 70} H ${x + 58} V ${y + 30 + baseH} H ${x + baseW - 58} V ${y + baseH + 70} H ${x + baseW - 10} V ${y + baseH} Z`} fill={darken(color, 22)} opacity="0.95" />
         </>
