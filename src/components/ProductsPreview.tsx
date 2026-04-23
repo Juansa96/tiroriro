@@ -4,34 +4,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 
 const PRODUCTS_DATA = [
-  {
-    id: 'cabeceros',
-    name: 'Cabeceros tapizados',
-    image: '/productos-fotos/cabeceros/IMG_2555.PNG',
-    alt: 'Cabecero tapizado artesanal de Tiroriro',
-    link: '/productos/cabeceros',
-  },
-  {
-    id: 'bancos',
-    name: 'Bancos entelados',
-    image: '/productos-fotos/bancos/IMG_2552.PNG',
-    alt: 'Banco entelado a medida de Tiroriro',
-    link: '/productos/bancos',
-  },
-  {
-    id: 'cojines',
-    name: 'Cojines y almohadones',
-    image: '/productos-fotos/almohadones/IMG_2486.PNG',
-    alt: 'Cojines y almohadones artesanales de Tiroriro',
-    link: '/productos/cojines',
-  },
-  {
-    id: 'puffs',
-    name: 'Puffs',
-    image: '/productos-fotos/puff/IMG_2497.PNG',
-    alt: 'Puff tapizado a medida de Tiroriro',
-    link: '/productos/puffs',
-  },
+  { id: 'cabeceros', name: 'Cabeceros tapizados', image: '/productos-fotos/cabeceros/IMG_2555.PNG', alt: 'Cabecero tapizado artesanal de Tiroriro', link: '/productos/cabeceros' },
+  { id: 'bancos', name: 'Bancos entelados', image: '/productos-fotos/bancos/IMG_2552.PNG', alt: 'Banco entelado a medida de Tiroriro', link: '/productos/bancos' },
+  { id: 'cojines', name: 'Cojines y almohadones', image: '/productos-fotos/almohadones/IMG_2486.PNG', alt: 'Cojines y almohadones artesanales de Tiroriro', link: '/productos/cojines' },
+  { id: 'puffs', name: 'Puffs', image: '/productos-fotos/puff/IMG_2497.PNG', alt: 'Puff tapizado a medida de Tiroriro', link: '/productos/puffs' },
 ];
 
 const VISIBLE_DESKTOP = 3;
@@ -39,13 +15,9 @@ const VISIBLE_DESKTOP = 3;
 const ProductsPreview = () => {
   const [current, setCurrent] = useState(0);
   const total = PRODUCTS_DATA.length;
-
   const prev = () => setCurrent((c) => (c - 1 + total) % total);
   const next = () => setCurrent((c) => (c + 1) % total);
-
-  const desktopItems = Array.from({ length: VISIBLE_DESKTOP }, (_, i) =>
-    PRODUCTS_DATA[(current + i) % total]
-  );
+  const desktopItems = Array.from({ length: VISIBLE_DESKTOP }, (_, i) => PRODUCTS_DATA[(current + i) % total]);
 
   return (
     <section className="pt-8 pb-20 md:py-32 px-6">
@@ -56,20 +28,15 @@ const ProductsPreview = () => {
         </AnimatedSection>
 
         <div className="relative max-w-5xl mx-auto">
-          {/* Flechas */}
-          <button
-            onClick={prev}
-            aria-label="Anterior"
-            className="absolute -left-4 md:-left-10 top-[40%] z-10 w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-foreground hover:text-background transition-colors duration-200"
+          <button onClick={prev} aria-label="Anterior"
+            className="btn-sweep absolute -left-4 md:-left-10 top-[40%] z-10 w-10 h-10 rounded-full bg-[#1a4b5b] text-white md:bg-background md:text-foreground border border-border flex items-center justify-center md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
           >
-            <ChevronLeft size={18} />
+            <span className="relative z-10"><ChevronLeft size={18} /></span>
           </button>
-          <button
-            onClick={next}
-            aria-label="Siguiente"
-            className="absolute -right-4 md:-right-10 top-[40%] z-10 w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:bg-foreground hover:text-background transition-colors duration-200"
+          <button onClick={next} aria-label="Siguiente"
+            className="btn-sweep absolute -right-4 md:-right-10 top-[40%] z-10 w-10 h-10 rounded-full bg-[#1a4b5b] text-white md:bg-background md:text-foreground border border-border flex items-center justify-center md:hover:bg-[#1a4b5b] md:hover:text-white md:hover:scale-105 transition-all duration-200"
           >
-            <ChevronRight size={18} />
+            <span className="relative z-10"><ChevronRight size={18} /></span>
           </button>
 
           {/* Desktop: 3 tarjetas */}
@@ -77,13 +44,10 @@ const ProductsPreview = () => {
             {desktopItems.map((product, idx) => (
               <Link key={`${product.id}-${idx}`} to={product.link} className="block group">
                 <div className="relative overflow-hidden border border-border/40 rounded-lg">
-                  <img
-                    src={product.image}
-                    alt={product.alt}
+                  <img src={product.image} alt={product.alt}
                     className="w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105"
                     style={product.id === 'puffs' ? { objectPosition: 'center 0%' } : undefined}
-                    loading="lazy"
-                    decoding="async"
+                    loading="lazy" decoding="async"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center pointer-events-none">
                     <span className="text-white text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">Explorar →</span>
@@ -100,13 +64,10 @@ const ProductsPreview = () => {
           <div className="md:hidden">
             <Link to={PRODUCTS_DATA[current].link} className="block group">
               <div className="relative overflow-hidden border border-border/40 rounded-lg">
-                <img
-                  src={PRODUCTS_DATA[current].image}
-                  alt={PRODUCTS_DATA[current].alt}
+                <img src={PRODUCTS_DATA[current].image} alt={PRODUCTS_DATA[current].alt}
                   className="w-full aspect-[3/4] object-cover max-h-80"
                   style={PRODUCTS_DATA[current].id === 'puffs' ? { objectPosition: 'center 0%' } : undefined}
-                  loading="lazy"
-                  decoding="async"
+                  loading="lazy" decoding="async"
                 />
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
                   <span className="text-white text-sm tracking-widest uppercase">Explorar →</span>
@@ -119,16 +80,10 @@ const ProductsPreview = () => {
           </div>
         </div>
 
-        {/* Puntos de navegación */}
         <div className="flex justify-center gap-2 mt-8">
           {PRODUCTS_DATA.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              aria-label={`Ver ${PRODUCTS_DATA[i].name}`}
-              className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                i === current ? 'bg-foreground' : 'bg-foreground/20'
-              }`}
+            <button key={i} onClick={() => setCurrent(i)} aria-label={`Ver ${PRODUCTS_DATA[i].name}`}
+              className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === current ? 'bg-foreground' : 'bg-foreground/20'}`}
             />
           ))}
         </div>
