@@ -435,8 +435,8 @@ const ProductConfigurator = () => {
           </div>
           <div className="flex flex-col gap-3 mt-6">
             <button onClick={handleOrder} disabled={!productType}
-              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40">
-              Lo quiero — solicitar presupuesto
+              className="btn-sweep w-full px-6 py-3.5 bg-white text-foreground border border-[#1a4b5b]/25 text-sm tracking-wide uppercase text-center font-medium hover:bg-[#1a4b5b] hover:text-white hover:scale-105 transition-all duration-200 disabled:opacity-40">
+              <span className="relative z-10">Lo quiero — solicitar presupuesto</span>
             </button>
           </div>
         </div>
@@ -471,8 +471,8 @@ const ProductConfigurator = () => {
             <p className="text-xs text-muted-foreground">IVA incluido</p>
           </div>
           <button onClick={handleOrder} disabled={!productType}
-            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40">
-            Lo quiero →
+            className="btn-sweep bg-[#1a4b5b] text-white px-6 py-3 text-sm tracking-wide font-medium transition-all duration-200 disabled:opacity-40">
+            <span className="relative z-10">Lo quiero →</span>
           </button>
         </div>
       </div>
