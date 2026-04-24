@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, Award, Hammer, Truck } from "lucide-react";
+import { Award, Heart, Truck, ChevronDown } from "lucide-react";
 
 const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
   const [displayed, setDisplayed] = useState(skip ? text : "");
@@ -26,7 +26,14 @@ const useTypewriter = (text: string, startDelay: number, speed = 60, skip = fals
 const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hasSeenAnimation = false;
+
+  const [hasSeenAnimation] = useState(() => {
+    return typeof window !== "undefined" && sessionStorage.getItem("hero_animation_seen") === "true";
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("hero_animation_seen", "true");
+  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -39,6 +46,10 @@ const HeroSection = () => {
     const video = videoRef.current;
     if (!video) return;
 
+    // iOS Safari attributes
+    video.setAttribute("x-webkit-airplay", "deny");
+    video.setAttribute("webkit-playsinline", "");
+
     const attemptPlay = () => {
       video.play().catch(() => {});
     };
@@ -46,6 +57,7 @@ const HeroSection = () => {
     if (video.readyState >= 2) {
       attemptPlay();
     } else {
+      video.addEventListener("canplay", attemptPlay, { once: true });
       video.addEventListener("loadeddata", attemptPlay, { once: true });
     }
 
@@ -66,19 +78,10 @@ const HeroSection = () => {
   const [showRest, setShowRest] = useState(hasSeenAnimation);
 
   useEffect(() => {
-    if (hasSeenAnimation) {
-      setShowRest(true);
-      return;
-    }
+    if (hasSeenAnimation) return;
     const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
   }, [isMobile, hasSeenAnimation]);
-
-
-  const handleScrollDown = () => {
-    const target = document.getElementById("productos-home") || document.getElementById("equipo");
-    target?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
@@ -134,37 +137,35 @@ const HeroSection = () => {
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               to="/configurador"
-              className="btn-sweep btn-unir btn-unir-home hidden md:inline-flex px-8 py-4 text-xs font-medium"
+              className="btn-sweep hidden md:inline-flex px-8 py-4 bg-[#1a4b5b] text-white text-xs font-medium tracking-[0.1em] uppercase hover:bg-[#1a4b5b]/85 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
             >
               <span className="relative z-10">Personaliza el tuyo</span>
             </Link>
             <Link
               to="/productos"
-              className="btn-sweep btn-unir btn-unir-outline btn-unir-home px-6 py-3 md:px-8 md:py-4 text-xs font-medium"
+              className="btn-sweep px-6 py-3 md:px-8 md:py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
             >
               <span className="relative z-10">Ver productos</span>
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
-            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">
-              Cabeceros desde xx€ · Bancos desde xx€
-            </span>
-            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">
-              Puffs desde xx€ · Cojines desde xx€
-            </span>
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Cabeceros desde xx€ · Bancos desde xx€</span>
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Puffs desde xx€ · Cojines desde xx€</span>
+          </div>
+
+          {/* Sigue bajando — desktop only */}
+          <div className="hidden md:flex justify-center mt-10">
+            <button
+              onClick={() => document.getElementById("productos-home")?.scrollIntoView({ behavior: "smooth" })}
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-6 py-2.5 text-xs font-light"
+              aria-label="Sigue bajando"
+            >
+              <span className="relative z-10">Sigue bajando</span>
+              <ChevronDown size={14} className="relative z-10" />
+            </button>
           </div>
         </div>
-
       </div>
-
-      <button
-        type="button"
-        onClick={handleScrollDown}
-        className="hidden md:inline-flex absolute left-1/2 bottom-10 -translate-x-1/2 z-10 items-center gap-2 rounded-full border border-white/45 bg-white/10 px-5 py-2 text-[11px] tracking-[0.22em] uppercase font-light text-white backdrop-blur-sm transition-colors duration-300 hover:bg-white/18"
-      >
-        <span>Sigue bajando</span>
-        <ArrowDown size={14} />
-      </button>
 
       {/* Franja inferior con iconos — solo móvil */}
       <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-4 px-6">
@@ -176,7 +177,7 @@ const HeroSection = () => {
           </div>
           <div className="w-px self-stretch bg-foreground/10" />
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <Hammer size={18} className="text-foreground/50" />
+            <Heart size={18} className="text-foreground/50" />
             <span className="text-xs font-medium text-foreground leading-tight">Hecho a mano</span>
             <span className="text-[10px] text-foreground/45 font-light">en España</span>
           </div>
