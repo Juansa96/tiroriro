@@ -15,13 +15,21 @@ const WhyTiroRiro = () => (
         <span className="section-line" />
       </AnimatedSection>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-stretch">
-        <AnimatedSection className="h-full">
+        <AnimatedSection className="relative overflow-hidden min-h-[420px] lg:min-h-[580px]">
           <img
             src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&q=85"
             alt="Manos artesanas trabajando en tapicería de muebles"
-            className="w-full h-full object-cover min-h-[500px]"
-            loading="lazy" decoding="async"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+            <em className="font-serif text-2xl md:text-3xl font-light text-white leading-snug italic block">
+              "Algunas cosas merecen<br />hacerse a mano."
+            </em>
+            <span className="mt-3 block text-xs tracking-[0.18em] uppercase text-white/55 font-light">Tapizado artesanal · España</span>
+          </div>
         </AnimatedSection>
         <div className="flex flex-col justify-center">
           {REASONS.map((r, i) => (
