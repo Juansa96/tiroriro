@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: "¿Puedo pedir una muestra de tela antes de decidir?",
-    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando qué muestras quieres y te las enviamos a casa. Así ves el color y la textura real antes de confirmar.",
+    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando qué muestras quieres y te las enviamos a casa. Así ves el color y la textura real antes de confirmar. El envío de muestras tiene un pequeño coste adicional según el destino.",
   },
   {
     q: "¿Hacéis envíos a toda España?",
@@ -44,7 +44,7 @@ const FAQSection = () => (
         <Accordion type="single" collapsible className="space-y-2">
           {FAQS.map((faq, i) => (
             <AccordionItem key={i} value={`faq-${i}`} className="border-b border-border">
-              <AccordionTrigger className="text-left text-lg md:text-xl font-semibold text-foreground hover:no-underline py-5">
+              <AccordionTrigger className="font-body text-left text-base md:text-lg font-medium text-foreground hover:no-underline py-5">
                 {faq.q}
               </AccordionTrigger>
               <AccordionContent className="text-base text-muted-foreground font-light leading-relaxed pb-5">
