@@ -12,6 +12,13 @@ const PRODUCTS_DATA = [
   { id: "mesas-centro", name: "Mesas de centro", image: "/productos-fotos/crops/puff-2497-1-tight.png", alt: "Mesa de centro tapizada de Tiroriro", link: "/productos/mesas-centro" },
 ];
 
+const getObjectPosition = (id: string) => {
+  if (id === "bancos") return "center center";
+  if (id === "puffs") return "center center";
+  if (id === "mesas-centro") return "center center";
+  return undefined;
+};
+
 const ProductsPreview = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -74,7 +81,7 @@ const ProductsPreview = () => {
                         src={product.image}
                         alt={product.alt}
                         className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        style={{ objectPosition: product.id === "puffs" || product.id === "mesas-centro" ? "center 8%" : undefined }}
+                        style={{ objectPosition: getObjectPosition(product.id) }}
                         loading="lazy"
                         decoding="async"
                       />
