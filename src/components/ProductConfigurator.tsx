@@ -135,7 +135,7 @@ const groupedFabrics = FABRICS.reduce<Record<string, FabricOption[]>>((acc, fabr
 
 const parseMeasureToNumber = (value: string, custom: string) => {
   if (value === "Otro") return Number(custom.replace(",", ".")) || 0;
-  if (value.includes("m")) {
+  if (value.includes("m") && !value.toLowerCase().includes("cm")) {
     const meters = value.match(/(\d+(?:,\d+)?)/)?.[1];
     return meters ? Math.round(parseFloat(meters.replace(",", ".")) * 100) : 0;
   }
