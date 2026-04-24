@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { House, PencilRuler, PhoneCall } from "lucide-react";
+import AnimatedSection from "./AnimatedSection";
 
 const STEPS = [
   {
@@ -35,18 +36,13 @@ const HowItWorks = () => (
   <section className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
-          <div className="max-w-2xl">
-            <span className="block w-5 h-px bg-primary mb-3" />
-            <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así funciona</h2>
-            <p className="mt-5 text-base md:text-lg text-muted-foreground font-light leading-relaxed">
-              Un recorrido sencillo, ordenado y claro. Sin formularios eternos, sin pasos confusos y sin sorpresas al final.
-            </p>
-          </div>
-          <p className="max-w-xs text-sm md:text-base text-muted-foreground font-light leading-relaxed md:text-right">
-            Diseñas online, revisamos contigo los detalles y lo recibes en casa con un proceso cuidado de principio a fin.
+        <AnimatedSection className="text-center mb-10 md:mb-12">
+          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Así funciona</h2>
+          <span className="section-line" />
+          <p className="mt-5 text-base md:text-lg text-muted-foreground font-light leading-relaxed max-w-3xl mx-auto">
+            Un recorrido sencillo, ordenado y claro. Sin formularios eternos, sin pasos confusos y sin sorpresas al final. Diseñas online, revisamos contigo los detalles y lo recibes en casa con un proceso cuidado de principio a fin.
           </p>
-        </div>
+        </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch">
           {STEPS.map(({ num, title, text, Icon, tone, iconTone, textTone }) => (
