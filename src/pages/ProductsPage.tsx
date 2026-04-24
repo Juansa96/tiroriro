@@ -12,8 +12,7 @@ const CATEGORIES = [
   { id: 'mesas-centro', name: 'Mesas de centro', image: '/productos-fotos/crops/puff-2497-1-tight.png', priceLabel: 'Desde xx€' },
 ];
 
-const imagePosition = (id: string) =>
-  id === "puffs" || id === "mesas-centro" ? "center 6%" : undefined;
+const imagePosition = (id: string) => "center center";
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
   const [hovered, setHovered] = useState(false);
