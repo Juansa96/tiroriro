@@ -101,6 +101,15 @@ const SURFACE_OPTIONS = [
   { id: "metacrilato", name: "Con metacrilato" },
 ];
 
+const PUFF_LADO_OPTIONS = ["40 cm", "50 cm", "60 cm", "70 cm", "Otro"];
+const PUFF_DIAMETER_OPTIONS = ["40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "Otro"];
+
+const CUSHION_SIZES_BY_SHAPE: Record<string, string[]> = {
+  cuadrada: ["40×40 cm", "45×45 cm", "50×50 cm", "Otro"],
+  rectangular: ["30×50 cm", "40×60 cm", "45×70 cm", "Otro"],
+  cilindro: ["Ø20×45 cm", "Ø25×50 cm", "Ø30×55 cm", "Otro"],
+};
+
 const selectClass =
   "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
 
@@ -237,7 +246,7 @@ const ProductConfigurator = () => {
   const [mesaDepthCustom, setMesaDepthCustom] = useState("");
   const [mesaHeight, setMesaHeight] = useState("");
   const [mesaHeightCustom, setMesaHeightCustom] = useState("");
-  const [mesaSurface, setMesaSurface] = useState("sin-superficie");
+  const [mesaSurface, setMesaSurface] = useState("");
 
   const [cushionShape, setCushionShape] = useState("cuadrada");
   const [cushionSize, setCushionSize] = useState("");
@@ -291,7 +300,7 @@ const ProductConfigurator = () => {
     setMesaDepthCustom("");
     setMesaHeight("");
     setMesaHeightCustom("");
-    setMesaSurface("sin-superficie");
+    setMesaSurface("");
     setCushionShape("cuadrada");
     setCushionSize("");
     setCushionWidthCustom("");
@@ -353,7 +362,7 @@ const ProductConfigurator = () => {
 
   const previewDepthCm =
     productType === "banco" ? parseMeasureToNumber(benchDepth, benchDepthCustom) :
-    productType === "puff" ? parseMeasureToNumber(puffDepth, puffDepthCustom) :
+    productType === "puff" ? (puffShape === "cuadrado" ? parseMeasureToNumber(puffWidth, puffWidthCustom) : parseMeasureToNumber(puffDepth, puffDepthCustom)) :
     productType === "mesa" ? parseMeasureToNumber(mesaDepth, mesaDepthCustom) :
     productType === "cojin" ? cushionPreview.height :
     0;
@@ -477,7 +486,7 @@ const ProductConfigurator = () => {
       : productType === "banco"
         ? !!formatMeasure(benchLength, benchLengthCustom) && !!formatMeasure(benchDepth, benchDepthCustom) && !!formatMeasure(benchHeight, benchHeightCustom)
         : productType === "puff"
-          ? !!puffShape && !!formatMeasure(puffWidth, puffWidthCustom) && !!formatMeasure(puffDepth, puffDepthCustom) && !!formatMeasure(puffHeight, puffHeightCustom)
+          ? !!puffShape && !!formatMeasure(puffWidth, puffWidthCustom)
           : productType === "mesa"
             ? !!mesaKind && !!formatMeasure(mesaWidth, mesaWidthCustom) && !!formatMeasure(mesaDepth, mesaDepthCustom) && !!formatMeasure(mesaHeight, mesaHeightCustom)
             : productType === "cojin"
@@ -488,7 +497,7 @@ const ProductConfigurator = () => {
   const finishComplete = !!finish;
   const extrasComplete =
     productType === "mesa"
-      ? !!mesaSurface
+      ? true
       : productType === "cabecero"
         ? headboardHanging || extraExpress
         : productType === "banco"
@@ -537,6 +546,7 @@ const ProductConfigurator = () => {
     currentFabric?.image || "",
     productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image || "" : "",
     vivoColor || "",
+    mesaSurface || "",
   ].join("|");
 
   const advanceTo = (next: Step) => {
@@ -760,6 +770,7 @@ const ProductConfigurator = () => {
               widthCm={previewWidthValue || undefined}
               heightCm={previewHeightCm || undefined}
               depthCm={previewDepthCm || undefined}
+              surface={productType === "mesa" ? mesaSurface : undefined}
             />
           </div>
           <div className="flex flex-wrap gap-1.5 justify-center mt-2">
@@ -1138,15 +1149,18 @@ const AccordionItems = (props: SharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
                 <div className="grid grid-cols-2 gap-3">
                   {PUFF_SHAPES.map((option) => (
-                    <button key={option.id} type="button" onClick={() => setPuffShape(option.id)} className={`border rounded p-3 text-center transition-all ${puffShape === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                    <button key={option.id} type="button" onClick={() => { setPuffShape(option.id); setPuffWidth(""); setPuffWidthCustom(""); }} className={`border rounded p-3 text-center transition-all ${puffShape === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
                       <span className="text-xs font-light">{option.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
-              <MeasureSelect label="Ancho" value={puffWidth} onChange={setPuffWidth} options={BASE_WIDTH_OPTIONS} customValue={puffWidthCustom} onCustomChange={setPuffWidthCustom} />
-              <MeasureSelect label="Fondo" value={puffDepth} onChange={setPuffDepth} options={BASE_DEPTH_OPTIONS} customValue={puffDepthCustom} onCustomChange={setPuffDepthCustom} />
-              <MeasureSelect label="Alto" value={puffHeight} onChange={setPuffHeight} options={BASE_HEIGHT_OPTIONS} customValue={puffHeightCustom} onCustomChange={setPuffHeightCustom} />
+              {puffShape === "cuadrado" && (
+                <MeasureSelect label="Lado" value={puffWidth} onChange={setPuffWidth} options={PUFF_LADO_OPTIONS} customValue={puffWidthCustom} onCustomChange={setPuffWidthCustom} />
+              )}
+              {puffShape === "circular" && (
+                <MeasureSelect label="Diámetro" value={puffWidth} onChange={setPuffWidth} options={PUFF_DIAMETER_OPTIONS} customValue={puffWidthCustom} onCustomChange={setPuffWidthCustom} />
+              )}
             </>
           )}
 
@@ -1185,7 +1199,7 @@ const AccordionItems = (props: SharedProps) => {
                 <SelectWrapper>
                   <select value={cushionSize} onChange={(event) => { setCushionSize(event.target.value); if (event.target.value !== "Otro") { setCushionWidthCustom(""); setCushionHeightCustom(""); } }} className={selectClass}>
                     <option value="">Seleccionar...</option>
-                    {CUSHION_SIZES.map((option) => <option key={option} value={option}>{option}</option>)}
+                    {(CUSHION_SIZES_BY_SHAPE[cushionShape] || CUSHION_SIZES_BY_SHAPE.cuadrada).map((option) => <option key={option} value={option}>{option}</option>)}
                   </select>
                 </SelectWrapper>
                 {cushionSize === "Otro" && (
