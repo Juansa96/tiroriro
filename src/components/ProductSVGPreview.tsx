@@ -14,6 +14,7 @@ interface Props {
   widthCm?: number;
   heightCm?: number;
   depthCm?: number;
+  surface?: string;
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -196,6 +197,10 @@ const HeadboardSVG = ({
   const topColor = lighten(color, 16);
   const sideColor = darken(color, 18);
 
+  // Corner cap patches at arch base corners to ensure no gap between top face and side faces
+  const leftCapPath = `M ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${firstTop[0] + dx} ${firstTop[1] + dy + 10} L ${firstTop[0]} ${firstTop[1] + 10} Z`;
+  const rightCapPath = `M ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${lastTop[0] + dx} ${lastTop[1] + dy + 10} L ${lastTop[0]} ${lastTop[1] + 10} Z`;
+
   return (
     <svg viewBox="0 0 330 220" className="w-full max-w-[320px] mx-auto">
       <defs>
@@ -230,6 +235,9 @@ const HeadboardSVG = ({
         <path d={topFacePath} fill="rgba(255,255,255,0.12)" />
         <path d={leftSidePath} fill={patternFill(lateralPatternId, sideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={leftSidePath} fill="rgba(0,0,0,0.08)" />
+        {/* Corner cap patches so arch base corners render cleanly */}
+        <path d={leftCapPath} fill={patternFill(lateralPatternId, sideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={rightCapPath} fill={patternFill(lateralPatternId, darken(color, 24))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={rightSidePath} fill={patternFill(lateralPatternId, darken(color, 24))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={rightSidePath} fill="rgba(0,0,0,0.12)" />
         {finish === "vivo-doble" && (
@@ -243,9 +251,13 @@ const HeadboardSVG = ({
           </g>
         )}
         {finish === "vivo-doble" && (
-          <g clipPath={`url(#hb-${clipId})`}>
-            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-          </g>
+          <>
+            <path d={leftSidePath} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
+            <path d={rightSidePath} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
+            <g clipPath={`url(#hb-${clipId})`}>
+              <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+            </g>
+          </>
         )}
       </g>
     </svg>
@@ -273,6 +285,7 @@ const BenchSVG = ({
 }) => {
   const mode = variant || "madera";
   const patternId = useId();
+  const woodPatternId = useId();
   const clipId = useId();
   const scaleX = scaleRange(widthCm, 40, 120, 0.72, 1.16);
   const scaleY = scaleRange(heightCm, 30, 50, 0.8, 1.14);
@@ -285,27 +298,31 @@ const BenchSVG = ({
   const seatH = mode === "baul" ? 92 : 48;
   const seatTop = `M ${seatX} ${seatY} L ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + depthX} ${seatY + depthY} Z`;
   const seatSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + seatH + depthY} L ${seatX + seatW} ${seatY + seatH} Z`;
-  const seatFrontRect = `M ${seatX + 8} ${seatY} H ${seatX + seatW - 8} Q ${seatX + seatW} ${seatY} ${seatX + seatW} ${seatY + 8} V ${seatY + seatH} H ${seatX} V ${seatY + 8} Q ${seatX} ${seatY} ${seatX + 8} ${seatY} Z`;
+  // Straight corners (no Q bezier)
+  const seatFrontRect = `M ${seatX} ${seatY} H ${seatX + seatW} V ${seatY + seatH} H ${seatX} Z`;
 
   const openLegW = 38;
   const cutTop = seatY + 52;
+  // Straight corners (no Q bezier)
   const uFrontPath =
-    `M ${seatX + 8} ${seatY} H ${seatX + seatW - 8} Q ${seatX + seatW} ${seatY} ${seatX + seatW} ${seatY + 8} ` +
-    `V ${seatY + 112} H ${seatX + seatW - openLegW} V ${cutTop} H ${seatX + openLegW} V ${seatY + 112} H ${seatX} V ${seatY + 8} ` +
-    `Q ${seatX} ${seatY} ${seatX + 8} ${seatY} Z`;
+    `M ${seatX} ${seatY} H ${seatX + seatW} ` +
+    `V ${seatY + 112} H ${seatX + seatW - openLegW} V ${cutTop} H ${seatX + openLegW} V ${seatY + 112} H ${seatX} Z`;
+  const seatFrontOnly = `M ${seatX} ${seatY} H ${seatX + seatW} V ${cutTop} H ${seatX} Z`;
   const rightOuterSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW} ${seatY + 112} Z`;
   const innerLeftSide = `M ${seatX + openLegW} ${cutTop} L ${seatX + openLegW + depthX} ${cutTop + depthY} L ${seatX + openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + openLegW} ${seatY + 112} Z`;
   const innerRightSide = `M ${seatX + seatW - openLegW} ${cutTop} L ${seatX + seatW - openLegW + depthX} ${cutTop + depthY} L ${seatX + seatW - openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW - openLegW} ${seatY + 112} Z`;
 
   const seatTopColor = lighten(color, 14);
   const seatSideColor = darken(color, 18);
+  const woodColor = "#C8B89A";
 
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
+        <TexturePattern id={woodPatternId} color={woodColor} tile={18} />
         <clipPath id={`bn-${clipId}`}>
-          <path d={mode === "baul" ? seatFrontRect : uFrontPath} />
+          <path d={mode === "baul" ? seatFrontRect : (mode === "madera" ? seatFrontOnly : uFrontPath)} />
         </clipPath>
       </defs>
 
@@ -318,7 +335,27 @@ const BenchSVG = ({
       >
         <ellipse cx={157} cy={204} rx={110} ry={8} fill="rgba(0,0,0,0.08)" />
 
-        {(mode === "madera" || mode === "enteladas") && (
+        {mode === "madera" && (
+          <>
+            {/* Top face — fabric */}
+            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
+            {/* Right outer side — wood for full height */}
+            <path d={rightOuterSide} fill={patternFill(woodPatternId, darken(woodColor, 10))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={rightOuterSide} fill="rgba(0,0,0,0.10)" />
+            {/* Leg inner sides — wood */}
+            <path d={innerLeftSide} fill={patternFill(woodPatternId, darken(woodColor, 14))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerLeftSide} fill="rgba(0,0,0,0.08)" />
+            <path d={innerRightSide} fill={patternFill(woodPatternId, darken(woodColor, 16))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerRightSide} fill="rgba(0,0,0,0.10)" />
+            {/* Full front — wood base */}
+            <path d={uFrontPath} fill={patternFill(woodPatternId, woodColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            {/* Seat front area — fabric overlay */}
+            <path d={seatFrontOnly} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+          </>
+        )}
+
+        {mode === "enteladas" && (
           <>
             <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
             <path d={seatTop} fill="rgba(255,255,255,0.12)" />
@@ -344,9 +381,23 @@ const BenchSVG = ({
         )}
 
         {finish === "vivo-simple" && (
-          <g clipPath={`url(#bn-${clipId})`}>
-            <path d={mode === "baul" ? seatFrontRect : uFrontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-          </g>
+          <>
+            {(mode === "madera" || mode === "enteladas") && (
+              <>
+                <path d={seatTop} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+                <path d={rightOuterSide} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+              </>
+            )}
+            {mode === "baul" && (
+              <>
+                <path d={seatTop} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+                <path d={seatSide} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+              </>
+            )}
+            <g clipPath={`url(#bn-${clipId})`}>
+              <path d={mode === "baul" ? seatFrontRect : (mode === "madera" ? seatFrontOnly : uFrontPath)} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+            </g>
+          </>
         )}
       </g>
     </svg>
@@ -379,7 +430,7 @@ const PuffSVG = ({
   if (isCircular) {
     const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = scaleRange(heightCm, 30, 50, 62, 112);
+    const bodyH = 84; // fixed height for circular puff
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
@@ -419,13 +470,15 @@ const PuffSVG = ({
     );
   }
 
+  // Rectangular / cuadrado puff — straight corners
+  const effectiveDepthCm = depthCm ?? widthCm; // cuadrado: depth = width
   const baseW = scaleRange(widthCm, 40, 120, 112, 190);
   const baseH = scaleRange(heightCm, 30, 50, 72, 118);
-  const depthX = scaleRange(depthCm, 30, 70, 14, 26);
+  const depthX = scaleRange(effectiveDepthCm, 30, 70, 14, 26);
   const depthY = -depthX * 0.7;
   const x = (300 - baseW) / 2;
   const y = 72;
-  const frontPath = `M ${x + 10} ${y} H ${x + baseW - 10} Q ${x + baseW} ${y} ${x + baseW} ${y + 10} V ${y + baseH - 10} Q ${x + baseW} ${y + baseH} ${x + baseW - 10} ${y + baseH} H ${x + 10} Q ${x} ${y + baseH} ${x} ${y + baseH - 10} V ${y + 10} Q ${x} ${y} ${x + 10} ${y} Z`;
+  const frontPath = `M ${x} ${y} H ${x + baseW} V ${y + baseH} H ${x} Z`;
   const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
   const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
 
@@ -444,9 +497,13 @@ const PuffSVG = ({
       <path d={sidePath} fill="rgba(0,0,0,0.10)" />
       <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
       {finish === "vivo-simple" && (
-        <g clipPath={`url(#pf-${clipId})`}>
-          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-        </g>
+        <>
+          <path d={topPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+          <path d={sidePath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+          <g clipPath={`url(#pf-${clipId})`}>
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+          </g>
+        </>
       )}
     </svg>
   );
@@ -578,6 +635,7 @@ const MesaSVG = ({
   widthCm,
   heightCm,
   depthCm,
+  surface,
 }: {
   color: string;
   fabricImage?: string;
@@ -587,6 +645,7 @@ const MesaSVG = ({
   widthCm?: number;
   heightCm?: number;
   depthCm?: number;
+  surface?: string;
 }) => {
   const mode = variant || "tipo-puff";
   const patternId = useId();
@@ -597,7 +656,8 @@ const MesaSVG = ({
   const depthY = -depthX * 0.72;
   const x = (300 - baseW) / 2;
   const y = 62;
-  const frontPath = `M ${x + 8} ${y} H ${x + baseW - 8} Q ${x + baseW} ${y} ${x + baseW} ${y + 8} V ${y + baseH - 8} Q ${x + baseW} ${y + baseH} ${x + baseW - 8} ${y + baseH} H ${x + 8} Q ${x} ${y + baseH} ${x} ${y + baseH - 8} V ${y + 8} Q ${x} ${y} ${x + 8} ${y} Z`;
+  // Straight corners (no Q bezier)
+  const frontPath = `M ${x} ${y} H ${x + baseW} V ${y + baseH} H ${x} Z`;
   const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
   const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
 
@@ -630,10 +690,28 @@ const MesaSVG = ({
         </>
       )}
 
+      {/* Glass / metacrilato surface overlay on top face */}
+      {surface === "cristal" && (
+        <>
+          <path d={topPath} fill="rgba(180,210,230,0.45)" stroke="rgba(100,160,210,0.55)" strokeWidth="1" />
+          <path d={topPath} fill="rgba(255,255,255,0.22)" />
+        </>
+      )}
+      {surface === "metacrilato" && (
+        <>
+          <path d={topPath} fill="rgba(220,220,215,0.50)" stroke="rgba(180,180,170,0.50)" strokeWidth="1" />
+          <path d={topPath} fill="rgba(255,255,255,0.28)" />
+        </>
+      )}
+
       {finish === "vivo-simple" && (
-        <g clipPath={`url(#ms-${clipId})`}>
-          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
-        </g>
+        <>
+          <path d={topPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+          <path d={sidePath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+          <g clipPath={`url(#ms-${clipId})`}>
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+          </g>
+        </>
       )}
     </svg>
   );
@@ -650,6 +728,7 @@ const ProductSVGPreview = ({
   widthCm,
   heightCm,
   depthCm,
+  surface,
 }: Props) => {
   const vc = vivoColor || darken(color);
 
@@ -726,6 +805,7 @@ const ProductSVGPreview = ({
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
+          surface={surface}
         />
       )}
     </div>
