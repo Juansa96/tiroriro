@@ -21,8 +21,8 @@ const Index = () => (
       <WhyTiroRiro />
       <HowItWorks />
       <Testimonials />
-      <ContactForm />
       <FAQSection />
+      <ContactForm />
     </main>
     <Footer />
   </>
