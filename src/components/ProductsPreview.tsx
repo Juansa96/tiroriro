@@ -36,7 +36,7 @@ const ProductsPreview = () => {
   }, [api]);
 
   return (
-    <section id="productos-home" className="pt-8 pb-20 md:py-32 px-6">
+    <section id="productos-home" className="pt-8 pb-20 md:py-32 md:px-6">
       <div className="container mx-auto">
         <AnimatedSection className="text-center mb-12">
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
@@ -67,7 +67,7 @@ const ProductsPreview = () => {
           >
             <CarouselContent className="-ml-3 md:-ml-6">
               {PRODUCTS_DATA.map((product) => (
-                <CarouselItem key={product.id} className="pl-3 basis-[86%] md:pl-6 md:basis-1/3">
+                <CarouselItem key={product.id} className="pl-2 basis-[92%] md:pl-6 md:basis-1/3">
                   <Link to={product.link} className="block group h-full">
                     <div className="relative overflow-hidden border border-border/40 rounded-lg">
                       <img
