@@ -93,76 +93,55 @@ const headboardSelectorPath = (forma: string) => {
   }
 };
 
-const headboardTopPoints = (forma: string) => {
+const headboardCorners = (forma: string): [[number, number], [number, number]] => {
   switch (forma) {
-    case "semicirculo":
-      return [
-        [15, 110],
-        [82, 56],
-        [150, 25],
-        [218, 56],
-        [285, 110],
-      ];
+    case "semicirculo": return [[15, 110], [285, 110]];
     case "corona-simple":
-      return [
-        [15, 120],
-        [68, 120],
-        [90, 100],
-        [94, 84],
-        [150, 68],
-        [206, 84],
-        [210, 100],
-        [232, 120],
-        [285, 120],
-      ];
     case "corona-doble":
-      return [
-        [15, 120],
-        [57, 120],
-        [57, 99],
-        [99, 99],
-        [99, 78],
-        [150, 56],
-        [201, 78],
-        [201, 99],
-        [243, 99],
-        [243, 120],
-        [285, 120],
-      ];
-    case "corona-triple":
-      return [
-        [15, 120],
-        [43, 120],
-        [43, 106],
-        [71, 106],
-        [71, 92],
-        [99, 92],
-        [99, 78],
-        [150, 56],
-        [201, 78],
-        [201, 92],
-        [229, 92],
-        [229, 106],
-        [257, 106],
-        [257, 120],
-        [285, 120],
-      ];
+    case "corona-triple": return [[15, 120], [285, 120]];
     case "recto":
-    default:
-      return [
-        [15, 50],
-        [285, 50],
-      ];
+    default: return [[15, 50], [285, 50]];
   }
 };
 
-const buildTopFacePath = (points: number[][], dx: number, dy: number) => {
-  const front = points.map(([x, y]) => `${x} ${y}`).join(" L ");
-  const back = [...points]
-    .reverse()
-    .map(([x, y]) => `${x + dx} ${y + dy}`)
-    .join(" L ");
-  return `M ${front} L ${back} Z`;
+const headboardTopFacePath = (forma: string, dx: number, dy: number): string => {
+  switch (forma) {
+    case "semicirculo":
+      return `M 15 110 Q 150 25 285 110 L ${285+dx} ${110+dy} Q ${150+dx} ${25+dy} ${15+dx} ${110+dy} Z`;
+    case "corona-simple":
+      return (
+        `M 15 120 C 68 120 90 100 94 84 A 56 16 0 0 1 206 84 C 210 100 232 120 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `C ${232+dx} ${120+dy} ${210+dx} ${100+dy} ${206+dx} ${84+dy} ` +
+        `A 56 16 0 0 0 ${94+dx} ${84+dy} ` +
+        `C ${90+dx} ${100+dy} ${68+dx} ${120+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "corona-doble":
+      return (
+        `M 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `Q ${243+dx} ${120+dy} ${243+dx} ${99+dy} ` +
+        `Q ${201+dx} ${99+dy} ${201+dx} ${78+dy} ` +
+        `A 51 22 0 0 0 ${99+dx} ${78+dy} ` +
+        `Q ${99+dx} ${99+dy} ${57+dx} ${99+dy} ` +
+        `Q ${57+dx} ${120+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "corona-triple":
+      return (
+        `M 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `Q ${257+dx} ${120+dy} ${257+dx} ${106+dy} ` +
+        `Q ${229+dx} ${106+dy} ${229+dx} ${92+dy} ` +
+        `Q ${201+dx} ${92+dy} ${201+dx} ${78+dy} ` +
+        `A 51 22 0 0 0 ${99+dx} ${78+dy} ` +
+        `Q ${99+dx} ${92+dy} ${71+dx} ${92+dy} ` +
+        `Q ${71+dx} ${106+dy} ${43+dx} ${106+dy} ` +
+        `Q ${43+dx} ${120+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "recto":
+    default:
+      return `M 15 50 L 285 50 L ${285+dx} ${50+dy} L ${15+dx} ${50+dy} Z`;
+  }
 };
 
 const headboardPath = (forma: string, bottomY: number) => {
@@ -210,10 +189,8 @@ const HeadboardSVG = ({
   const dx = 8;
   const dy = -5;
   const frontPath = headboardPath(shape, bottomY);
-  const topPoints = headboardTopPoints(shape);
-  const firstTop = topPoints[0];
-  const lastTop = topPoints[topPoints.length - 1];
-  const topFacePath = buildTopFacePath(topPoints, dx, dy);
+  const [firstTop, lastTop] = headboardCorners(shape);
+  const topFacePath = headboardTopFacePath(shape, dx, dy);
   const leftSidePath = `M 15 ${bottomY} L ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${15 + dx} ${bottomY + dy} Z`;
   const rightSidePath = `M 285 ${bottomY} L ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${285 + dx} ${bottomY + dy} Z`;
   const topColor = lighten(color, 16);
@@ -255,6 +232,9 @@ const HeadboardSVG = ({
         <path d={leftSidePath} fill="rgba(0,0,0,0.08)" />
         <path d={rightSidePath} fill={patternFill(lateralPatternId, darken(color, 24))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={rightSidePath} fill="rgba(0,0,0,0.12)" />
+        {finish === "vivo-doble" && (
+          <path d={frontPath} transform={`translate(${dx} ${dy})`} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
+        )}
         <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
 
         {finish === "vivo-simple" && (
@@ -265,9 +245,6 @@ const HeadboardSVG = ({
         {finish === "vivo-doble" && (
           <g clipPath={`url(#hb-${clipId})`}>
             <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-            <g transform="translate(150 188) scale(0.94) translate(-150 -188)">
-              <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2" strokeLinejoin="round" />
-            </g>
           </g>
         )}
       </g>
@@ -357,8 +334,10 @@ const BenchSVG = ({
 
         {mode === "baul" && (
           <>
-            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill={patternFill(patternId, seatTopColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
+            <path d={seatSide} fill={patternFill(patternId, seatSideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatSide} fill="rgba(0,0,0,0.10)" />
             <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
             <path d={`M ${seatX + seatW / 2 - 16} ${seatY + 42} Q ${seatX + seatW / 2} ${seatY + 54} ${seatX + seatW / 2 + 16} ${seatY + 42}`} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="2.2" strokeLinecap="round" />
           </>
