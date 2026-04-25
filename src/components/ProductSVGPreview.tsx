@@ -27,7 +27,7 @@ const scaleRange = (value: number | undefined, inputMin: number, inputMax: numbe
   return clamp(scaled, Math.min(outputMin, outputMax), Math.max(outputMin, outputMax));
 };
 
-function darken(hex: string, amount = 40): string {
+export function darken(hex: string, amount = 40): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
