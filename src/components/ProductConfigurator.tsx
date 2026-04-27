@@ -332,7 +332,7 @@ const ProductConfigurator = () => {
     const summary = buildConfigSummary(productType, options);
     const params = new URLSearchParams({
       product: product?.name || '',
-      config: `Me interesa: ${summary} (aprox. ${price}€)`,
+      config: `Me interesa: ${summary}`,
     });
     if (extraExpress) params.set('express', 'true');
     return `/?${params.toString()}#contacto`;
@@ -483,10 +483,7 @@ const ProductConfigurator = () => {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="font-serif text-2xl lg:text-3xl font-light text-foreground transition-opacity duration-150" key={priceLabel}>
-              {priceLabel} €
-            </p>
-            <p className="text-xs text-muted-foreground font-light mt-1">IVA incluido · Envío a toda España</p>
+            <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío a toda España</p>
           </div>
 
           <div className="flex flex-col gap-3 mt-6">
@@ -527,10 +524,7 @@ const ProductConfigurator = () => {
 
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="font-serif text-xl text-foreground" key={priceLabel}>{priceLabel} €</p>
-            <p className="text-xs text-muted-foreground">IVA incluido</p>
-          </div>
+          <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío a toda España</p>
           <button
             onClick={handleOrder}
             disabled={!productType}
