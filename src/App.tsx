@@ -12,6 +12,7 @@ import CategoryPage from "./pages/CategoryPage";
 import ConfiguratorPage from "./pages/ConfiguratorPage";
 import TryOnPage from "./pages/TryOnPage";
 import TeamPage from "./pages/TeamPage";
+import TelasPage from "./pages/TelasPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
@@ -46,6 +47,7 @@ const App = () => (
           ))}
           <Route path="/configurador" element={<ConfiguratorPage />} />
           <Route path="/probador" element={<TryOnPage />} />
+          <Route path="/telas" element={<TelasPage />} />
           <Route path="/nosotros" element={<TeamPage />} />
           <Route path="/equipo" element={<TeamPage />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />

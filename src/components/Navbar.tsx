@@ -6,6 +6,7 @@ import Logo from "./Logo";
 const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/productos", label: "Productos" },
+  { to: "/telas", label: "Telas" },
   { to: "/configurador", label: "Diseña el tuyo" },
   { to: "/nosotros", label: "Quiénes somos" },
   { to: "/contacto", label: "Solicita información", highlight: true },
