@@ -134,7 +134,7 @@
     background-color: var(--btn-bg);
     color: var(--btn-fg);
     border: 1px solid var(--btn-border);
-    border-radius: 0;
+    border-radius: 4px;
     box-shadow: none;
     letter-spacing: 0.14em;
     text-transform: uppercase;

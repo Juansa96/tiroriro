@@ -18,31 +18,31 @@ const FABRIC_GROUPS = [
     label: "Linos",
     collection: "Colección Essential",
     fabrics: [
-      { id: "lino-natural", name: "Lino Natural", hex: "#D4C5A9" },
-      { id: "lino-crudo", name: "Lino Crudo", hex: "#E8DCC8" },
-      { id: "lino-gris-perla", name: "Lino Gris Perla", hex: "#C8C4BC" },
-      { id: "lino-azul-marino", name: "Lino Azul Marino", hex: "#2C3E50" },
-      { id: "lino-verde-salvia", name: "Lino Verde Salvia", hex: "#7D9B76" },
+      { id: "lino-natural", name: "Lino Natural", hex: "#D4C5A9", image: "/telas/tela-01.webp" },
+      { id: "lino-crudo", name: "Lino Crudo", hex: "#E8DCC8", image: "/telas/tela-02.jpg" },
+      { id: "lino-gris-perla", name: "Lino Gris Perla", hex: "#C8C4BC", image: "/telas/tela-03.webp" },
+      { id: "lino-azul-marino", name: "Lino Azul Marino", hex: "#2C3E50", image: "/telas/tela-04.jpg" },
+      { id: "lino-verde-salvia", name: "Lino Verde Salvia", hex: "#7D9B76", image: "/telas/tela-05.jpg" },
     ],
   },
   {
     label: "Terciopelos",
     collection: "Colección Premium",
     fabrics: [
-      { id: "terciopelo-esmeralda", name: "Terciopelo Esmeralda", hex: "#1B4D3E" },
-      { id: "terciopelo-burdeos", name: "Terciopelo Burdeos", hex: "#6D1A36" },
-      { id: "terciopelo-camel", name: "Terciopelo Camel", hex: "#C19A6B" },
-      { id: "terciopelo-negro", name: "Terciopelo Negro", hex: "#1C1C1C" },
-      { id: "terciopelo-gris-marengo", name: "Terciopelo Gris Marengo", hex: "#4A4A4A" },
+      { id: "terciopelo-esmeralda", name: "Terciopelo Esmeralda", hex: "#1B4D3E", image: "/telas/tela-06.png" },
+      { id: "terciopelo-burdeos", name: "Terciopelo Burdeos", hex: "#6D1A36", image: "/telas/tela-07.png" },
+      { id: "terciopelo-camel", name: "Terciopelo Camel", hex: "#C19A6B", image: "/telas/tela-08.png" },
+      { id: "terciopelo-negro", name: "Terciopelo Negro", hex: "#1C1C1C", image: "/telas/tela-09.jpg" },
+      { id: "terciopelo-gris-marengo", name: "Terciopelo Gris Marengo", hex: "#4A4A4A", image: "/telas/tela-10.jpg" },
     ],
   },
   {
     label: "Bouclé",
     collection: "Colección Bouclé",
     fabrics: [
-      { id: "boucle-blanco-roto", name: "Bouclé Blanco Roto", hex: "#F5F0E8" },
-      { id: "boucle-beige", name: "Bouclé Beige", hex: "#D4B896" },
-      { id: "boucle-arena", name: "Bouclé Arena", hex: "#C4A882" },
+      { id: "boucle-blanco-roto", name: "Bouclé Blanco Roto", hex: "#F5F0E8", image: "" },
+      { id: "boucle-beige", name: "Bouclé Beige", hex: "#D4B896", image: "" },
+      { id: "boucle-arena", name: "Bouclé Arena", hex: "#C4A882", image: "" },
     ],
   },
 ];
@@ -51,8 +51,8 @@ const ALL_FABRICS = FABRIC_GROUPS.flatMap(g => g.fabrics.map(f => ({ ...f, group
 
 const FINISHES = [
   { id: "liso", name: "Sin acabado", desc: "Tapizado liso, sin costuras decorativas" },
-  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro, mismo color o contraste", extra: 15 },
-  { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 25 },
+  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro, mismo color o contraste", extra: 15, extraLabel: "+xx€" },
+  { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 25, extraLabel: "+xx€" },
 ];
 
 const HEADBOARD_SHAPES = [
@@ -83,10 +83,18 @@ const ProductIcon = ({ type }: { type: string }) => {
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><ellipse cx="20" cy="17" rx="16" ry="11" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
       return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'mesa':
+      return <svg viewBox="0 0 42 30" className="w-8 h-6"><rect x="5" y="5" width="32" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="10" y1="15" x2="10" y2="25" stroke="currentColor" strokeWidth="2" /><line x1="32" y1="15" x2="32" y2="25" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
       return null;
   }
 };
+
+const BENCH_VARIANTS = [
+  { id: "madera", name: "Patas de madera" },
+  { id: "enteladas", name: "Patas enteladas" },
+  { id: "baul", name: "Estilo baúl" },
+];
 
 const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
 
@@ -161,9 +169,11 @@ const ProductConfigurator = () => {
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
-    if (tipo && ['cabecero', 'banco', 'cojin', 'puff'].includes(tipo)) {
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puff', 'mesa'].includes(tipo)) {
       setProductType(tipo as ProductType);
       if (tipo === 'puff' && !forma) setShape('cuadrado');
+      if (tipo === 'banco' && !forma) setShape('madera');
+      if (tipo === 'mesa' && !forma) setShape('tipo-puff');
       if (isMobile) {
         setOpenAccordion('measures');
       } else {
@@ -174,7 +184,7 @@ const ProductConfigurator = () => {
   }, [searchParams, isMobile]);
 
   const resetConfiguracion = (newType?: ProductType) => {
-    setShape(newType === 'puff' ? 'cuadrado' : 'recto');
+    setShape(newType === 'puff' ? 'cuadrado' : newType === 'banco' ? 'madera' : newType === 'mesa' ? 'tipo-puff' : 'recto');
     setBedWidth('');
     setBedHeight('');
     setBenchLength('');
@@ -207,16 +217,20 @@ const ProductConfigurator = () => {
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
   const vivoFabric = ALL_FABRICS.find(f => f.id === vivoColorId);
   const fillColor = fabric?.hex || "#D4C5A9";
+  const fabricImage = (fabric as { image?: string })?.image || undefined;
   const vivoColor = vivoFabric?.hex || darken(fillColor);
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth, customWidth)
     : productType === 'banco' ? parseCm(benchLength, '')
+    : productType === 'mesa' ? parseCm(benchLength, '')
     : productType === 'puff' ? (shape === 'rectangular' ? parseCm(puffLength, '') : parseCm(puffDiameter, ''))
     : undefined;
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight, customHeight)
     : productType === 'banco' ? parseCm(benchHeight, '')
+    : productType === 'mesa' ? parseCm(benchHeight, '')
     : productType === 'puff' ? (shape === 'rectangular' ? parseCm(puffDepth, '') : parseCm(puffHeight, ''))
     : undefined;
+  const depthCm = productType === 'mesa' ? parseCm(benchDepth, '') : undefined;
 
   const svgForma = productType === 'cojin' ? cushionSize : shape;
 
@@ -256,6 +270,7 @@ const ProductConfigurator = () => {
     type: !!productType,
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
       : productType === 'banco' ? !!benchLength
+      : productType === 'mesa' ? !!benchLength
       : productType === 'puff' ? (shape === 'rectangular' ? !!puffLength && !!puffDepth : !!puffDiameter)
       : productType === 'cojin' ? !!cushionSize
       : false,
@@ -385,7 +400,7 @@ const ProductConfigurator = () => {
     <button
       key={type}
       onClick={() => handleProductChange(type)}
-      className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
+      className={`border rounded-md p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
         productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
       }`}
     >
@@ -434,7 +449,7 @@ const ProductConfigurator = () => {
         <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
           <div className="flex-1 flex items-center justify-center w-full">
-            <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} />
+            <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
           </div>
           <RenderNotice />
           <div className="flex flex-wrap gap-1.5 justify-center mt-2">
@@ -453,7 +468,7 @@ const ProductConfigurator = () => {
           <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: '#F0EDE8' }}>
             <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
             <div className="flex-1 flex items-center justify-center w-full">
-              <ProductSVGPreview type={productType} color={fillColor} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} />
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
             </div>
             {!productType && (
               <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
@@ -594,6 +609,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             {productCard('banco', 'Banco')}
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
+            {productCard('mesa', 'Mesa de centro')}
           </div>
         </AccordionContent>
       </AccordionItem>
@@ -680,6 +696,16 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
           {productType === 'banco' && (
             <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de banco</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {BENCH_VARIANTS.map(v => (
+                    <button key={v.id} onClick={() => setShape(v.id)} className={`border rounded-md p-3 text-center cursor-pointer transition-all ${shape === v.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                      <span className="text-xs font-light">{v.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
                 <SelectWrapper>
@@ -804,6 +830,62 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </>
           )}
+          {productType === 'mesa' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de mesa</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={() => setShape('tipo-puff')} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'tipo-puff' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                    <svg viewBox="0 0 42 28" className="w-8 h-6"><rect x="4" y="4" width="34" height="20" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    <span className="text-xs font-light">Mesa tapizada</span>
+                  </button>
+                  <button onClick={() => setShape('tipo-banco')} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'tipo-banco' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                    <svg viewBox="0 0 42 28" className="w-8 h-6"><rect x="4" y="4" width="34" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="8" y1="18" x2="8" y2="26" stroke="currentColor" strokeWidth="1.5" /><line x1="34" y1="18" x2="34" y2="26" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    <span className="text-xs font-light">Tipo banco</span>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
+                <SelectWrapper>
+                  <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar largo...</option>
+                    <option value="70 cm">70 cm</option>
+                    <option value="80 cm">80 cm</option>
+                    <option value="90 cm">90 cm</option>
+                    <option value="100 cm">100 cm</option>
+                    <option value="120 cm">120 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
+                <SelectWrapper>
+                  <select value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar fondo...</option>
+                    <option value="40 cm">40 cm</option>
+                    <option value="50 cm">50 cm</option>
+                    <option value="60 cm">60 cm</option>
+                    <option value="70 cm">70 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
+                <SelectWrapper>
+                  <select value={benchHeight} onChange={(e) => setBenchHeight(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar alto...</option>
+                    <option value="30 cm">30 cm</option>
+                    <option value="35 cm">35 cm</option>
+                    <option value="40 cm">40 cm</option>
+                    <option value="custom">No tengo claras las medidas</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+            </>
+          )}
           {productType === 'cojin' && (
             <div>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
@@ -847,9 +929,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 {group.fabrics.map(f => (
                   <button key={f.id} onClick={() => setFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
                     <div
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${fabricId === f.id ? "border-foreground ring-2 ring-offset-2 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                      className={`w-10 h-10 rounded-full border-2 transition-all overflow-hidden ${fabricId === f.id ? "border-foreground ring-2 ring-offset-2 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
                       style={{ backgroundColor: f.hex }}
-                    />
+                    >
+                      {(f as { image?: string }).image && (
+                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </div>
                     <span className="text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
                   </button>
                 ))}
@@ -881,10 +967,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
-              className={`w-full text-left px-5 py-4 border rounded transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+              className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
               <span className="text-sm font-medium text-foreground">{f.name}</span>
-              {f.extra && <span className="text-xs text-accent-warm ml-2">+{f.extra}€</span>}
+              {f.extra && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${f.extra}€`}</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
           ))}
@@ -895,9 +981,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 {ALL_FABRICS.map(f => (
                   <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
                     <div
-                      className={`w-7 h-7 rounded-full border-2 transition-all ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                      className={`w-7 h-7 rounded-full border-2 transition-all overflow-hidden ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
                       style={{ backgroundColor: f.hex }}
-                    />
+                    >
+                      {(f as { image?: string }).image && (
+                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -919,14 +1009,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="flex justify-between items-center py-2">
                 <div>
                   <p className="text-base text-foreground font-light">Patas de madera</p>
-                  <p className="text-xs text-muted-foreground">+15€</p>
+                  <p className="text-xs text-muted-foreground">+xx€</p>
                 </div>
                 <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
               </div>
               <div className="flex justify-between items-center py-2">
                 <div>
                   <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
-                  <p className="text-xs text-muted-foreground">+20€</p>
+                  <p className="text-xs text-muted-foreground">+xx€</p>
                 </div>
                 <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
               </div>
@@ -939,8 +1029,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: 'nada', label: 'Sin superficie', price: null },
-                  { id: 'metacrilato', label: 'Metacrilato', price: '+35€' },
-                  { id: 'cristal', label: 'Cristal', price: '+55€' },
+                  { id: 'metacrilato', label: 'Metacrilato', price: '+xx€' },
+                  { id: 'cristal', label: 'Cristal', price: '+xx€' },
                 ].map(opt => (
                   <button
                     key={opt.id}
@@ -957,7 +1047,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="flex justify-between items-center py-2">
             <div>
               <p className="text-base text-foreground font-light">Entrega express 7 días</p>
-              <p className="text-xs text-muted-foreground">+35€</p>
+              <p className="text-xs text-muted-foreground">+xx€</p>
             </div>
             <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
           </div>

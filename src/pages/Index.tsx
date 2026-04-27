@@ -4,10 +4,9 @@ import TrustBanner from "@/components/TrustBanner";
 import ProductsPreview from "@/components/ProductsPreview";
 import HowItWorks from "@/components/HowItWorks";
 import WhyTiroRiro from "@/components/WhyTiroRiro";
-import TeamSection from "@/components/TeamSection";
 import Testimonials from "@/components/Testimonials";
-import FAQSection from "@/components/FAQSection";
 import ContactForm from "@/components/ContactForm";
+import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 
 const Index = () => (
@@ -17,12 +16,11 @@ const Index = () => (
       <HeroSection />
       <TrustBanner />
       <ProductsPreview />
-      <TeamSection />
-      <WhyTiroRiro />
       <HowItWorks />
+      <WhyTiroRiro />
       <Testimonials />
-      <FAQSection />
       <ContactForm />
+      <FAQSection />
     </main>
     <Footer />
   </>

@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Award, Heart, Truck, ChevronDown } from "lucide-react";
 
+// Module-level flag: survives SPA navigation but resets on page reload
+let animationHasPlayed = false;
+
 const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
   const [displayed, setDisplayed] = useState(skip ? text : "");
   const [started, setStarted] = useState(skip);
@@ -27,12 +30,12 @@ const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [hasSeenAnimation] = useState(() => {
-    return typeof window !== "undefined" && sessionStorage.getItem("hero_animation_seen") === "true";
-  });
+  // Skip animation if already played in this browser session (SPA navigation)
+  // But on page reload, animationHasPlayed resets to false automatically
+  const [skipAnimation] = useState(() => animationHasPlayed);
 
   useEffect(() => {
-    sessionStorage.setItem("hero_animation_seen", "true");
+    animationHasPlayed = true;
   }, []);
 
   useEffect(() => {
@@ -46,14 +49,17 @@ const HeroSection = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    // iOS Safari attributes
+    // iOS Safari requires these attributes
     video.setAttribute("x-webkit-airplay", "deny");
     video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("playsinline", "");
 
     const attemptPlay = () => {
-      video.play().catch(() => {});
+      const p = video.play();
+      if (p !== undefined) p.catch(() => {});
     };
 
+    // Try to play immediately if ready
     if (video.readyState >= 2) {
       attemptPlay();
     } else {
@@ -61,27 +67,33 @@ const HeroSection = () => {
       video.addEventListener("loadeddata", attemptPlay, { once: true });
     }
 
+    // Re-play when tab becomes visible
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        video.play().catch(() => {});
-      }
+      if (!document.hidden && video.paused) attemptPlay();
     };
-
     document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // On mobile: allow user touch to trigger play (low power mode fallback)
+    const handleTouch = () => {
+      if (video.paused) attemptPlay();
+    };
+    document.addEventListener("touchstart", handleTouch, { once: true, passive: true });
+
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("touchstart", handleTouch);
     };
   }, []);
 
-  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, hasSeenAnimation);
-  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, hasSeenAnimation);
-  const [showRest, setShowRest] = useState(hasSeenAnimation);
+  const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, skipAnimation);
+  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, skipAnimation);
+  const [showRest, setShowRest] = useState(skipAnimation);
 
   useEffect(() => {
-    if (hasSeenAnimation) return;
+    if (skipAnimation) return;
     const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
     return () => clearTimeout(t);
-  }, [isMobile, hasSeenAnimation]);
+  }, [isMobile, skipAnimation]);
 
   return (
     <section className="relative mt-20 md:mt-0 h-[76vh] md:h-auto md:min-h-screen flex items-center justify-center overflow-hidden">
@@ -93,7 +105,6 @@ const HeroSection = () => {
           loop
           playsInline
           preload="auto"
-          poster="/hero-portada.jpg"
           className="w-full h-full object-cover object-center"
           onPause={() => {
             videoRef.current?.play().catch(() => {});
@@ -119,9 +130,9 @@ const HeroSection = () => {
         </div>
 
         <h1 className="font-serif text-3xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
-          <span>{part1 || "\u00A0"}</span>
+          <span>{part1 || " "}</span>
           <br />
-          <em className="italic font-light">{part2 || "\u00A0"}</em>
+          <em className="italic font-light">{part2 || " "}</em>
         </h1>
 
         <div
@@ -137,13 +148,13 @@ const HeroSection = () => {
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               to="/configurador"
-              className="btn-sweep hidden md:inline-flex px-8 py-4 bg-[#1a4b5b] text-white text-xs font-medium tracking-[0.1em] uppercase hover:bg-[#1a4b5b]/85 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
+              className="btn-sweep hidden md:inline-flex px-8 py-4 bg-[#1a4b5b] text-white text-xs font-medium tracking-[0.1em] uppercase hover:bg-[#1a4b5b]/85 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg rounded-sm"
             >
               <span className="relative z-10">Personaliza el tuyo</span>
             </Link>
             <Link
               to="/productos"
-              className="btn-sweep px-6 py-3 md:px-8 md:py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg"
+              className="btn-sweep px-6 py-3 md:px-8 md:py-4 bg-[#1a4b5b] text-white md:bg-white md:text-foreground text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg rounded-sm"
             >
               <span className="relative z-10">Ver productos</span>
             </Link>
@@ -157,7 +168,7 @@ const HeroSection = () => {
           <div className="hidden md:flex justify-center mt-10">
             <button
               onClick={() => document.getElementById("productos-home")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-6 py-2.5 text-xs font-light"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-6 py-2.5 text-xs font-light rounded-sm"
               aria-label="Sigue bajando"
             >
               <span className="relative z-10">Sigue bajando</span>

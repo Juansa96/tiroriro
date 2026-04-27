@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/productos", label: "Productos" },
   { to: "/configurador", label: "Diseña el tuyo" },
-  { to: "/#equipo", label: "Quiénes somos" },
+  { to: "/nosotros", label: "Quiénes somos" },
   { to: "/contacto", label: "Solicita información", highlight: true },
 ];
 

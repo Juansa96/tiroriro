@@ -119,7 +119,7 @@ const ContactForm = () => {
   }
 
   const hasError = (field: string) => touched[field] && errors[field];
-  const inputBase = "w-full bg-secondary border border-border px-4 py-3 text-base text-foreground placeholder:text-sm placeholder:text-muted-foreground/40 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
+  const inputBase = "w-full bg-secondary border border-border rounded-md px-4 py-3 text-base text-foreground placeholder:text-sm placeholder:text-muted-foreground/40 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
 
   return (
     <section id="contacto" className="py-20 md:py-32 px-6 bg-background">
@@ -190,7 +190,7 @@ const ContactForm = () => {
                 const active = selectedProducts.includes(p);
                 return (
                   <button key={p} type="button" onClick={() => toggleProduct(p)} aria-pressed={active}
-                    className={`min-h-[40px] px-4 py-2 text-sm border transition-all ${
+                    className={`min-h-[40px] px-4 py-2 text-sm border rounded-md transition-all ${
                       active ? 'border-accent-warm bg-accent-warm/10 text-accent-warm font-medium' : 'border-border bg-background text-foreground hover:border-foreground/60'
                     }`}
                   >

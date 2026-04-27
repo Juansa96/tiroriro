@@ -11,6 +11,7 @@ import ProductsPage from "./pages/ProductsPage";
 import CategoryPage from "./pages/CategoryPage";
 import ConfiguratorPage from "./pages/ConfiguratorPage";
 import TryOnPage from "./pages/TryOnPage";
+import TeamPage from "./pages/TeamPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
@@ -45,8 +46,10 @@ const App = () => (
           ))}
           <Route path="/configurador" element={<ConfiguratorPage />} />
           <Route path="/probador" element={<TryOnPage />} />
+          <Route path="/nosotros" element={<TeamPage />} />
+          <Route path="/equipo" element={<TeamPage />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
-          <Route path="/quienes-somos" element={<Navigate to="/#equipo" replace />} />
+          <Route path="/quienes-somos" element={<Navigate to="/nosotros" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
           <Route path="/aviso-legal" element={<LegalPage />} />
           <Route path="/cookies" element={<CookiesPage />} />

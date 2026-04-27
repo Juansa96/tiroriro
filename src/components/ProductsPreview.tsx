@@ -12,13 +12,6 @@ const PRODUCTS_DATA = [
   { id: "mesas-centro", name: "Mesas de centro", image: "/productos-fotos/crops/puff-2497-1-tight.png", alt: "Mesa de centro tapizada de Tiroriro", link: "/productos/mesas-centro" },
 ];
 
-const getObjectPosition = (id: string) => {
-  if (id === "bancos") return "center center";
-  if (id === "puffs") return "center center";
-  if (id === "mesas-centro") return "center center";
-  return undefined;
-};
-
 const ProductsPreview = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -54,7 +47,7 @@ const ProductsPreview = () => {
           <button
             onClick={() => api?.scrollPrev()}
             aria-label="Anterior"
-            className="absolute -left-5 md:-left-14 top-[40%] z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
+            className="hidden md:flex absolute -left-14 top-[45%] z-10 h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
           >
             <ChevronLeft size={18} />
           </button>
@@ -62,7 +55,7 @@ const ProductsPreview = () => {
           <button
             onClick={() => api?.scrollNext()}
             aria-label="Siguiente"
-            className="absolute -right-5 md:-right-14 top-[40%] z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
+            className="hidden md:flex absolute -right-14 top-[45%] z-10 h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
           >
             <ChevronRight size={18} />
           </button>
@@ -72,27 +65,26 @@ const ProductsPreview = () => {
             opts={{ align: "center", loop: true, skipSnaps: false }}
             className="px-4 md:px-0"
           >
+            {/* Mobile: shows 80% of card + peek of adjacent cards */}
             <CarouselContent className="-ml-3 md:-ml-6">
               {PRODUCTS_DATA.map((product) => (
-                <CarouselItem key={product.id} className="pl-2 basis-[92%] md:pl-6 md:basis-1/3">
+                <CarouselItem key={product.id} className="pl-3 basis-[80%] md:pl-6 md:basis-1/3">
                   <Link to={product.link} className="block group h-full">
                     <div className="relative overflow-hidden border border-border/40 rounded-lg">
                       <img
                         src={product.image}
                         alt={product.alt}
-                        className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        style={{ objectPosition: getObjectPosition(product.id) }}
+                        className="w-full aspect-[3/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                         loading="lazy"
                         decoding="async"
                       />
-                      <div className="absolute inset-x-0 bottom-0 md:hidden bg-gradient-to-t from-black/60 via-black/15 to-transparent px-4 pb-4 pt-10 pointer-events-none">
+                      {/* Gradient + name — always visible on mobile */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-4 pb-5 pt-14 pointer-events-none">
                         <h3 className="font-serif text-xl font-medium text-white leading-tight">{product.name}</h3>
+                        <span className="inline-block mt-1 text-xs text-white/70 tracking-wider uppercase">Explorar →</span>
                       </div>
-                      <div className="absolute inset-0 bg-black/10 md:bg-black/0 md:group-hover:bg-black/25 transition-colors duration-500 flex items-center justify-center pointer-events-none">
-                        <span className="text-white text-sm tracking-widest uppercase opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">
-                          Explorar →
-                        </span>
-                      </div>
+                      {/* Desktop hover overlay */}
+                      <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/20 transition-colors duration-500 pointer-events-none" />
                     </div>
                     <div className="mt-4 h-12 items-start hidden md:flex">
                       <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">{product.name}</h3>
