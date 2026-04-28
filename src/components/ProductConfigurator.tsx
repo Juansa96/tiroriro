@@ -91,9 +91,9 @@ const CUSHION_SHAPES = [
   {
     id: "rodiles", name: "Rodiles", subtitle: "Cuadrado",
     svgPath: <rect x="10" y="10" width="40" height="40" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
-    sizes: ["40×40 cm", "45×45 cm", "60×60 cm"],
+    sizes: ["40×40 cm", "45×45 cm", "50×50 cm"],
     getDetails: (sz: string) => {
-      if (sz.includes("60")) return { shape: "cuadrada", widthCm: 60, heightCm: 60 };
+      if (sz.includes("50")) return { shape: "cuadrada", widthCm: 50, heightCm: 50 };
       if (sz.includes("45")) return { shape: "cuadrada", widthCm: 45, heightCm: 45 };
       return { shape: "cuadrada", widthCm: 40, heightCm: 40 };
     },
@@ -101,9 +101,8 @@ const CUSHION_SHAPES = [
   {
     id: "covadonga", name: "Covadonga", subtitle: "Rectangular",
     svgPath: <rect x="4" y="14" width="52" height="32" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
-    sizes: ["50×30 cm", "60×40 cm", "70×45 cm"],
+    sizes: ["50×30 cm", "60×40 cm"],
     getDetails: (sz: string) => {
-      if (sz.includes("70")) return { shape: "rectangular", widthCm: 70, heightCm: 45 };
       if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
       return { shape: "rectangular", widthCm: 50, heightCm: 30 };
     },
@@ -112,6 +111,7 @@ const CUSHION_SHAPES = [
     id: "torimbia", name: "Torimbia", subtitle: "Redondo",
     svgPath: <circle cx="30" cy="30" r="20" fill="none" stroke="currentColor" strokeWidth="1.5" />,
     sizes: ["Ø35 cm", "Ø45 cm", "Ø55 cm"],
+    comingSoon: true,
     getDetails: (sz: string) => {
       if (sz.includes("55")) return { shape: "circular", widthCm: 55, heightCm: 55 };
       if (sz.includes("45")) return { shape: "circular", widthCm: 45, heightCm: 45 };
@@ -121,12 +121,8 @@ const CUSHION_SHAPES = [
   {
     id: "gulpiyuri", name: "Gulpiyuri", subtitle: "Rulo",
     svgPath: <><rect x="4" y="20" width="52" height="20" rx="10" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="4" cy="30" rx="5" ry="10" fill="none" stroke="currentColor" strokeWidth="1.5" /></>,
-    sizes: ["Ø15×40 cm", "Ø15×55 cm", "Ø15×65 cm"],
-    getDetails: (sz: string) => {
-      if (sz.includes("65")) return { shape: "cilindro", widthCm: 65, heightCm: 15 };
-      if (sz.includes("55")) return { shape: "cilindro", widthCm: 55, heightCm: 15 };
-      return { shape: "cilindro", widthCm: 40, heightCm: 15 };
-    },
+    sizes: ["13×90 cm"],
+    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 90, heightCm: 13 }),
   },
 ];
 
@@ -178,6 +174,14 @@ function parseCm(selectVal: string): number | undefined {
   if (!selectVal) return undefined;
   const n = parseInt(selectVal);
   return isNaN(n) ? undefined : n;
+}
+
+function parseLampSize(sz: string): { widthCm: number; heightCm: number } {
+  const diameter = sz.match(/Ø(\d+)/);
+  if (diameter) { const d = parseInt(diameter[1]); return { widthCm: d, heightCm: d }; }
+  const dims = sz.match(/(\d+)[×x](\d+)/);
+  if (dims) return { widthCm: parseInt(dims[1]), heightCm: parseInt(dims[2]) };
+  return { widthCm: 30, heightCm: 30 };
 }
 
 function parseCushionDetails(cushionShape: string, cushionSize: string): { shape: string; widthCm: number; heightCm: number } {
@@ -307,7 +311,7 @@ const ProductConfigurator = () => {
       if (tipo === 'puff' && !forma) setShape('cuadrado');
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puff');
-      if (tipo === 'pantalla' && !forma) setShape('conica');
+      if (tipo === 'pantalla' && !forma) setShape('cono');
       if (isMobile) {
         setOpenAccordion('measures');
       } else {
@@ -321,7 +325,7 @@ const ProductConfigurator = () => {
     const defaultShape = newType === 'puff' ? 'cuadrado'
       : newType === 'banco' ? 'madera'
       : newType === 'mesa' ? 'tipo-puff'
-      : newType === 'pantalla' ? 'conica'
+      : newType === 'pantalla' ? 'cono'
       : 'recto';
     setShape(defaultShape);
     setBedWidth('');
@@ -333,7 +337,7 @@ const ProductConfigurator = () => {
     setPuffHeight('');
     setCushionShape('');
     setCushionSize('');
-    setLampDiameter('');
+    setLampDiameter(newType === 'pantalla' ? (LAMP_SIZES['cono'][1]) : '');
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
@@ -368,11 +372,14 @@ const ProductConfigurator = () => {
     ? parseCushionDetails(cushionShape, cushionSize)
     : null;
 
+  const lampSizeParsed = productType === 'pantalla' && lampDiameter ? parseLampSize(lampDiameter) : null;
+
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
     : productType === 'banco' ? parseCm(benchLength)
     : productType === 'mesa' ? parseCm(benchLength)
     : productType === 'puff' ? (parseCm(puffDiameter) ?? 60)
     : productType === 'cojin' ? cushionDetails?.widthCm
+    : productType === 'pantalla' ? (lampSizeParsed?.widthCm ?? 30)
     : undefined;
 
   // For puff cuadrado (Patos): height = width to make it perfectly cubic
@@ -381,6 +388,7 @@ const ProductConfigurator = () => {
     : productType === 'mesa' ? parseCm(benchHeight)
     : productType === 'puff' ? (shape === 'cuadrado' ? widthCm : parseCm(puffHeight))
     : productType === 'cojin' ? cushionDetails?.heightCm
+    : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
     : undefined;
 
   const depthCm = productType === 'mesa' ? parseCm(benchDepth) : undefined;
@@ -558,7 +566,7 @@ const ProductConfigurator = () => {
     </div>
   );
 
-  const needsVivo = (finish === 'vivo-simple' || finish === 'vivo-doble') && productType !== 'pantalla';
+  const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
 
   const productCard = (type: ProductType, label: string) => (
     <button
@@ -965,18 +973,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <span className="text-[10px] text-muted-foreground">Cúbico · Galicia</span>
                     </div>
                   </button>
-                  <button
-                    onClick={() => setShape('circular')}
-                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'circular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
-                  >
+                  <div className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-50 cursor-not-allowed">
                     <svg viewBox="0 0 40 40" className="w-8 h-8">
                       <circle cx="20" cy="20" r="14" fill="none" stroke="currentColor" strokeWidth="1.5" />
                     </svg>
                     <div>
                       <span className="text-xs font-medium block">Monteferro</span>
-                      <span className="text-[10px] text-muted-foreground">Redondo · Galicia</span>
+                      <span className="text-[10px] text-muted-foreground">Próximamente</span>
                     </div>
-                  </button>
+                  </div>
                 </div>
               </div>
               <div>
@@ -1060,17 +1065,27 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Asturias</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {CUSHION_SHAPES.map(s => (
-                    <button
-                      key={s.id}
-                      onClick={() => { setCushionShape(s.id); setCushionSize(''); }}
-                      className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${cushionShape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
-                    >
-                      <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>
-                      <div>
-                        <span className="text-xs font-medium block">{s.name}</span>
-                        <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                    (s as { comingSoon?: boolean }).comingSoon ? (
+                      <div key={s.id} className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-50 cursor-not-allowed">
+                        <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                        </div>
                       </div>
-                    </button>
+                    ) : (
+                      <button
+                        key={s.id}
+                        onClick={() => { setCushionShape(s.id); setCushionSize(''); }}
+                        className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${cushionShape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                      >
+                        <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                        </div>
+                      </button>
+                    )
                   ))}
                 </div>
               </div>
@@ -1101,7 +1116,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   {LAMPSHADE_SHAPES.map(s => (
                     <button
                       key={s.id}
-                      onClick={() => { setShape(s.id); setLampDiameter(''); }}
+                      onClick={() => { setShape(s.id); const sizes = LAMP_SIZES[s.id] || LAMP_SIZES.cono; setLampDiameter(sizes[Math.floor(sizes.length / 2)]); }}
                       className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                     >
                       <svg viewBox="0 0 60 44" className="w-12 h-9">

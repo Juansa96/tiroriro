@@ -15,15 +15,6 @@ const PRODUCTS_DATA = [
     comingSoon: false,
   },
   {
-    id: "bancos",
-    name: "Bancos entelados",
-    badge: "Próximamente",
-    image: "/productos-fotos/bancos/IMG_2552.webp",
-    alt: "Banco entelado a medida de Tiroriro",
-    link: "/productos/bancos",
-    comingSoon: true,
-  },
-  {
     id: "cojines",
     name: "Cojines y almohadones",
     badge: "Artesanal",

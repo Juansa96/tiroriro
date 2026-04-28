@@ -47,6 +47,14 @@ const CATEGORIES = [
     comingSoon: false,
   },
   {
+    id: "percheros",
+    name: "Percheros",
+    tagline: "1 modelo · Próximamente",
+    image: "",
+    priceLabel: "Desde xx€",
+    comingSoon: true,
+  },
+  {
     id: "bancos",
     name: "Bancos entelados",
     tagline: "Pie de cama · Entrada · Próximamente",
@@ -58,17 +66,27 @@ const CATEGORIES = [
 
 const imagePosition = (_id: string) => "center center";
 
-const BancosPlaceholder = () => (
-  <div className="w-full aspect-[3/4] max-h-72 bg-[#F0EDE8] flex flex-col items-center justify-center gap-3 relative overflow-hidden">
-    <svg viewBox="0 0 120 80" className="w-24 h-16 text-foreground/20" fill="none" stroke="currentColor" strokeWidth="1.2">
-      <rect x="10" y="24" width="100" height="32" rx="3" />
-      <line x1="20" y1="56" x2="20" y2="70" />
-      <line x1="100" y1="56" x2="100" y2="70" />
-      <line x1="10" y1="38" x2="110" y2="38" strokeDasharray="4 3" />
-    </svg>
-    <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium">Próximamente</span>
-  </div>
-);
+const PLACEHOLDERS: Record<string, JSX.Element> = {
+  bancos: (
+    <div className="w-full aspect-[3/4] max-h-72 bg-[#F0EDE8] flex flex-col items-center justify-center gap-3">
+      <svg viewBox="0 0 120 80" className="w-24 h-16 text-foreground/20" fill="none" stroke="currentColor" strokeWidth="1.2">
+        <rect x="10" y="24" width="100" height="32" rx="3" />
+        <line x1="20" y1="56" x2="20" y2="70" />
+        <line x1="100" y1="56" x2="100" y2="70" />
+        <line x1="10" y1="38" x2="110" y2="38" strokeDasharray="4 3" />
+      </svg>
+    </div>
+  ),
+  percheros: (
+    <div className="w-full aspect-[3/4] max-h-72 bg-[#F0EDE8] flex flex-col items-center justify-center gap-3">
+      <svg viewBox="0 0 80 80" className="w-20 h-20 text-foreground/20" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+        <path d="M 40 18 Q 40 10 47 10 Q 56 10 56 18 Q 56 25 40 33" />
+        <path d="M 40 33 L 8 56 M 40 33 L 72 56" />
+        <line x1="6" y1="56" x2="74" y2="56" />
+      </svg>
+    </div>
+  ),
+};
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
   const [hovered, setHovered] = useState(false);
@@ -76,30 +94,29 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
   if (cat.comingSoon) {
     return (
       <AnimatedSection delay={index * 0.08}>
-        <Link to={`/productos/${cat.id}`} className="block opacity-80">
+        <Link to={`/productos/${cat.id}`} className="block">
           <div className="relative overflow-hidden border border-border/40 rounded-lg">
             {cat.image ? (
               <img
                 src={cat.image}
                 alt={cat.name}
-                className="w-full aspect-[3/4] object-cover max-h-72 grayscale"
+                className="w-full aspect-[3/4] object-cover max-h-72 grayscale opacity-70"
                 style={{ objectPosition: imagePosition(cat.id) }}
                 loading="lazy"
                 decoding="async"
               />
             ) : (
-              <BancosPlaceholder />
+              PLACEHOLDERS[cat.id] ?? PLACEHOLDERS.bancos
             )}
-            <div className="absolute inset-0 bg-foreground/30 flex flex-col items-center justify-center gap-2">
-              <Clock size={22} className="text-white" />
-              <span className="text-white text-xs tracking-[0.22em] uppercase font-medium border border-white/50 px-4 py-2">
+            <div className="absolute top-3 right-3">
+              <span className="flex items-center gap-1 text-[9px] tracking-[0.18em] uppercase font-medium px-2.5 py-1 rounded-full bg-foreground/75 text-background">
+                <Clock size={9} />
                 Próximamente
               </span>
-              <span className="text-white/70 text-[11px] font-light">Muy pronto disponible</span>
             </div>
           </div>
           <div className="mt-4 p-1">
-            <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground/50 leading-tight">
+            <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground/55 leading-tight">
               {cat.name}
             </h3>
             <p className="text-xs text-muted-foreground/60 font-light mt-1 tracking-wide">{cat.tagline}</p>

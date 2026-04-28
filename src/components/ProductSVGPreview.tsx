@@ -757,45 +757,78 @@ const LampshadeSVG = ({
   finish,
   vivoColor,
   forma,
+  widthCm,
+  heightCm,
 }: {
   color: string;
   fabricImage?: string;
   finish: string;
   vivoColor: string;
   forma?: string;
+  widthCm?: number;
+  heightCm?: number;
 }) => {
   const patternId = useId();
   const clipId = useId();
-  const shape = forma || "conica";
+  const shape = forma || "cono";
 
-  // Build paths for each lampshade shape
   const getPath = () => {
     switch (shape) {
-      // Almanzor — cilindro (rectangle, same width top and bottom)
+      // Almanzor — cilindro: curved top+bottom edges to read as cylinder
       case "cilindro":
-        return { front: "M 70 50 L 230 50 L 230 170 L 70 170 Z", top: "M 70 50 L 230 50 L 224 44 L 76 44 Z", side: "M 230 50 L 230 170 L 224 164 L 224 44 Z" };
-      // La Galana — pirámide (square-ish trapezoid, close to pyramid from front)
+        return {
+          front: "M 70 56 Q 150 50 230 56 L 230 168 Q 150 174 70 168 Z",
+          top:   "M 70 56 Q 150 50 230 56 L 224 50 Q 150 44 76 50 Z",
+          side:  "M 230 56 L 224 50 L 224 162 L 230 168 Z",
+        };
+      // La Galana — pirámide
       case "piramide":
-        return { front: "M 90 60 L 210 60 L 230 170 L 70 170 Z", top: "M 90 60 L 210 60 L 204 54 L 96 54 Z", side: "M 210 60 L 230 170 L 224 164 L 204 54 Z" };
-      // Tormes — cuadrado (square, straight sides)
+        return {
+          front: "M 95 62 L 205 62 L 228 170 L 72 170 Z",
+          top:   "M 95 62 L 205 62 L 199 56 L 101 56 Z",
+          side:  "M 205 62 L 228 170 L 222 164 L 199 56 Z",
+        };
+      // Tormes — cuadrado
       case "cuadrado":
-        return { front: "M 85 55 L 215 55 L 215 170 L 85 170 Z", top: "M 85 55 L 215 55 L 209 49 L 91 49 Z", side: "M 215 55 L 215 170 L 209 164 L 209 49 Z" };
-      // La Serrota — rectángulo (wide and shallow)
+        return {
+          front: "M 88 58 L 212 58 L 212 168 L 88 168 Z",
+          top:   "M 88 58 L 212 58 L 206 52 L 94 52 Z",
+          side:  "M 212 58 L 206 52 L 206 162 L 212 168 Z",
+        };
+      // La Serrota — rectángulo (wide and shallow, clearly 3D)
       case "rectangulo":
-        return { front: "M 55 82 L 245 82 L 240 160 L 60 160 Z", top: "M 55 82 L 245 82 L 239 76 L 61 76 Z", side: "M 245 82 L 240 160 L 234 154 L 239 76 Z" };
-      // La Paramera — ovalado (wide shallow ellipse outline)
+        return {
+          front: "M 58 88 L 242 88 L 242 162 L 58 162 Z",
+          top:   "M 58 88 L 242 88 L 236 82 L 64 82 Z",
+          side:  "M 242 88 L 236 82 L 236 156 L 242 162 Z",
+        };
+      // La Paramera — ovalado
       case "ovalado":
-        return { front: "M 75 72 Q 150 58 225 72 L 230 158 Q 150 172 70 158 Z", top: "M 75 72 Q 150 58 225 72 L 219 66 Q 150 52 81 66 Z", side: "M 225 72 L 230 158 L 224 152 L 219 66 Z" };
-      // Gredos — cono (classic lampshade: narrow top, wide bottom)
+        return {
+          front: "M 78 74 Q 150 60 222 74 L 226 158 Q 150 172 74 158 Z",
+          top:   "M 78 74 Q 150 60 222 74 L 216 68 Q 150 54 84 68 Z",
+          side:  "M 222 74 L 216 68 L 220 152 L 226 158 Z",
+        };
+      // Gredos — cono
       case "cono":
       default:
-        return { front: "M 108 50 L 192 50 L 230 170 L 70 170 Z", top: "M 108 50 L 192 50 L 186 44 L 114 44 Z", side: "M 192 50 L 230 170 L 224 164 L 186 44 Z" };
+        return {
+          front: "M 110 52 L 190 52 L 228 170 L 72 170 Z",
+          top:   "M 110 52 L 190 52 L 184 46 L 116 46 Z",
+          side:  "M 190 52 L 228 170 L 222 164 L 184 46 Z",
+        };
     }
   };
 
   const paths = getPath();
   const topColor = lighten(color, 16);
   const sideColor = darken(color, 18);
+
+  // Scale shape based on selected size dimensions
+  const refW = shape === "rectangulo" || shape === "ovalado" ? 50 : 30;
+  const refH = shape === "rectangulo" || shape === "ovalado" ? 25 : 30;
+  const scaleW = scaleRange(widthCm ?? refW, refW * 0.55, refW * 1.45, 0.76, 1.24);
+  const scaleH = scaleRange(heightCm ?? refH, refH * 0.55, refH * 1.45, 0.78, 1.22);
 
   return (
     <svg viewBox="0 0 300 230" className="w-full max-w-[280px] mx-auto">
@@ -805,26 +838,29 @@ const LampshadeSVG = ({
           <path d={paths.front} />
         </clipPath>
       </defs>
-      <ellipse cx="153" cy="184" rx="80" ry="8" fill="rgba(0,0,0,0.07)" />
-      {/* Side face */}
-      <path d={paths.side} fill={patternFill(patternId, sideColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-      <path d={paths.side} fill="rgba(0,0,0,0.10)" />
-      {/* Top face */}
-      <path d={paths.top} fill={patternFill(patternId, topColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-      <path d={paths.top} fill="rgba(255,255,255,0.15)" />
-      {/* Front face */}
-      <path d={paths.front} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-      {/* Light diffusion effect */}
-      <path d={paths.front} fill="rgba(255,255,255,0.06)" />
-      {/* Vivo */}
-      {finish === "vivo-simple" && (
-        <g clipPath={`url(#ls-${clipId})`}>
-          <path d={paths.front} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-        </g>
-      )}
-      {/* Base ring */}
-      <ellipse cx="150" cy="170" rx="80" ry="6" fill="rgba(0,0,0,0.08)" />
-      <ellipse cx="150" cy="50" rx="50" ry="4" fill="rgba(0,0,0,0.08)" />
+      {/* Floor shadow only */}
+      <ellipse cx="153" cy="188" rx="82" ry="8" fill="rgba(0,0,0,0.07)" />
+      <g style={{ transform: `scale(${scaleW}, ${scaleH})`, transformOrigin: "150px 115px", transition: "transform 0.4s ease" }}>
+        {/* Side face */}
+        <path d={paths.side} fill={patternFill(patternId, sideColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <path d={paths.side} fill="rgba(0,0,0,0.10)" />
+        {/* Top face */}
+        <path d={paths.top} fill={patternFill(patternId, topColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <path d={paths.top} fill="rgba(255,255,255,0.15)" />
+        {/* Front face */}
+        <path d={paths.front} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <path d={paths.front} fill="rgba(255,255,255,0.05)" />
+        {/* Ribete — all sides */}
+        {finish === "vivo-simple" && (
+          <>
+            <path d={paths.side} fill="none" stroke={vivoColor} strokeWidth="2.4" strokeLinejoin="round" />
+            <path d={paths.top} fill="none" stroke={vivoColor} strokeWidth="2.4" strokeLinejoin="round" />
+            <g clipPath={`url(#ls-${clipId})`}>
+              <path d={paths.front} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+            </g>
+          </>
+        )}
+      </g>
     </svg>
   );
 };
@@ -927,6 +963,8 @@ const ProductSVGPreview = ({
           finish={finish}
           vivoColor={vc}
           forma={forma}
+          widthCm={widthCm}
+          heightCm={heightCm}
         />
       )}
     </div>

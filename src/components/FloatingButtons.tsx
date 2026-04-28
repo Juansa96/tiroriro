@@ -14,8 +14,8 @@ const FloatingButtons = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
 
-      {/* Instagram — solo desktop */}
-      <div className="hidden md:block relative">
+      {/* Instagram */}
+      <div className="relative">
         {igHovered && (
           <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-foreground text-background text-xs rounded px-2 py-1 whitespace-nowrap">
             Síguenos en Instagram

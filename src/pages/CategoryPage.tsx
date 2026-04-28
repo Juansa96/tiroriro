@@ -68,15 +68,14 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   },
   cojines: {
     title: "Cojines y almohadones",
-    subtitle: "Detalles tapizados a medida para camas, bancos, sofás o cualquier rincón que necesite un toque especial.",
+    subtitle: "Tapizados a medida para camas, bancos o sofás.",
     models: [
-      { name: "Rodiles — Cuadrado 45×45", photo: "/productos-fotos/almohadones/IMG_2523.webp", desc: "El tamaño clásico. Queda bien en cualquier cama, banco o sofá.", priceLabel: "Desde xx€" },
-      { name: "Covadonga — Rectangular 50×30", photo: "/productos-fotos/almohadones/IMG_2514.webp", desc: "Rectangular, ligero y muy versátil para sumar apoyo o un acento decorativo.", priceLabel: "Desde xx€" },
-      { name: "Rodiles — Grande 60×60", photo: "/productos-fotos/almohadones/IMG_2523.webp", desc: "Generoso y mullido. Para camas grandes y sofás amplios.", priceLabel: "Desde xx€" },
-      { name: "Set de 2 coordinados", photo: "/productos-fotos/almohadones/IMG_2524.webp", desc: "Dos cojines en la misma tela. El combo perfecto.", priceLabel: "Desde xx€" },
-      { name: "Torimbia — Redondo", photo: "/productos-fotos/almohadones/IMG_2525.webp", desc: "Pieza statement: tela, vivo y remate trabajados a mano.", priceLabel: "Desde xx€" },
-      { name: "Cojín con vivo", photo: "/productos-fotos/almohadones/IMG_2539.webp", desc: "Detalle de costura que convierte un cojín en una pieza de autor.", priceLabel: "Desde xx€" },
-      { name: "Gulpiyuri — Rulo", photo: "/productos-fotos/almohadones/IMG_2545.webp", desc: "Combinable con tu cabecero o banco en la misma tela.", priceLabel: "Desde xx€" },
+      { name: "Rodiles — Cuadrado", photo: "/productos-fotos/almohadones/IMG_2523.webp", desc: "40×40 · 45×45 · 50×50 cm", priceLabel: "Desde xx€", configParam: "rodiles" },
+      { name: "Covadonga — Rectangular", photo: "/productos-fotos/almohadones/IMG_2514.webp", desc: "50×30 · 60×40 cm", priceLabel: "Desde xx€", configParam: "covadonga" },
+      { name: "Set de 2 coordinados", photo: "/productos-fotos/almohadones/IMG_2524.webp", desc: "Dos cojines en la misma tela.", priceLabel: "Desde xx€" },
+      { name: "Cojín con vivo", photo: "/productos-fotos/almohadones/IMG_2539.webp", desc: "Ribete que convierte el cojín en una pieza de autor.", priceLabel: "Desde xx€" },
+      { name: "Gulpiyuri — Rulo", photo: "/productos-fotos/almohadones/IMG_2545.webp", desc: "13×90 cm · Combinable con cabecero o banco.", priceLabel: "Desde xx€", configParam: "gulpiyuri" },
+      { name: "Torimbia — Redondo", photo: "/productos-fotos/almohadones/IMG_2525.webp", desc: "Cojín circular tapizado a mano.", priceLabel: "Desde xx€", comingSoon: true },
     ],
   },
   puffs: {
@@ -86,9 +85,10 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Monteferro",
         photo: "/productos-fotos/crops/puff-2497-tight.png",
-        desc: "Redondo, ligero visualmente y fácil de mover de un rincón a otro. Su forma circular lo convierte en una pieza suave que encaja en cualquier ambiente. Colección Galicia.",
+        desc: "Redondo · Colección Galicia.",
         priceLabel: "Desde xx€",
         configParam: "circular",
+        comingSoon: true,
       },
       {
         name: "Patos",
@@ -176,6 +176,7 @@ const productTypeMap: Record<string, string> = {
   puffs: "puff",
   "mesas-centro": "mesa",
   "pantallas-lampara": "pantalla",
+  percheros: "perchero",
 };
 
 const imagePosition = (category: string) => {
