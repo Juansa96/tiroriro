@@ -125,6 +125,7 @@ const HeroSection = () => {
             videoRef.current?.play().catch(() => {});
           }}
         >
+          <source src="/Herovideo.webm" type="video/webm" />
           <source src="/Herovideo.mp4" type="video/mp4" />
         </video>
       </div>
