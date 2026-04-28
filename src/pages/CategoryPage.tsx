@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import { ChevronRight, Clock } from "lucide-react";
+import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
 
 interface Model {
   name: string;
-  photo: string;
+  photos: string[];
   desc: string;
   priceLabel: string;
   configParam?: string;
@@ -21,36 +21,55 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     models: [
       {
         name: "Calobra",
-        photo: "/productos-fotos/cabeceros/IMG_2555.webp",
-        desc: "Forma rectangular clásica, de líneas rectas y remate horizontal. El más solicitado y el más versátil: encaja en cualquier estilo, desde el más contemporáneo al más clásico. Su silueta limpia y atemporal hace que toda la atención caiga sobre la tela y el acabado.",
+        photos: [
+          "/productos-fotos/cabeceros/IMG_2502.webp",
+          "/productos-fotos/cabeceros/IMG_2851.webp",
+          "/productos-fotos/cabeceros/IMG_2901.webp",
+        ],
+        desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
         priceLabel: "Desde xx€",
         configParam: "recto",
       },
       {
         name: "Pregonda",
-        photo: "/productos-fotos/cabeceros/IMG_2535.webp",
-        desc: "Remate en arco suave y continuo, que aporta calidez y movimiento sin renunciar a la elegancia. La curva única da profundidad al dormitorio y suaviza ambientes con mucho ángulo recto. Ideal si buscas algo especial sin que resulte recargado.",
+        photos: [
+          "/productos-fotos/cabeceros/IMG_2218.webp",
+          "/productos-fotos/cabeceros/IMG_2555.webp",
+        ],
+        desc: "Remate en arco suave. Aporta calidez sin renunciar a la elegancia.",
         priceLabel: "Desde xx€",
         configParam: "semicirculo",
       },
       {
         name: "Macarella",
-        photo: "/productos-fotos/cabeceros/IMG_2502.webp",
-        desc: "Corona simple con una sola ondulación central. La elevación en el centro crea un punto focal natural que enmarca la cabecera con personalidad. Un diseño con carácter propio que eleva cualquier cabecero con un toque escultórico sin perder elegancia.",
+        photos: [
+          "/productos-fotos/cabeceros/IMG_2652.webp",
+          "/productos-fotos/cabeceros/IMG_2869.webp",
+          "/productos-fotos/cabeceros/IMG_2886.webp",
+        ],
+        desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
         priceLabel: "Desde xx€",
         configParam: "corona-simple",
       },
       {
         name: "Conta",
-        photo: "/productos-fotos/cabeceros/IMG_2218.webp",
-        desc: "Corona doble con dos niveles de ondulación escalonada. Más elaborada y con una lectura visual más rica, para dormitorios que buscan un punto de distinción. El doble escalonado aporta profundidad y convierte el cabecero en la pieza protagonista del espacio.",
+        photos: [
+          "/productos-fotos/cabeceros/IMG_2535.webp",
+          "/productos-fotos/cabeceros/IMG_2653.webp",
+          "/productos-fotos/cabeceros/IMG_2858.webp",
+          "/productos-fotos/cabeceros/IMG_2866.webp",
+          "/productos-fotos/cabeceros/IMG_2891.webp",
+        ],
+        desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "Desde xx€",
         configParam: "corona-doble",
       },
       {
         name: "Barbaria",
-        photo: "/productos-fotos/cabeceros/IMG_2218.webp",
-        desc: "Corona triple, el modelo más trabajado de nuestra colección. Tres niveles de ondulación escalonada crean una silueta espectacular y de gran presencia. Pensada para quienes quieren un dormitorio con carácter máximo y un acabado de autor. Presencia máxima, artesanía pura.",
+        photos: [
+          "/productos-fotos/cabeceros/IMG_2654.webp",
+        ],
+        desc: "Corona triple. Tres niveles de ondulación para una silueta espectacular.",
         priceLabel: "Desde xx€",
         configParam: "corona-triple",
       },
@@ -61,59 +80,136 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista.",
     comingSoon: true,
     models: [
-      { name: "Banco Largo", photo: "/productos-fotos/bancos/IMG_2552.webp", desc: "Para el pie de la cama. Disponible de 80 a 160 cm.", priceLabel: "Desde xx€", comingSoon: true },
-      { name: "Banco Entrada", photo: "/productos-fotos/bancos/IMG_2554.webp", desc: "Más compacto, perfecto para el recibidor.", priceLabel: "Desde xx€", comingSoon: true },
-      { name: "Banco con Almacenaje", photo: "/productos-fotos/bancos/IMG_2491.webp", desc: "Tapa abatible con espacio interior. Funcional y bonito.", priceLabel: "Desde xx€", comingSoon: true },
+      {
+        name: "Oyambre",
+        photos: [
+          "/productos-fotos/bancos/IMG_2760.webp",
+          "/productos-fotos/bancos/IMG_2761.webp",
+          "/productos-fotos/bancos/IMG_2491.webp",
+        ],
+        desc: "Banco entelado de pie de cama. De 80 a 160 cm.",
+        priceLabel: "Desde xx€",
+        comingSoon: true,
+      },
+      {
+        name: "Gerra",
+        photos: [],
+        desc: "Con patas. Más compacto, perfecto para el recibidor.",
+        priceLabel: "Desde xx€",
+        comingSoon: true,
+      },
+      {
+        name: "Ris",
+        photos: [],
+        desc: "Baúl con tapa abatible y espacio interior.",
+        priceLabel: "Desde xx€",
+        comingSoon: true,
+      },
     ],
   },
   cojines: {
     title: "Cojines y almohadones",
     subtitle: "Tapizados a medida para camas, bancos o sofás.",
     models: [
-      { name: "Rodiles — Cuadrado", photo: "/productos-fotos/almohadones/IMG_2523.webp", desc: "40×40 · 45×45 · 50×50 cm", priceLabel: "Desde xx€", configParam: "rodiles" },
-      { name: "Covadonga — Rectangular", photo: "/productos-fotos/almohadones/IMG_2514.webp", desc: "50×30 · 60×40 cm", priceLabel: "Desde xx€", configParam: "covadonga" },
-      { name: "Set de 2 coordinados", photo: "/productos-fotos/almohadones/IMG_2524.webp", desc: "Dos cojines en la misma tela.", priceLabel: "Desde xx€" },
-      { name: "Cojín con vivo", photo: "/productos-fotos/almohadones/IMG_2539.webp", desc: "Ribete que convierte el cojín en una pieza de autor.", priceLabel: "Desde xx€" },
-      { name: "Gulpiyuri — Rulo", photo: "/productos-fotos/almohadones/IMG_2545.webp", desc: "13×90 cm · Combinable con cabecero o banco.", priceLabel: "Desde xx€", configParam: "gulpiyuri" },
-      { name: "Torimbia — Redondo", photo: "/productos-fotos/almohadones/IMG_2525.webp", desc: "Cojín circular tapizado a mano.", priceLabel: "Desde xx€", comingSoon: true },
+      {
+        name: "Rodiles — Cuadrado",
+        photos: [
+          "/productos-fotos/almohadones/IMG_2486.webp",
+          "/productos-fotos/almohadones/IMG_2523.webp",
+        ],
+        desc: "40×40 · 45×45 · 50×50 cm",
+        priceLabel: "Desde xx€",
+        configParam: "rodiles",
+      },
+      {
+        name: "Covadonga — Rectangular",
+        photos: [
+          "/productos-fotos/almohadones/IMG_2514.webp",
+          "/productos-fotos/almohadones/IMG_2539.webp",
+          "/productos-fotos/almohadones/IMG_2545.webp",
+        ],
+        desc: "50×30 · 60×40 cm",
+        priceLabel: "Desde xx€",
+        configParam: "covadonga",
+      },
+      {
+        name: "Set de 2 coordinados",
+        photos: [
+          "/productos-fotos/almohadones/IMG_2523.webp",
+          "/productos-fotos/almohadones/IMG_2514.webp",
+        ],
+        desc: "Dos cojines en la misma tela.",
+        priceLabel: "Desde xx€",
+      },
+      {
+        name: "Cojín con vivo",
+        photos: [
+          "/productos-fotos/almohadones/IMG_2539.webp",
+        ],
+        desc: "Ribete que convierte el cojín en una pieza de autor.",
+        priceLabel: "Desde xx€",
+      },
+      {
+        name: "Gulpiyuri — Rulo",
+        photos: [
+          "/productos-fotos/almohadones/IMG_2524.webp",
+          "/productos-fotos/almohadones/IMG_2525.webp",
+        ],
+        desc: "13×90 cm · Combinable con cabecero o banco.",
+        priceLabel: "Desde xx€",
+        configParam: "gulpiyuri",
+      },
+      {
+        name: "Torimbia — Redondo",
+        photos: [],
+        desc: "Cojín circular tapizado a mano.",
+        priceLabel: "Desde xx€",
+        comingSoon: true,
+      },
     ],
   },
   puffs: {
     title: "Puffs",
-    subtitle: "Tapizados a medida, versátiles y fáciles de mover. Pensados para acompañar la casa sin ocuparla.",
+    subtitle: "Tapizados a medida, versátiles y fáciles de mover.",
     models: [
       {
+        name: "Patos",
+        photos: [
+          "/productos-fotos/puff/IMG_2497.webp",
+        ],
+        desc: "Cúbico · Colección Galicia.",
+        priceLabel: "Desde xx€",
+        configParam: "cuadrado",
+      },
+      {
         name: "Monteferro",
-        photo: "/productos-fotos/crops/puff-2497-tight.png",
+        photos: [],
         desc: "Redondo · Colección Galicia.",
         priceLabel: "Desde xx€",
         configParam: "circular",
         comingSoon: true,
       },
-      {
-        name: "Patos",
-        photo: "/productos-fotos/crops/puff-2497-1-tight.png",
-        desc: "Cúbico, con líneas limpias y estructuradas para ambientes más serenos y bien definidos. Misma altura que anchura para una presencia equilibrada y sólida. Colección Galicia.",
-        priceLabel: "Desde xx€",
-        configParam: "cuadrado",
-      },
     ],
   },
   "mesas-centro": {
     title: "Mesas de centro",
-    subtitle: "Volúmenes tapizados a medida para el salón, con una presencia suave y mucho más original que una pieza estándar.",
+    subtitle: "Volúmenes tapizados a medida para el salón.",
     models: [
       {
         name: "Cabo de Palos",
-        photo: "/productos-fotos/crops/puff-2497-tight.png",
-        desc: "Mesa rectangular totalmente tapizada, sin patas. Un volumen limpio y bando que apoya directamente en el suelo, de la Colección Murcia. Lectura muy contemporánea, fácil de integrar y de mover.",
+        photos: [
+          "/productos-fotos/crops/puff-2497-1-tight.png",
+        ],
+        desc: "Sin patas · Colección Murcia.",
         priceLabel: "Desde xx€",
         configParam: "tipo-puff",
       },
       {
         name: "Calblanque",
-        photo: "/productos-fotos/crops/puff-2497-1-tight.png",
-        desc: "Mesa tapizada con patas, de la Colección Murcia. Estructura más elevada y arquitectónica que aporta ligereza al conjunto. La combinación de tapizado y patas le da un carácter más refinado y versátil.",
+        photos: [
+          "/productos-fotos/crops/puff-2497-tight.png",
+        ],
+        desc: "Con patas · Colección Murcia.",
         priceLabel: "Desde xx€",
         configParam: "tipo-banco",
       },
@@ -121,51 +217,21 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   },
   "pantallas-lampara": {
     title: "Pantallas de lámpara",
-    subtitle: "Pantallas tapizadas a mano en lino, terciopelo o bouclé para convertir cualquier lámpara en una pieza única.",
+    subtitle: "Tapizadas a mano en lino, terciopelo o bouclé.",
     models: [
-      {
-        name: "Gredos",
-        photo: "",
-        desc: "Cónica clásica: estrecha arriba, amplia abajo. Proyecta una luz cálida y envolvente. Colección Ávila.",
-        priceLabel: "Desde xx€",
-        configParam: "cono",
-      },
-      {
-        name: "Almanzor",
-        photo: "",
-        desc: "Cilíndrica de lados rectos, misma anchura arriba y abajo. Luz uniforme y directa. Colección Ávila.",
-        priceLabel: "Desde xx€",
-        configParam: "cilindro",
-      },
-      {
-        name: "La Galana",
-        photo: "",
-        desc: "Pirámide: base cuadrada que se estrecha hacia arriba con lados inclinados. Colección Ávila.",
-        priceLabel: "Desde xx€",
-        configParam: "piramide",
-      },
-      {
-        name: "La Serrota",
-        photo: "",
-        desc: "Rectangular y horizontal, más ancha que alta. Perfecta sobre mesas largas o aparadores. Colección Ávila.",
-        priceLabel: "Desde xx€",
-        configParam: "rectangulo",
-      },
-      {
-        name: "Tormes",
-        photo: "",
-        desc: "Cuadrada y recta, geometría pura. Carácter contemporáneo muy marcado. Colección Ávila.",
-        priceLabel: "Desde xx€",
-        configParam: "cuadrado",
-      },
-      {
-        name: "La Paramera",
-        photo: "",
-        desc: "Ovalada y achatada, como una esfera plana. Orgánica y cálida para dormitorios y salones. Colección Ávila.",
-        priceLabel: "Desde xx€",
-        configParam: "ovalado",
-      },
+      { name: "Gredos", photos: [], desc: "Cónica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cono" },
+      { name: "Almanzor", photos: [], desc: "Cilíndrica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cilindro" },
+      { name: "La Galana", photos: [], desc: "Pirámide · Colección Ávila.", priceLabel: "Desde xx€", configParam: "piramide" },
+      { name: "La Serrota", photos: [], desc: "Rectangular · Colección Ávila.", priceLabel: "Desde xx€", configParam: "rectangulo" },
+      { name: "Tormes", photos: [], desc: "Cuadrada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cuadrado" },
+      { name: "La Paramera", photos: [], desc: "Ovalada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "ovalado" },
     ],
+  },
+  percheros: {
+    title: "Percheros",
+    subtitle: "Próximamente.",
+    comingSoon: true,
+    models: [],
   },
 };
 
@@ -189,35 +255,98 @@ interface CategoryPageProps {
   categoryKey?: string;
 }
 
-const ModelCard = ({ model, category }: { model: Model; category: string }) => {
+const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: string; name: string }) => {
+  const [idx, setIdx] = useState(0);
   const [hovered, setHovered] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (photos.length <= 1) return;
+    if (hovered) { if (timerRef.current) clearInterval(timerRef.current); return; }
+    timerRef.current = setInterval(() => setIdx(i => (i + 1) % photos.length), 3000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [photos.length, hovered]);
+
+  if (photos.length === 0) {
+    return (
+      <div className="w-full aspect-[4/3] flex flex-col items-center justify-center gap-3" style={{ backgroundColor: '#F0EDE8' }}>
+        <svg viewBox="0 0 80 100" className="w-14 h-18 text-foreground/25" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round">
+          <path d="M 32 14 L 48 14 L 64 82 L 16 82 Z" />
+          <line x1="40" y1="4" x2="40" y2="14" />
+          <ellipse cx="40" cy="84" rx="24" ry="4" />
+        </svg>
+        <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium">Próximamente fotos</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="relative overflow-hidden w-full aspect-[4/3]"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {photos.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt={`${name} ${i + 1}`}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          style={{ opacity: i === idx ? 1 : 0, objectPosition: imagePosition(category) }}
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
+      {photos.length > 1 && (
+        <>
+          <button
+            onClick={e => { e.preventDefault(); setIdx(i => (i - 1 + photos.length) % photos.length); }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/30 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/50"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            onClick={e => { e.preventDefault(); setIdx(i => (i + 1) % photos.length); }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/30 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/50"
+          >
+            <ChevronRight size={14} />
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {photos.map((_, i) => (
+              <button
+                key={i}
+                onClick={e => { e.preventDefault(); setIdx(i); }}
+                className={`w-1.5 h-1.5 rounded-full transition-all ${i === idx ? "bg-white" : "bg-white/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ""}`;
 
   if (model.comingSoon) {
     return (
-      <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden relative">
+      <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden">
         <div className="relative overflow-hidden">
-          <img
-            src={model.photo}
-            alt={model.name}
-            className="w-full aspect-[4/3] object-cover grayscale opacity-60"
-            style={{ objectPosition: imagePosition(category) }}
-            loading="lazy"
-            decoding="async"
-          />
-          <div className="absolute inset-0 bg-foreground/20 flex items-center justify-center">
-            <div className="text-center">
-              <Clock size={20} className="text-white mx-auto mb-2" />
-              <span className="text-white text-xs tracking-[0.2em] uppercase font-medium">Próximamente</span>
-            </div>
+          <PhotoSlider photos={model.photos} category={category} name={model.name} />
+          {model.photos.length > 0 && (
+            <div className="absolute inset-0 bg-foreground/20 pointer-events-none" />
+          )}
+          <div className="absolute top-2 right-2 z-10">
+            <span className="flex items-center gap-1 text-[9px] tracking-[0.18em] uppercase font-medium px-2.5 py-1 rounded-full bg-foreground/75 text-background">
+              <Clock size={9} />
+              Próximamente
+            </span>
           </div>
         </div>
         <div className="p-5 flex flex-col flex-1">
           <h3 className="font-serif text-lg font-medium text-foreground/60">{model.name}</h3>
           <p className="mt-1 text-sm text-muted-foreground/60 font-light flex-1">{model.desc}</p>
-          <div className="mt-4">
-            <span className="text-xs text-muted-foreground/50 uppercase tracking-widest">Disponible próximamente</span>
-          </div>
         </div>
       </div>
     );
@@ -227,41 +356,11 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
     <Link
       to={configHref}
       className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden group"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <div className="relative overflow-hidden">
-        {model.photo ? (
-          <img
-            src={model.photo}
-            alt={model.name}
-            className="w-full aspect-[4/3] object-cover"
-            style={{
-              transform: hovered ? "scale(1.04)" : "scale(1)",
-              transition: "transform 0.4s ease",
-              objectPosition: imagePosition(category),
-            }}
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <div
-            className="w-full aspect-[4/3] flex flex-col items-center justify-center gap-3"
-            style={{ backgroundColor: '#F0EDE8', transition: "transform 0.4s ease", transform: hovered ? "scale(1.02)" : "scale(1)" }}
-          >
-            <svg viewBox="0 0 80 100" className="w-16 h-20 text-foreground/25" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round">
-              <path d="M 32 14 L 48 14 L 64 82 L 16 82 Z" />
-              <line x1="40" y1="4" x2="40" y2="14" />
-              <ellipse cx="40" cy="84" rx="24" ry="4" />
-            </svg>
-            <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium">Próximamente fotos</span>
-          </div>
-        )}
-        <div
-          style={{ opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }}
-          className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none"
-        >
-          <span className="text-white text-sm tracking-widest uppercase">Personalizar →</span>
+        <PhotoSlider photos={model.photos} category={category} name={model.name} />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300 pointer-events-none flex items-center justify-center">
+          <span className="text-white text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">Personalizar →</span>
         </div>
       </div>
       <div className="p-5 flex flex-col flex-1">
@@ -303,13 +402,9 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
       <main className="pt-32 pb-20 px-6">
         <div className="container mx-auto">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-8">
-            <Link to="/" className="hover:text-foreground transition-colors">
-              Inicio
-            </Link>
+            <Link to="/" className="hover:text-foreground transition-colors">Inicio</Link>
             <ChevronRight size={12} />
-            <Link to="/productos" className="hover:text-foreground transition-colors">
-              Productos
-            </Link>
+            <Link to="/productos" className="hover:text-foreground transition-colors">Productos</Link>
             <ChevronRight size={12} />
             <span className="text-foreground">{cat.title}</span>
           </div>
@@ -324,15 +419,17 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
             )}
             <span className="section-line" />
           </AnimatedSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cat.models.map((model, i) => (
-              <AnimatedSection key={model.name} delay={i * 0.08} className="h-full">
-                <div className="h-full">
-                  <ModelCard model={model} category={category} />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
+          {cat.models.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cat.models.map((model, i) => (
+                <AnimatedSection key={model.name} delay={i * 0.08} className="h-full">
+                  <div className="h-full">
+                    <ModelCard model={model} category={category} />
+                  </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <Footer />
