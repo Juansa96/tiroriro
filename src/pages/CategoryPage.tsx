@@ -124,53 +124,46 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "Pantallas tapizadas a mano en lino, terciopelo o bouclé para convertir cualquier lámpara en una pieza única.",
     models: [
       {
-        name: "Cónica",
-        photo: "/placeholder.svg",
-        desc: "La forma clásica por excelencia. Más ancha en la base y estrecha en la parte superior, proyecta una luz cálida y difusa que envuelve cualquier espacio. Atemporal, elegante y siempre acertada.",
+        name: "Gredos",
+        photo: "",
+        desc: "Cónica clásica: estrecha arriba, amplia abajo. Proyecta una luz cálida y envolvente. Colección Ávila.",
         priceLabel: "Desde xx€",
-        configParam: "conica",
+        configParam: "cono",
       },
       {
-        name: "Cilíndrica",
-        photo: "/placeholder.svg",
-        desc: "Forma recta y geométrica, misma anchura arriba y abajo. Proyecta la luz de manera más directa y uniforme. Perfecta para ambientes contemporáneos y minimalistas donde la línea recta es protagonista.",
+        name: "Almanzor",
+        photo: "",
+        desc: "Cilíndrica de lados rectos, misma anchura arriba y abajo. Luz uniforme y directa. Colección Ávila.",
         priceLabel: "Desde xx€",
-        configParam: "cilindrica",
+        configParam: "cilindro",
       },
       {
-        name: "Cuadrada",
-        photo: "/placeholder.svg",
-        desc: "Base cuadrada con ligera inclinación hacia arriba. Aporta una geometría más estructurada y original. Muy versátil, combina tanto con lámparas de pie como de mesa de estilo clásico o transicional.",
+        name: "La Galana",
+        photo: "",
+        desc: "Pirámide: base cuadrada que se estrecha hacia arriba con lados inclinados. Colección Ávila.",
         priceLabel: "Desde xx€",
-        configParam: "cuadrada",
+        configParam: "piramide",
       },
       {
-        name: "Trapecio",
-        photo: "/placeholder.svg",
-        desc: "Forma rectangular con lados ligeramente inclinados hacia adentro. Combina la claridad de la línea recta con un perfil más dinámico. Ideal para lámparas de gran formato y ambientes con personalidad.",
+        name: "La Serrota",
+        photo: "",
+        desc: "Rectangular y horizontal, más ancha que alta. Perfecta sobre mesas largas o aparadores. Colección Ávila.",
         priceLabel: "Desde xx€",
-        configParam: "trapecio",
+        configParam: "rectangulo",
       },
       {
-        name: "Cuadrada recta",
-        photo: "/placeholder.svg",
-        desc: "Sección cuadrada completamente recta, sin ninguna inclinación. Forma cúbica pura que da un carácter muy geométrico y moderno. Perfecta para estancias con diseño contemporáneo o de tendencia.",
+        name: "Tormes",
+        photo: "",
+        desc: "Cuadrada y recta, geometría pura. Carácter contemporáneo muy marcado. Colección Ávila.",
         priceLabel: "Desde xx€",
-        configParam: "cuadrada-recta",
+        configParam: "cuadrado",
       },
       {
-        name: "Rectangular",
-        photo: "/placeholder.svg",
-        desc: "Forma rectangular horizontal, más ancha que alta. Muy útil para iluminar mesas largas, aparadores o zonas de estar. Da una escala generosa y presencia especial sobre cualquier lámpara de pie o sobremesa grande.",
+        name: "La Paramera",
+        photo: "",
+        desc: "Ovalada y achatada, como una esfera plana. Orgánica y cálida para dormitorios y salones. Colección Ávila.",
         priceLabel: "Desde xx€",
-        configParam: "rectangular",
-      },
-      {
-        name: "Ovalada",
-        photo: "/placeholder.svg",
-        desc: "Silueta oval con curvas suaves que suavizan el ambiente. Más cálida y orgánica que las formas geométricas estrictas. Ideal para dormitorios y salones donde se busca un punto de calidez y delicadeza.",
-        priceLabel: "Desde xx€",
-        configParam: "ovalada",
+        configParam: "ovalado",
       },
     ],
   },
@@ -237,18 +230,32 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
       onMouseLeave={() => setHovered(false)}
     >
       <div className="relative overflow-hidden">
-        <img
-          src={model.photo}
-          alt={model.name}
-          className="w-full aspect-[4/3] object-cover"
-          style={{
-            transform: hovered ? "scale(1.04)" : "scale(1)",
-            transition: "transform 0.4s ease",
-            objectPosition: imagePosition(category),
-          }}
-          loading="lazy"
-          decoding="async"
-        />
+        {model.photo ? (
+          <img
+            src={model.photo}
+            alt={model.name}
+            className="w-full aspect-[4/3] object-cover"
+            style={{
+              transform: hovered ? "scale(1.04)" : "scale(1)",
+              transition: "transform 0.4s ease",
+              objectPosition: imagePosition(category),
+            }}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div
+            className="w-full aspect-[4/3] flex flex-col items-center justify-center gap-3"
+            style={{ backgroundColor: '#F0EDE8', transition: "transform 0.4s ease", transform: hovered ? "scale(1.02)" : "scale(1)" }}
+          >
+            <svg viewBox="0 0 80 100" className="w-16 h-20 text-foreground/25" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round">
+              <path d="M 32 14 L 48 14 L 64 82 L 16 82 Z" />
+              <line x1="40" y1="4" x2="40" y2="14" />
+              <ellipse cx="40" cy="84" rx="24" ry="4" />
+            </svg>
+            <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium">Próximamente fotos</span>
+          </div>
+        )}
         <div
           style={{ opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }}
           className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none"

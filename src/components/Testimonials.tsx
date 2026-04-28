@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
 import francescaPhoto from "@/assets/testimonials/francesca-cirenei.jpeg";
-import gabrielPhoto from "@/assets/testimonials/gabriel-di-stefano.png";
+import gabrielPhoto from "@/assets/testimonials/gabriel-di-stefano.webp";
 import almuPhoto from "@/assets/testimonials/almu-alonso.jpeg";
 
 const TESTIMONIALS = [

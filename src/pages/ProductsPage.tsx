@@ -9,23 +9,15 @@ const CATEGORIES = [
   {
     id: "cabeceros",
     name: "Cabeceros tapizados",
-    tagline: "5 formas · Cualquier medida · Lino, terciopelo o bouclé",
+    tagline: "5 formas · A tu medida",
     image: "/productos-fotos/cabeceros/IMG_2555.webp",
     priceLabel: "Desde xx€",
     comingSoon: false,
   },
   {
-    id: "bancos",
-    name: "Bancos entelados",
-    tagline: "Pie de cama · Entrada · Con o sin almacenaje",
-    image: "/productos-fotos/bancos/IMG_2552.webp",
-    priceLabel: "Desde xx€",
-    comingSoon: true,
-  },
-  {
     id: "cojines",
     name: "Cojines y almohadones",
-    tagline: "Cuadrados · Rectangulares · Rulos y redondos",
+    tagline: "4 modelos · Colección Asturias",
     image: "/productos-fotos/almohadones/IMG_2514.webp",
     priceLabel: "Desde xx€",
     comingSoon: false,
@@ -33,7 +25,7 @@ const CATEGORIES = [
   {
     id: "puffs",
     name: "Puffs",
-    tagline: "Patos (cuadrado) · Monteferro (redondo) · Colección Galicia",
+    tagline: "Patos y Monteferro · Colección Galicia",
     image: "/productos-fotos/crops/puff-2497-tight.png",
     priceLabel: "Desde xx€",
     comingSoon: false,
@@ -41,7 +33,7 @@ const CATEGORIES = [
   {
     id: "mesas-centro",
     name: "Mesas de centro",
-    tagline: "Calblanque · Cabo de Palos · Colección Murcia",
+    tagline: "2 modelos · Colección Murcia",
     image: "/productos-fotos/crops/puff-2497-1-tight.png",
     priceLabel: "Desde xx€",
     comingSoon: false,
@@ -49,14 +41,34 @@ const CATEGORIES = [
   {
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
-    tagline: "7 formas · Cónica · Cilíndrica · Cuadrada · Ovalada",
+    tagline: "6 formas · Colección Ávila",
     image: "/productos-fotos/cabeceros/IMG_2502.webp",
     priceLabel: "Desde xx€",
     comingSoon: false,
   },
+  {
+    id: "bancos",
+    name: "Bancos entelados",
+    tagline: "Pie de cama · Entrada · Próximamente",
+    image: "",
+    priceLabel: "Desde xx€",
+    comingSoon: true,
+  },
 ];
 
-const imagePosition = (id: string) => "center center";
+const imagePosition = (_id: string) => "center center";
+
+const BancosPlaceholder = () => (
+  <div className="w-full aspect-[3/4] max-h-72 bg-[#F0EDE8] flex flex-col items-center justify-center gap-3 relative overflow-hidden">
+    <svg viewBox="0 0 120 80" className="w-24 h-16 text-foreground/20" fill="none" stroke="currentColor" strokeWidth="1.2">
+      <rect x="10" y="24" width="100" height="32" rx="3" />
+      <line x1="20" y1="56" x2="20" y2="70" />
+      <line x1="100" y1="56" x2="100" y2="70" />
+      <line x1="10" y1="38" x2="110" y2="38" strokeDasharray="4 3" />
+    </svg>
+    <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium">Próximamente</span>
+  </div>
+);
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
   const [hovered, setHovered] = useState(false);
@@ -64,17 +76,21 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
   if (cat.comingSoon) {
     return (
       <AnimatedSection delay={index * 0.08}>
-        <div className="block opacity-80">
+        <Link to={`/productos/${cat.id}`} className="block opacity-80">
           <div className="relative overflow-hidden border border-border/40 rounded-lg">
-            <img
-              src={cat.image}
-              alt={cat.name}
-              className="w-full aspect-[3/4] object-cover max-h-72 grayscale"
-              style={{ objectPosition: imagePosition(cat.id) }}
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-foreground/35 flex flex-col items-center justify-center gap-2">
+            {cat.image ? (
+              <img
+                src={cat.image}
+                alt={cat.name}
+                className="w-full aspect-[3/4] object-cover max-h-72 grayscale"
+                style={{ objectPosition: imagePosition(cat.id) }}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <BancosPlaceholder />
+            )}
+            <div className="absolute inset-0 bg-foreground/30 flex flex-col items-center justify-center gap-2">
               <Clock size={22} className="text-white" />
               <span className="text-white text-xs tracking-[0.22em] uppercase font-medium border border-white/50 px-4 py-2">
                 Próximamente
@@ -88,7 +104,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
             </h3>
             <p className="text-xs text-muted-foreground/60 font-light mt-1 tracking-wide">{cat.tagline}</p>
           </div>
-        </div>
+        </Link>
       </AnimatedSection>
     );
   }
@@ -145,19 +161,11 @@ const ProductsPage = () => (
           <span className="section-line" />
         </AnimatedSection>
 
-        {/* Intro text */}
         <AnimatedSection className="max-w-2xl mx-auto text-center mb-14" delay={0.05}>
           <p className="text-base text-muted-foreground font-light leading-relaxed">
             Todo tapizado a mano en España, a tu medida y con la tela que eliges.
-            Elige la categoría que te interese, explora los modelos disponibles y configura tu pieza desde cero.
-            Si tienes dudas, escríbenos — te orientamos sin compromiso.
+            Elige la categoría, explora los modelos y configura tu pieza desde cero.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-6 text-xs text-muted-foreground/70 font-light tracking-wide">
-            <span>✦ Entrega en 15 días</span>
-            <span>✦ Hecho a mano en España</span>
-            <span>✦ Telas lino · terciopelo · bouclé</span>
-            <span>✦ Presupuesto sin compromiso</span>
-          </div>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">

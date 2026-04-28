@@ -29,9 +29,9 @@ const FABRIC_GROUPS = [
     label: "Terciopelos",
     collection: "Colección Premium",
     fabrics: [
-      { id: "terciopelo-esmeralda", name: "Terciopelo Esmeralda", hex: "#1B4D3E", image: "/telas/tela-06.png" },
-      { id: "terciopelo-burdeos", name: "Terciopelo Burdeos", hex: "#6D1A36", image: "/telas/tela-07.png" },
-      { id: "terciopelo-camel", name: "Terciopelo Camel", hex: "#C19A6B", image: "/telas/tela-08.png" },
+      { id: "terciopelo-esmeralda", name: "Terciopelo Esmeralda", hex: "#1B4D3E", image: "/telas/tela-06.webp" },
+      { id: "terciopelo-burdeos", name: "Terciopelo Burdeos", hex: "#6D1A36", image: "/telas/tela-07.webp" },
+      { id: "terciopelo-camel", name: "Terciopelo Camel", hex: "#C19A6B", image: "/telas/tela-08.webp" },
       { id: "terciopelo-negro", name: "Terciopelo Negro", hex: "#1C1C1C", image: "/telas/tela-09.jpg" },
       { id: "terciopelo-gris-marengo", name: "Terciopelo Gris Marengo", hex: "#4A4A4A", image: "/telas/tela-10.jpg" },
     ],
@@ -63,14 +63,71 @@ const HEADBOARD_SHAPES = [
   { id: "corona-triple", name: "Barbaria", svgPreview: "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z" },
 ];
 
+// Colección Ávila — 6 shapes
 const LAMPSHADE_SHAPES = [
-  { id: "conica", name: "Cónica", svgPreview: "M 18 8 L 42 8 L 55 38 L 5 38 Z" },
-  { id: "cilindrica", name: "Cilíndrica", svgPreview: "M 8 8 L 52 8 L 52 38 L 8 38 Z" },
-  { id: "cuadrada", name: "Cuadrada", svgPreview: "M 15 8 L 45 8 L 50 38 L 10 38 Z" },
-  { id: "trapecio", name: "Trapecio", svgPreview: "M 10 8 L 50 8 L 52 38 L 8 38 Z" },
-  { id: "cuadrada-recta", name: "Cuadrada recta", svgPreview: "M 12 8 L 48 8 L 48 38 L 12 38 Z" },
-  { id: "rectangular", name: "Rectangular", svgPreview: "M 5 15 L 55 15 L 55 38 L 5 38 Z" },
-  { id: "ovalada", name: "Ovalada", svgPreview: "M 15 8 Q 30 4 45 8 L 52 38 Q 30 42 8 38 Z" },
+  { id: "cono", name: "Gredos", subtitle: "Cónico", svgPreview: "M 22 8 L 38 8 L 52 36 L 8 36 Z" },
+  { id: "cilindro", name: "Almanzor", subtitle: "Cilíndrico", svgPreview: "M 8 8 L 52 8 L 52 36 L 8 36 Z" },
+  { id: "piramide", name: "La Galana", subtitle: "Pirámide", svgPreview: "M 16 8 L 44 8 L 52 36 L 8 36 Z" },
+  { id: "rectangulo", name: "La Serrota", subtitle: "Rectangular", svgPreview: "M 5 14 L 55 14 L 55 28 L 5 28 Z" },
+  { id: "cuadrado", name: "Tormes", subtitle: "Cuadrado", svgPreview: "M 13 8 L 47 8 L 47 36 L 13 36 Z" },
+  { id: "ovalado", name: "La Paramera", subtitle: "Ovalado", svgPreview: "M 5 22 C 5 12 55 12 55 22 C 55 32 5 32 5 22 Z" },
+];
+
+const LAMP_SIZES: Record<string, string[]> = {
+  cono:      ["Ø20 cm", "Ø30 cm", "Ø40 cm"],
+  cilindro:  ["Ø20 cm", "Ø30 cm", "Ø40 cm"],
+  piramide:  ["20×20 cm", "30×30 cm", "40×40 cm"],
+  rectangulo:["40×20 cm", "50×25 cm", "60×30 cm"],
+  cuadrado:  ["20×20 cm", "30×30 cm", "40×40 cm"],
+  ovalado:   ["40×20 cm", "50×25 cm", "60×30 cm"],
+};
+
+const PANTALLA_FINISHES = [
+  { id: "liso", name: "Sin ribete", desc: "Borde limpio y sin decoración" },
+  { id: "vivo-simple", name: "Con ribete", desc: "Ribete cosido en el borde superior e inferior", extra: 15, extraLabel: "+xx€" },
+];
+
+const CUSHION_SHAPES = [
+  {
+    id: "rodiles", name: "Rodiles", subtitle: "Cuadrado",
+    svgPath: <rect x="10" y="10" width="40" height="40" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+    sizes: ["40×40 cm", "45×45 cm", "60×60 cm"],
+    getDetails: (sz: string) => {
+      if (sz.includes("60")) return { shape: "cuadrada", widthCm: 60, heightCm: 60 };
+      if (sz.includes("45")) return { shape: "cuadrada", widthCm: 45, heightCm: 45 };
+      return { shape: "cuadrada", widthCm: 40, heightCm: 40 };
+    },
+  },
+  {
+    id: "covadonga", name: "Covadonga", subtitle: "Rectangular",
+    svgPath: <rect x="4" y="14" width="52" height="32" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+    sizes: ["50×30 cm", "60×40 cm", "70×45 cm"],
+    getDetails: (sz: string) => {
+      if (sz.includes("70")) return { shape: "rectangular", widthCm: 70, heightCm: 45 };
+      if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
+      return { shape: "rectangular", widthCm: 50, heightCm: 30 };
+    },
+  },
+  {
+    id: "torimbia", name: "Torimbia", subtitle: "Redondo",
+    svgPath: <circle cx="30" cy="30" r="20" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+    sizes: ["Ø35 cm", "Ø45 cm", "Ø55 cm"],
+    getDetails: (sz: string) => {
+      if (sz.includes("55")) return { shape: "circular", widthCm: 55, heightCm: 55 };
+      if (sz.includes("45")) return { shape: "circular", widthCm: 45, heightCm: 45 };
+      return { shape: "circular", widthCm: 35, heightCm: 35 };
+    },
+  },
+  {
+    id: "gulpiyuri", name: "Gulpiyuri", subtitle: "Rulo",
+    svgPath: <><rect x="4" y="20" width="52" height="20" rx="10" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="4" cy="30" rx="5" ry="10" fill="none" stroke="currentColor" strokeWidth="1.5" /></>,
+    sizes: ["Ø15×40 cm", "Ø15×55 cm", "Ø15×65 cm"],
+    getDetails: (sz: string) => {
+      if (sz.includes("65")) return { shape: "cilindro", widthCm: 65, heightCm: 15 };
+      if (sz.includes("55")) return { shape: "cilindro", widthCm: 55, heightCm: 15 };
+      return { shape: "cilindro", widthCm: 40, heightCm: 15 };
+    },
+  },
 ];
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
@@ -123,13 +180,9 @@ function parseCm(selectVal: string): number | undefined {
   return isNaN(n) ? undefined : n;
 }
 
-function parseCushionDetails(cushionSize: string): { shape: string; widthCm: number; heightCm: number } {
-  if (cushionSize.includes('Gulpiyuri')) return { shape: 'cilindro', widthCm: 60, heightCm: 15 };
-  if (cushionSize.includes('Torimbia')) return { shape: 'rectangular', widthCm: 45, heightCm: 45 };
-  if (cushionSize.includes('Covadonga')) return { shape: 'rectangular', widthCm: 50, heightCm: 30 };
-  if (cushionSize.includes('60×60')) return { shape: 'cuadrada', widthCm: 60, heightCm: 60 };
-  if (cushionSize.includes('45×45')) return { shape: 'cuadrada', widthCm: 45, heightCm: 45 };
-  if (cushionSize.includes('40×40')) return { shape: 'cuadrada', widthCm: 40, heightCm: 40 };
+function parseCushionDetails(cushionShape: string, cushionSize: string): { shape: string; widthCm: number; heightCm: number } {
+  const shapeObj = CUSHION_SHAPES.find(s => s.id === cushionShape);
+  if (shapeObj && cushionSize) return shapeObj.getDetails(cushionSize);
   return { shape: 'cuadrada', widthCm: 45, heightCm: 45 };
 }
 
@@ -140,57 +193,64 @@ const RenderNotice = () => (
 );
 
 // Fabric swatch panel shown next to the render
+// Order: tela principal → tela laterales → vivo
 const FabricSwatchPanel = ({
   fabric,
   vivoFabric,
   lateralFabric,
+  showLateral = true,
 }: {
   fabric?: { name: string; hex: string; image?: string };
   vivoFabric?: { name: string; hex: string; image?: string };
   lateralFabric?: { name: string; hex: string; image?: string };
+  showLateral?: boolean;
 }) => (
-  <div className="flex flex-col gap-4 justify-center">
-    {/* Tela elegida */}
-    <div className="flex flex-col gap-1.5">
-      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela elegida</p>
+  <div className="flex flex-col gap-3 justify-center">
+    {/* 1. Tela elegida */}
+    <div className="flex flex-col gap-1">
+      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela</p>
       <div
-        className="w-full h-16 rounded-md border border-border/40 overflow-hidden flex-shrink-0"
+        className="w-full h-14 rounded-md border border-border/40 overflow-hidden"
         style={{ backgroundColor: fabric?.hex || '#E8E4DC' }}
       >
         {fabric?.image && (
           <img src={fabric.image} alt={fabric.name} className="w-full h-full object-cover" loading="lazy" />
         )}
       </div>
-      <p className="text-[11px] text-muted-foreground font-light">{fabric?.name || '—'}</p>
+      <p className="text-[10px] text-muted-foreground font-light leading-tight">{fabric?.name || '—'}</p>
     </div>
 
-    {/* Vivo elegido */}
-    <div className="flex flex-col gap-1.5">
-      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Vivo elegido</p>
-      <div
-        className="w-full h-8 rounded-md border border-border/40 overflow-hidden"
-        style={{ backgroundColor: vivoFabric?.hex || '#E8E4DC' }}
-      >
-        {vivoFabric?.image && (
-          <img src={vivoFabric.image} alt={vivoFabric.name} className="w-full h-full object-cover" loading="lazy" />
-        )}
+    {/* 2. Tela laterales */}
+    {showLateral && (
+      <div className="flex flex-col gap-1">
+        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Laterales</p>
+        <div
+          className="w-full h-14 rounded-md border border-border/40 overflow-hidden"
+          style={{ backgroundColor: lateralFabric?.hex || fabric?.hex || '#E8E4DC' }}
+        >
+          {(lateralFabric?.image || fabric?.image) && (
+            <img src={lateralFabric?.image || fabric?.image} alt={lateralFabric?.name || fabric?.name} className="w-full h-full object-cover" loading="lazy" />
+          )}
+        </div>
+        <p className="text-[10px] text-muted-foreground font-light leading-tight">{lateralFabric?.name || fabric?.name || '—'}</p>
       </div>
-      <p className="text-[11px] text-muted-foreground font-light">{vivoFabric?.name || '—'}</p>
-    </div>
+    )}
 
-    {/* Tela laterales */}
-    <div className="flex flex-col gap-1.5">
-      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela laterales</p>
-      <div
-        className="w-full h-10 rounded-md border border-border/40 overflow-hidden"
-        style={{ backgroundColor: lateralFabric?.hex || fabric?.hex || '#E8E4DC' }}
-      >
-        {(lateralFabric?.image || fabric?.image) && (
-          <img src={lateralFabric?.image || fabric?.image} alt={lateralFabric?.name || fabric?.name} className="w-full h-full object-cover" loading="lazy" />
-        )}
+    {/* 3. Vivo elegido */}
+    {vivoFabric && (
+      <div className="flex flex-col gap-1">
+        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Vivo</p>
+        <div
+          className="w-full h-9 rounded-md border border-border/40 overflow-hidden"
+          style={{ backgroundColor: vivoFabric.hex }}
+        >
+          {vivoFabric.image && (
+            <img src={vivoFabric.image} alt={vivoFabric.name} className="w-full h-full object-cover" loading="lazy" />
+          )}
+        </div>
+        <p className="text-[10px] text-muted-foreground font-light leading-tight">{vivoFabric.name}</p>
       </div>
-      <p className="text-[11px] text-muted-foreground font-light">{lateralFabric?.name || fabric?.name || '—'}</p>
-    </div>
+    )}
   </div>
 );
 
@@ -208,6 +268,7 @@ const ProductConfigurator = () => {
   const [benchHeight, setBenchHeight] = useState("");
   const [puffDiameter, setPuffDiameter] = useState("");
   const [puffHeight, setPuffHeight] = useState("");
+  const [cushionShape, setCushionShape] = useState("");
   const [cushionSize, setCushionSize] = useState("");
   const [lampDiameter, setLampDiameter] = useState("");
   const [lampHeight, setLampHeight] = useState("");
@@ -270,6 +331,7 @@ const ProductConfigurator = () => {
     setBenchHeight('');
     setPuffDiameter('');
     setPuffHeight('');
+    setCushionShape('');
     setCushionSize('');
     setLampDiameter('');
     setLampHeight('');
@@ -301,13 +363,15 @@ const ProductConfigurator = () => {
   const lateralFabricImage = (lateralFabric as { image?: string })?.image || undefined;
   const vivoColor = vivoFabric?.hex || darken(fillColor);
 
-  // Cushion details parsed from size string
-  const cushionDetails = productType === 'cojin' && cushionSize ? parseCushionDetails(cushionSize) : null;
+  // Cushion details parsed from shape + size
+  const cushionDetails = productType === 'cojin' && cushionShape && cushionSize
+    ? parseCushionDetails(cushionShape, cushionSize)
+    : null;
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
     : productType === 'banco' ? parseCm(benchLength)
     : productType === 'mesa' ? parseCm(benchLength)
-    : productType === 'puff' ? parseCm(puffDiameter)
+    : productType === 'puff' ? (parseCm(puffDiameter) ?? 60)
     : productType === 'cojin' ? cushionDetails?.widthCm
     : undefined;
 
@@ -363,7 +427,7 @@ const ProductConfigurator = () => {
       : productType === 'banco' ? !!benchLength
       : productType === 'mesa' ? !!benchLength
       : productType === 'puff' ? !!puffDiameter
-      : productType === 'cojin' ? !!cushionSize
+      : productType === 'cojin' ? !!cushionShape && !!cushionSize
       : productType === 'pantalla' ? !!lampDiameter
       : false,
     fabric: !!fabricId,
@@ -426,6 +490,12 @@ const ProductConfigurator = () => {
       previewLateralTexture: lateralFabricImage || '',
       previewFinish: finish,
       previewVivo: vivoFabric?.hex || '',
+      previewVivoName: vivoFabric?.name || '',
+      previewVivoImage: (vivoFabric as { image?: string })?.image || '',
+      previewFabricName: fabric?.name || '',
+      previewLateralHex: lateralFabric?.hex || fabric?.hex || fillColor,
+      previewLateralImage: lateralFabricImage || fabricImage || '',
+      previewLateralName: lateralFabric?.name || fabric?.name || '',
       previewWidth: widthCm?.toString() || '',
       previewHeight: heightCm?.toString() || '',
       previewDepth: depthCm?.toString() || '',
@@ -448,7 +518,7 @@ const ProductConfigurator = () => {
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
         if (productType === 'puff') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
-        if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {cushionSize}</span>;
+        if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
         if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter} / {lampHeight}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
@@ -488,7 +558,7 @@ const ProductConfigurator = () => {
     </div>
   );
 
-  const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
+  const needsVivo = (finish === 'vivo-simple' || finish === 'vivo-doble') && productType !== 'pantalla';
 
   const productCard = (type: ProductType, label: string) => (
     <button
@@ -518,9 +588,10 @@ const ProductConfigurator = () => {
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
+    cushionShape, setCushionShape,
     cushionSize, setCushionSize,
     lampDiameter, setLampDiameter, lampHeight, setLampHeight,
-    fabricId, setFabricId: (id: string) => { setFabricId(id); },
+    fabricId, setFabricId: (id: string) => { setFabricId(id); advanceTo('finish'); },
     lateralFabricId, setLateralFabricId,
     finish, setFinish: (f: string) => { setFinish(f); },
     vivoColorId, setVivoColorId,
@@ -541,10 +612,23 @@ const ProductConfigurator = () => {
       </div>
 
       <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
-        <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
+        <div className="px-4 py-3 flex flex-col items-center">
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
-          <div className="flex-1 flex items-center justify-center w-full">
-            <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+          {/* SVG + fabric swatches side-by-side on mobile */}
+          <div className="flex w-full gap-3 items-center justify-center min-h-[160px]">
+            <div className="flex-1 flex items-center justify-center">
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+            </div>
+            {fabricId && (
+              <div className="w-20 flex-shrink-0 border-l border-border/30 pl-3">
+                <FabricSwatchPanel
+                  fabric={fabric}
+                  vivoFabric={needsVivo ? vivoFabric : undefined}
+                  lateralFabric={lateralFabric || undefined}
+                  showLateral={productType === 'cabecero'}
+                />
+              </div>
+            )}
           </div>
           {productType === 'banco' && (
             <div className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground border border-border/40 rounded-full px-3 py-1">
@@ -553,11 +637,6 @@ const ProductConfigurator = () => {
             </div>
           )}
           <RenderNotice />
-          <div className="flex flex-wrap gap-1.5 justify-center mt-2">
-            {chips.map((c, i) => (
-              <span key={i} className={`text-xs border rounded-full px-2 py-0.5 ${c === '—' ? 'text-muted-foreground border-border' : 'text-foreground bg-background border-border'}`}>{c}</span>
-            ))}
-          </div>
           <div className="mt-2 w-full">
             <ProgressBar />
           </div>
@@ -593,6 +672,7 @@ const ProductConfigurator = () => {
                   fabric={fabric}
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
+                  showLateral={productType === 'cabecero'}
                 />
               </div>
             )}
@@ -609,13 +689,20 @@ const ProductConfigurator = () => {
           </div>
 
           <div className="flex flex-col gap-3 mt-6">
-            <button
-              onClick={handleOrder}
-              disabled={!productType}
-              className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
-            >
-              Lo quiero — solicitar presupuesto
-            </button>
+            {productType === 'banco' ? (
+              <div className="w-full px-6 py-3.5 bg-muted text-muted-foreground text-sm tracking-wide uppercase text-center font-medium rounded-sm cursor-not-allowed flex items-center justify-center gap-2">
+                <Clock size={14} />
+                Próximamente — no disponible aún
+              </div>
+            ) : (
+              <button
+                onClick={handleOrder}
+                disabled={!productType}
+                className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+              >
+                Lo quiero — solicitar presupuesto
+              </button>
+            )}
           </div>
         </div>
 
@@ -647,13 +734,20 @@ const ProductConfigurator = () => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío a toda España</p>
-          <button
-            onClick={handleOrder}
-            disabled={!productType}
-            className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
-          >
-            Lo quiero →
-          </button>
+          {productType === 'banco' ? (
+            <div className="bg-muted text-muted-foreground px-4 py-3 text-xs tracking-wide font-medium text-center flex items-center gap-1.5 cursor-not-allowed">
+              <Clock size={12} />
+              Próximamente
+            </div>
+          ) : (
+            <button
+              onClick={handleOrder}
+              disabled={!productType}
+              className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+            >
+              Lo quiero →
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -672,6 +766,7 @@ interface AccordionContentSharedProps {
   benchHeight: string; setBenchHeight: (v: string) => void;
   puffDiameter: string; setPuffDiameter: (v: string) => void;
   puffHeight: string; setPuffHeight: (v: string) => void;
+  cushionShape: string; setCushionShape: (v: string) => void;
   cushionSize: string; setCushionSize: (v: string) => void;
   lampDiameter: string; setLampDiameter: (v: string) => void;
   lampHeight: string; setLampHeight: (v: string) => void;
@@ -697,6 +792,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter,
+    cushionShape, setCushionShape,
     cushionSize, setCushionSize,
     lampDiameter, setLampDiameter, lampHeight, setLampHeight,
     fabricId, setFabricId,
@@ -800,29 +896,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <span className="text-xs text-muted-foreground">cm</span>
                   </div>
                 )}
-              </div>
-              {/* Tela de laterales */}
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional)</span></p>
-                <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la tela principal. Puedes elegir otra tela para los laterales.</p>
-                <div className="flex flex-wrap gap-2">
-                  <button onClick={() => setLateralFabricId('')} className={`flex flex-col items-center gap-1 group`}>
-                    <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
-                      =
-                    </div>
-                    <span className="text-[9px] text-muted-foreground font-light">Igual</span>
-                  </button>
-                  {[...FABRIC_GROUPS[0].fabrics, ...FABRIC_GROUPS[1].fabrics].map(f => (
-                    <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
-                      <div
-                        className={`w-8 h-8 rounded-full border-2 transition-all overflow-hidden ${lateralFabricId === f.id ? "border-foreground ring-2 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
-                        style={{ backgroundColor: f.hex }}
-                      >
-                        {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
-                      </div>
-                    </button>
-                  ))}
-                </div>
               </div>
             </>
           )}
@@ -982,63 +1055,79 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
 
           {productType === 'cojin' && (
-            <div>
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Modelo y tamaño</p>
-              <SelectWrapper>
-                <select value={cushionSize} onChange={(e) => setCushionSize(e.target.value)} className={selectClass}>
-                  <option value="">Seleccionar modelo...</option>
-                  <option value="Rodiles — 40×40 cm">Rodiles — 40×40 cm</option>
-                  <option value="Rodiles — 45×45 cm">Rodiles — 45×45 cm</option>
-                  <option value="Rodiles — 60×60 cm">Rodiles — 60×60 cm</option>
-                  <option value="Covadonga — 50×30 cm lumbar">Covadonga — 50×30 cm lumbar</option>
-                  <option value="Torimbia — redondo">Torimbia — redondo</option>
-                  <option value="Gulpiyuri — rulo">Gulpiyuri — rulo</option>
-                </select>
-              </SelectWrapper>
-            </div>
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Asturias</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {CUSHION_SHAPES.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => { setCushionShape(s.id); setCushionSize(''); }}
+                      className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${cushionShape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                    >
+                      <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>
+                      <div>
+                        <span className="text-xs font-medium block">{s.name}</span>
+                        <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {cushionShape && (
+                <div>
+                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(CUSHION_SHAPES.find(s => s.id === cushionShape)?.sizes || []).map(sz => (
+                      <button
+                        key={sz}
+                        onClick={() => setCushionSize(sz)}
+                        className={`border rounded-md px-4 py-2 text-xs transition-all ${cushionSize === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {productType === 'pantalla' && (
             <>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Ávila</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {LAMPSHADE_SHAPES.map(s => (
-                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                    <button
+                      key={s.id}
+                      onClick={() => { setShape(s.id); setLampDiameter(''); }}
+                      className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                    >
                       <svg viewBox="0 0 60 44" className="w-12 h-9">
                         <path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" />
                       </svg>
-                      <span className="text-xs font-light">{s.name}</span>
+                      <div>
+                        <span className="text-xs font-medium block">{s.name}</span>
+                        <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Diámetro / Ancho base</p>
-                <SelectWrapper>
-                  <select value={lampDiameter} onChange={(e) => setLampDiameter(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar diámetro...</option>
-                    <option value="20 cm">20 cm — Pequeña</option>
-                    <option value="25 cm">25 cm</option>
-                    <option value="30 cm">30 cm — Mediana</option>
-                    <option value="35 cm">35 cm</option>
-                    <option value="40 cm">40 cm — Grande</option>
-                    <option value="50 cm">50 cm — Extra grande</option>
-                  </select>
-                </SelectWrapper>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
-                <SelectWrapper>
-                  <select value={lampHeight} onChange={(e) => setLampHeight(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar alto...</option>
-                    <option value="15 cm">15 cm</option>
-                    <option value="20 cm">20 cm</option>
-                    <option value="25 cm">25 cm</option>
-                    <option value="30 cm">30 cm</option>
-                    <option value="35 cm">35 cm</option>
-                  </select>
-                </SelectWrapper>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medida</p>
+                <div className="flex flex-wrap gap-2">
+                  {(LAMP_SIZES[shape] || LAMP_SIZES.cono).map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => setLampDiameter(sz)}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${lampDiameter === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
               </div>
             </>
           )}
@@ -1082,6 +1171,32 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               {ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}
             </p>
           )}
+
+          {/* Tela de laterales — solo cabeceros, después de elegir tela principal */}
+          {productType === 'cabecero' && fabricId && (
+            <div className="pt-4 border-t border-border/30">
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional)</span></p>
+              <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => setLateralFabricId('')} className="flex flex-col items-center gap-1">
+                  <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
+                    =
+                  </div>
+                  <span className="text-[9px] text-muted-foreground font-light">Igual</span>
+                </button>
+                {[...FABRIC_GROUPS[0].fabrics, ...FABRIC_GROUPS[1].fabrics].map(f => (
+                  <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                    <div
+                      className={`w-8 h-8 rounded-full border-2 transition-all overflow-hidden ${lateralFabricId === f.id ? "border-foreground ring-2 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                      style={{ backgroundColor: f.hex }}
+                    >
+                      {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </AccordionContent>
       </AccordionItem>
 
@@ -1093,11 +1208,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-3">
-          {FINISHES.filter(f => {
+          {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
+            if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
+            if (productType === 'banco' || productType === 'cojin' || productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puff') return f.id === 'liso' || f.id === 'vivo-simple';
-            if (productType === 'pantalla') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
-          }).map(f => (
+          })).map(f => (
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}

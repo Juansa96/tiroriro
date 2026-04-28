@@ -34,7 +34,7 @@ const ContactForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puff" | "mesa" | null;
+  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puff" | "mesa" | "pantalla" | null;
   const previewForma = searchParams.get("previewForma") || undefined;
   const previewColor = searchParams.get("previewColor") || "#D4C5A9";
   const previewTexture = searchParams.get("previewTexture") || undefined;
@@ -44,6 +44,12 @@ const ContactForm = () => {
   const previewWidth = searchParams.get("previewWidth");
   const previewHeight = searchParams.get("previewHeight");
   const previewDepth = searchParams.get("previewDepth");
+  const previewFabricName = searchParams.get("previewFabricName") || undefined;
+  const previewVivoName = searchParams.get("previewVivoName") || undefined;
+  const previewVivoImage = searchParams.get("previewVivoImage") || undefined;
+  const previewLateralHex = searchParams.get("previewLateralHex") || undefined;
+  const previewLateralImage = searchParams.get("previewLateralImage") || undefined;
+  const previewLateralName = searchParams.get("previewLateralName") || undefined;
 
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
@@ -157,18 +163,51 @@ const ContactForm = () => {
             </p>
             {previewType && (
               <div className="mt-5 rounded-2xl border border-border bg-background px-4 py-5">
-                <ProductSVGPreview
-                  type={previewType}
-                  color={previewColor}
-                  fabricImage={previewTexture}
-                  lateralFabricImage={previewLateralTexture}
-                  finish={previewFinish}
-                  vivoColor={previewVivo}
-                  forma={previewForma}
-                  widthCm={previewWidth ? Number(previewWidth) : undefined}
-                  heightCm={previewHeight ? Number(previewHeight) : undefined}
-                  depthCm={previewDepth ? Number(previewDepth) : undefined}
-                />
+                <div className="flex gap-4 items-center">
+                  <div className="flex-1">
+                    <ProductSVGPreview
+                      type={previewType}
+                      color={previewColor}
+                      fabricImage={previewTexture}
+                      lateralFabricImage={previewLateralTexture}
+                      finish={previewFinish}
+                      vivoColor={previewVivo}
+                      forma={previewForma}
+                      widthCm={previewWidth ? Number(previewWidth) : undefined}
+                      heightCm={previewHeight ? Number(previewHeight) : undefined}
+                      depthCm={previewDepth ? Number(previewDepth) : undefined}
+                    />
+                  </div>
+                  {previewFabricName && (
+                    <div className="w-20 flex-shrink-0 border-l border-border/30 pl-4 flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <p className="text-[10px] tracking-wide uppercase text-muted-foreground font-medium">Tela</p>
+                        <div className="w-full h-12 rounded border border-border/40 overflow-hidden" style={{ backgroundColor: previewColor }}>
+                          {previewTexture && <img src={previewTexture} alt={previewFabricName} className="w-full h-full object-cover" />}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground font-light leading-tight">{previewFabricName}</p>
+                      </div>
+                      {previewType === 'cabecero' && previewLateralName && (
+                        <div className="flex flex-col gap-1">
+                          <p className="text-[10px] tracking-wide uppercase text-muted-foreground font-medium">Laterales</p>
+                          <div className="w-full h-12 rounded border border-border/40 overflow-hidden" style={{ backgroundColor: previewLateralHex || previewColor }}>
+                            {previewLateralImage && <img src={previewLateralImage} alt={previewLateralName} className="w-full h-full object-cover" />}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground font-light leading-tight">{previewLateralName}</p>
+                        </div>
+                      )}
+                      {previewVivo && previewVivoName && (
+                        <div className="flex flex-col gap-1">
+                          <p className="text-[10px] tracking-wide uppercase text-muted-foreground font-medium">Vivo</p>
+                          <div className="w-full h-8 rounded border border-border/40 overflow-hidden" style={{ backgroundColor: previewVivo }}>
+                            {previewVivoImage && <img src={previewVivoImage} alt={previewVivoName} className="w-full h-full object-cover" />}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground font-light leading-tight">{previewVivoName}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

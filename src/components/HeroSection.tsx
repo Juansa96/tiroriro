@@ -101,12 +101,12 @@ const HeroSection = () => {
   }, []);
 
   const part1 = useTypewriter("Algunas cosas", isMobile ? 1500 : 3000, 55, skipAnimation);
-  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 5000 : 6000, 55, skipAnimation);
+  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 2200 : 6000, 55, skipAnimation);
   const [showRest, setShowRest] = useState(skipAnimation);
 
   useEffect(() => {
     if (skipAnimation) return;
-    const t = setTimeout(() => setShowRest(true), isMobile ? 7800 : 8800);
+    const t = setTimeout(() => setShowRest(true), isMobile ? 3600 : 8800);
     return () => clearTimeout(t);
   }, [isMobile, skipAnimation]);
 

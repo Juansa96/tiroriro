@@ -556,6 +556,40 @@ const CushionSVG = ({
     );
   }
 
+  if (kind === "circular") {
+    const r = scaleRange(widthCm, 30, 80, 0.85, 1.3);
+    const outerPath =
+      "M 52 40 Q 100 28 148 40 Q 164 40 164 56 Q 174 100 164 144 Q 164 160 148 160 Q 100 172 52 160 Q 36 160 36 144 Q 26 100 36 56 Q 36 40 52 40 Z";
+    const innerPath =
+      "M 58 48 Q 100 38 142 48 Q 154 48 154 60 Q 162 100 154 140 Q 154 152 142 152 Q 100 162 58 152 Q 46 152 46 140 Q 38 100 46 60 Q 46 48 58 48 Z";
+    return (
+      <svg viewBox="0 0 200 200" className="w-full max-w-[220px] mx-auto">
+        <defs>
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
+          <clipPath id={`cu-${clipId}`}>
+            <path d={outerPath} />
+          </clipPath>
+        </defs>
+        <g
+          style={{
+            transform: `scale(${r})`,
+            transformOrigin: "100px 100px",
+            transition: "transform 0.4s ease",
+          }}
+        >
+          <ellipse cx="102" cy="108" rx="64" ry="58" fill="rgba(0,0,0,0.07)" />
+          <path d={outerPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />
+          <path d={innerPath} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+          {finish === "vivo-simple" && (
+            <g clipPath={`url(#cu-${clipId})`}>
+              <path d={outerPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+            </g>
+          )}
+        </g>
+      </svg>
+    );
+  }
+
   if (kind === "rectangular") {
     const scaleX = scaleRange(widthCm, 30, 80, 1.05, 1.8);
     const scaleY = scaleRange(heightCm, 20, 60, 0.55, 1.05);
@@ -737,21 +771,25 @@ const LampshadeSVG = ({
   // Build paths for each lampshade shape
   const getPath = () => {
     switch (shape) {
-      case "cilindrica":
+      // Almanzor — cilindro (rectangle, same width top and bottom)
+      case "cilindro":
         return { front: "M 70 50 L 230 50 L 230 170 L 70 170 Z", top: "M 70 50 L 230 50 L 224 44 L 76 44 Z", side: "M 230 50 L 230 170 L 224 164 L 224 44 Z" };
-      case "cuadrada":
-        return { front: "M 90 60 L 210 60 L 220 170 L 80 170 Z", top: "M 90 60 L 210 60 L 204 54 L 96 54 Z", side: "M 210 60 L 220 170 L 214 164 L 204 54 Z" };
-      case "cuadrada-recta":
+      // La Galana — pirámide (square-ish trapezoid, close to pyramid from front)
+      case "piramide":
+        return { front: "M 90 60 L 210 60 L 230 170 L 70 170 Z", top: "M 90 60 L 210 60 L 204 54 L 96 54 Z", side: "M 210 60 L 230 170 L 224 164 L 204 54 Z" };
+      // Tormes — cuadrado (square, straight sides)
+      case "cuadrado":
         return { front: "M 85 55 L 215 55 L 215 170 L 85 170 Z", top: "M 85 55 L 215 55 L 209 49 L 91 49 Z", side: "M 215 55 L 215 170 L 209 164 L 209 49 Z" };
-      case "trapecio":
-        return { front: "M 75 55 L 225 55 L 215 170 L 85 170 Z", top: "M 75 55 L 225 55 L 219 49 L 81 49 Z", side: "M 225 55 L 215 170 L 209 164 L 219 49 Z" };
-      case "rectangular":
-        return { front: "M 55 75 L 245 75 L 235 165 L 65 165 Z", top: "M 55 75 L 245 75 L 239 69 L 61 69 Z", side: "M 245 75 L 235 165 L 229 159 L 239 69 Z" };
-      case "ovalada":
-        return { front: "M 85 60 Q 150 52 215 60 L 225 170 Q 150 162 75 170 Z", top: "M 85 60 Q 150 52 215 60 L 209 54 Q 150 46 91 54 Z", side: "M 215 60 L 225 170 L 219 164 L 209 54 Z" };
-      case "conica":
+      // La Serrota — rectángulo (wide and shallow)
+      case "rectangulo":
+        return { front: "M 55 82 L 245 82 L 240 160 L 60 160 Z", top: "M 55 82 L 245 82 L 239 76 L 61 76 Z", side: "M 245 82 L 240 160 L 234 154 L 239 76 Z" };
+      // La Paramera — ovalado (wide shallow ellipse outline)
+      case "ovalado":
+        return { front: "M 75 72 Q 150 58 225 72 L 230 158 Q 150 172 70 158 Z", top: "M 75 72 Q 150 58 225 72 L 219 66 Q 150 52 81 66 Z", side: "M 225 72 L 230 158 L 224 152 L 219 66 Z" };
+      // Gredos — cono (classic lampshade: narrow top, wide bottom)
+      case "cono":
       default:
-        return { front: "M 100 50 L 200 50 L 230 170 L 70 170 Z", top: "M 100 50 L 200 50 L 194 44 L 106 44 Z", side: "M 200 50 L 230 170 L 224 164 L 194 44 Z" };
+        return { front: "M 108 50 L 192 50 L 230 170 L 70 170 Z", top: "M 108 50 L 192 50 L 186 44 L 114 44 Z", side: "M 192 50 L 230 170 L 224 164 L 186 44 Z" };
     }
   };
 

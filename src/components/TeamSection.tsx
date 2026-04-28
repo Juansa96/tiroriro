@@ -1,5 +1,5 @@
-import inakiRocioPhoto from "@/assets/team/inaki-rocio.jpeg";
-import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
+import inakiRocioPhoto from "@/assets/team/inaki-rocio.webp";
+import juanBeaPhoto from "@/assets/team/juan-bea.webp";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
