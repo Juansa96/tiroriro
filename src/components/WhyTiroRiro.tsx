@@ -17,7 +17,7 @@ const WhyTiroRiro = () => (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-stretch">
         <AnimatedSection className="relative overflow-hidden min-h-[420px] lg:min-h-[580px]">
           <img
-            src="/hero-why-tiroriro.jpg"
+            src="/hero-why-tiroriro.webp"
             alt="Manos artesanas trabajando en tapicería de muebles"
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"

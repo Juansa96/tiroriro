@@ -1,4 +1,4 @@
-export type ProductType = "cabecero" | "banco" | "cojin" | "puff" | "mesa";
+export type ProductType = "cabecero" | "banco" | "cojin" | "puff" | "mesa" | "pantalla";
 
 export interface Product {
   id: string;
@@ -33,7 +33,7 @@ export const PRODUCTS: Product[] = [
     name: "Cabeceros tapizados",
     tagline: "El punto de partida de cualquier dormitorio que merece la pena",
     basePrice: 180,
-    image: "/productos-fotos/cabeceros/IMG_2555.PNG",
+    image: "/productos-fotos/cabeceros/IMG_2555.webp",
   },
   {
     id: "banco-entelado",
@@ -41,7 +41,7 @@ export const PRODUCTS: Product[] = [
     name: "Bancos entelados",
     tagline: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista",
     basePrice: 120,
-    image: "/productos-fotos/bancos/IMG_2552.PNG",
+    image: "/productos-fotos/bancos/IMG_2552.webp",
   },
   {
     id: "cojin-almohadon",
@@ -49,7 +49,7 @@ export const PRODUCTS: Product[] = [
     name: "Cojines y almohadones",
     tagline: "Detalles suaves y a medida para camas, bancos o sofás",
     basePrice: 35,
-    image: "/productos-fotos/almohadones/IMG_2514.PNG",
+    image: "/productos-fotos/almohadones/IMG_2514.webp",
   },
   {
     id: "puffs",
@@ -66,6 +66,14 @@ export const PRODUCTS: Product[] = [
     tagline: "Tapizadas a medida, con una presencia suave y mucho más original",
     basePrice: 290,
     image: "/productos-fotos/crops/puff-2497-1-tight.png",
+  },
+  {
+    id: "pantalla-lampara",
+    type: "pantalla",
+    name: "Pantallas de lámpara",
+    tagline: "Pantallas tapizadas a mano para transformar cualquier lámpara en una pieza única",
+    basePrice: 65,
+    image: "/productos-fotos/cabeceros/IMG_2502.webp",
   },
 ];
 
@@ -103,6 +111,16 @@ export const BASE_WIDTH_OPTIONS = ["40 cm", "50 cm", "60 cm", "70 cm", "80 cm", 
 export const BASE_DEPTH_OPTIONS = ["30 cm", "35 cm", "40 cm", "45 cm", "50 cm", "60 cm", "70 cm", "Otro"];
 export const BASE_HEIGHT_OPTIONS = ["30 cm", "35 cm", "40 cm", "45 cm", "50 cm", "Otro"];
 
+export const LAMPSHADE_SHAPES = [
+  { id: "conica", name: "Cónica" },
+  { id: "cilindrica", name: "Cilíndrica" },
+  { id: "cuadrada", name: "Cuadrada" },
+  { id: "trapecio", name: "Trapecio" },
+  { id: "cuadrada-recta", name: "Cuadrada recta" },
+  { id: "rectangular", name: "Rectangular" },
+  { id: "ovalada", name: "Ovalada" },
+];
+
 export const FINISHES = {
   cabecero: [
     { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete limpio que perfila la pieza", extra: 15 },
@@ -123,6 +141,10 @@ export const FINISHES = {
   cojin: [
     { id: "sin-vivo", name: "Sin vivo", desc: "Acabado suave y ligero", extra: 0 },
     { id: "vivo-simple", name: "Vivo simple", desc: "Un vivo fino que remata el cojín", extra: 10 },
+  ],
+  pantalla: [
+    { id: "sin-vivo", name: "Sin vivo", desc: "Acabado limpio y ligero", extra: 0 },
+    { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete sutil que define la silueta", extra: 12 },
   ],
 } as const;
 
@@ -175,6 +197,10 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     price += Math.max(0, parseNumber(options.depth) - 30) * 0.35;
   }
 
+  if (type === "pantalla") {
+    price += Math.max(0, parseNumber(options.diameter) - 30) * 0.8;
+  }
+
   if (options.express === "true") price += 35;
   return Math.round(price);
 }
@@ -219,6 +245,12 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
   if (type === "cojin") {
     if (options.shapeLabel) parts.push(options.shapeLabel);
     if (options.sizeLabel) parts.push(options.sizeLabel);
+  }
+
+  if (type === "pantalla") {
+    if (options.shapeLabel) parts.push(options.shapeLabel);
+    if (options.diameter) parts.push(`Diámetro ${options.diameter}`);
+    if (options.height) parts.push(`Alto ${options.height}`);
   }
 
   if (options.fabricLabel) parts.push(`Tela ${options.fabricLabel}`);

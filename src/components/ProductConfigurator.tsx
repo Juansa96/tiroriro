@@ -10,7 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const FABRIC_GROUPS = [
@@ -63,6 +63,16 @@ const HEADBOARD_SHAPES = [
   { id: "corona-triple", name: "Barbaria", svgPreview: "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z" },
 ];
 
+const LAMPSHADE_SHAPES = [
+  { id: "conica", name: "Cónica", svgPreview: "M 18 8 L 42 8 L 55 38 L 5 38 Z" },
+  { id: "cilindrica", name: "Cilíndrica", svgPreview: "M 8 8 L 52 8 L 52 38 L 8 38 Z" },
+  { id: "cuadrada", name: "Cuadrada", svgPreview: "M 15 8 L 45 8 L 50 38 L 10 38 Z" },
+  { id: "trapecio", name: "Trapecio", svgPreview: "M 10 8 L 50 8 L 52 38 L 8 38 Z" },
+  { id: "cuadrada-recta", name: "Cuadrada recta", svgPreview: "M 12 8 L 48 8 L 48 38 L 12 38 Z" },
+  { id: "rectangular", name: "Rectangular", svgPreview: "M 5 15 L 55 15 L 55 38 L 5 38 Z" },
+  { id: "ovalada", name: "Ovalada", svgPreview: "M 15 8 Q 30 4 45 8 L 52 38 Q 30 42 8 38 Z" },
+];
+
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
 const STEPS: Step[] = ["type", "measures", "fabric", "finish", "extras"];
 const STEP_LABELS: Record<Step, string> = {
@@ -85,6 +95,8 @@ const ProductIcon = ({ type }: { type: string }) => {
       return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'mesa':
       return <svg viewBox="0 0 42 30" className="w-8 h-6"><rect x="5" y="5" width="32" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="10" y1="15" x2="10" y2="25" stroke="currentColor" strokeWidth="2" /><line x1="32" y1="15" x2="32" y2="25" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'pantalla':
+      return <svg viewBox="0 0 40 32" className="w-8 h-6"><path d="M 14 4 L 26 4 L 34 28 L 6 28 Z" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
       return null;
   }
@@ -105,22 +117,81 @@ const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-function parseCm(selectVal: string, customVal: string): number | undefined {
-  if (selectVal === 'custom') {
-    const n = parseInt(customVal);
-    return isNaN(n) ? undefined : n;
-  }
-  if (selectVal) {
-    const n = parseInt(selectVal);
-    return isNaN(n) ? undefined : n;
-  }
-  return undefined;
+function parseCm(selectVal: string): number | undefined {
+  if (!selectVal) return undefined;
+  const n = parseInt(selectVal);
+  return isNaN(n) ? undefined : n;
+}
+
+function parseCushionDetails(cushionSize: string): { shape: string; widthCm: number; heightCm: number } {
+  if (cushionSize.includes('Gulpiyuri')) return { shape: 'cilindro', widthCm: 60, heightCm: 15 };
+  if (cushionSize.includes('Torimbia')) return { shape: 'rectangular', widthCm: 45, heightCm: 45 };
+  if (cushionSize.includes('Covadonga')) return { shape: 'rectangular', widthCm: 50, heightCm: 30 };
+  if (cushionSize.includes('60×60')) return { shape: 'cuadrada', widthCm: 60, heightCm: 60 };
+  if (cushionSize.includes('45×45')) return { shape: 'cuadrada', widthCm: 45, heightCm: 45 };
+  if (cushionSize.includes('40×40')) return { shape: 'cuadrada', widthCm: 40, heightCm: 40 };
+  return { shape: 'cuadrada', widthCm: 45, heightCm: 45 };
 }
 
 const RenderNotice = () => (
   <p className="text-[11px] text-muted-foreground text-center mt-3 italic leading-relaxed px-2">
     Render de simulación — los colores pueden variar. ¿Quieres ver la tela antes de decidir? Te enviamos muestras a casa.
   </p>
+);
+
+// Fabric swatch panel shown next to the render
+const FabricSwatchPanel = ({
+  fabric,
+  vivoFabric,
+  lateralFabric,
+}: {
+  fabric?: { name: string; hex: string; image?: string };
+  vivoFabric?: { name: string; hex: string; image?: string };
+  lateralFabric?: { name: string; hex: string; image?: string };
+}) => (
+  <div className="flex flex-col gap-4 justify-center">
+    {/* Tela elegida */}
+    <div className="flex flex-col gap-1.5">
+      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela elegida</p>
+      <div
+        className="w-full h-16 rounded-md border border-border/40 overflow-hidden flex-shrink-0"
+        style={{ backgroundColor: fabric?.hex || '#E8E4DC' }}
+      >
+        {fabric?.image && (
+          <img src={fabric.image} alt={fabric.name} className="w-full h-full object-cover" loading="lazy" />
+        )}
+      </div>
+      <p className="text-[11px] text-muted-foreground font-light">{fabric?.name || '—'}</p>
+    </div>
+
+    {/* Vivo elegido */}
+    <div className="flex flex-col gap-1.5">
+      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Vivo elegido</p>
+      <div
+        className="w-full h-8 rounded-md border border-border/40 overflow-hidden"
+        style={{ backgroundColor: vivoFabric?.hex || '#E8E4DC' }}
+      >
+        {vivoFabric?.image && (
+          <img src={vivoFabric.image} alt={vivoFabric.name} className="w-full h-full object-cover" loading="lazy" />
+        )}
+      </div>
+      <p className="text-[11px] text-muted-foreground font-light">{vivoFabric?.name || '—'}</p>
+    </div>
+
+    {/* Tela laterales */}
+    <div className="flex flex-col gap-1.5">
+      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela laterales</p>
+      <div
+        className="w-full h-10 rounded-md border border-border/40 overflow-hidden"
+        style={{ backgroundColor: lateralFabric?.hex || fabric?.hex || '#E8E4DC' }}
+      >
+        {(lateralFabric?.image || fabric?.image) && (
+          <img src={lateralFabric?.image || fabric?.image} alt={lateralFabric?.name || fabric?.name} className="w-full h-full object-cover" loading="lazy" />
+        )}
+      </div>
+      <p className="text-[11px] text-muted-foreground font-light">{lateralFabric?.name || fabric?.name || '—'}</p>
+    </div>
+  </div>
 );
 
 const ProductConfigurator = () => {
@@ -137,10 +208,11 @@ const ProductConfigurator = () => {
   const [benchHeight, setBenchHeight] = useState("");
   const [puffDiameter, setPuffDiameter] = useState("");
   const [puffHeight, setPuffHeight] = useState("");
-  const [puffLength, setPuffLength] = useState("");
-  const [puffDepth, setPuffDepth] = useState("");
   const [cushionSize, setCushionSize] = useState("");
+  const [lampDiameter, setLampDiameter] = useState("");
+  const [lampHeight, setLampHeight] = useState("");
   const [fabricId, setFabricId] = useState("");
+  const [lateralFabricId, setLateralFabricId] = useState("");
   const [finish, setFinish] = useState("");
   const [vivoColorId, setVivoColorId] = useState("");
   const [customWidth, setCustomWidth] = useState("");
@@ -169,11 +241,12 @@ const ProductConfigurator = () => {
   useEffect(() => {
     const tipo = searchParams.get('tipo');
     const forma = searchParams.get('forma');
-    if (tipo && ['cabecero', 'banco', 'cojin', 'puff', 'mesa'].includes(tipo)) {
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puff', 'mesa', 'pantalla'].includes(tipo)) {
       setProductType(tipo as ProductType);
       if (tipo === 'puff' && !forma) setShape('cuadrado');
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puff');
+      if (tipo === 'pantalla' && !forma) setShape('conica');
       if (isMobile) {
         setOpenAccordion('measures');
       } else {
@@ -184,7 +257,12 @@ const ProductConfigurator = () => {
   }, [searchParams, isMobile]);
 
   const resetConfiguracion = (newType?: ProductType) => {
-    setShape(newType === 'puff' ? 'cuadrado' : newType === 'banco' ? 'madera' : newType === 'mesa' ? 'tipo-puff' : 'recto');
+    const defaultShape = newType === 'puff' ? 'cuadrado'
+      : newType === 'banco' ? 'madera'
+      : newType === 'mesa' ? 'tipo-puff'
+      : newType === 'pantalla' ? 'conica'
+      : 'recto';
+    setShape(defaultShape);
     setBedWidth('');
     setBedHeight('');
     setBenchLength('');
@@ -192,10 +270,11 @@ const ProductConfigurator = () => {
     setBenchHeight('');
     setPuffDiameter('');
     setPuffHeight('');
-    setPuffLength('');
-    setPuffDepth('');
     setCushionSize('');
+    setLampDiameter('');
+    setLampHeight('');
     setFabricId('');
+    setLateralFabricId('');
     setFinish('');
     setVivoColorId('');
     setCustomWidth('');
@@ -215,24 +294,37 @@ const ProductConfigurator = () => {
   };
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
+  const lateralFabric = ALL_FABRICS.find(f => f.id === lateralFabricId);
   const vivoFabric = ALL_FABRICS.find(f => f.id === vivoColorId);
   const fillColor = fabric?.hex || "#D4C5A9";
   const fabricImage = (fabric as { image?: string })?.image || undefined;
+  const lateralFabricImage = (lateralFabric as { image?: string })?.image || undefined;
   const vivoColor = vivoFabric?.hex || darken(fillColor);
 
-  const widthCm = productType === 'cabecero' ? parseCm(bedWidth, customWidth)
-    : productType === 'banco' ? parseCm(benchLength, '')
-    : productType === 'mesa' ? parseCm(benchLength, '')
-    : productType === 'puff' ? (shape === 'rectangular' ? parseCm(puffLength, '') : parseCm(puffDiameter, ''))
-    : undefined;
-  const heightCm = productType === 'cabecero' ? parseCm(bedHeight, customHeight)
-    : productType === 'banco' ? parseCm(benchHeight, '')
-    : productType === 'mesa' ? parseCm(benchHeight, '')
-    : productType === 'puff' ? (shape === 'rectangular' ? parseCm(puffDepth, '') : parseCm(puffHeight, ''))
-    : undefined;
-  const depthCm = productType === 'mesa' ? parseCm(benchDepth, '') : undefined;
+  // Cushion details parsed from size string
+  const cushionDetails = productType === 'cojin' && cushionSize ? parseCushionDetails(cushionSize) : null;
 
-  const svgForma = productType === 'cojin' ? cushionSize : shape;
+  const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
+    : productType === 'banco' ? parseCm(benchLength)
+    : productType === 'mesa' ? parseCm(benchLength)
+    : productType === 'puff' ? parseCm(puffDiameter)
+    : productType === 'cojin' ? cushionDetails?.widthCm
+    : undefined;
+
+  // For puff cuadrado (Patos): height = width to make it perfectly cubic
+  const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
+    : productType === 'banco' ? parseCm(benchHeight)
+    : productType === 'mesa' ? parseCm(benchHeight)
+    : productType === 'puff' ? (shape === 'cuadrado' ? widthCm : parseCm(puffHeight))
+    : productType === 'cojin' ? cushionDetails?.heightCm
+    : undefined;
+
+  const depthCm = productType === 'mesa' ? parseCm(benchDepth) : undefined;
+
+  // For cojin, use cushion shape from parsed details; for puff, use shape state
+  const svgForma = productType === 'cojin'
+    ? (cushionDetails?.shape || 'cuadrada')
+    : shape;
 
   const options = useMemo(() => {
     const o: Record<string, string> = {};
@@ -245,13 +337,12 @@ const ProductConfigurator = () => {
     if (productType === 'cojin') o.size = cushionSize;
     if (productType === 'puff') {
       o.puffShape = shape;
-      if (shape === 'rectangular') {
-        if (puffLength) o.puffLength = puffLength;
-        if (puffDepth) o.puffDepth = puffDepth;
-        if (extraTopMaterial !== 'nada') o.topMaterial = extraTopMaterial;
-      } else {
-        o.puffSize = puffDiameter === '40 cm' ? 'Pequeño' : puffDiameter === '50 cm' ? 'Mediano' : puffDiameter === '60 cm' ? 'Grande' : puffDiameter === '70 cm' ? 'Extra Grande' : '';
-      }
+      o.puffSize = puffDiameter === '40 cm' ? 'Pequeño' : puffDiameter === '50 cm' ? 'Mediano' : puffDiameter === '60 cm' ? 'Grande' : puffDiameter === '70 cm' ? 'Extra Grande' : '';
+    }
+    if (productType === 'pantalla') {
+      o.shape = shape;
+      o.diameter = lampDiameter;
+      o.height = lampHeight;
     }
     if (finish) o.finish = finish;
     if (fabricId) o.color = fabricId;
@@ -259,7 +350,7 @@ const ProductConfigurator = () => {
     if (extraRelleno) o.relleno = 'true';
     if (extraExpress) o.express = 'true';
     return o;
-  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, puffLength, puffDepth, finish, fabricId, extraPatas, extraRelleno, extraExpress, extraTopMaterial, customWidth, customHeight]);
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, lampDiameter, lampHeight, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -271,8 +362,9 @@ const ProductConfigurator = () => {
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
       : productType === 'banco' ? !!benchLength
       : productType === 'mesa' ? !!benchLength
-      : productType === 'puff' ? (shape === 'rectangular' ? !!puffLength && !!puffDepth : !!puffDiameter)
+      : productType === 'puff' ? !!puffDiameter
       : productType === 'cojin' ? !!cushionSize
+      : productType === 'pantalla' ? !!lampDiameter
       : false,
     fabric: !!fabricId,
     finish: !!finish,
@@ -294,15 +386,9 @@ const ProductConfigurator = () => {
     chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
   }
   if (productType === 'banco') chips.push(benchLength || "—");
-  if (productType === 'puff') {
-    if (shape === 'rectangular') {
-      chips.push(puffLength || "—");
-      chips.push(puffDepth || "—");
-    } else {
-      chips.push(puffDiameter || "—");
-    }
-  }
+  if (productType === 'puff') chips.push(puffDiameter || "—");
   if (productType === 'cojin') chips.push(cushionSize || "—");
+  if (productType === 'pantalla') chips.push(lampDiameter || "—");
   chips.push(fabric?.name || "—");
   const finishObj = FINISHES.find(f => f.id === finish);
   if (finishObj) chips.push(finishObj.name);
@@ -333,6 +419,16 @@ const ProductConfigurator = () => {
     const params = new URLSearchParams({
       product: product?.name || '',
       config: `Me interesa: ${summary}`,
+      previewType: productType,
+      previewForma: svgForma || '',
+      previewColor: fillColor,
+      previewTexture: fabricImage || '',
+      previewLateralTexture: lateralFabricImage || '',
+      previewFinish: finish,
+      previewVivo: vivoFabric?.hex || '',
+      previewWidth: widthCm?.toString() || '',
+      previewHeight: heightCm?.toString() || '',
+      previewDepth: depthCm?.toString() || '',
     });
     if (extraExpress) params.set('express', 'true');
     return `/?${params.toString()}#contacto`;
@@ -351,11 +447,9 @@ const ProductConfigurator = () => {
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
-        if (productType === 'puff') {
-          if (shape === 'rectangular') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffLength} × {puffDepth}</span>;
-          return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
-        }
+        if (productType === 'puff') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {cushionSize}</span>;
+        if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter} / {lampHeight}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
@@ -424,9 +518,10 @@ const ProductConfigurator = () => {
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
-    puffLength, setPuffLength, puffDepth, setPuffDepth,
     cushionSize, setCushionSize,
+    lampDiameter, setLampDiameter, lampHeight, setLampHeight,
     fabricId, setFabricId: (id: string) => { setFabricId(id); },
+    lateralFabricId, setLateralFabricId,
     finish, setFinish: (f: string) => { setFinish(f); },
     vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
@@ -441,7 +536,7 @@ const ProductConfigurator = () => {
       <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
         <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-3">Diseña el tuyo</h1>
         <p className="text-sm text-muted-foreground font-light">
-          ¿No tienes las medidas exactas? No te preocupes, puedes indicarlo en el formulario.
+          Elige el producto, las medidas y la tela — el precio se actualiza en tiempo real.
         </p>
       </div>
 
@@ -449,8 +544,14 @@ const ProductConfigurator = () => {
         <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
           <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
           <div className="flex-1 flex items-center justify-center w-full">
-            <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+            <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
           </div>
+          {productType === 'banco' && (
+            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground border border-border/40 rounded-full px-3 py-1">
+              <Clock size={11} />
+              <span>Próximamente disponible</span>
+            </div>
+          )}
           <RenderNotice />
           <div className="flex flex-wrap gap-1.5 justify-center mt-2">
             {chips.map((c, i) => (
@@ -464,16 +565,37 @@ const ProductConfigurator = () => {
       </div>
 
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
-        <div className="w-[40%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-          <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: '#F0EDE8' }}>
-            <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
-            <div className="flex-1 flex items-center justify-center w-full">
-              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+        {/* Left column: render + fabric swatches + actions */}
+        <div className="w-[45%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+          <div className="rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
+            {/* SVG render */}
+            <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
+              <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
+              <div className="flex-1 flex items-center justify-center w-full">
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+              </div>
+              {!productType && (
+                <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
+              )}
+              {productType === 'banco' && (
+                <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground border border-border/50 rounded-full px-3 py-1.5">
+                  <Clock size={12} />
+                  <span>Producto próximamente disponible — puedes explorar el configurador</span>
+                </div>
+              )}
+              <RenderNotice />
             </div>
-            {!productType && (
-              <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
+
+            {/* Fabric swatch panel — only when fabric is selected */}
+            {fabricId && (
+              <div className="w-28 flex-shrink-0 border-l border-border/30 pl-4">
+                <FabricSwatchPanel
+                  fabric={fabric}
+                  vivoFabric={needsVivo ? vivoFabric : undefined}
+                  lateralFabric={lateralFabric || undefined}
+                />
+              </div>
             )}
-            <RenderNotice />
           </div>
 
           <div className="flex flex-wrap gap-1.5 justify-center mt-4">
@@ -497,7 +619,7 @@ const ProductConfigurator = () => {
           </div>
         </div>
 
-        <div className="w-[60%] lg:w-1/2">
+        <div className="w-[55%] lg:w-1/2">
           <div className="mb-6">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
             <p className="mt-2 text-base text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
@@ -550,10 +672,11 @@ interface AccordionContentSharedProps {
   benchHeight: string; setBenchHeight: (v: string) => void;
   puffDiameter: string; setPuffDiameter: (v: string) => void;
   puffHeight: string; setPuffHeight: (v: string) => void;
-  puffLength: string; setPuffLength: (v: string) => void;
-  puffDepth: string; setPuffDepth: (v: string) => void;
   cushionSize: string; setCushionSize: (v: string) => void;
+  lampDiameter: string; setLampDiameter: (v: string) => void;
+  lampHeight: string; setLampHeight: (v: string) => void;
   fabricId: string; setFabricId: (v: string) => void;
+  lateralFabricId: string; setLateralFabricId: (v: string) => void;
   finish: string; setFinish: (v: string) => void;
   vivoColorId: string; setVivoColorId: (v: string) => void;
   customWidth: string; setCustomWidth: (v: string) => void;
@@ -573,10 +696,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     shape, setShape,
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
-    puffDiameter, setPuffDiameter, puffHeight, setPuffHeight,
-    puffLength, setPuffLength, puffDepth, setPuffDepth,
+    puffDiameter, setPuffDiameter,
     cushionSize, setCushionSize,
+    lampDiameter, setLampDiameter, lampHeight, setLampHeight,
     fabricId, setFabricId,
+    lateralFabricId, setLateralFabricId,
     finish, setFinish,
     vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
@@ -604,6 +728,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             {productCard('puff', 'Puff')}
             {productCard('cojin', 'Cojines')}
             {productCard('mesa', 'Mesa de centro')}
+            {productCard('pantalla', 'Pantalla lámpara')}
           </div>
         </AccordionContent>
       </AccordionItem>
@@ -644,19 +769,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="160 cm">160 cm</option>
                     <option value="180 cm">180 cm</option>
                     <option value="200 cm">200 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
+                    <option value="custom">Otra medida</option>
                   </select>
                 </SelectWrapper>
                 {bedWidth === 'custom' && (
-                  <>
-                    <div className="mt-3 flex items-center gap-2">
-                      <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                      <span className="text-xs text-muted-foreground">cm</span>
-                    </div>
-                    {parseInt(customWidth) > 250 && (
-                      <p className="text-sm text-destructive mt-1">El ancho máximo es 250 cm. Consúltanos para medidas especiales.</p>
-                    )}
-                  </>
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
                 )}
               </div>
               <div>
@@ -671,23 +791,42 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="100 cm">100 cm</option>
                     <option value="110 cm">110 cm</option>
                     <option value="120 cm">120 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
+                    <option value="custom">Otra medida</option>
                   </select>
                 </SelectWrapper>
                 {bedHeight === 'custom' && (
-                  <>
-                    <div className="mt-3 flex items-center gap-2">
-                      <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                      <span className="text-xs text-muted-foreground">cm</span>
-                    </div>
-                    {parseInt(customHeight) > 120 && (
-                      <p className="text-sm text-destructive mt-1">El alto máximo habitual es 120 cm. Escríbenos para confirmar.</p>
-                    )}
-                  </>
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
                 )}
+              </div>
+              {/* Tela de laterales */}
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional)</span></p>
+                <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la tela principal. Puedes elegir otra tela para los laterales.</p>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={() => setLateralFabricId('')} className={`flex flex-col items-center gap-1 group`}>
+                    <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
+                      =
+                    </div>
+                    <span className="text-[9px] text-muted-foreground font-light">Igual</span>
+                  </button>
+                  {[...FABRIC_GROUPS[0].fabrics, ...FABRIC_GROUPS[1].fabrics].map(f => (
+                    <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                      <div
+                        className={`w-8 h-8 rounded-full border-2 transition-all overflow-hidden ${lateralFabricId === f.id ? "border-foreground ring-2 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                        style={{ backgroundColor: f.hex }}
+                      >
+                        {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </>
           )}
+
           {productType === 'banco' && (
             <>
               <div>
@@ -709,7 +848,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="100 cm">100 cm</option>
                     <option value="120 cm">120 cm</option>
                     <option value="140 cm">140 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -721,7 +859,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="35 cm">35 cm</option>
                     <option value="40 cm">40 cm</option>
                     <option value="45 cm">45 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -732,110 +869,76 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="">Seleccionar alto...</option>
                     <option value="40 cm">40 cm</option>
                     <option value="45 cm">45 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
             </>
           )}
+
           {productType === 'puff' && (
             <>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Galicia</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => { setShape('cuadrado'); setPuffLength(''); setPuffDepth(''); }}
-                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape !== 'rectangular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                    onClick={() => setShape('cuadrado')}
+                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'cuadrado' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                   >
                     <svg viewBox="0 0 40 40" className="w-8 h-8">
-                      <rect x="6" y="6" width="28" height="28" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      <rect x="6" y="6" width="28" height="28" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
                     </svg>
-                    <span className="text-xs font-light">América</span>
+                    <div>
+                      <span className="text-xs font-medium block">Patos</span>
+                      <span className="text-[10px] text-muted-foreground">Cúbico · Galicia</span>
+                    </div>
                   </button>
                   <button
-                    onClick={() => { setShape('rectangular'); setPuffDiameter(''); }}
-                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'rectangular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                    onClick={() => setShape('circular')}
+                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'circular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                   >
-                    <svg viewBox="0 0 50 35" className="w-10 h-7">
-                      <rect x="4" y="7" width="42" height="21" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    <svg viewBox="0 0 40 40" className="w-8 h-8">
+                      <circle cx="20" cy="20" r="14" fill="none" stroke="currentColor" strokeWidth="1.5" />
                     </svg>
-                    <span className="text-xs font-light">Calblanque</span>
-                    <span className="text-[10px] text-muted-foreground">(Mesa de centro)</span>
+                    <div>
+                      <span className="text-xs font-medium block">Monteferro</span>
+                      <span className="text-[10px] text-muted-foreground">Redondo · Galicia</span>
+                    </div>
                   </button>
                 </div>
               </div>
-              {shape !== 'rectangular' && (
-                <div>
-                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
-                  <SelectWrapper>
-                    <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
-                      <option value="">Seleccionar tamaño...</option>
-                      <option value="40 cm">40 cm — Pequeño</option>
-                      <option value="50 cm">50 cm — Mediano</option>
-                      <option value="60 cm">60 cm — Grande</option>
-                      <option value="70 cm">70 cm — Extra grande</option>
-                      <option value="custom">No tengo claras las medidas</option>
-                    </select>
-                  </SelectWrapper>
-                </div>
-              )}
-              {shape === 'rectangular' && (
-                <>
-                  <div>
-                    <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
-                    <SelectWrapper>
-                      <select value={puffLength} onChange={(e) => setPuffLength(e.target.value)} className={selectClass}>
-                        <option value="">Seleccionar largo...</option>
-                        <option value="70 cm">70 cm</option>
-                        <option value="80 cm">80 cm</option>
-                        <option value="90 cm">90 cm</option>
-                        <option value="100 cm">100 cm</option>
-                        <option value="120 cm">120 cm</option>
-                        <option value="custom">No tengo claras las medidas</option>
-                      </select>
-                    </SelectWrapper>
-                  </div>
-                  <div>
-                    <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
-                    <SelectWrapper>
-                      <select value={puffDepth} onChange={(e) => setPuffDepth(e.target.value)} className={selectClass}>
-                        <option value="">Seleccionar fondo...</option>
-                        <option value="40 cm">40 cm</option>
-                        <option value="50 cm">50 cm</option>
-                        <option value="60 cm">60 cm</option>
-                        <option value="custom">No tengo claras las medidas</option>
-                      </select>
-                    </SelectWrapper>
-                  </div>
-                </>
-              )}
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
                 <SelectWrapper>
-                  <select value={puffHeight} onChange={(e) => setPuffHeight(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar alto...</option>
-                    <option value="30 cm">30 cm</option>
-                    <option value="35 cm">35 cm</option>
-                    <option value="40 cm">40 cm</option>
-                    <option value="45 cm">45 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
+                  <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar tamaño...</option>
+                    <option value="40 cm">40 cm — Pequeño</option>
+                    <option value="50 cm">50 cm — Mediano</option>
+                    <option value="60 cm">60 cm — Grande</option>
+                    <option value="70 cm">70 cm — Extra grande</option>
                   </select>
                 </SelectWrapper>
               </div>
             </>
           )}
+
           {productType === 'mesa' && (
             <>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de mesa</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de mesa · Colección Murcia</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button onClick={() => setShape('tipo-puff')} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'tipo-puff' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
                     <svg viewBox="0 0 42 28" className="w-8 h-6"><rect x="4" y="4" width="34" height="20" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
-                    <span className="text-xs font-light">Mesa tapizada</span>
+                    <div>
+                      <span className="text-xs font-medium block">Cabo de Palos</span>
+                      <span className="text-[10px] text-muted-foreground">Sin patas</span>
+                    </div>
                   </button>
                   <button onClick={() => setShape('tipo-banco')} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'tipo-banco' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
                     <svg viewBox="0 0 42 28" className="w-8 h-6"><rect x="4" y="4" width="34" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="8" y1="18" x2="8" y2="26" stroke="currentColor" strokeWidth="1.5" /><line x1="34" y1="18" x2="34" y2="26" stroke="currentColor" strokeWidth="1.5" /></svg>
-                    <span className="text-xs font-light">Tipo banco</span>
+                    <div>
+                      <span className="text-xs font-medium block">Calblanque</span>
+                      <span className="text-[10px] text-muted-foreground">Con patas</span>
+                    </div>
                   </button>
                 </div>
               </div>
@@ -849,7 +952,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="90 cm">90 cm</option>
                     <option value="100 cm">100 cm</option>
                     <option value="120 cm">120 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -862,7 +964,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="50 cm">50 cm</option>
                     <option value="60 cm">60 cm</option>
                     <option value="70 cm">70 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
@@ -874,20 +975,21 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="30 cm">30 cm</option>
                     <option value="35 cm">35 cm</option>
                     <option value="40 cm">40 cm</option>
-                    <option value="custom">No tengo claras las medidas</option>
                   </select>
                 </SelectWrapper>
               </div>
             </>
           )}
+
           {productType === 'cojin' && (
             <div>
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Modelo y tamaño</p>
               <SelectWrapper>
                 <select value={cushionSize} onChange={(e) => setCushionSize(e.target.value)} className={selectClass}>
-                  <option value="">Seleccionar tamaño...</option>
+                  <option value="">Seleccionar modelo...</option>
                   <option value="Rodiles — 40×40 cm">Rodiles — 40×40 cm</option>
                   <option value="Rodiles — 45×45 cm">Rodiles — 45×45 cm</option>
+                  <option value="Rodiles — 60×60 cm">Rodiles — 60×60 cm</option>
                   <option value="Covadonga — 50×30 cm lumbar">Covadonga — 50×30 cm lumbar</option>
                   <option value="Torimbia — redondo">Torimbia — redondo</option>
                   <option value="Gulpiyuri — rulo">Gulpiyuri — rulo</option>
@@ -895,6 +997,52 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </SelectWrapper>
             </div>
           )}
+
+          {productType === 'pantalla' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {LAMPSHADE_SHAPES.map(s => (
+                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                      <svg viewBox="0 0 60 44" className="w-12 h-9">
+                        <path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      </svg>
+                      <span className="text-xs font-light">{s.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Diámetro / Ancho base</p>
+                <SelectWrapper>
+                  <select value={lampDiameter} onChange={(e) => setLampDiameter(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar diámetro...</option>
+                    <option value="20 cm">20 cm — Pequeña</option>
+                    <option value="25 cm">25 cm</option>
+                    <option value="30 cm">30 cm — Mediana</option>
+                    <option value="35 cm">35 cm</option>
+                    <option value="40 cm">40 cm — Grande</option>
+                    <option value="50 cm">50 cm — Extra grande</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
+                <SelectWrapper>
+                  <select value={lampHeight} onChange={(e) => setLampHeight(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar alto...</option>
+                    <option value="15 cm">15 cm</option>
+                    <option value="20 cm">20 cm</option>
+                    <option value="25 cm">25 cm</option>
+                    <option value="30 cm">30 cm</option>
+                    <option value="35 cm">35 cm</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+            </>
+          )}
+
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
@@ -909,13 +1057,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-6">
-          {productType === 'puff' && shape === 'rectangular' && (
-            <div className="border-l-2 border-accent-warm pl-3 py-1">
-              <p className="text-xs text-muted-foreground font-light italic">
-                Para mesas de centro usamos telas impermeables y resistentes al agua, perfectas para uso diario.
-              </p>
-            </div>
-          )}
           {FABRIC_GROUPS.map(group => (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
@@ -953,9 +1094,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionTrigger>
         <AccordionContent className="pb-6 space-y-3">
           {FINISHES.filter(f => {
-            if (productType === 'puff') {
-              return f.id === 'liso' || f.id === 'vivo-simple';
-            }
+            if (productType === 'puff') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'pantalla') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
           }).map(f => (
             <button
@@ -1016,7 +1156,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </>
           )}
-          {productType === 'puff' && shape === 'rectangular' && (
+          {productType === 'mesa' && (
             <div className="py-2">
               <p className="text-base text-foreground font-light mb-1">Superficie encima de la mesa</p>
               <p className="text-xs text-muted-foreground mb-3">Añade una superficie rígida sobre el tapizado</p>

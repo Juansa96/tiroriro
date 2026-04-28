@@ -26,6 +26,7 @@ const categoryRoutes = [
   { path: "/productos/puffs", categoryKey: "puffs" },
   { path: "/productos/mesas-centro", categoryKey: "mesas-centro" },
   { path: "/productos/mesitas-de-centro", categoryKey: "mesas-centro" },
+  { path: "/productos/pantallas-lampara", categoryKey: "pantallas-lampara" },
 ];
 
 const App = () => (

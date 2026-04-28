@@ -9,25 +9,28 @@ const PRODUCTS_DATA = [
     id: "cabeceros",
     name: "Cabeceros tapizados",
     badge: "Hecho a mano",
-    image: "/productos-fotos/cabeceros/IMG_2555.PNG",
+    image: "/productos-fotos/cabeceros/IMG_2555.webp",
     alt: "Cabecero tapizado artesanal de Tiroriro",
     link: "/productos/cabeceros",
+    comingSoon: false,
   },
   {
     id: "bancos",
     name: "Bancos entelados",
-    badge: "A tu medida",
-    image: "/productos-fotos/bancos/IMG_2552.PNG",
+    badge: "Próximamente",
+    image: "/productos-fotos/bancos/IMG_2552.webp",
     alt: "Banco entelado a medida de Tiroriro",
     link: "/productos/bancos",
+    comingSoon: true,
   },
   {
     id: "cojines",
     name: "Cojines y almohadones",
     badge: "Artesanal",
-    image: "/productos-fotos/almohadones/IMG_2514.PNG",
+    image: "/productos-fotos/almohadones/IMG_2514.webp",
     alt: "Cojines y almohadones artesanales de Tiroriro",
     link: "/productos/cojines",
+    comingSoon: false,
   },
   {
     id: "puffs",
@@ -36,6 +39,7 @@ const PRODUCTS_DATA = [
     image: "/productos-fotos/crops/puff-2497-tight.png",
     alt: "Puffs tapizados a medida de Tiroriro",
     link: "/productos/puffs",
+    comingSoon: false,
   },
   {
     id: "mesas-centro",
@@ -44,6 +48,16 @@ const PRODUCTS_DATA = [
     image: "/productos-fotos/crops/puff-2497-1-tight.png",
     alt: "Mesa de centro tapizada de Tiroriro",
     link: "/productos/mesas-centro",
+    comingSoon: false,
+  },
+  {
+    id: "pantallas-lampara",
+    name: "Pantallas de lámpara",
+    badge: "Nuevo",
+    image: "/productos-fotos/cabeceros/IMG_2502.webp",
+    alt: "Pantallas de lámpara tapizadas de Tiroriro",
+    link: "/productos/pantallas-lampara",
+    comingSoon: false,
   },
 ];
 
@@ -110,7 +124,7 @@ const ProductsPreview = () => {
               className="px-4 md:px-0"
             >
               <CarouselContent className="-ml-3 md:-ml-6">
-                {PRODUCTS_DATA.map((product) => (
+                {PRODUCTS_DATA.map((product, idx) => (
                   <CarouselItem key={product.id} className="pl-3 basis-[80%] md:pl-6 md:basis-1/3">
                     <Link to={product.link} className="block group h-full">
                       <div className="relative overflow-hidden rounded-xl">
@@ -118,28 +132,56 @@ const ProductsPreview = () => {
                           src={product.image}
                           alt={product.alt}
                           className="w-full aspect-[3/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                          loading="lazy"
+                          loading={idx === 0 ? "eager" : "lazy"}
                           decoding="async"
+                          fetchPriority={idx === 0 ? "high" : "low"}
                         />
                         {/* Gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+
+                        {/* Coming soon overlay */}
+                        {product.comingSoon && (
+                          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-3 pointer-events-none">
+                            <span className="text-white text-xs tracking-[0.22em] uppercase font-medium border border-white/60 px-4 py-2">
+                              Próximamente
+                            </span>
+                            <span className="text-white/70 text-[11px] font-light tracking-wide">
+                              Muy pronto disponible
+                            </span>
+                          </div>
+                        )}
+
                         {/* Badge top-left */}
-                        <span className="absolute top-3.5 left-3.5 bg-white/90 text-[#1a4b5b] text-[9px] font-medium tracking-[0.18em] uppercase px-3 py-1.5 rounded-full">
+                        <span className={`absolute top-3.5 left-3.5 text-[9px] font-medium tracking-[0.18em] uppercase px-3 py-1.5 rounded-full ${product.comingSoon ? 'bg-[#1a4b5b] text-white' : 'bg-white/90 text-[#1a4b5b]'}`}>
                           {product.badge}
                         </span>
+
                         {/* Text bottom */}
-                        <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
-                          <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
-                          <span className="inline-block mt-2 text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
-                            Personaliza el tuyo →
-                          </span>
-                        </div>
+                        {!product.comingSoon && (
+                          <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
+                            <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
+                            <span className="inline-block mt-2 text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
+                              Personaliza el tuyo →
+                            </span>
+                          </div>
+                        )}
+                        {product.comingSoon && (
+                          <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
+                            <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
+                          </div>
+                        )}
+
                         {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-400 pointer-events-none" />
+                        {!product.comingSoon && (
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-400 pointer-events-none" />
+                        )}
                       </div>
                       {/* Desktop: name below */}
                       <div className="mt-4 hidden md:block">
                         <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{product.name}</h3>
+                        {product.comingSoon && (
+                          <p className="text-xs text-muted-foreground font-light mt-0.5 tracking-wider uppercase">Próximamente</p>
+                        )}
                       </div>
                     </Link>
                   </CarouselItem>
@@ -162,9 +204,9 @@ const ProductsPreview = () => {
       </section>
 
       {/* ── Franja de telas ── */}
-      <section className="bg-[#10262e] py-12 px-6">
+      <section className="bg-[#1a4b5b] py-12 px-6">
         <div className="container mx-auto max-w-4xl text-center">
-          <p className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3">Colecciones disponibles</p>
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/55 mb-3">Colecciones disponibles</p>
           <h3 className="font-serif text-2xl md:text-3xl font-light text-white mb-6">
             Linos · Terciopelos · Bouclé
           </h3>
@@ -173,7 +215,7 @@ const ProductsPreview = () => {
               <div
                 key={f.name}
                 title={f.name}
-                className="w-9 h-9 rounded-full border-2 border-white/20 overflow-hidden flex-shrink-0"
+                className="w-9 h-9 rounded-full border-2 border-white/25 overflow-hidden flex-shrink-0"
                 style={{ backgroundColor: f.hex }}
               >
                 {f.image && (
@@ -182,7 +224,7 @@ const ProductsPreview = () => {
               </div>
             ))}
           </div>
-          <p className="text-sm text-white/50 font-light mb-6">13 colores · Pide muestras a casa sin compromiso</p>
+          <p className="text-sm text-white/55 font-light mb-6">13 colores · Pide muestras a casa sin compromiso</p>
           <Link
             to="/telas"
             className="btn-sweep btn-unir inline-flex items-center px-7 py-3 text-xs font-light"
@@ -190,7 +232,7 @@ const ProductsPreview = () => {
               "--btn-bg": "transparent",
               "--btn-fg": "#ffffff",
               "--btn-border": "rgba(255,255,255,0.65)",
-              "--btn-hover-bg": "rgba(255,255,255,0.1)",
+              "--btn-hover-bg": "rgba(255,255,255,0.12)",
               "--btn-hover-fg": "#ffffff",
               "--btn-hover-border": "rgba(255,255,255,0.65)",
             } as React.CSSProperties}

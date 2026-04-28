@@ -185,7 +185,7 @@ const HeadboardSVG = ({
   const lateralPatternId = useId();
   const clipId = useId();
   const scaleX = scaleRange(widthCm, 90, 200, 0.72, 1.02);
-  const heightScale = scaleRange(heightCm, 100, 130, 0.82, 1.12);
+  const heightScale = scaleRange(heightCm, 60, 130, 0.72, 1.12);
   const bottomY = 188;
   const dx = 8;
   const dy = -5;
@@ -717,6 +717,80 @@ const MesaSVG = ({
   );
 };
 
+const LampshadeSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  forma,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  forma?: string;
+}) => {
+  const patternId = useId();
+  const clipId = useId();
+  const shape = forma || "conica";
+
+  // Build paths for each lampshade shape
+  const getPath = () => {
+    switch (shape) {
+      case "cilindrica":
+        return { front: "M 70 50 L 230 50 L 230 170 L 70 170 Z", top: "M 70 50 L 230 50 L 224 44 L 76 44 Z", side: "M 230 50 L 230 170 L 224 164 L 224 44 Z" };
+      case "cuadrada":
+        return { front: "M 90 60 L 210 60 L 220 170 L 80 170 Z", top: "M 90 60 L 210 60 L 204 54 L 96 54 Z", side: "M 210 60 L 220 170 L 214 164 L 204 54 Z" };
+      case "cuadrada-recta":
+        return { front: "M 85 55 L 215 55 L 215 170 L 85 170 Z", top: "M 85 55 L 215 55 L 209 49 L 91 49 Z", side: "M 215 55 L 215 170 L 209 164 L 209 49 Z" };
+      case "trapecio":
+        return { front: "M 75 55 L 225 55 L 215 170 L 85 170 Z", top: "M 75 55 L 225 55 L 219 49 L 81 49 Z", side: "M 225 55 L 215 170 L 209 164 L 219 49 Z" };
+      case "rectangular":
+        return { front: "M 55 75 L 245 75 L 235 165 L 65 165 Z", top: "M 55 75 L 245 75 L 239 69 L 61 69 Z", side: "M 245 75 L 235 165 L 229 159 L 239 69 Z" };
+      case "ovalada":
+        return { front: "M 85 60 Q 150 52 215 60 L 225 170 Q 150 162 75 170 Z", top: "M 85 60 Q 150 52 215 60 L 209 54 Q 150 46 91 54 Z", side: "M 215 60 L 225 170 L 219 164 L 209 54 Z" };
+      case "conica":
+      default:
+        return { front: "M 100 50 L 200 50 L 230 170 L 70 170 Z", top: "M 100 50 L 200 50 L 194 44 L 106 44 Z", side: "M 200 50 L 230 170 L 224 164 L 194 44 Z" };
+    }
+  };
+
+  const paths = getPath();
+  const topColor = lighten(color, 16);
+  const sideColor = darken(color, 18);
+
+  return (
+    <svg viewBox="0 0 300 230" className="w-full max-w-[280px] mx-auto">
+      <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
+        <clipPath id={`ls-${clipId}`}>
+          <path d={paths.front} />
+        </clipPath>
+      </defs>
+      <ellipse cx="153" cy="184" rx="80" ry="8" fill="rgba(0,0,0,0.07)" />
+      {/* Side face */}
+      <path d={paths.side} fill={patternFill(patternId, sideColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+      <path d={paths.side} fill="rgba(0,0,0,0.10)" />
+      {/* Top face */}
+      <path d={paths.top} fill={patternFill(patternId, topColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+      <path d={paths.top} fill="rgba(255,255,255,0.15)" />
+      {/* Front face */}
+      <path d={paths.front} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+      {/* Light diffusion effect */}
+      <path d={paths.front} fill="rgba(255,255,255,0.06)" />
+      {/* Vivo */}
+      {finish === "vivo-simple" && (
+        <g clipPath={`url(#ls-${clipId})`}>
+          <path d={paths.front} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+        </g>
+      )}
+      {/* Base ring */}
+      <ellipse cx="150" cy="170" rx="80" ry="6" fill="rgba(0,0,0,0.08)" />
+      <ellipse cx="150" cy="50" rx="50" ry="4" fill="rgba(0,0,0,0.08)" />
+    </svg>
+  );
+};
+
 const ProductSVGPreview = ({
   type,
   color,
@@ -806,6 +880,15 @@ const ProductSVGPreview = ({
           heightCm={heightCm}
           depthCm={depthCm}
           surface={surface}
+        />
+      )}
+      {type === "pantalla" && (
+        <LampshadeSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          forma={forma}
         />
       )}
     </div>

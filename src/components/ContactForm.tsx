@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Check, Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
+import { supabase } from "@/integrations/supabase/client";
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Puffs", "Mesas de centro", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
@@ -92,9 +93,27 @@ const ContactForm = () => {
     setTouched({ name: true, phone: true, email: true, product: true, other: true, rgpd: true });
     if (Object.keys(validationErrors).length > 0) { toast.error("Por favor, corrige los campos marcados en rojo."); return; }
     setSending(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSent(true);
-    setSending(false);
+    try {
+      const { error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: form.name,
+          lastName: form.lastName,
+          phone: form.phone,
+          email: form.email,
+          products: selectedProducts,
+          otherDetail: otherProductDetail,
+          details: form.details,
+          configSummary: fromConfig || undefined,
+        },
+      });
+      if (error) throw error;
+      setSent(true);
+    } catch (err) {
+      console.error('Error enviando email:', err);
+      toast.error("No se pudo enviar el mensaje. Escríbenos por WhatsApp o al email.");
+    } finally {
+      setSending(false);
+    }
   };
 
   if (sent) {

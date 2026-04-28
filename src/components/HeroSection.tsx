@@ -54,10 +54,24 @@ const HeroSection = () => {
     video.setAttribute("webkit-playsinline", "");
     video.setAttribute("playsinline", "");
 
+    const isMobileViewport = () => window.innerWidth < 768;
+
     const attemptPlay = () => {
+      // On mobile, skip first 3 seconds
+      if (isMobileViewport() && video.currentTime < 3) {
+        video.currentTime = 3;
+      }
       const p = video.play();
       if (p !== undefined) p.catch(() => {});
     };
+
+    // On mobile: when video loops back to near 0, jump back to second 3
+    const handleTimeUpdate = () => {
+      if (isMobileViewport() && video.currentTime < 1) {
+        video.currentTime = 3;
+      }
+    };
+    video.addEventListener("timeupdate", handleTimeUpdate);
 
     // Try to play immediately if ready
     if (video.readyState >= 2) {
@@ -82,6 +96,7 @@ const HeroSection = () => {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("touchstart", handleTouch);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, []);
 
