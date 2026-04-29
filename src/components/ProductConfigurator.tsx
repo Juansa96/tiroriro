@@ -686,6 +686,7 @@ const ProductConfigurator = () => {
 
   const sharedAccordionProps = {
     openAccordion: accordionValue,
+    setOpenAccordion: handleAccordionChange,
     selectionLabel,
     productType, productCard,
     shape, setShape,
@@ -893,6 +894,7 @@ const ProductConfigurator = () => {
 
 interface AccordionContentSharedProps {
   openAccordion: string;
+  setOpenAccordion: (v: string) => void;
   selectionLabel: (step: Step) => React.ReactNode;
   productType: ProductType | null;
   productCard: (type: ProductType, label: string) => React.ReactNode;
@@ -926,6 +928,7 @@ interface AccordionContentSharedProps {
 const AccordionItems = (props: AccordionContentSharedProps) => {
   const {
     openAccordion,
+    setOpenAccordion,
     selectionLabel,
     productType, productCard,
     shape, setShape,
@@ -951,13 +954,18 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
 
   return (
     <>
-      <AccordionItem value="type" className="border-b border-border">
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div className="border-b border-border">
+        <button
+          type="button"
+          onClick={() => setOpenAccordion(openAccordion === 'type' ? '' : 'type')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">1. {STEP_LABELS.type}</span>
             <span className="text-xs mt-0.5">{selectionLabel('type')}</span>
           </div>
-        </AccordionTrigger>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'type' ? 'rotate-180' : ''}`} />
+        </button>
         {openAccordion === 'type' && (
           <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
@@ -970,15 +978,20 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             </div>
           </div>
         )}
-      </AccordionItem>
+      </div>
 
-      <AccordionItem value="measures" className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => setOpenAccordion(openAccordion === 'measures' ? '' : 'measures')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">2. {STEP_LABELS.measures}</span>
             <span className="text-xs mt-0.5">{selectionLabel('measures')}</span>
           </div>
-        </AccordionTrigger>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'measures' ? 'rotate-180' : ''}`} />
+        </button>
         {openAccordion === 'measures' && (
           <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
           {productType === 'cabecero' && (
@@ -1335,15 +1348,20 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
           </div>
         )}
-      </AccordionItem>
+      </div>
 
-      <AccordionItem value="fabric" className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => setOpenAccordion(openAccordion === 'fabric' ? '' : 'fabric')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">3. {STEP_LABELS.fabric}</span>
             <span className="text-xs mt-0.5">{selectionLabel('fabric')}</span>
           </div>
-        </AccordionTrigger>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'fabric' ? 'rotate-180' : ''}`} />
+        </button>
         {openAccordion === 'fabric' && (
           <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
           {FABRIC_GROUPS.map(group => (
@@ -1419,15 +1437,20 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
           </div>
         )}
-      </AccordionItem>
+      </div>
 
-      <AccordionItem value="finish" className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => setOpenAccordion(openAccordion === 'finish' ? '' : 'finish')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">4. {STEP_LABELS.finish}</span>
             <span className="text-xs mt-0.5">{selectionLabel('finish')}</span>
           </div>
-        </AccordionTrigger>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'finish' ? 'rotate-180' : ''}`} />
+        </button>
         {openAccordion === 'finish' && (
           <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
@@ -1482,16 +1505,21 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
           </div>
         )}
-      </AccordionItem>
+      </div>
 
       {(!productType || ['cabecero', 'banco'].includes(productType)) && (
-      <AccordionItem value="extras" className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => setOpenAccordion(openAccordion === 'extras' ? '' : 'extras')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">5. {STEP_LABELS.extras}</span>
             <span className="text-xs mt-0.5">{selectionLabel('extras')}</span>
           </div>
-        </AccordionTrigger>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'extras' ? 'rotate-180' : ''}`} />
+        </button>
         {openAccordion === 'extras' && (
           <div className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
           {productType === 'cabecero' && (
@@ -1549,23 +1577,16 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
           </div>
         )}
-      </AccordionItem>
+      </div>
       )}
     </>
   );
 };
 
-interface SingleAccordionProps extends AccordionContentSharedProps {
-  setOpenAccordion: (v: string) => void;
-}
+type SingleAccordionProps = AccordionContentSharedProps;
 
 const ConfigAccordionsSingle = (props: SingleAccordionProps) => {
-  const { setOpenAccordion, ...rest } = props;
-  return (
-    <Accordion type="single" collapsible value={rest.openAccordion} onValueChange={(v) => setOpenAccordion(v || '')}>
-      <AccordionItems {...rest} />
-    </Accordion>
-  );
+  return <AccordionItems {...props} />;
 };
 
 export default ProductConfigurator;
