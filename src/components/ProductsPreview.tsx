@@ -30,10 +30,10 @@ const PRODUCTS_DATA = [
     name: "Pufs",
     badge: "A tu medida",
     price: "desde 125€",
-    image: "",
+    image: "/productos-fotos/puff/patos-card.webp",
     alt: "Pufs tapizados a medida de Tiroriro",
     link: "/productos/pufs",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     id: "mesas-centro",
@@ -206,15 +206,7 @@ const ProductsPreview = () => {
           <div className="flex justify-center mt-10">
             <Link
               to="/productos"
-              className="btn-sweep btn-unir inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
-              style={{
-                "--btn-bg": "transparent",
-                "--btn-fg": "hsl(var(--foreground))",
-                "--btn-border": "hsl(var(--foreground) / 0.4)",
-                "--btn-hover-bg": "hsl(var(--foreground) / 0.06)",
-                "--btn-hover-fg": "hsl(var(--foreground))",
-                "--btn-hover-border": "hsl(var(--foreground) / 0.4)",
-              } as React.CSSProperties}
+              className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
             >
               <span className="relative z-10">Ver todos los productos →</span>
             </Link>

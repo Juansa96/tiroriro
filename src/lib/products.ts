@@ -57,7 +57,7 @@ export const PRODUCTS: Product[] = [
     name: "Pufs",
     tagline: "Tapizados a medida, fáciles de mover y pensados para vivir con ellos",
     basePrice: 125,
-    image: "/productos-fotos/puf/patos-01.webp",
+    image: "/productos-fotos/puff/patos-card.webp",
   },
   {
     id: "mesa-centro",

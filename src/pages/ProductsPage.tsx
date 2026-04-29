@@ -26,9 +26,9 @@ const CATEGORIES = [
     id: "pufs",
     name: "Pufs",
     tagline: "Tapizados a medida · Colección Galicia",
-    image: "",
+    image: "/productos-fotos/puff/patos-card.webp",
     priceLabel: "Desde 125€",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     id: "mesas-centro",
@@ -94,7 +94,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
   if (cat.comingSoon) {
     return (
       <AnimatedSection delay={index * 0.08}>
-        <Link to={`/productos/${cat.id}`} className="block">
+        <div className="cursor-default">
           <div className="relative overflow-hidden border border-border/40 rounded-lg">
             {cat.image ? (
               <img
@@ -121,7 +121,7 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
             </h3>
             <p className="text-xs text-muted-foreground/60 font-light mt-1 tracking-wide">{cat.tagline}</p>
           </div>
-        </Link>
+        </div>
       </AnimatedSection>
     );
   }

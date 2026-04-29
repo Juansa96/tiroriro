@@ -177,7 +177,7 @@ const HeroSection = () => {
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
-            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Cabeceros desde 225€ · Bancos desde 120€</span>
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Cabeceros desde 225€ · Mesas de centro desde 280€</span>
             <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Pufs desde 125€ · Cojines desde 50€</span>
           </div>
 

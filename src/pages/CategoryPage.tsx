@@ -90,8 +90,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Macarella",
         photos: [
-          "/productos-fotos/cabeceros/macarella-01.webp",
           "/productos-fotos/cabeceros/macarella-02.webp",
+          "/productos-fotos/cabeceros/IMG_2851.webp",
+          "/productos-fotos/cabeceros/IMG_2858.webp",
         ],
         desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
         priceLabel: "",
@@ -101,7 +102,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Conta",
         photos: [
           "/productos-fotos/cabeceros/conta-01.webp",
-          "/productos-fotos/cabeceros/conta-02.webp",
+          "/productos-fotos/cabeceros/IMG_2866.webp",
+          "/productos-fotos/cabeceros/IMG_2869.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "",
@@ -111,6 +113,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Ondas",
         photos: [
           "/productos-fotos/cabeceros/barbaria-01.webp",
+          "/productos-fotos/cabeceros/IMG_2886.webp",
+          "/productos-fotos/cabeceros/IMG_2891.webp",
+          "/productos-fotos/cabeceros/IMG_2901.webp",
         ],
         desc: "Remate en ondas. Movimiento natural y presencia escultórica.",
         priceLabel: "",
@@ -201,8 +206,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Patos",
         photos: [
-          "/productos-fotos/puf/patos-01.webp",
-          "/productos-fotos/puf/patos-gen.webp",
+          "/productos-fotos/puff/patos-card.webp",
+          "/productos-fotos/puff/patos-01.webp",
+          "/productos-fotos/puff/IMG_2497.webp",
         ],
         desc: "Cúbico, tapizado a mano y a tu medida. Úsalo de asiento, reposapiés o mesa improvisada.",
         priceLabel: "",
