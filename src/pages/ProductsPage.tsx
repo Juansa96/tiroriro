@@ -26,9 +26,9 @@ const CATEGORIES = [
     id: "pufs",
     name: "Pufs",
     tagline: "Tapizados a medida · Colección Galicia",
-    image: "/productos-fotos/puf/patos-01.webp",
+    image: "",
     priceLabel: "Desde 125€",
-    comingSoon: false,
+    comingSoon: true,
   },
   {
     id: "mesas-centro",

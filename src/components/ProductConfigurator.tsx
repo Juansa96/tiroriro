@@ -408,7 +408,8 @@ const ProductConfigurator = () => {
       resetConfiguracion(type);
     }
     setProductType(type);
-    advanceTo('measures');
+    // Cerrar "Tipo" y abrir "Medidas" directamente (no append)
+    setOpenAccordion(isMobile ? 'measures' : ['measures']);
   };
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
@@ -1515,14 +1516,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="flex justify-between items-center py-2">
                 <div>
                   <p className="text-base text-foreground font-light">Patas de madera</p>
-                  <p className="text-xs text-muted-foreground">+xx€</p>
+                  <p className="text-xs text-muted-foreground">Consultar precio</p>
                 </div>
                 <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
               </div>
               <div className="flex justify-between items-center py-2">
                 <div>
                   <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
-                  <p className="text-xs text-muted-foreground">+xx€</p>
+                  <p className="text-xs text-muted-foreground">Consultar precio</p>
                 </div>
                 <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
               </div>

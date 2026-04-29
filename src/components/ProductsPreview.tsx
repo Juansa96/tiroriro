@@ -30,10 +30,10 @@ const PRODUCTS_DATA = [
     name: "Pufs",
     badge: "A tu medida",
     price: "desde 125€",
-    image: "/productos-fotos/puf/patos-01.webp",
+    image: "",
     alt: "Pufs tapizados a medida de Tiroriro",
     link: "/productos/pufs",
-    comingSoon: false,
+    comingSoon: true,
   },
   {
     id: "mesas-centro",
@@ -162,7 +162,6 @@ const ProductsPreview = () => {
                               <span className="text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
                                 Personaliza el tuyo →
                               </span>
-                              <span className="text-sm font-light text-white/90">{product.price}</span>
                             </div>
                           </div>
                         )}
@@ -181,9 +180,6 @@ const ProductsPreview = () => {
                       <div className="mt-4 hidden md:block">
                         <div className="flex items-baseline justify-between">
                           <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{product.name}</h3>
-                          {!product.comingSoon && (
-                            <span className="text-sm text-muted-foreground font-light">{product.price}</span>
-                          )}
                         </div>
                         {product.comingSoon && (
                           <p className="text-xs text-muted-foreground font-light mt-0.5 tracking-wider uppercase">Próximamente</p>
