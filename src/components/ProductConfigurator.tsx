@@ -363,11 +363,7 @@ const ProductConfigurator = () => {
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
-      if (isMobile) {
-        setOpenAccordion('measures');
-      } else {
-        setOpenAccordion(['measures']);
-      }
+      setOpenAccordion(prev => Array.isArray(prev) ? ['measures'] : 'measures');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
@@ -408,8 +404,9 @@ const ProductConfigurator = () => {
       resetConfiguracion(type);
     }
     setProductType(type);
-    // Cerrar "Tipo" y abrir "Medidas" directamente (no append)
-    setOpenAccordion(isMobile ? 'measures' : ['measures']);
+    // Derivar formato del estado actual (array=desktop, string=mobile)
+    // para no depender de isMobile que puede estar sin resolver en el primer render
+    setOpenAccordion(prev => Array.isArray(prev) ? ['measures'] : 'measures');
   };
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
@@ -578,15 +575,15 @@ const ProductConfigurator = () => {
   ].filter(Boolean).join(' · ') || 'Tu pieza aparecerá aquí';
 
   const advanceTo = (next: Step) => {
-    if (isMobile) {
-      setOpenAccordion(next);
-    } else {
-      setOpenAccordion(prev => {
-        const arr = Array.isArray(prev) ? [...prev] : [prev];
-        if (!arr.includes(next)) arr.push(next);
-        return arr;
-      });
-    }
+    setOpenAccordion(prev => {
+      if (Array.isArray(prev)) {
+        // Desktop (multiple): añadir al array sin duplicar
+        return prev.includes(next) ? prev : [...prev, next];
+      } else {
+        // Mobile (single): reemplazar
+        return next;
+      }
+    });
   };
 
   const buildOrderUrl = () => {
