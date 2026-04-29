@@ -20,9 +20,6 @@ const FABRIC_GROUPS = [
     fabrics: [
       // Lisas
       { id: "basica-arequipa", name: "Arequipa Beige", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp", pattern: "liso" },
-      { id: "basica-liso-01", name: "Lino Natural", hex: "#E8DCC8", image: "/telas/basicas/liso-natural-01.webp", pattern: "liso" },
-      { id: "basica-liso-02", name: "Lino Gris Perla", hex: "#C8C4BC", image: "/telas/basicas/liso-natural-02.webp", pattern: "liso" },
-      { id: "basica-liso-03", name: "Lino Crudo", hex: "#D4B896", image: "/telas/basicas/liso-natural-03.webp", pattern: "liso" },
       // Flores
       { id: "basica-flor-azul", name: "Flor Azul Protea", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp", pattern: "estampado" },
       { id: "basica-flor-01", name: "Floral Natural", hex: "#8B7355", image: "/telas/basicas/flor-01.webp", pattern: "estampado" },
@@ -80,7 +77,7 @@ const HEADBOARD_SHAPES = [
   { id: "semicirculo", name: "Pregonda", svgPreview: "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z" },
   { id: "corona-simple", name: "Macarella", svgPreview: "M 3 37 L 3 24 C 13.6 24 18 20 18.8 16.8 A 11.2 3.2 0 0 1 41.2 16.8 C 42 20 46.4 24 57 24 L 57 37 Z" },
   { id: "corona-doble", name: "Conta", svgPreview: "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z" },
-  { id: "ondas", name: "Ondas", svgPreview: "M 3 37 L 3 22 Q 10 14 17 22 Q 24 30 30 22 Q 36 14 43 22 Q 50 30 57 22 L 57 37 Z" },
+  { id: "ondas", name: "Barbaria", svgPreview: "M 3 37 L 3 26 Q 8.4 12 13.8 26 Q 19.2 12 24.6 26 Q 30 12 35.4 26 Q 40.8 12 46.2 26 Q 51.6 12 57 26 L 57 37 Z" },
 ];
 
 // Colección Ávila — solo cilindro, cuadrado y rectangulo activos (el resto próximamente)
@@ -787,17 +784,7 @@ const ProductConfigurator = () => {
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
         {/* Left column: render + fabric swatches + actions */}
         <div className="w-[45%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-          <div className="relative rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
-            {/* Precio en tiempo real — badge top-right del dibujo */}
-            {productType && (
-              <div className="absolute top-4 right-4 text-right z-10">
-                <p className="text-[9px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio</p>
-                <p className="font-serif text-2xl font-light text-foreground leading-none">
-                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
-                </p>
-                <p className="text-[9px] text-foreground/40 font-light mt-0.5">IVA incl.</p>
-              </div>
-            )}
+          <div className="rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
 
             {/* SVG render */}
             <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
@@ -830,8 +817,19 @@ const ProductConfigurator = () => {
             )}
           </div>
 
-          <div className="mt-4 px-1">
-            <p className="text-xs text-muted-foreground font-light text-center">IVA incluido · Envío Comunidad de Madrid · Resto bajo consulta</p>
+          {productType && (
+            <div className="mt-4 flex items-baseline justify-between px-1">
+              <div>
+                <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
+                <p className="font-serif text-3xl font-light text-foreground leading-none mt-0.5">
+                  {priceIsKnown ? `${price} €` : `desde ${basePrice} €`}
+                </p>
+              </div>
+              <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>
+            </div>
+          )}
+          <div className="mt-2 px-1">
+            <p className="text-xs text-muted-foreground font-light text-center">Envío Comunidad de Madrid · Resto bajo consulta</p>
           </div>
 
           <div className="flex flex-col gap-3 mt-4">

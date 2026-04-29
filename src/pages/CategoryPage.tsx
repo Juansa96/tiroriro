@@ -91,8 +91,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Macarella",
         photos: [
           "/productos-fotos/cabeceros/macarella-02.webp",
-          "/productos-fotos/cabeceros/IMG_2851.webp",
-          "/productos-fotos/cabeceros/IMG_2858.webp",
         ],
         desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
         priceLabel: "",
@@ -102,22 +100,17 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Conta",
         photos: [
           "/productos-fotos/cabeceros/conta-01.webp",
-          "/productos-fotos/cabeceros/IMG_2866.webp",
-          "/productos-fotos/cabeceros/IMG_2869.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "",
         configParam: "corona-doble",
       },
       {
-        name: "Ondas",
+        name: "Barbaria",
         photos: [
           "/productos-fotos/cabeceros/barbaria-01.webp",
-          "/productos-fotos/cabeceros/IMG_2886.webp",
-          "/productos-fotos/cabeceros/IMG_2891.webp",
-          "/productos-fotos/cabeceros/IMG_2901.webp",
         ],
-        desc: "Remate en ondas. Movimiento natural y presencia escultórica.",
+        desc: "Corona quíntuple con cinco arcos. Movimiento escultórico y mucha presencia.",
         priceLabel: "",
         configParam: "ondas",
       },

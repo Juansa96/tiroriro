@@ -59,8 +59,6 @@ const PRODUCTS_DATA = [
 
 const FABRIC_STRIP = [
   { name: "Arequipa Beige", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp" },
-  { name: "Lino Natural", hex: "#E8DCC8", image: "/telas/basicas/liso-natural-01.webp" },
-  { name: "Lino Gris Perla", hex: "#C8C4BC", image: "/telas/basicas/liso-natural-02.webp" },
   { name: "Flor Azul Protea", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp" },
   { name: "Ikat Natural", hex: "#C4A882", image: "/telas/basicas/ikat.webp" },
   { name: "Mil Rayas Gris", hex: "#A0A0A0", image: "/telas/basicas/mil-rayas-gris.webp" },

@@ -164,6 +164,19 @@ const ContactForm = () => {
             </p>
             {previewType && (
               <div className="mt-5 rounded-2xl border border-border bg-background px-4 py-5">
+                {/* Resumen de medidas */}
+                {fromConfig && (
+                  <div className="mb-4 pb-4 border-b border-border/40">
+                    <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground font-medium mb-2">Tu configuración</p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                      {fromConfig.replace('Me interesa: ', '').split(' · ').map((part, i) => (
+                        <span key={i} className="text-xs text-foreground font-light">
+                          {i === 0 ? <strong>{part}</strong> : `· ${part}`}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className="flex gap-4 items-center">
                   <div className="flex-1">
                     <ProductSVGPreview
