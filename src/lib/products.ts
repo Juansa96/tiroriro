@@ -15,6 +15,17 @@ export interface ColorOption {
   hex: string;
 }
 
+export const FABRIC_COLORS: ColorOption[] = [
+  { id: "lino-natural",   name: "Lino Natural",   hex: "#C8B99A" },
+  { id: "arena",          name: "Arena",           hex: "#D4C5A9" },
+  { id: "crudo",          name: "Crudo",           hex: "#EDE5D0" },
+  { id: "topo",           name: "Topo",            hex: "#A89880" },
+  { id: "gris-perla",     name: "Gris Perla",      hex: "#BEC0C2" },
+  { id: "verde-salvia",   name: "Verde Salvia",     hex: "#8A9E8C" },
+  { id: "azul-oceano",    name: "Azul Océano",      hex: "#5B7EA6" },
+  { id: "terracota",      name: "Terracota",        hex: "#C07050" },
+];
+
 export const PRODUCTS: Product[] = [
   {
     id: "cabecero-tapizado",
