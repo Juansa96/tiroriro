@@ -15,44 +15,43 @@ interface Model {
 }
 
 // Pequeño círculo con la silueta de la forma del producto
+const getShapePath = (configParam: string | undefined, category: string): React.ReactNode => {
+  if (category === 'cabeceros') {
+    switch (configParam) {
+      case 'recto': return <rect x="4" y="6" width="24" height="16" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'semicirculo': return <path d="M 4 22 L 4 14 Q 16 4 28 14 L 28 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'corona-simple': return <path d="M 2 22 L 2 14 C 8 14 10 11 10.4 9.2 A 5.6 1.6 0 0 1 21.6 9.2 C 22 11 24 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'corona-doble': return <path d="M 2 22 L 2 14 Q 7 14 7 11.5 Q 12 11.5 12 9 A 4 2 0 0 1 20 9 Q 20 11.5 25 11.5 Q 25 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'ondas': return <path d="M 2 22 L 2 15 Q 5.5 8 9 15 Q 12.5 8 16 15 Q 19.5 8 23 15 Q 26.5 8 30 15 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+    }
+  }
+  if (category === 'cojines') {
+    switch (configParam) {
+      case 'rodiles': return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'covadonga': return <rect x="3" y="9" width="26" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'gulpiyuri': return <><rect x="3" y="12" width="26" height="8" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="3" cy="16" rx="2" ry="4" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+    }
+  }
+  if (category === 'pufs') return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+  if (category === 'mesas-centro') {
+    if (configParam === 'tipo-banco') return <><rect x="3" y="7" width="26" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="6" y1="17" x2="6" y2="25" stroke="currentColor" strokeWidth="1.5" /><line x1="26" y1="17" x2="26" y2="25" stroke="currentColor" strokeWidth="1.5" /></>;
+    return <rect x="3" y="10" width="26" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+  }
+  if (category === 'pantallas-lampara') {
+    switch (configParam) {
+      case 'cono': return <><path d="M 12 8 L 20 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="4" ry="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      case 'cilindro': return <><rect x="4" y="8" width="24" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="24" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      case 'rectangulo': return <rect x="4" y="10" width="24" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'cuadrado': return <rect x="7" y="6" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'ovalado': return <><ellipse cx="16" cy="10" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="22" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      case 'piramide': return <path d="M 9 8 L 23 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+    }
+  }
+  return null;
+};
+
 const ShapeCircle = ({ configParam, category }: { configParam?: string; category: string }) => {
-  const getPath = () => {
-    if (category === 'cabeceros') {
-      switch (configParam) {
-        case 'recto': return <rect x="4" y="6" width="24" height="16" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'semicirculo': return <path d="M 4 22 L 4 14 Q 16 4 28 14 L 28 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'corona-simple': return <path d="M 2 22 L 2 14 C 8 14 10 11 10.4 9.2 A 5.6 1.6 0 0 1 21.6 9.2 C 22 11 24 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'corona-doble': return <path d="M 2 22 L 2 14 Q 7 14 7 11.5 Q 12 11.5 12 9 A 4 2 0 0 1 20 9 Q 20 11.5 25 11.5 Q 25 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'ondas': return <path d="M 2 22 L 2 14 Q 6 9 10 14 Q 14 19 18 14 Q 22 9 26 14 Q 29 17 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-      }
-    }
-    if (category === 'cojines') {
-      switch (configParam) {
-        case 'rodiles': return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'covadonga': return <rect x="3" y="9" width="26" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'gulpiyuri': return <><rect x="3" y="12" width="26" height="8" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="3" cy="16" rx="2" ry="4" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
-      }
-    }
-    if (category === 'pufs') {
-      return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-    }
-    if (category === 'mesas-centro') {
-      if (configParam === 'tipo-banco') return <><rect x="3" y="7" width="26" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="6" y1="17" x2="6" y2="25" stroke="currentColor" strokeWidth="1.5" /><line x1="26" y1="17" x2="26" y2="25" stroke="currentColor" strokeWidth="1.5" /></>;
-      return <rect x="3" y="10" width="26" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-    }
-    if (category === 'pantallas-lampara') {
-      switch (configParam) {
-        case 'cono': return <><path d="M 12 8 L 20 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="4" ry="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
-        case 'cilindro': return <><rect x="4" y="8" width="24" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="24" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
-        case 'rectangulo': return <rect x="4" y="10" width="24" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'cuadrado': return <rect x="7" y="6" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'ovalado': return <><ellipse cx="16" cy="10" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="22" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
-        case 'piramide': return <path d="M 9 8 L 23 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-      }
-    }
-    return null;
-  };
-  const path = getPath();
+  const path = getShapePath(configParam, category);
   if (!path) return null;
   return (
     <div className="absolute top-2.5 right-2.5 z-10 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
@@ -428,6 +427,9 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
     );
   }
 
+  const activeModels = cat.models.filter(m => !m.comingSoon);
+  const comingSoonModels = cat.models.filter(m => m.comingSoon);
+
   return (
     <>
       <Navbar />
@@ -451,9 +453,9 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
             )}
             <span className="section-line" />
           </AnimatedSection>
-          {cat.models.length > 0 && (
+          {activeModels.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cat.models.map((model, i) => (
+              {activeModels.map((model, i) => (
                 <AnimatedSection key={model.name} delay={i * 0.08} className="h-full">
                   <div className="h-full">
                     <ModelCard model={model} category={category} />
@@ -461,6 +463,39 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                 </AnimatedSection>
               ))}
             </div>
+          )}
+
+          {/* Próximamente — grouped at the bottom without photos */}
+          {comingSoonModels.length > 0 && (
+            <AnimatedSection delay={0.3} className="mt-14">
+              <div className="border-t border-border/40 pt-8">
+                <div className="flex items-center gap-2 mb-5">
+                  <Clock size={13} className="text-muted-foreground/70" />
+                  <span className="text-[10px] tracking-[0.20em] uppercase text-muted-foreground/70 font-medium">Próximamente</span>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {comingSoonModels.map(model => {
+                    const shapePath = getShapePath(model.configParam, category);
+                    return (
+                      <div
+                        key={model.name}
+                        className="flex items-center gap-3 px-4 py-3 border border-border/40 rounded-lg bg-muted/20"
+                      >
+                        {shapePath && (
+                          <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                            <svg viewBox="0 0 32 32" className="w-5 h-5 text-foreground/40">{shapePath}</svg>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium text-foreground/50 font-serif">{model.name}</p>
+                          <p className="text-[10px] text-muted-foreground/60 font-light tracking-wide uppercase">Próximamente</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </AnimatedSection>
           )}
         </div>
       </main>

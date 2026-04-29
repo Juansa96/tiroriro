@@ -685,6 +685,7 @@ const ProductConfigurator = () => {
   };
 
   const sharedAccordionProps = {
+    openAccordion: accordionValue,
     selectionLabel,
     productType, productCard,
     shape, setShape,
@@ -891,6 +892,7 @@ const ProductConfigurator = () => {
 };
 
 interface AccordionContentSharedProps {
+  openAccordion: string;
   selectionLabel: (step: Step) => React.ReactNode;
   productType: ProductType | null;
   productCard: (type: ProductType, label: string) => React.ReactNode;
@@ -923,6 +925,7 @@ interface AccordionContentSharedProps {
 
 const AccordionItems = (props: AccordionContentSharedProps) => {
   const {
+    openAccordion,
     selectionLabel,
     productType, productCard,
     shape, setShape,
@@ -955,16 +958,18 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <span className="text-xs mt-0.5">{selectionLabel('type')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 bg-muted/30 px-4 rounded-b-md">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-            {productCard('cabecero', 'Cabecero')}
-            {productCard('banco', 'Banco entelado', true)}
-            {productCard('puf', 'Pufs')}
-            {productCard('cojin', 'Almohadones')}
-            {productCard('mesa', 'Mesa de centro')}
-            {productCard('pantalla', 'Pantalla lámpara')}
+        {openAccordion === 'type' && (
+          <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+              {productCard('cabecero', 'Cabecero')}
+              {productCard('banco', 'Banco entelado', true)}
+              {productCard('puf', 'Pufs')}
+              {productCard('cojin', 'Almohadones')}
+              {productCard('mesa', 'Mesa de centro')}
+              {productCard('pantalla', 'Pantalla lámpara')}
+            </div>
           </div>
-        </AccordionContent>
+        )}
       </AccordionItem>
 
       <AccordionItem value="measures" className={`border-b border-border ${disabledClass}`}>
@@ -974,7 +979,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <span className="text-xs mt-0.5">{selectionLabel('measures')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
+        {openAccordion === 'measures' && (
+          <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
           {productType === 'cabecero' && (
             <>
               <div>
@@ -1327,7 +1333,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
-        </AccordionContent>
+          </div>
+        )}
       </AccordionItem>
 
       <AccordionItem value="fabric" className={`border-b border-border ${disabledClass}`}>
@@ -1337,7 +1344,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <span className="text-xs mt-0.5">{selectionLabel('fabric')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
+        {openAccordion === 'fabric' && (
+          <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
           {FABRIC_GROUPS.map(group => (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
@@ -1409,7 +1417,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-        </AccordionContent>
+          </div>
+        )}
       </AccordionItem>
 
       <AccordionItem value="finish" className={`border-b border-border ${disabledClass}`}>
@@ -1419,7 +1428,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <span className="text-xs mt-0.5">{selectionLabel('finish')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
+        {openAccordion === 'finish' && (
+          <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'banco' || productType === 'cojin' || productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
@@ -1470,7 +1480,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-        </AccordionContent>
+          </div>
+        )}
       </AccordionItem>
 
       {(!productType || ['cabecero', 'banco'].includes(productType)) && (
@@ -1481,7 +1492,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <span className="text-xs mt-0.5">{selectionLabel('extras')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
+        {openAccordion === 'extras' && (
+          <div className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
           {productType === 'cabecero' && (
             <div className="flex justify-between items-center py-2">
               <div>
@@ -1535,7 +1547,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!['cojin', 'puf', 'pantalla', 'cabecero', 'banco', 'mesa'].includes(productType || '') && (
             <p className="text-sm text-muted-foreground font-light italic">Sin opciones adicionales para este producto.</p>
           )}
-        </AccordionContent>
+          </div>
+        )}
       </AccordionItem>
       )}
     </>
@@ -1543,28 +1556,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
 };
 
 interface SingleAccordionProps extends AccordionContentSharedProps {
-  openAccordion: string;
   setOpenAccordion: (v: string) => void;
 }
 
 const ConfigAccordionsSingle = (props: SingleAccordionProps) => {
-  const { openAccordion, setOpenAccordion, ...rest } = props;
+  const { setOpenAccordion, ...rest } = props;
   return (
-    <Accordion type="single" collapsible value={openAccordion} onValueChange={(v) => setOpenAccordion(v || '')}>
-      <AccordionItems {...rest} />
-    </Accordion>
-  );
-};
-
-interface MultipleAccordionProps extends AccordionContentSharedProps {
-  openAccordion: string[];
-  setOpenAccordion: (v: string[]) => void;
-}
-
-const ConfigAccordionsMultiple = (props: MultipleAccordionProps) => {
-  const { openAccordion, setOpenAccordion, ...rest } = props;
-  return (
-    <Accordion type="multiple" value={openAccordion} onValueChange={(v) => setOpenAccordion(v)}>
+    <Accordion type="single" collapsible value={rest.openAccordion} onValueChange={(v) => setOpenAccordion(v || '')}>
       <AccordionItems {...rest} />
     </Accordion>
   );
