@@ -986,7 +986,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="measures" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
+      <AccordionItem value="measures" className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">2. {STEP_LABELS.measures}</span>
@@ -1349,7 +1349,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="fabric" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
+      <AccordionItem value="fabric" className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">3. {STEP_LABELS.fabric}</span>
@@ -1431,7 +1431,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="finish" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
+      <AccordionItem value="finish" className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">4. {STEP_LABELS.finish}</span>
@@ -1493,7 +1493,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </AccordionItem>
 
       {(!productType || ['cabecero', 'banco'].includes(productType)) && (
-      <AccordionItem value="extras" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
+      <AccordionItem value="extras" className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
             <span className="font-serif text-base font-medium text-foreground">5. {STEP_LABELS.extras}</span>
