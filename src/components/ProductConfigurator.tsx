@@ -336,20 +336,13 @@ const ProductConfigurator = () => {
   const [extraExpress, setExtraExpress] = useState(false);
   const [extraTopMaterial, setExtraTopMaterial] = useState("nada");
 
-  const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
+  // Siempre string — un único acordeón type="single" en mobile y desktop
+  const [openAccordion, setOpenAccordion] = useState<string>("type");
 
   useEffect(() => {
     localStorage.setItem('tiro_configurador_visited', 'true');
     localStorage.setItem('configurador_visitado', 'true');
   }, []);
-
-  useEffect(() => {
-    if (isMobile) {
-      setOpenAccordion(prev => Array.isArray(prev) ? (prev[0] || 'type') : prev);
-    } else {
-      setOpenAccordion(prev => typeof prev === 'string' ? [prev] : prev);
-    }
-  }, [isMobile]);
 
   useEffect(() => {
     const tipo = searchParams.get('tipo');
@@ -360,7 +353,7 @@ const ProductConfigurator = () => {
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
-      setOpenAccordion(prev => Array.isArray(prev) ? ['measures'] : 'measures');
+      setOpenAccordion('measures');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
@@ -401,9 +394,7 @@ const ProductConfigurator = () => {
       resetConfiguracion(type);
     }
     setProductType(type);
-    // Derivar formato del estado actual (array=desktop, string=mobile)
-    // para no depender de isMobile que puede estar sin resolver en el primer render
-    setOpenAccordion(prev => Array.isArray(prev) ? ['measures'] : 'measures');
+    setOpenAccordion('measures');
   };
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
@@ -572,15 +563,7 @@ const ProductConfigurator = () => {
   ].filter(Boolean).join(' · ') || 'Tu pieza aparecerá aquí';
 
   const advanceTo = (next: Step) => {
-    setOpenAccordion(prev => {
-      if (Array.isArray(prev)) {
-        // Desktop (multiple): añadir al array sin duplicar
-        return prev.includes(next) ? prev : [...prev, next];
-      } else {
-        // Mobile (single): reemplazar
-        return next;
-      }
-    });
+    setOpenAccordion(next);
   };
 
   const buildOrderUrl = () => {
@@ -695,12 +678,10 @@ const ProductConfigurator = () => {
     )
   );
 
-  const accordionValue = isMobile
-    ? (typeof openAccordion === 'string' ? openAccordion : '')
-    : (Array.isArray(openAccordion) ? openAccordion : [openAccordion]);
-
-  const handleAccordionChange = (val: string | string[]) => {
-    setOpenAccordion(val || (isMobile ? '' : []));
+  // Siempre string — acordeón tipo single en todas las vistas
+  const accordionValue = openAccordion;
+  const handleAccordionChange = (val: string) => {
+    setOpenAccordion(val || '');
   };
 
   const sharedAccordionProps = {
@@ -856,9 +837,9 @@ const ProductConfigurator = () => {
             <p className="mt-2 text-base text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
           </div>
           <ProgressBar className="mb-6" />
-          <ConfigAccordionsMultiple
-            openAccordion={Array.isArray(accordionValue) ? accordionValue : [accordionValue as string]}
-            setOpenAccordion={(v) => handleAccordionChange(v)}
+          <ConfigAccordionsSingle
+            openAccordion={accordionValue}
+            setOpenAccordion={handleAccordionChange}
             {...sharedAccordionProps}
           />
         </div>
@@ -869,8 +850,8 @@ const ProductConfigurator = () => {
           <h2 className="font-serif text-2xl font-light text-foreground">Configura tu pieza</h2>
         </div>
         <ConfigAccordionsSingle
-          openAccordion={typeof accordionValue === 'string' ? accordionValue : ''}
-          setOpenAccordion={(v) => handleAccordionChange(v)}
+          openAccordion={accordionValue}
+          setOpenAccordion={handleAccordionChange}
           {...sharedAccordionProps}
         />
       </div>
@@ -1451,7 +1432,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
               <span className="text-sm font-medium text-foreground">{f.name}</span>
-              {f.extra && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${f.extra}€`}</span>}
+              {f.extra > 0 && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${f.extra}€`}</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
           ))}

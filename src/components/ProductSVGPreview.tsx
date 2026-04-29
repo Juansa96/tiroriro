@@ -88,6 +88,8 @@ const headboardSelectorPath = (forma: string) => {
       return "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z";
     case "corona-triple":
       return "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z";
+    case "ondas":
+      return "M 3 37 L 3 26 Q 8.4 12 13.8 26 Q 19.2 12 24.6 26 Q 30 12 35.4 26 Q 40.8 12 46.2 26 Q 51.6 12 57 26 L 57 37 Z";
     case "recto":
     default:
       return "M 5 35 L 5 8 L 55 8 L 55 35 Z";
@@ -99,7 +101,8 @@ const headboardCorners = (forma: string): [[number, number], [number, number]] =
     case "semicirculo": return [[15, 110], [285, 110]];
     case "corona-simple":
     case "corona-doble":
-    case "corona-triple": return [[15, 120], [285, 120]];
+    case "corona-triple":
+    case "ondas": return [[15, 120], [285, 120]];
     case "recto":
     default: return [[15, 50], [285, 50]];
   }
@@ -139,6 +142,16 @@ const headboardTopFacePath = (forma: string, dx: number, dy: number): string => 
         `Q ${71+dx} ${106+dy} ${43+dx} ${106+dy} ` +
         `Q ${43+dx} ${120+dy} ${15+dx} ${120+dy} Z`
       );
+    case "ondas":
+      return (
+        `M 15 120 Q 42 50 69 120 Q 96 50 123 120 Q 150 50 177 120 Q 204 50 231 120 Q 258 50 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `Q ${258+dx} ${50+dy} ${231+dx} ${120+dy} ` +
+        `Q ${204+dx} ${50+dy} ${177+dx} ${120+dy} ` +
+        `Q ${150+dx} ${50+dy} ${123+dx} ${120+dy} ` +
+        `Q ${96+dx} ${50+dy} ${69+dx} ${120+dy} ` +
+        `Q ${42+dx} ${50+dy} ${15+dx} ${120+dy} Z`
+      );
     case "recto":
     default:
       return `M 15 50 L 285 50 L ${285+dx} ${50+dy} L ${15+dx} ${50+dy} Z`;
@@ -155,6 +168,8 @@ const headboardPath = (forma: string, bottomY: number) => {
       return `M 15 ${bottomY} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${bottomY} Z`;
     case "corona-triple":
       return `M 15 ${bottomY} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${bottomY} Z`;
+    case "ondas":
+      return `M 15 ${bottomY} L 15 120 Q 42 50 69 120 Q 96 50 123 120 Q 150 50 177 120 Q 204 50 231 120 Q 258 50 285 120 L 285 ${bottomY} Z`;
     case "recto":
     default:
       return `M 15 ${bottomY} L 15 50 L 285 50 L 285 ${bottomY} Z`;
@@ -497,13 +512,9 @@ const PuffSVG = ({
       <path d={sidePath} fill="rgba(0,0,0,0.10)" />
       <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
       {finish === "vivo-simple" && (
-        <>
-          <path d={topPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-          <path d={sidePath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-          <g clipPath={`url(#pf-${clipId})`}>
-            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-          </g>
-        </>
+        <g clipPath={`url(#pf-${clipId})`}>
+          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+        </g>
       )}
     </svg>
   );
@@ -741,7 +752,6 @@ const MesaSVG = ({
       {finish === "vivo-simple" && (
         <>
           <path d={topPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-          <path d={sidePath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
           <g clipPath={`url(#ms-${clipId})`}>
             <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>

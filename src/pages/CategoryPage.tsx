@@ -90,6 +90,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Macarella",
         photos: [
+          "/productos-fotos/cabeceros/macarella-01.webp",
           "/productos-fotos/cabeceros/macarella-02.webp",
         ],
         desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
@@ -100,6 +101,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Conta",
         photos: [
           "/productos-fotos/cabeceros/conta-01.webp",
+          "/productos-fotos/cabeceros/conta-02.webp",
+          "/productos-fotos/cabeceros/conta-03.webp",
+          "/productos-fotos/cabeceros/conta-04.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "",
@@ -109,6 +113,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Barbaria",
         photos: [
           "/productos-fotos/cabeceros/barbaria-01.webp",
+          "/productos-fotos/cabeceros/barbaria-02.webp",
         ],
         desc: "Corona quíntuple con cinco arcos. Movimiento escultórico y mucha presencia.",
         priceLabel: "",
@@ -247,10 +252,10 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     models: [
       { name: "Almanzor", photos: ["/productos-fotos/pantallas/almanzor-01.webp", "/productos-fotos/pantallas/almanzor-02.webp", "/productos-fotos/pantallas/almanzor-03.webp"], desc: "Cilíndrica. La más clásica y versátil. Transforma cualquier lámpara con un toque artesanal.", priceLabel: "", configParam: "cilindro" },
       { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp", "/productos-fotos/pantallas/tormes-02.webp"], desc: "Cuadrada. Líneas limpias para espacios modernos y contemporáneos.", priceLabel: "", configParam: "cuadrado" },
-      { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica. Elegante y con carácter. Ideal para lámparas de pie y de sobremesa.", priceLabel: "", configParam: "cono" },
+      { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica. Elegante y con carácter. Ideal para lámparas de pie y de sobremesa.", priceLabel: "", configParam: "cono", comingSoon: true },
       { name: "La Serrota", photos: ["/productos-fotos/pantallas/serrota-01.webp"], desc: "Rectangular. Perfecta para apliques de pared y lámparas de diseño.", priceLabel: "", configParam: "rectangulo" },
-      { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada. Suave y sofisticada. Da una luz difusa y muy cálida.", priceLabel: "", configParam: "ovalado" },
-      { name: "La Galana", photos: ["/productos-fotos/pantallas/galana-01.webp"], desc: "Pirámide. Forma original con mucha personalidad. Un objeto decorativo en sí mismo.", priceLabel: "", configParam: "piramide" },
+      { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada. Suave y sofisticada. Da una luz difusa y muy cálida.", priceLabel: "", configParam: "ovalado", comingSoon: true },
+      { name: "La Galana", photos: ["/productos-fotos/pantallas/galana-01.webp"], desc: "Pirámide. Forma original con mucha personalidad. Un objeto decorativo en sí mismo.", priceLabel: "", configParam: "piramide", comingSoon: true },
     ],
   },
   percheros: {
