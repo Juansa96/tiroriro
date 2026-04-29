@@ -23,7 +23,7 @@ const ShapeCircle = ({ configParam, category }: { configParam?: string; category
         case 'semicirculo': return <path d="M 4 22 L 4 14 Q 16 4 28 14 L 28 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
         case 'corona-simple': return <path d="M 2 22 L 2 14 C 8 14 10 11 10.4 9.2 A 5.6 1.6 0 0 1 21.6 9.2 C 22 11 24 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
         case 'corona-doble': return <path d="M 2 22 L 2 14 Q 7 14 7 11.5 Q 12 11.5 12 9 A 4 2 0 0 1 20 9 Q 20 11.5 25 11.5 Q 25 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
-        case 'ondas': return <path d="M 2 22 L 2 14 Q 8 8 14 13 Q 20 18 26 13 Q 29 10 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'ondas': return <path d="M 2 22 L 2 14 Q 6 9 10 14 Q 14 19 18 14 Q 22 9 26 14 Q 29 17 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
       }
     }
     if (category === 'cojines') {
@@ -33,7 +33,7 @@ const ShapeCircle = ({ configParam, category }: { configParam?: string; category
         case 'gulpiyuri': return <><rect x="3" y="12" width="26" height="8" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="3" cy="16" rx="2" ry="4" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
       }
     }
-    if (category === 'puffs') {
+    if (category === 'pufs') {
       return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
     }
     if (category === 'mesas-centro') {
@@ -74,7 +74,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/cabeceros/calobra-03.webp",
         ],
         desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         configParam: "recto",
       },
       {
@@ -84,7 +84,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/cabeceros/pregonda-02.webp",
         ],
         desc: "Remate en arco suave. Aporta calidez sin renunciar a la elegancia.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         configParam: "semicirculo",
       },
       {
@@ -94,7 +94,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/cabeceros/macarella-02.webp",
         ],
         desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         configParam: "corona-simple",
       },
       {
@@ -104,7 +104,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/cabeceros/conta-02.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         configParam: "corona-doble",
       },
       {
@@ -113,7 +113,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/cabeceros/barbaria-01.webp",
         ],
         desc: "Remate en ondas. Movimiento natural y presencia escultórica.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         configParam: "ondas",
       },
     ],
@@ -131,21 +131,21 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/bancos/oyambre-03.webp",
         ],
         desc: "Banco entelado de pie de cama. De 80 a 160 cm.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         comingSoon: true,
       },
       {
         name: "Gerra",
         photos: [],
         desc: "Con patas. Más compacto, perfecto para el recibidor.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         comingSoon: true,
       },
       {
         name: "Ris",
         photos: [],
         desc: "Baúl con tapa abatible y espacio interior.",
-        priceLabel: "Desde xx€",
+        priceLabel: "",
         comingSoon: true,
       },
     ],
@@ -160,8 +160,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/almohadones/rodiles-01.webp",
           "/productos-fotos/almohadones/rodiles-02.webp",
         ],
-        desc: "40×40 · 45×45 · 50×50 cm",
-        priceLabel: "Desde xx€",
+        desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones. Elige tu tela favorita y dale vida.",
+        priceLabel: "",
         configParam: "rodiles",
       },
       {
@@ -171,8 +171,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/almohadones/covadonga-02.webp",
           "/productos-fotos/almohadones/covadonga-03.webp",
         ],
-        desc: "50×30 · 60×40 cm",
-        priceLabel: "Desde xx€",
+        desc: "La forma alargada que siempre queda bien. Ideal para el cabecero de la cama o el respaldo del sofá.",
+        priceLabel: "",
         configParam: "covadonga",
       },
       {
@@ -181,37 +181,38 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/almohadones/gulpiyuri-01.webp",
           "/productos-fotos/almohadones/gulpiyuri-02.webp",
         ],
-        desc: "13×90 cm · Combinable con cabecero o banco.",
-        priceLabel: "Desde xx€",
+        desc: "Un toque diferente y muy nórdico. Combina a la perfección con cabeceros tapizados.",
+        priceLabel: "",
         configParam: "gulpiyuri",
       },
       {
         name: "Torimbia — Redondo",
         photos: [],
-        desc: "Almohadón circular tapizado a mano.",
-        priceLabel: "Desde xx€",
+        desc: "Próximamente. Almohadón circular tapizado a mano.",
+        priceLabel: "",
         comingSoon: true,
       },
     ],
   },
-  puffs: {
-    title: "Puffs",
+  pufs: {
+    title: "Pufs",
     subtitle: "Tapizados a medida, versátiles y fáciles de mover.",
     models: [
       {
         name: "Patos",
         photos: [
-          "/productos-fotos/puff/patos-01.webp",
+          "/productos-fotos/puf/patos-01.webp",
+          "/productos-fotos/puf/patos-gen.webp",
         ],
-        desc: "Cúbico · Colección Galicia.",
-        priceLabel: "Desde xx€",
+        desc: "Cúbico, tapizado a mano y a tu medida. Úsalo de asiento, reposapiés o mesa improvisada.",
+        priceLabel: "",
         configParam: "cuadrado",
       },
       {
         name: "Monteferro",
         photos: [],
-        desc: "Redondo · Colección Galicia.",
-        priceLabel: "Desde xx€",
+        desc: "Redondo · Próximamente.",
+        priceLabel: "",
         configParam: "circular",
         comingSoon: true,
       },
@@ -222,21 +223,22 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "Volúmenes tapizados a medida para el salón.",
     models: [
       {
-        name: "Cabo de Palos",
-        photos: [],
-        desc: "Sin patas · Colección Murcia.",
-        priceLabel: "Desde xx€",
-        configParam: "tipo-puff",
-      },
-      {
         name: "Calblanque",
         photos: [
           "/productos-fotos/mesas/calblanque-01.webp",
           "/productos-fotos/mesas/calblanque-02.webp",
         ],
-        desc: "Con patas · Colección Murcia.",
-        priceLabel: "Desde xx€",
+        desc: "Mesa de centro tapizada con patas. Un elemento escultórico para el salón.",
+        priceLabel: "",
         configParam: "tipo-banco",
+      },
+      {
+        name: "Cabo de Palos",
+        photos: [],
+        desc: "Sin patas · Próximamente.",
+        priceLabel: "",
+        configParam: "tipo-puf",
+        comingSoon: true,
       },
     ],
   },
@@ -244,12 +246,12 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     title: "Pantallas de lámpara",
     subtitle: "Tapizadas a mano en telas básicas y premium.",
     models: [
-      { name: "Almanzor", photos: ["/productos-fotos/pantallas/almanzor-01.webp", "/productos-fotos/pantallas/almanzor-02.webp", "/productos-fotos/pantallas/almanzor-03.webp"], desc: "Cilíndrica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cilindro" },
-      { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp", "/productos-fotos/pantallas/tormes-02.webp"], desc: "Cuadrada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cuadrado" },
-      { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cono" },
-      { name: "La Serrota", photos: ["/productos-fotos/pantallas/serrota-01.webp"], desc: "Rectangular · Colección Ávila.", priceLabel: "Desde xx€", configParam: "rectangulo" },
-      { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "ovalado" },
-      { name: "La Galana", photos: ["/productos-fotos/pantallas/galana-01.webp"], desc: "Pirámide · Colección Ávila.", priceLabel: "Desde xx€", configParam: "piramide" },
+      { name: "Almanzor", photos: ["/productos-fotos/pantallas/almanzor-01.webp", "/productos-fotos/pantallas/almanzor-02.webp", "/productos-fotos/pantallas/almanzor-03.webp"], desc: "Cilíndrica. La más clásica y versátil. Transforma cualquier lámpara con un toque artesanal.", priceLabel: "", configParam: "cilindro" },
+      { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp", "/productos-fotos/pantallas/tormes-02.webp"], desc: "Cuadrada. Líneas limpias para espacios modernos y contemporáneos.", priceLabel: "", configParam: "cuadrado" },
+      { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica. Elegante y con carácter. Ideal para lámparas de pie y de sobremesa.", priceLabel: "", configParam: "cono" },
+      { name: "La Serrota", photos: ["/productos-fotos/pantallas/serrota-01.webp"], desc: "Rectangular. Perfecta para apliques de pared y lámparas de diseño.", priceLabel: "", configParam: "rectangulo" },
+      { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada. Suave y sofisticada. Da una luz difusa y muy cálida.", priceLabel: "", configParam: "ovalado" },
+      { name: "La Galana", photos: ["/productos-fotos/pantallas/galana-01.webp"], desc: "Pirámide. Forma original con mucha personalidad. Un objeto decorativo en sí mismo.", priceLabel: "", configParam: "piramide" },
     ],
   },
   percheros: {
@@ -264,14 +266,14 @@ const productTypeMap: Record<string, string> = {
   cabeceros: "cabecero",
   bancos: "banco",
   cojines: "cojin",
-  puffs: "puff",
+  pufs: "puf",
   "mesas-centro": "mesa",
   "pantallas-lampara": "pantalla",
   percheros: "perchero",
 };
 
 const imagePosition = (category: string) => {
-  if (category === "puffs" || category === "mesas-centro") return "center center";
+  if (category === "pufs" || category === "mesas-centro") return "center center";
   if (category === "bancos") return "center center";
   return undefined;
 };
@@ -286,9 +288,8 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (photos.length <= 1) return;
-    if (hovered) { if (timerRef.current) clearInterval(timerRef.current); return; }
-    timerRef.current = setInterval(() => setIdx(i => (i + 1) % photos.length), 3000);
+    // Auto-advance disabled — manual navigation only
+    if (timerRef.current) clearInterval(timerRef.current);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [photos.length, hovered]);
 
@@ -384,7 +385,9 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
     >
       <div className="relative overflow-hidden">
         <PhotoSlider photos={model.photos} category={category} name={model.name} />
-        <ShapeCircle configParam={model.configParam} category={category} />
+        {category !== 'pantallas-lampara' && (
+          <ShapeCircle configParam={model.configParam} category={category} />
+        )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300 pointer-events-none flex items-center justify-center">
           <span className="text-white text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">Personalizar →</span>
         </div>
@@ -392,10 +395,9 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-base text-foreground font-medium">{model.priceLabel}</p>
+        <div className="mt-4 flex items-center justify-end">
           <span className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 group-hover:opacity-80 transition-opacity">
-            Personalizar
+            Personalizar →
           </span>
         </div>
       </div>

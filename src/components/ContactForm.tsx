@@ -5,15 +5,15 @@ import { Check, Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 
-const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Puffs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
-const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
+const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
+const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
 function mapProductName(name: string): string {
   const n = name.toLowerCase();
   if (n.includes('cabecero')) return 'Cabeceros';
   if (n.includes('banco')) return 'Bancos entelados';
   if (n.includes('cojin') || n.includes('cojín') || n.includes('almohad')) return 'Cojines y almohadones';
-  if (n.includes('puff')) return 'Puffs';
+  if (n.includes('puf')) return 'Pufs';
   if (n.includes('mesa')) return 'Mesas de centro';
   if (n.includes('pantalla') || n.includes('lámpara') || n.includes('lampara')) return 'Pantallas de lámpara';
   return 'Varios';
@@ -35,7 +35,7 @@ const ContactForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puff" | "mesa" | "pantalla" | null;
+  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puf" | "mesa" | "pantalla" | null;
   const previewForma = searchParams.get("previewForma") || undefined;
   const previewColor = searchParams.get("previewColor") || "#D4C5A9";
   const previewTexture = searchParams.get("previewTexture") || undefined;

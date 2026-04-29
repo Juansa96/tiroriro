@@ -1,4 +1,4 @@
-export type ProductType = "cabecero" | "banco" | "cojin" | "puff" | "mesa" | "pantalla";
+export type ProductType = "cabecero" | "banco" | "cojin" | "puf" | "mesa" | "pantalla";
 
 export interface Product {
   id: string;
@@ -52,12 +52,12 @@ export const PRODUCTS: Product[] = [
     image: "/productos-fotos/almohadones/IMG_2514.webp",
   },
   {
-    id: "puffs",
-    type: "puff",
-    name: "Puffs",
+    id: "pufs",
+    type: "puf",
+    name: "Pufs",
     tagline: "Tapizados a medida, fáciles de mover y pensados para vivir con ellos",
     basePrice: 95,
-    image: "/productos-fotos/crops/puff-2497-tight.png",
+    image: "/productos-fotos/puf/patos-01.webp",
   },
   {
     id: "mesa-centro",
@@ -65,7 +65,7 @@ export const PRODUCTS: Product[] = [
     name: "Mesas de centro",
     tagline: "Tapizadas a medida, con una presencia suave y mucho más original",
     basePrice: 290,
-    image: "/productos-fotos/crops/puff-2497-1-tight.png",
+    image: "/productos-fotos/mesas/calblanque-01.webp",
   },
   {
     id: "pantalla-lampara",
@@ -130,7 +130,7 @@ export const FINISHES = {
     { id: "sin-vivo", name: "Sin vivo", desc: "Remate limpio y sobrio", extra: 0 },
     { id: "vivo-simple", name: "Vivo simple", desc: "Una línea de vivo que enmarca el banco", extra: 15 },
   ],
-  puff: [
+  puf: [
     { id: "sin-vivo", name: "Sin vivo", desc: "Tapizado limpio, de líneas más serenas", extra: 0 },
     { id: "vivo-simple", name: "Vivo simple", desc: "Ribete sencillo para perfilar el volumen", extra: 15 },
   ],
@@ -179,7 +179,7 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     if (options.extraFirm === "true") price += 20;
   }
 
-  if (type === "puff") {
+  if (type === "puf") {
     price += Math.max(0, parseNumber(options.width) - 45) * 0.9;
     price += Math.max(0, parseNumber(options.depth) - 45) * 0.8;
     if (options.doubleSet === "true") price += product.basePrice + 70;
@@ -226,12 +226,12 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
     if (options.height) parts.push(`Alto ${options.height}`);
   }
 
-  if (type === "puff") {
+  if (type === "puf") {
     if (options.shapeLabel) parts.push(options.shapeLabel);
     if (options.width) parts.push(`Ancho ${options.width}`);
     if (options.depth) parts.push(`Fondo ${options.depth}`);
     if (options.height) parts.push(`Alto ${options.height}`);
-    if (options.doubleSet === "true") parts.push("Pareja de puffs iguales");
+    if (options.doubleSet === "true") parts.push("Pareja de pufs iguales");
   }
 
   if (type === "mesa") {

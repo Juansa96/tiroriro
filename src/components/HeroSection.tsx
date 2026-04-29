@@ -178,7 +178,7 @@ const HeroSection = () => {
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
             <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Cabeceros desde xx€ · Bancos desde xx€</span>
-            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Puffs desde xx€ · Cojines desde xx€</span>
+            <span className="text-[12px] md:text-[11px] font-light tracking-widest uppercase">Pufs desde xx€ · Cojines desde xx€</span>
           </div>
 
           {/* Sigue bajando — desktop only */}

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import AnimatedSection from "./AnimatedSection";
-import francescaPhoto from "@/assets/testimonials/francesca-cirenei.jpeg";
+import francescaPhoto from "@/assets/testimonials/francesca-cirenei.webp";
 import gabrielPhoto from "@/assets/testimonials/gabriel-di-stefano.webp";
-import almuPhoto from "@/assets/testimonials/almu-alonso.jpeg";
+import almuPhoto from "@/assets/testimonials/almu-alonso.webp";
 
 const TESTIMONIALS = [
   { name: "Francesca Cirenei", location: "Madrid", photo: francescaPhoto, text: "Pedí un cabecero en lino crudo para una cama de 150 y quedó exactamente como lo imaginaba. Beatriz me llamó al día siguiente de rellenar el formulario y en 12 días lo tenía en casa. El acabado es precioso y todo el proceso fue muchísimo más fácil de lo que esperaba." },

@@ -7,9 +7,6 @@ import AnimatedSection from "@/components/AnimatedSection";
 const FABRICS = [
   // Básicas — Lisas
   { name: "Arequipa Beige", coleccion: "Básicas", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp", descripcion: "Lino en tono tierra cálido y natural. Versátil, combina con madera clara y tonos neutros." },
-  { name: "Lino Natural", coleccion: "Básicas", hex: "#E8DCC8", image: "/telas/basicas/liso-natural-01.webp", descripcion: "El más luminoso de los linos. Ideal para espacios nórdicos y minimalistas." },
-  { name: "Lino Gris Perla", coleccion: "Básicas", hex: "#C8C4BC", image: "/telas/basicas/liso-natural-02.webp", descripcion: "Gris suave con matiz cálido. El favorito para dormitorios contemporáneos." },
-  { name: "Lino Crudo", coleccion: "Básicas", hex: "#D4B896", image: "/telas/basicas/liso-natural-03.webp", descripcion: "Tono crudo natural con textura visible. Aporta calidez artesanal." },
   // Básicas — Flores
   { name: "Flor Azul Protea", coleccion: "Básicas", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp", descripcion: "Floral botánico en azul. Perfecto para piezas que quieren protagonismo." },
   { name: "Floral Natural", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/flor-01.webp", descripcion: "Estampado floral en tono natural. Delicado y atemporal." },
@@ -45,9 +42,12 @@ const FABRICS = [
   { name: "Flores Gardenia", coleccion: "Premium", hex: "#6B8FAA", image: "/telas/premium/flores-gardenia.webp", descripcion: "Lino con flores gardenia en turquesa. Romántico y único." },
 ];
 
-const COLECCIONES = ["Básicas", "Premium"];
+const COLECCIONES = [
+  { name: "Básicas", priceBadge: "Sin coste adicional", badgeClass: "bg-green-50 text-green-700 border-green-200" },
+  { name: "Premium", priceBadge: "+25€ sobre el precio base", badgeClass: "bg-amber-50 text-amber-700 border-amber-200" },
+];
 
-const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me gustaría pedir muestras de tela sin compromiso.");
+const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me gustaría pedir muestras de tela sin compromiso.");
 
 const TelasPage = () => (
   <>
@@ -65,8 +65,8 @@ const TelasPage = () => (
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               {COLECCIONES.map((c) => (
-                <span key={c} className="px-4 py-1.5 border border-border rounded-full text-xs tracking-widest uppercase text-muted-foreground">
-                  {c}
+                <span key={c.name} className="px-4 py-1.5 border border-border rounded-full text-xs tracking-widest uppercase text-muted-foreground">
+                  {c.name}
                 </span>
               ))}
             </div>
@@ -76,13 +76,18 @@ const TelasPage = () => (
 
       {/* Fabric grid */}
       {COLECCIONES.map((col) => {
-        const items = FABRICS.filter((f) => f.coleccion === col);
+        const items = FABRICS.filter((f) => f.coleccion === col.name);
         return (
-          <section key={col} className="py-14 md:py-20 px-6">
+          <section key={col.name} className="py-14 md:py-20 px-6">
             <div className="container mx-auto max-w-6xl">
-              <AnimatedSection className="mb-10">
-                <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground">{col}</h2>
-                <div className="w-10 h-px bg-accent-warm mt-3" />
+              <AnimatedSection className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground">{col.name}</h2>
+                  <div className="w-10 h-px bg-accent-warm mt-3" />
+                </div>
+                <span className={`self-start sm:self-auto inline-flex items-center px-3 py-1.5 rounded-full border text-xs font-medium tracking-wide ${col.badgeClass}`}>
+                  {col.priceBadge}
+                </span>
               </AnimatedSection>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {items.map((fabric, i) => (

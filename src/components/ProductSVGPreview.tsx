@@ -430,7 +430,7 @@ const PuffSVG = ({
   if (isCircular) {
     const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = 84; // fixed height for circular puff
+    const bodyH = 84; // fixed height for circular puf
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
@@ -470,7 +470,7 @@ const PuffSVG = ({
     );
   }
 
-  // Rectangular / cuadrado puff — straight corners
+  // Rectangular / cuadrado puf — straight corners
   const effectiveDepthCm = depthCm ?? widthCm; // cuadrado: depth = width
   const baseW = scaleRange(widthCm, 40, 120, 112, 190);
   const baseH = scaleRange(heightCm, 30, 50, 72, 118);
@@ -681,7 +681,7 @@ const MesaSVG = ({
   depthCm?: number;
   surface?: string;
 }) => {
-  const mode = variant || "tipo-puff";
+  const mode = variant || "tipo-puf";
   const patternId = useId();
   const clipId = useId();
   const baseW = scaleRange(widthCm, 50, 120, 150, 230);
@@ -705,7 +705,7 @@ const MesaSVG = ({
       </defs>
       <ellipse cx="158" cy={y + baseH + 72} rx={baseW * 0.38} ry={8} fill="rgba(0,0,0,0.08)" />
 
-      {mode === "tipo-puff" ? (
+      {mode === "tipo-puf" ? (
         <>
           <path d={topPath} fill={patternFill(patternId, lighten(color, 14))} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
           <path d={topPath} fill="rgba(255,255,255,0.12)" />
@@ -850,13 +850,12 @@ const LampshadeSVG = ({
         {/* Front face */}
         <path d={paths.front} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
         <path d={paths.front} fill="rgba(255,255,255,0.05)" />
-        {/* Ribete — all sides */}
+        {/* Ribete — top rim and bottom edge only (not sides) */}
         {finish === "vivo-simple" && (
           <>
-            <path d={paths.side} fill="none" stroke={vivoColor} strokeWidth="2.4" strokeLinejoin="round" />
-            <path d={paths.top} fill="none" stroke={vivoColor} strokeWidth="2.4" strokeLinejoin="round" />
+            <path d={paths.top} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
             <g clipPath={`url(#ls-${clipId})`}>
-              <path d={paths.front} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+              <path d={paths.front} fill="none" stroke={vivoColor} strokeWidth="3.2" strokeLinejoin="round" />
             </g>
           </>
         )}
@@ -908,7 +907,7 @@ const ProductSVGPreview = ({
           depthCm={depthCm}
         />
       )}
-      {type === "puff" && (
+      {type === "puf" && (
         <PuffSVG
           color={color}
           fabricImage={fabricImage}

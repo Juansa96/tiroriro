@@ -9,6 +9,7 @@ const PRODUCTS_DATA = [
     id: "cabeceros",
     name: "Cabeceros tapizados",
     badge: "Hecho a mano",
+    price: "desde 225€",
     image: "/productos-fotos/cabeceros/pregonda-02.webp",
     alt: "Cabecero tapizado artesanal de Tiroriro",
     link: "/productos/cabeceros",
@@ -16,26 +17,29 @@ const PRODUCTS_DATA = [
   },
   {
     id: "cojines",
-    name: "Cojines y almohadones",
+    name: "Almohadones",
     badge: "Artesanal",
+    price: "desde 50€",
     image: "/productos-fotos/almohadones/covadonga-01.webp",
     alt: "Cojines y almohadones artesanales de Tiroriro",
     link: "/productos/cojines",
     comingSoon: false,
   },
   {
-    id: "puffs",
-    name: "Puffs",
+    id: "pufs",
+    name: "Pufs",
     badge: "A tu medida",
-    image: "/productos-fotos/puff/patos-01.webp",
-    alt: "Puffs tapizados a medida de Tiroriro",
-    link: "/productos/puffs",
+    price: "desde 125€",
+    image: "/productos-fotos/puf/patos-01.webp",
+    alt: "Pufs tapizados a medida de Tiroriro",
+    link: "/productos/pufs",
     comingSoon: false,
   },
   {
     id: "mesas-centro",
     name: "Mesas de centro",
     badge: "Tapizado único",
+    price: "desde 280€",
     image: "/productos-fotos/mesas/calblanque-01.webp",
     alt: "Mesa de centro tapizada de Tiroriro",
     link: "/productos/mesas-centro",
@@ -45,6 +49,7 @@ const PRODUCTS_DATA = [
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
     badge: "Nuevo",
+    price: "desde 25€",
     image: "/productos-fotos/pantallas/almanzor-01.webp",
     alt: "Pantallas de lámpara tapizadas de Tiroriro",
     link: "/productos/pantallas-lampara",
@@ -153,9 +158,12 @@ const ProductsPreview = () => {
                         {!product.comingSoon && (
                           <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
                             <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
-                            <span className="inline-block mt-2 text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
-                              Personaliza el tuyo →
-                            </span>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
+                                Personaliza el tuyo →
+                              </span>
+                              <span className="text-sm font-light text-white/90">{product.price}</span>
+                            </div>
                           </div>
                         )}
                         {product.comingSoon && (
@@ -171,7 +179,12 @@ const ProductsPreview = () => {
                       </div>
                       {/* Desktop: name below */}
                       <div className="mt-4 hidden md:block">
-                        <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{product.name}</h3>
+                        <div className="flex items-baseline justify-between">
+                          <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{product.name}</h3>
+                          {!product.comingSoon && (
+                            <span className="text-sm text-muted-foreground font-light">{product.price}</span>
+                          )}
+                        </div>
                         {product.comingSoon && (
                           <p className="text-xs text-muted-foreground font-light mt-0.5 tracking-wider uppercase">Próximamente</p>
                         )}
@@ -192,6 +205,23 @@ const ProductsPreview = () => {
                 className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === current ? "bg-foreground" : "bg-foreground/20"}`}
               />
             ))}
+          </div>
+
+          <div className="flex justify-center mt-10">
+            <Link
+              to="/productos"
+              className="btn-sweep btn-unir inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+              style={{
+                "--btn-bg": "transparent",
+                "--btn-fg": "hsl(var(--foreground))",
+                "--btn-border": "hsl(var(--foreground) / 0.4)",
+                "--btn-hover-bg": "hsl(var(--foreground) / 0.06)",
+                "--btn-hover-fg": "hsl(var(--foreground))",
+                "--btn-hover-border": "hsl(var(--foreground) / 0.4)",
+              } as React.CSSProperties}
+            >
+              <span className="relative z-10">Ver todos los productos →</span>
+            </Link>
           </div>
         </div>
       </section>

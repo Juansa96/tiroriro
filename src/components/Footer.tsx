@@ -15,6 +15,9 @@ const Footer = () => (
       <p className="mt-4 text-base text-muted-foreground font-light max-w-md mx-auto">
         Hecho a mano en España · Envío dentro de la Comunidad de Madrid · Resto de España bajo consulta · info@tirorirohome.com
       </p>
+      <p className="mt-2 text-sm text-muted-foreground font-light">
+        Para más información contacta con nosotros: 660 786 453
+      </p>
       <div className="mt-8 flex items-center justify-center">
         <a
           href="https://www.instagram.com/tirorirohome/"

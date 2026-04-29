@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Instagram } from "lucide-react";
 
-const WHATSAPP_URL = "https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
+const WHATSAPP_URL = "https://wa.me/34660786453?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
 
 const FloatingButtons = () => {
   const [whatsappHovered, setWhatsappHovered] = useState(false);
