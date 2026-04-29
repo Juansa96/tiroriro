@@ -67,10 +67,12 @@ const FABRIC_GROUPS = [
 
 const ALL_FABRICS = FABRIC_GROUPS.flatMap(g => g.fabrics.map(f => ({ ...f, group: g.label, collection: g.collection })));
 
+// Cabecero: vivo-simple incluido (0€), vivo-doble +10€
+// Resto: vivo-simple incluido (0€) cuando aplica
 const FINISHES = [
-  { id: "liso", name: "Sin acabado", desc: "Sin costuras decorativas" },
-  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro, mismo color o contraste", extra: 15, extraLabel: "+xx€" },
-  { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 25, extraLabel: "+xx€" },
+  { id: "liso", name: "Sin acabado", desc: "Sin costuras decorativas", extra: 0 },
+  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro — incluido en el precio", extra: 0, extraLabel: "Incluido" },
+  { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 10, extraLabel: "+10€" },
 ];
 
 const HEADBOARD_SHAPES = [
@@ -81,17 +83,8 @@ const HEADBOARD_SHAPES = [
   { id: "ondas", name: "Ondas", svgPreview: "M 3 37 L 3 22 Q 10 14 17 22 Q 24 30 30 22 Q 36 14 43 22 Q 50 30 57 22 L 57 37 Z" },
 ];
 
-// Colección Ávila — 6 shapes
-const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgContent: React.ReactNode }> = [
-  {
-    id: "cono", name: "Gredos", subtitle: "Cónico",
-    svgContent: (
-      <>
-        <path d="M 20 14 L 40 14 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        <ellipse cx="30" cy="14" rx="10" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      </>
-    ),
-  },
+// Colección Ávila — solo cilindro, cuadrado y rectangulo activos (el resto próximamente)
+const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgContent: React.ReactNode; comingSoon?: boolean }> = [
   {
     id: "cilindro", name: "Almanzor", subtitle: "Cilíndrico",
     svgContent: (
@@ -103,9 +96,9 @@ const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgC
     ),
   },
   {
-    id: "piramide", name: "La Galana", subtitle: "Pirámide",
+    id: "cuadrado", name: "Tormes", subtitle: "Cuadrado",
     svgContent: (
-      <path d="M 16 8 L 44 8 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="13" y="8" width="34" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" />
     ),
   },
   {
@@ -115,13 +108,22 @@ const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgC
     ),
   },
   {
-    id: "cuadrado", name: "Tormes", subtitle: "Cuadrado",
+    id: "cono", name: "Gredos", subtitle: "Cónico", comingSoon: true,
     svgContent: (
-      <rect x="13" y="8" width="34" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <>
+        <path d="M 20 14 L 40 14 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="14" rx="10" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
     ),
   },
   {
-    id: "ovalado", name: "La Paramera", subtitle: "Ovalado",
+    id: "piramide", name: "La Galana", subtitle: "Pirámide", comingSoon: true,
+    svgContent: (
+      <path d="M 16 8 L 44 8 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "ovalado", name: "La Paramera", subtitle: "Ovalado", comingSoon: true,
     svgContent: (
       <>
         <ellipse cx="30" cy="14" rx="18" ry="7" fill="none" stroke="currentColor" strokeWidth="1.5" />
@@ -133,18 +135,16 @@ const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgC
   },
 ];
 
+// Medidas y precios reales por forma de pantalla (key = "<shape>-<medida>" para el lookup)
 const LAMP_SIZES: Record<string, string[]> = {
-  cono:      ["Ø20 cm", "Ø30 cm", "Ø40 cm"],
-  cilindro:  ["Ø20 cm", "Ø30 cm", "Ø40 cm"],
-  piramide:  ["20×20 cm", "30×30 cm", "40×40 cm"],
-  rectangulo:["40×20 cm", "50×25 cm", "60×30 cm"],
-  cuadrado:  ["20×20 cm", "30×30 cm", "40×40 cm"],
-  ovalado:   ["40×20 cm", "50×25 cm", "60×30 cm"],
+  cilindro:   ["Ø15×20cm", "Ø25×25cm", "Ø40×40cm"],
+  cuadrado:   ["20×20cm"],
+  rectangulo: ["20×40cm"],
 };
 
+// Ribete incluido en el precio — no se muestra como opción separada
 const PANTALLA_FINISHES = [
-  { id: "liso", name: "Sin ribete", desc: "Borde limpio y sin decoración" },
-  { id: "vivo-simple", name: "Con ribete", desc: "Ribete pegado en el borde superior e inferior", extra: 15, extraLabel: "+xx€" },
+  { id: "vivo-simple", name: "Ribete incluido", desc: "Ribete en el borde superior e inferior — sin coste adicional" },
 ];
 
 const CUSHION_SHAPES = [
@@ -165,17 +165,6 @@ const CUSHION_SHAPES = [
     getDetails: (sz: string) => {
       if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
       return { shape: "rectangular", widthCm: 50, heightCm: 30 };
-    },
-  },
-  {
-    id: "torimbia", name: "Torimbia", subtitle: "Redondo",
-    svgPath: <circle cx="30" cy="30" r="20" fill="none" stroke="currentColor" strokeWidth="1.5" />,
-    sizes: ["Ø35 cm", "Ø45 cm", "Ø55 cm"],
-    comingSoon: true,
-    getDetails: (sz: string) => {
-      if (sz.includes("55")) return { shape: "circular", widthCm: 55, heightCm: 55 };
-      if (sz.includes("45")) return { shape: "circular", widthCm: 45, heightCm: 45 };
-      return { shape: "circular", widthCm: 35, heightCm: 35 };
     },
   },
   {
@@ -343,6 +332,8 @@ const ProductConfigurator = () => {
   const [customWidth, setCustomWidth] = useState("");
   const [customHeight, setCustomHeight] = useState("");
 
+  const [puffQuantity, setPuffQuantity] = useState("1");
+
   const [extraPatas, setExtraPatas] = useState(false);
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
@@ -371,7 +362,7 @@ const ProductConfigurator = () => {
       if (tipo === 'puf' && !forma) setShape('cuadrado');
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
-      if (tipo === 'pantalla' && !forma) setShape('cono');
+      if (tipo === 'pantalla' && !forma) setShape('cilindro');
       if (isMobile) {
         setOpenAccordion('measures');
       } else {
@@ -385,7 +376,7 @@ const ProductConfigurator = () => {
     const defaultShape = newType === 'puf' ? 'cuadrado'
       : newType === 'banco' ? 'madera'
       : newType === 'mesa' ? 'tipo-puf'
-      : newType === 'pantalla' ? 'cono'
+      : newType === 'pantalla' ? 'cilindro'
       : 'recto';
     setShape(defaultShape);
     setBedWidth('');
@@ -401,10 +392,11 @@ const ProductConfigurator = () => {
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
-    setFinish('');
+    setFinish(type === 'pantalla' ? 'vivo-simple' : '');
     setVivoColorId('');
     setCustomWidth('');
     setCustomHeight('');
+    setPuffQuantity('1');
     setExtraPatas(false);
     setExtraRelleno(false);
     setExtraExpress(false);
@@ -464,31 +456,74 @@ const ProductConfigurator = () => {
     ? (cushionShape ? cushionShapeToForma[cushionShape] || 'cuadrada' : 'cuadrada')
     : shape;
 
+  // Derivar el grupo de tela (Básicas / Premium) desde fabricId
+  const fabricGroup = ALL_FABRICS.find(f => f.id === fabricId)?.group ?? '';
+
+  // Clave de cushion: "rodiles-40x40" desde shape="rodiles" + size="40×40 cm"
+  const cushionKey = cushionShape && cushionSize
+    ? `${cushionShape}-${cushionSize.replace(/[×x]/g, 'x').replace(/ cm/g, '').replace(/ /g, '')}`
+    : '';
+
+  // Clave de pantalla: "cilindro-Ø15×20cm"
+  const pantallaSizeKey = lampDiameter ? `${shape}-${lampDiameter}` : '';
+
+  // Preset de mesa: "120x45x60" o "80x45x80"
+  const mesaPreset = benchLength.includes('120') ? '120x45x60'
+    : benchLength.includes('80') ? '80x45x80'
+    : '';
+
+  // Ancho en cm (solo el número) para cabeceros
+  const bedWidthCm = bedWidth === 'custom' ? customWidth : bedWidth.replace(' cm', '');
+  // Alto en cm para cabeceros
+  const bedHeightCm = bedHeight === 'custom' ? customHeight
+    : bedHeight.includes('100') ? '100'
+    : bedHeight.includes('120') ? '120'
+    : bedHeight.replace(' cm', '');
+
   const options = useMemo(() => {
     const o: Record<string, string> = {};
+    o.fabricGroup = fabricGroup;
+    o.finish      = finish;
+
     if (productType === 'cabecero') {
-      o.shape = shape;
-      o.bedSize = bedWidth || (customWidth ? customWidth + ' cm' : '');
-      o.height = bedHeight || (customHeight ? customHeight + ' cm' : '');
+      o.shape      = shape;
+      o.bedWidthCm = bedWidth === 'custom' ? customWidth : bedWidth.replace(' cm', '');
+      o.bedHeightCm = bedHeight === 'custom' ? customHeight
+        : bedHeight.includes('100') ? '100'
+        : bedHeight.includes('120') ? '120'
+        : bedHeight.replace(' cm', '');
+      o.shapeLabel = HEADBOARD_SHAPES.find(s => s.id === shape)?.name ?? shape;
+      if (extraPatas) o.colgador = 'true';
     }
-    if (productType === 'banco') o.length = benchLength;
-    if (productType === 'cojin') o.size = cushionSize;
+
     if (productType === 'puf') {
-      o.puffShape = shape;
-      o.puffSize = puffDiameter === '40 cm' ? 'Pequeño' : puffDiameter === '50 cm' ? 'Mediano' : puffDiameter === '60 cm' ? 'Grande' : puffDiameter === '70 cm' ? 'Extra Grande' : '';
+      o.pufSizeCm   = puffDiameter.includes('40') ? '40' : puffDiameter.includes('50') ? '50' : '';
+      o.pufQuantity = puffQuantity;
     }
+
+    if (productType === 'mesa') {
+      o.mesaPreset = benchLength.includes('120') ? '120x45x60'
+        : benchLength.includes('80') ? '80x45x80' : '';
+      o.surface = extraTopMaterial !== 'nada' ? extraTopMaterial : '';
+    }
+
+    if (productType === 'cojin') {
+      o.cushionKey = cushionShape && cushionSize
+        ? `${cushionShape}-${cushionSize.replace(/[×x]/g, 'x').replace(/ cm/g, '').replace(/ /g, '')}`
+        : '';
+    }
+
     if (productType === 'pantalla') {
-      o.shape = shape;
-      o.diameter = lampDiameter;
-      o.height = lampHeight;
+      o.pantallaSizeKey = lampDiameter ? `${shape}-${lampDiameter}` : '';
     }
-    if (finish) o.finish = finish;
-    if (fabricId) o.color = fabricId;
-    if (extraPatas) o.patas = 'true';
+
+    if (productType === 'banco') o.benchLength = benchLength;
+
     if (extraRelleno) o.relleno = 'true';
-    if (extraExpress) o.express = 'true';
     return o;
-  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionSize, puffDiameter, lampDiameter, lampHeight, finish, fabricId, extraPatas, extraRelleno, extraExpress, customWidth, customHeight]);
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionShape, cushionSize,
+      puffDiameter, puffQuantity, lampDiameter, finish, fabricGroup, fabricId,
+      extraPatas, extraRelleno, extraTopMaterial, customWidth, customHeight]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -505,14 +540,17 @@ const ProductConfigurator = () => {
       : productType === 'pantalla' ? !!lampDiameter
       : false,
     fabric: !!fabricId,
-    finish: !!finish,
+    finish: productType === 'pantalla' ? !!lampDiameter : !!finish,
     extras: !productType || !['cabecero', 'banco'].includes(productType),
   };
 
   const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
   const activeStepIndex = STEPS.indexOf(currentStep as Step);
-  const isIncomplete = !productType || !fabricId || !finish;
-  const priceLabel = isIncomplete ? `desde ${price || (productType ? PRODUCTS.find(p => p.type === productType)?.basePrice || 0 : 180)}` : `${price}`;
+
+  // El precio es "en progreso" cuando no hay precio calculado aún (medidas no elegidas)
+  const priceIsKnown = price > 0;
+  const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
+  const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && !finish);
 
   const chips: string[] = [];
   if (productType) {
@@ -685,6 +723,7 @@ const ProductConfigurator = () => {
     finish, setFinish: (f: string) => { setFinish(f); },
     vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
+    puffQuantity, setPuffQuantity,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
     extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
@@ -702,7 +741,18 @@ const ProductConfigurator = () => {
 
       <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
         <div className="px-4 py-3 flex flex-col items-center">
-          <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
+          {/* Precio arriba-derecha en mobile también */}
+          <div className="w-full flex items-start justify-between mb-1">
+            <p className="font-serif text-sm text-muted-foreground truncate max-w-[65%]">{previewLabel}</p>
+            {productType && (
+              <div className="text-right flex-shrink-0">
+                <p className="text-[9px] text-foreground/50 uppercase tracking-widest">Precio</p>
+                <p className="font-serif text-lg font-light text-foreground leading-none">
+                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
+                </p>
+              </div>
+            )}
+          </div>
           {/* SVG + fabric swatches side-by-side on mobile */}
           <div className="flex w-full gap-3 items-center justify-center min-h-[160px]">
             <div className="flex-1 flex items-center justify-center">
@@ -735,7 +785,18 @@ const ProductConfigurator = () => {
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
         {/* Left column: render + fabric swatches + actions */}
         <div className="w-[45%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-          <div className="rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
+          <div className="relative rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
+            {/* Precio en tiempo real — badge top-right del dibujo */}
+            {productType && (
+              <div className="absolute top-4 right-4 text-right z-10">
+                <p className="text-[9px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio</p>
+                <p className="font-serif text-2xl font-light text-foreground leading-none">
+                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
+                </p>
+                <p className="text-[9px] text-foreground/40 font-light mt-0.5">IVA incl.</p>
+              </div>
+            )}
+
             {/* SVG render */}
             <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
               <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
@@ -767,23 +828,9 @@ const ProductConfigurator = () => {
             )}
           </div>
 
-          {/* Precio en tiempo real */}
-          {productType && (
-            <div className="mt-5 flex items-center justify-between px-1">
-              <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío Cdad. Madrid</p>
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground font-light uppercase tracking-widest">Precio</p>
-                <p className="font-serif text-2xl font-light text-foreground">
-                  {isIncomplete ? `desde ${price || PRODUCTS.find(p => p.type === productType)?.basePrice || 0}` : price}€
-                </p>
-              </div>
-            </div>
-          )}
-          {!productType && (
-            <div className="mt-6 text-center">
-              <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío Comunidad de Madrid · Resto bajo consulta</p>
-            </div>
-          )}
+          <div className="mt-4 px-1">
+            <p className="text-xs text-muted-foreground font-light text-center">IVA incluido · Envío Comunidad de Madrid · Resto bajo consulta</p>
+          </div>
 
           <div className="flex flex-col gap-3 mt-4">
             {productType === 'banco' ? (
@@ -833,9 +880,9 @@ const ProductConfigurator = () => {
           <div className="flex-1 min-w-0">
             {productType ? (
               <>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio estimado</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
                 <p className="font-serif text-xl font-light text-foreground">
-                  {isIncomplete ? `desde ${price || PRODUCTS.find(p => p.type === productType)?.basePrice || 0}` : price}€
+                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
                 </p>
               </>
             ) : (
@@ -874,6 +921,7 @@ interface AccordionContentSharedProps {
   benchHeight: string; setBenchHeight: (v: string) => void;
   puffDiameter: string; setPuffDiameter: (v: string) => void;
   puffHeight: string; setPuffHeight: (v: string) => void;
+  puffQuantity: string; setPuffQuantity: (v: string) => void;
   cushionShape: string; setCushionShape: (v: string) => void;
   cushionSize: string; setCushionSize: (v: string) => void;
   lampDiameter: string; setLampDiameter: (v: string) => void;
@@ -900,6 +948,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter,
+    puffQuantity, setPuffQuantity,
     cushionShape, setCushionShape,
     cushionSize, setCushionSize,
     lampDiameter, setLampDiameter, lampHeight, setLampHeight,
@@ -1108,6 +1157,23 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </div>
                 )}
               </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
+                <div className="flex gap-2">
+                  {['1', '2'].map(qty => (
+                    <button
+                      key={qty}
+                      onClick={() => setPuffQuantity(qty)}
+                      className={`border rounded-md px-5 py-2 text-xs transition-all ${puffQuantity === qty ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {qty === '1' ? '1 puf' : '2 pufs (pareja)'}
+                    </button>
+                  ))}
+                </div>
+                {puffQuantity === '2' && (
+                  <p className="text-xs text-muted-foreground font-light mt-2 italic">Pareja: precio especial aplicado</p>
+                )}
+              </div>
             </>
           )}
 
@@ -1228,27 +1294,42 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Ávila</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {LAMPSHADE_SHAPES.map(s => (
-                    <button
-                      key={s.id}
-                      onClick={() => { setShape(s.id); setLampDiameter(''); }}
-                      className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
-                    >
-                      <svg viewBox="0 0 60 44" className="w-12 h-9">
-                        {s.svgContent}
-                      </svg>
-                      <div>
-                        <span className="text-xs font-medium block">{s.name}</span>
-                        <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                  {LAMPSHADE_SHAPES.map(s =>
+                    s.comingSoon ? (
+                      <div
+                        key={s.id}
+                        className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-45 cursor-not-allowed"
+                      >
+                        <svg viewBox="0 0 60 44" className="w-12 h-9">
+                          {s.svgContent}
+                        </svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                        </div>
                       </div>
-                    </button>
-                  ))}
+                    ) : (
+                      <button
+                        key={s.id}
+                        onClick={() => { setShape(s.id); setLampDiameter(''); }}
+                        className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                      >
+                        <svg viewBox="0 0 60 44" className="w-12 h-9">
+                          {s.svgContent}
+                        </svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                        </div>
+                      </button>
+                    )
+                  )}
                 </div>
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medida</p>
                 <div className="flex flex-wrap gap-2">
-                  {(LAMP_SIZES[shape] || LAMP_SIZES.cono).map(sz => (
+                  {(LAMP_SIZES[shape] || []).map(sz => (
                     <button
                       key={sz}
                       onClick={() => setLampDiameter(sz)}
@@ -1454,8 +1535,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: 'nada', label: 'Sin superficie', price: null },
-                  { id: 'metacrilato', label: 'Metacrilato', price: '+xx€' },
-                  { id: 'cristal', label: 'Cristal', price: '+xx€' },
+                  { id: 'metacrilato', label: 'Metacrilato 5mm', price: '+50€', note: 'Puede retrasar el envío' },
+                  { id: 'cristal', label: 'Cristal 6mm', price: '+100€', note: 'Puede retrasar el envío' },
                 ].map(opt => (
                   <button
                     key={opt.id}
@@ -1464,6 +1545,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   >
                     <span className="block font-light text-foreground">{opt.label}</span>
                     {opt.price && <span className="block text-accent-warm mt-0.5">{opt.price}</span>}
+                    {'note' in opt && opt.note && <span className="block text-muted-foreground/70 mt-0.5 text-[10px] leading-tight">{opt.note}</span>}
                   </button>
                 ))}
               </div>

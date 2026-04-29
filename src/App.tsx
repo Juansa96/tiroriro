@@ -23,7 +23,7 @@ const categoryRoutes = [
   { path: "/productos/cabeceros", categoryKey: "cabeceros" },
   { path: "/productos/bancos", categoryKey: "bancos" },
   { path: "/productos/cojines", categoryKey: "cojines" },
-  { path: "/productos/puffs", categoryKey: "puffs" },
+  { path: "/productos/pufs", categoryKey: "pufs" },
   { path: "/productos/mesas-centro", categoryKey: "mesas-centro" },
   { path: "/productos/mesitas-de-centro", categoryKey: "mesas-centro" },
   { path: "/productos/pantallas-lampara", categoryKey: "pantallas-lampara" },
