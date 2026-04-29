@@ -9,7 +9,7 @@ const PRODUCTS_DATA = [
     id: "cabeceros",
     name: "Cabeceros tapizados",
     badge: "Hecho a mano",
-    image: "/productos-fotos/cabeceros/IMG_2555.webp",
+    image: "/productos-fotos/cabeceros/pregonda-02.webp",
     alt: "Cabecero tapizado artesanal de Tiroriro",
     link: "/productos/cabeceros",
     comingSoon: false,
@@ -18,7 +18,7 @@ const PRODUCTS_DATA = [
     id: "cojines",
     name: "Cojines y almohadones",
     badge: "Artesanal",
-    image: "/productos-fotos/almohadones/IMG_2514.webp",
+    image: "/productos-fotos/almohadones/covadonga-01.webp",
     alt: "Cojines y almohadones artesanales de Tiroriro",
     link: "/productos/cojines",
     comingSoon: false,
@@ -27,7 +27,7 @@ const PRODUCTS_DATA = [
     id: "puffs",
     name: "Puffs",
     badge: "A tu medida",
-    image: "/productos-fotos/crops/puff-2497-tight.png",
+    image: "/productos-fotos/puff/patos-01.webp",
     alt: "Puffs tapizados a medida de Tiroriro",
     link: "/productos/puffs",
     comingSoon: false,
@@ -36,7 +36,7 @@ const PRODUCTS_DATA = [
     id: "mesas-centro",
     name: "Mesas de centro",
     badge: "Tapizado único",
-    image: "/productos-fotos/crops/puff-2497-1-tight.png",
+    image: "/productos-fotos/mesas/calblanque-01.webp",
     alt: "Mesa de centro tapizada de Tiroriro",
     link: "/productos/mesas-centro",
     comingSoon: false,
@@ -45,7 +45,7 @@ const PRODUCTS_DATA = [
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
     badge: "Nuevo",
-    image: "/productos-fotos/cabeceros/IMG_2502.webp",
+    image: "/productos-fotos/pantallas/almanzor-01.webp",
     alt: "Pantallas de lámpara tapizadas de Tiroriro",
     link: "/productos/pantallas-lampara",
     comingSoon: false,
@@ -53,16 +53,18 @@ const PRODUCTS_DATA = [
 ];
 
 const FABRIC_STRIP = [
-  { name: "Lino Natural", hex: "#D4C5A9", image: "/telas/tela-01.webp" },
-  { name: "Lino Crudo", hex: "#E8DCC8", image: "/telas/tela-02.jpg" },
-  { name: "Gris Perla", hex: "#C8C4BC", image: "/telas/tela-03.webp" },
-  { name: "Azul Marino", hex: "#2C3E50", image: "/telas/tela-04.jpg" },
-  { name: "Verde Salvia", hex: "#7D9B76", image: "/telas/tela-05.jpg" },
-  { name: "Esmeralda", hex: "#1B4D3E", image: "/telas/tela-06.png" },
-  { name: "Burdeos", hex: "#6D1A36", image: "/telas/tela-07.png" },
-  { name: "Camel", hex: "#C19A6B", image: "/telas/tela-08.png" },
-  { name: "Negro", hex: "#1C1C1C", image: "/telas/tela-09.jpg" },
-  { name: "Bouclé", hex: "#F5F0E8", image: "/telas/tela-10.jpg" },
+  { name: "Arequipa Beige", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp" },
+  { name: "Lino Natural", hex: "#E8DCC8", image: "/telas/basicas/liso-natural-01.webp" },
+  { name: "Lino Gris Perla", hex: "#C8C4BC", image: "/telas/basicas/liso-natural-02.webp" },
+  { name: "Flor Azul Protea", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp" },
+  { name: "Ikat Natural", hex: "#C4A882", image: "/telas/basicas/ikat.webp" },
+  { name: "Mil Rayas Gris", hex: "#A0A0A0", image: "/telas/basicas/mil-rayas-gris.webp" },
+  { name: "Mil Rayas Azul", hex: "#2C3E50", image: "/telas/basicas/mil-rayas-azul.webp" },
+  { name: "Baqueira", hex: "#5B4B3A", image: "/telas/premium/baqueira.webp" },
+  { name: "Lola Gris", hex: "#6D6D6D", image: "/telas/premium/lola-gris.webp" },
+  { name: "Lino Verde Botella", hex: "#2D4A2D", image: "/telas/premium/lino-verde-botella.webp" },
+  { name: "Vichy Denim", hex: "#2C3E50", image: "/telas/premium/vichy-denim.webp" },
+  { name: "Flores Gardenia", hex: "#6B8FAA", image: "/telas/premium/flores-gardenia.webp" },
 ];
 
 const ProductsPreview = () => {
@@ -199,7 +201,7 @@ const ProductsPreview = () => {
         <div className="container mx-auto max-w-4xl text-center">
           <p className="text-[10px] tracking-[0.22em] uppercase text-white/55 mb-3">Colecciones disponibles</p>
           <h3 className="font-serif text-2xl md:text-3xl font-light text-white mb-6">
-            Linos · Terciopelos · Bouclé
+            Básicas · Premium
           </h3>
           <div className="flex justify-center gap-3 mb-5 flex-wrap">
             {FABRIC_STRIP.map((f) => (

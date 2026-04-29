@@ -14,6 +14,53 @@ interface Model {
   comingSoon?: boolean;
 }
 
+// Pequeño círculo con la silueta de la forma del producto
+const ShapeCircle = ({ configParam, category }: { configParam?: string; category: string }) => {
+  const getPath = () => {
+    if (category === 'cabeceros') {
+      switch (configParam) {
+        case 'recto': return <rect x="4" y="6" width="24" height="16" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'semicirculo': return <path d="M 4 22 L 4 14 Q 16 4 28 14 L 28 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'corona-simple': return <path d="M 2 22 L 2 14 C 8 14 10 11 10.4 9.2 A 5.6 1.6 0 0 1 21.6 9.2 C 22 11 24 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'corona-doble': return <path d="M 2 22 L 2 14 Q 7 14 7 11.5 Q 12 11.5 12 9 A 4 2 0 0 1 20 9 Q 20 11.5 25 11.5 Q 25 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'ondas': return <path d="M 2 22 L 2 14 Q 8 8 14 13 Q 20 18 26 13 Q 29 10 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      }
+    }
+    if (category === 'cojines') {
+      switch (configParam) {
+        case 'rodiles': return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'covadonga': return <rect x="3" y="9" width="26" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'gulpiyuri': return <><rect x="3" y="12" width="26" height="8" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="3" cy="16" rx="2" ry="4" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      }
+    }
+    if (category === 'puffs') {
+      return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+    }
+    if (category === 'mesas-centro') {
+      if (configParam === 'tipo-banco') return <><rect x="3" y="7" width="26" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="6" y1="17" x2="6" y2="25" stroke="currentColor" strokeWidth="1.5" /><line x1="26" y1="17" x2="26" y2="25" stroke="currentColor" strokeWidth="1.5" /></>;
+      return <rect x="3" y="10" width="26" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+    }
+    if (category === 'pantallas-lampara') {
+      switch (configParam) {
+        case 'cono': return <><path d="M 12 8 L 20 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="4" ry="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+        case 'cilindro': return <><rect x="4" y="8" width="24" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="24" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+        case 'rectangulo': return <rect x="4" y="10" width="24" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'cuadrado': return <rect x="7" y="6" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+        case 'ovalado': return <><ellipse cx="16" cy="10" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="22" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+        case 'piramide': return <path d="M 9 8 L 23 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      }
+    }
+    return null;
+  };
+  const path = getPath();
+  if (!path) return null;
+  return (
+    <div className="absolute top-2.5 right-2.5 z-10 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
+      <svg viewBox="0 0 32 32" className="w-5 h-5 text-foreground/70">{path}</svg>
+    </div>
+  );
+};
+
 const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[]; comingSoon?: boolean }> = {
   cabeceros: {
     title: "Cabeceros tapizados",
@@ -22,9 +69,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Calobra",
         photos: [
-          "/productos-fotos/cabeceros/IMG_2502.webp",
-          "/productos-fotos/cabeceros/IMG_2851.webp",
-          "/productos-fotos/cabeceros/IMG_2901.webp",
+          "/productos-fotos/cabeceros/calobra-01.webp",
+          "/productos-fotos/cabeceros/calobra-02.webp",
+          "/productos-fotos/cabeceros/calobra-03.webp",
         ],
         desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
         priceLabel: "Desde xx€",
@@ -33,8 +80,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Pregonda",
         photos: [
-          "/productos-fotos/cabeceros/IMG_2218.webp",
-          "/productos-fotos/cabeceros/IMG_2555.webp",
+          "/productos-fotos/cabeceros/pregonda-01.webp",
+          "/productos-fotos/cabeceros/pregonda-02.webp",
         ],
         desc: "Remate en arco suave. Aporta calidez sin renunciar a la elegancia.",
         priceLabel: "Desde xx€",
@@ -43,9 +90,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Macarella",
         photos: [
-          "/productos-fotos/cabeceros/IMG_2652.webp",
-          "/productos-fotos/cabeceros/IMG_2869.webp",
-          "/productos-fotos/cabeceros/IMG_2886.webp",
+          "/productos-fotos/cabeceros/macarella-01.webp",
+          "/productos-fotos/cabeceros/macarella-02.webp",
         ],
         desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
         priceLabel: "Desde xx€",
@@ -54,24 +100,21 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Conta",
         photos: [
-          "/productos-fotos/cabeceros/IMG_2535.webp",
-          "/productos-fotos/cabeceros/IMG_2653.webp",
-          "/productos-fotos/cabeceros/IMG_2858.webp",
-          "/productos-fotos/cabeceros/IMG_2866.webp",
-          "/productos-fotos/cabeceros/IMG_2891.webp",
+          "/productos-fotos/cabeceros/conta-01.webp",
+          "/productos-fotos/cabeceros/conta-02.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "Desde xx€",
         configParam: "corona-doble",
       },
       {
-        name: "Barbaria",
+        name: "Ondas",
         photos: [
-          "/productos-fotos/cabeceros/IMG_2654.webp",
+          "/productos-fotos/cabeceros/barbaria-01.webp",
         ],
-        desc: "Corona triple. Tres niveles de ondulación para una silueta espectacular.",
+        desc: "Remate en ondas. Movimiento natural y presencia escultórica.",
         priceLabel: "Desde xx€",
-        configParam: "corona-triple",
+        configParam: "ondas",
       },
     ],
   },
@@ -83,9 +126,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Oyambre",
         photos: [
-          "/productos-fotos/bancos/IMG_2760.webp",
-          "/productos-fotos/bancos/IMG_2761.webp",
-          "/productos-fotos/bancos/IMG_2491.webp",
+          "/productos-fotos/bancos/oyambre-01.webp",
+          "/productos-fotos/bancos/oyambre-02.webp",
+          "/productos-fotos/bancos/oyambre-03.webp",
         ],
         desc: "Banco entelado de pie de cama. De 80 a 160 cm.",
         priceLabel: "Desde xx€",
@@ -108,14 +151,14 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     ],
   },
   cojines: {
-    title: "Cojines y almohadones",
+    title: "Almohadones",
     subtitle: "Tapizados a medida para camas, bancos o sofás.",
     models: [
       {
         name: "Rodiles — Cuadrado",
         photos: [
-          "/productos-fotos/almohadones/IMG_2486.webp",
-          "/productos-fotos/almohadones/IMG_2523.webp",
+          "/productos-fotos/almohadones/rodiles-01.webp",
+          "/productos-fotos/almohadones/rodiles-02.webp",
         ],
         desc: "40×40 · 45×45 · 50×50 cm",
         priceLabel: "Desde xx€",
@@ -124,36 +167,19 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Covadonga — Rectangular",
         photos: [
-          "/productos-fotos/almohadones/IMG_2514.webp",
-          "/productos-fotos/almohadones/IMG_2539.webp",
-          "/productos-fotos/almohadones/IMG_2545.webp",
+          "/productos-fotos/almohadones/covadonga-01.webp",
+          "/productos-fotos/almohadones/covadonga-02.webp",
+          "/productos-fotos/almohadones/covadonga-03.webp",
         ],
         desc: "50×30 · 60×40 cm",
         priceLabel: "Desde xx€",
         configParam: "covadonga",
       },
       {
-        name: "Set de 2 coordinados",
-        photos: [
-          "/productos-fotos/almohadones/IMG_2523.webp",
-          "/productos-fotos/almohadones/IMG_2514.webp",
-        ],
-        desc: "Dos cojines en la misma tela.",
-        priceLabel: "Desde xx€",
-      },
-      {
-        name: "Cojín con vivo",
-        photos: [
-          "/productos-fotos/almohadones/IMG_2539.webp",
-        ],
-        desc: "Ribete que convierte el cojín en una pieza de autor.",
-        priceLabel: "Desde xx€",
-      },
-      {
         name: "Gulpiyuri — Rulo",
         photos: [
-          "/productos-fotos/almohadones/IMG_2524.webp",
-          "/productos-fotos/almohadones/IMG_2525.webp",
+          "/productos-fotos/almohadones/gulpiyuri-01.webp",
+          "/productos-fotos/almohadones/gulpiyuri-02.webp",
         ],
         desc: "13×90 cm · Combinable con cabecero o banco.",
         priceLabel: "Desde xx€",
@@ -162,7 +188,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Torimbia — Redondo",
         photos: [],
-        desc: "Cojín circular tapizado a mano.",
+        desc: "Almohadón circular tapizado a mano.",
         priceLabel: "Desde xx€",
         comingSoon: true,
       },
@@ -175,7 +201,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Patos",
         photos: [
-          "/productos-fotos/puff/IMG_2497.webp",
+          "/productos-fotos/puff/patos-01.webp",
         ],
         desc: "Cúbico · Colección Galicia.",
         priceLabel: "Desde xx€",
@@ -197,9 +223,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     models: [
       {
         name: "Cabo de Palos",
-        photos: [
-          "/productos-fotos/crops/puff-2497-1-tight.png",
-        ],
+        photos: [],
         desc: "Sin patas · Colección Murcia.",
         priceLabel: "Desde xx€",
         configParam: "tipo-puff",
@@ -207,7 +231,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Calblanque",
         photos: [
-          "/productos-fotos/crops/puff-2497-tight.png",
+          "/productos-fotos/mesas/calblanque-01.webp",
+          "/productos-fotos/mesas/calblanque-02.webp",
         ],
         desc: "Con patas · Colección Murcia.",
         priceLabel: "Desde xx€",
@@ -217,14 +242,14 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   },
   "pantallas-lampara": {
     title: "Pantallas de lámpara",
-    subtitle: "Tapizadas a mano en lino, terciopelo o bouclé.",
+    subtitle: "Tapizadas a mano en telas básicas y premium.",
     models: [
-      { name: "Gredos", photos: [], desc: "Cónica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cono" },
-      { name: "Almanzor", photos: [], desc: "Cilíndrica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cilindro" },
-      { name: "La Galana", photos: [], desc: "Pirámide · Colección Ávila.", priceLabel: "Desde xx€", configParam: "piramide" },
-      { name: "La Serrota", photos: [], desc: "Rectangular · Colección Ávila.", priceLabel: "Desde xx€", configParam: "rectangulo" },
-      { name: "Tormes", photos: [], desc: "Cuadrada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cuadrado" },
-      { name: "La Paramera", photos: [], desc: "Ovalada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "ovalado" },
+      { name: "Almanzor", photos: ["/productos-fotos/pantallas/almanzor-01.webp", "/productos-fotos/pantallas/almanzor-02.webp", "/productos-fotos/pantallas/almanzor-03.webp"], desc: "Cilíndrica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cilindro" },
+      { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp", "/productos-fotos/pantallas/tormes-02.webp"], desc: "Cuadrada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cuadrado" },
+      { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica · Colección Ávila.", priceLabel: "Desde xx€", configParam: "cono" },
+      { name: "La Serrota", photos: ["/productos-fotos/pantallas/serrota-01.webp"], desc: "Rectangular · Colección Ávila.", priceLabel: "Desde xx€", configParam: "rectangulo" },
+      { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada · Colección Ávila.", priceLabel: "Desde xx€", configParam: "ovalado" },
+      { name: "La Galana", photos: ["/productos-fotos/pantallas/galana-01.webp"], desc: "Pirámide · Colección Ávila.", priceLabel: "Desde xx€", configParam: "piramide" },
     ],
   },
   percheros: {
@@ -269,7 +294,7 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
 
   if (photos.length === 0) {
     return (
-      <div className="w-full aspect-[4/3] flex flex-col items-center justify-center gap-3" style={{ backgroundColor: '#F0EDE8' }}>
+      <div className="w-full aspect-[3/4] flex flex-col items-center justify-center gap-3" style={{ backgroundColor: '#F0EDE8' }}>
         <svg viewBox="0 0 80 100" className="w-14 h-18 text-foreground/25" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round">
           <path d="M 32 14 L 48 14 L 64 82 L 16 82 Z" />
           <line x1="40" y1="4" x2="40" y2="14" />
@@ -282,7 +307,7 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
 
   return (
     <div
-      className="relative overflow-hidden w-full aspect-[4/3]"
+      className="relative overflow-hidden w-full aspect-[3/4]"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -359,6 +384,7 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
     >
       <div className="relative overflow-hidden">
         <PhotoSlider photos={model.photos} category={category} name={model.name} />
+        <ShapeCircle configParam={model.configParam} category={category} />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300 pointer-events-none flex items-center justify-center">
           <span className="text-white text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">Personalizar →</span>
         </div>

@@ -15,34 +15,52 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const FABRIC_GROUPS = [
   {
-    label: "Linos",
-    collection: "Colección Essential",
+    label: "Básicas",
+    collection: "Colección Básica",
     fabrics: [
-      { id: "lino-natural", name: "Lino Natural", hex: "#D4C5A9", image: "/telas/tela-01.webp" },
-      { id: "lino-crudo", name: "Lino Crudo", hex: "#E8DCC8", image: "/telas/tela-02.jpg" },
-      { id: "lino-gris-perla", name: "Lino Gris Perla", hex: "#C8C4BC", image: "/telas/tela-03.webp" },
-      { id: "lino-azul-marino", name: "Lino Azul Marino", hex: "#2C3E50", image: "/telas/tela-04.jpg" },
-      { id: "lino-verde-salvia", name: "Lino Verde Salvia", hex: "#7D9B76", image: "/telas/tela-05.jpg" },
+      // Lisas
+      { id: "basica-arequipa", name: "Arequipa Beige", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp", pattern: "liso" },
+      { id: "basica-liso-01", name: "Lino Natural", hex: "#E8DCC8", image: "/telas/basicas/liso-natural-01.webp", pattern: "liso" },
+      { id: "basica-liso-02", name: "Lino Gris Perla", hex: "#C8C4BC", image: "/telas/basicas/liso-natural-02.webp", pattern: "liso" },
+      { id: "basica-liso-03", name: "Lino Crudo", hex: "#D4B896", image: "/telas/basicas/liso-natural-03.webp", pattern: "liso" },
+      // Flores
+      { id: "basica-flor-azul", name: "Flor Azul Protea", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp", pattern: "estampado" },
+      { id: "basica-flor-01", name: "Floral Natural", hex: "#8B7355", image: "/telas/basicas/flor-01.webp", pattern: "estampado" },
+      // Geométricas
+      { id: "basica-ikat", name: "Ikat Natural", hex: "#C4A882", image: "/telas/basicas/ikat.webp", pattern: "estampado" },
+      { id: "basica-ikat-verde", name: "Ikat Verde Agua", hex: "#7D9B76", image: "/telas/basicas/ikat-verde.webp", pattern: "estampado" },
+      { id: "basica-kasbah", name: "Árbol Kasbah", hex: "#8B6554", image: "/telas/basicas/arbol-kasbah.webp", pattern: "estampado" },
+      { id: "basica-kuwait", name: "Geométrica Kuwait", hex: "#8B7355", image: "/telas/basicas/geometrica-kuwait.webp", pattern: "estampado" },
+      { id: "basica-takada", name: "Takada Verde", hex: "#5B7355", image: "/telas/basicas/takada-verde.webp", pattern: "estampado" },
+      // Rayas
+      { id: "basica-rayas-gris", name: "Mil Rayas Gris", hex: "#A0A0A0", image: "/telas/basicas/mil-rayas-gris.webp", pattern: "estampado" },
+      { id: "basica-rayas-arena", name: "Rayas Arena", hex: "#C4A882", image: "/telas/basicas/rayas-arena.webp", pattern: "estampado" },
+      { id: "basica-rayas-azul", name: "Mil Rayas Azul", hex: "#2C3E50", image: "/telas/basicas/mil-rayas-azul.webp", pattern: "estampado" },
+      { id: "basica-raya-indigo", name: "Raya Índigo", hex: "#4A6FA5", image: "/telas/basicas/raya-indigo.webp", pattern: "estampado" },
+      { id: "basica-rayas-tevere", name: "Rayas Tévere", hex: "#8B7355", image: "/telas/basicas/rayas-tevere.webp", pattern: "estampado" },
+      { id: "basica-coral", name: "Coral Costero", hex: "#E8A87C", image: "/telas/basicas/coral-costero.webp", pattern: "estampado" },
+      { id: "basica-harvest", name: "Raya Harvest", hex: "#C19A6B", image: "/telas/basicas/raya-harvest.webp", pattern: "estampado" },
+      // Otras
+      { id: "basica-toile", name: "Toile de Jouy Azul", hex: "#6B8FAA", image: "/telas/basicas/toile-jouy-azul.webp", pattern: "estampado" },
     ],
   },
   {
-    label: "Terciopelos",
+    label: "Premium",
     collection: "Colección Premium",
     fabrics: [
-      { id: "terciopelo-esmeralda", name: "Terciopelo Esmeralda", hex: "#1B4D3E", image: "/telas/tela-06.webp" },
-      { id: "terciopelo-burdeos", name: "Terciopelo Burdeos", hex: "#6D1A36", image: "/telas/tela-07.webp" },
-      { id: "terciopelo-camel", name: "Terciopelo Camel", hex: "#C19A6B", image: "/telas/tela-08.webp" },
-      { id: "terciopelo-negro", name: "Terciopelo Negro", hex: "#1C1C1C", image: "/telas/tela-09.jpg" },
-      { id: "terciopelo-gris-marengo", name: "Terciopelo Gris Marengo", hex: "#4A4A4A", image: "/telas/tela-10.jpg" },
-    ],
-  },
-  {
-    label: "Bouclé",
-    collection: "Colección Bouclé",
-    fabrics: [
-      { id: "boucle-blanco-roto", name: "Bouclé Blanco Roto", hex: "#F5F0E8", image: "" },
-      { id: "boucle-beige", name: "Bouclé Beige", hex: "#D4B896", image: "" },
-      { id: "boucle-arena", name: "Bouclé Arena", hex: "#C4A882", image: "" },
+      { id: "premium-baqueira", name: "Baqueira", hex: "#5B4B3A", image: "/telas/premium/baqueira.webp", pattern: "liso" },
+      { id: "premium-cerler", name: "Cérler", hex: "#8B7355", image: "/telas/premium/cerler.webp", pattern: "liso" },
+      { id: "premium-lola-gris", name: "Lola Gris", hex: "#6D6D6D", image: "/telas/premium/lola-gris.webp", pattern: "liso" },
+      { id: "premium-rocio", name: "Rocío", hex: "#D4B896", image: "/telas/premium/rocio.webp", pattern: "liso" },
+      { id: "premium-artesano", name: "Artesano Beige", hex: "#D4C5A9", image: "/telas/premium/artesano-beige.webp", pattern: "liso" },
+      { id: "premium-verde-botella", name: "Lino Verde Botella", hex: "#2D4A2D", image: "/telas/premium/lino-verde-botella.webp", pattern: "liso" },
+      { id: "premium-lino-verde", name: "Lino Verde", hex: "#4A6B4A", image: "/telas/premium/lino-verde.webp", pattern: "liso" },
+      { id: "premium-guell", name: "Güell Lamadrid", hex: "#8B7355", image: "/telas/premium/guell-lamadrid.webp", pattern: "estampado" },
+      { id: "premium-rayas-sage", name: "Rayas Verde Sage", hex: "#7D9B76", image: "/telas/premium/rayas-verde-sage.webp", pattern: "estampado" },
+      { id: "premium-azul-provenzal", name: "Lino Azul Provenzal", hex: "#4A6FA5", image: "/telas/premium/lino-azul-provenzal.webp", pattern: "estampado" },
+      { id: "premium-vichy", name: "Vichy Denim", hex: "#2C3E50", image: "/telas/premium/vichy-denim.webp", pattern: "estampado" },
+      { id: "premium-ramas-siena", name: "Ramas Siena Azul", hex: "#5B6B8B", image: "/telas/premium/ramas-siena.webp", pattern: "estampado" },
+      { id: "premium-gardenia", name: "Flores Gardenia", hex: "#6B8FAA", image: "/telas/premium/flores-gardenia.webp", pattern: "estampado" },
     ],
   },
 ];
@@ -50,7 +68,7 @@ const FABRIC_GROUPS = [
 const ALL_FABRICS = FABRIC_GROUPS.flatMap(g => g.fabrics.map(f => ({ ...f, group: g.label, collection: g.collection })));
 
 const FINISHES = [
-  { id: "liso", name: "Sin acabado", desc: "Tapizado liso, sin costuras decorativas" },
+  { id: "liso", name: "Sin acabado", desc: "Sin costuras decorativas" },
   { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro, mismo color o contraste", extra: 15, extraLabel: "+xx€" },
   { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 25, extraLabel: "+xx€" },
 ];
@@ -60,17 +78,57 @@ const HEADBOARD_SHAPES = [
   { id: "semicirculo", name: "Pregonda", svgPreview: "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z" },
   { id: "corona-simple", name: "Macarella", svgPreview: "M 3 37 L 3 24 C 13.6 24 18 20 18.8 16.8 A 11.2 3.2 0 0 1 41.2 16.8 C 42 20 46.4 24 57 24 L 57 37 Z" },
   { id: "corona-doble", name: "Conta", svgPreview: "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z" },
-  { id: "corona-triple", name: "Barbaria", svgPreview: "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z" },
+  { id: "ondas", name: "Ondas", svgPreview: "M 3 37 L 3 24 Q 13 15 22 22 Q 31 29 40 22 Q 49 15 57 22 L 57 37 Z" },
 ];
 
 // Colección Ávila — 6 shapes
-const LAMPSHADE_SHAPES = [
-  { id: "cono", name: "Gredos", subtitle: "Cónico", svgPreview: "M 22 8 L 38 8 L 52 36 L 8 36 Z" },
-  { id: "cilindro", name: "Almanzor", subtitle: "Cilíndrico", svgPreview: "M 8 8 L 52 8 L 52 36 L 8 36 Z" },
-  { id: "piramide", name: "La Galana", subtitle: "Pirámide", svgPreview: "M 16 8 L 44 8 L 52 36 L 8 36 Z" },
-  { id: "rectangulo", name: "La Serrota", subtitle: "Rectangular", svgPreview: "M 5 14 L 55 14 L 55 28 L 5 28 Z" },
-  { id: "cuadrado", name: "Tormes", subtitle: "Cuadrado", svgPreview: "M 13 8 L 47 8 L 47 36 L 13 36 Z" },
-  { id: "ovalado", name: "La Paramera", subtitle: "Ovalado", svgPreview: "M 5 22 C 5 12 55 12 55 22 C 55 32 5 32 5 22 Z" },
+const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgContent: React.ReactNode }> = [
+  {
+    id: "cono", name: "Gredos", subtitle: "Cónico",
+    svgContent: (
+      <>
+        <path d="M 20 14 L 40 14 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="14" rx="10" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
+  {
+    id: "cilindro", name: "Almanzor", subtitle: "Cilíndrico",
+    svgContent: (
+      <>
+        <rect x="8" y="12" width="44" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="12" rx="22" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="32" rx="22" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
+  {
+    id: "piramide", name: "La Galana", subtitle: "Pirámide",
+    svgContent: (
+      <path d="M 16 8 L 44 8 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "rectangulo", name: "La Serrota", subtitle: "Rectangular",
+    svgContent: (
+      <rect x="5" y="12" width="50" height="20" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "cuadrado", name: "Tormes", subtitle: "Cuadrado",
+    svgContent: (
+      <rect x="13" y="8" width="34" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "ovalado", name: "La Paramera", subtitle: "Ovalado",
+    svgContent: (
+      <>
+        <ellipse cx="30" cy="14" rx="18" ry="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="32" rx="18" ry="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
 ];
 
 const LAMP_SIZES: Record<string, string[]> = {
@@ -84,7 +142,7 @@ const LAMP_SIZES: Record<string, string[]> = {
 
 const PANTALLA_FINISHES = [
   { id: "liso", name: "Sin ribete", desc: "Borde limpio y sin decoración" },
-  { id: "vivo-simple", name: "Con ribete", desc: "Ribete cosido en el borde superior e inferior", extra: 15, extraLabel: "+xx€" },
+  { id: "vivo-simple", name: "Con ribete", desc: "Ribete pegado en el borde superior e inferior", extra: 15, extraLabel: "+xx€" },
 ];
 
 const CUSHION_SHAPES = [
@@ -337,7 +395,7 @@ const ProductConfigurator = () => {
     setPuffHeight('');
     setCushionShape('');
     setCushionSize('');
-    setLampDiameter(newType === 'pantalla' ? (LAMP_SIZES['cono'][1]) : '');
+    setLampDiameter('');
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
@@ -440,7 +498,7 @@ const ProductConfigurator = () => {
       : false,
     fabric: !!fabricId,
     finish: !!finish,
-    extras: true,
+    extras: false,
   };
 
   const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
@@ -568,17 +626,28 @@ const ProductConfigurator = () => {
 
   const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
 
-  const productCard = (type: ProductType, label: string) => (
-    <button
-      key={type}
-      onClick={() => handleProductChange(type)}
-      className={`border rounded-md p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
-        productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
-      }`}
-    >
-      <ProductIcon type={type} />
-      <span className="text-sm font-light text-foreground">{label}</span>
-    </button>
+  const productCard = (type: ProductType, label: string, blocked = false) => (
+    blocked ? (
+      <div
+        key={type}
+        className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed relative"
+      >
+        <ProductIcon type={type} />
+        <span className="text-sm font-light text-foreground">{label}</span>
+        <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
+      </div>
+    ) : (
+      <button
+        key={type}
+        onClick={() => handleProductChange(type)}
+        className={`border rounded-md p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
+          productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
+        }`}
+      >
+        <ProductIcon type={type} />
+        <span className="text-sm font-light text-foreground">{label}</span>
+      </button>
+    )
   );
 
   const accordionValue = isMobile
@@ -693,7 +762,7 @@ const ProductConfigurator = () => {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío a toda España</p>
+            <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío Comunidad de Madrid · Resto bajo consulta</p>
           </div>
 
           <div className="flex flex-col gap-3 mt-6">
@@ -741,7 +810,7 @@ const ProductConfigurator = () => {
 
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
         <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío a toda España</p>
+          <p className="text-xs text-muted-foreground font-light">IVA incluido · Envío Comunidad de Madrid · Resto bajo consulta</p>
           {productType === 'banco' ? (
             <div className="bg-muted text-muted-foreground px-4 py-3 text-xs tracking-wide font-medium text-center flex items-center gap-1.5 cursor-not-allowed">
               <Clock size={12} />
@@ -821,16 +890,16 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       <AccordionItem value="type" className="border-b border-border">
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.type}</span>
+            <span className="font-serif text-base font-medium text-foreground">1. {STEP_LABELS.type}</span>
             <span className="text-xs mt-0.5">{selectionLabel('type')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <AccordionContent className="pb-6 bg-muted/30 px-4 rounded-b-md">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
             {productCard('cabecero', 'Cabecero')}
-            {productCard('banco', 'Banco')}
-            {productCard('puff', 'Puff')}
-            {productCard('cojin', 'Cojines')}
+            {productCard('banco', 'Banco entelado', true)}
+            {productCard('puff', 'Puffs')}
+            {productCard('cojin', 'Almohadones')}
             {productCard('mesa', 'Mesa de centro')}
             {productCard('pantalla', 'Pantalla lámpara')}
           </div>
@@ -840,11 +909,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       <AccordionItem value="measures" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.measures}</span>
+            <span className="font-serif text-base font-medium text-foreground">2. {STEP_LABELS.measures}</span>
             <span className="text-xs mt-0.5">{selectionLabel('measures')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-6">
+        <AccordionContent className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
           {productType === 'cabecero' && (
             <>
               <div>
@@ -867,7 +936,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     <option value="">Seleccionar ancho...</option>
                     <option value="90 cm">90 cm</option>
                     <option value="105 cm">105 cm</option>
-                    <option value="120 cm">120 cm</option>
                     <option value="135 cm">135 cm</option>
                     <option value="150 cm">150 cm</option>
                     <option value="160 cm">160 cm</option>
@@ -888,12 +956,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <SelectWrapper>
                   <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); if (e.target.value !== 'custom') setCustomHeight(''); }} className={selectClass}>
                     <option value="">Seleccionar alto...</option>
-                    <option value="60 cm">60 cm</option>
-                    <option value="70 cm">70 cm</option>
-                    <option value="80 cm">80 cm</option>
-                    <option value="90 cm">90 cm</option>
-                    <option value="100 cm">100 cm</option>
-                    <option value="110 cm">110 cm</option>
+                    <option value="100 cm">100 cm — Medida estándar</option>
                     <option value="120 cm">120 cm</option>
                     <option value="custom">Otra medida</option>
                   </select>
@@ -986,15 +1049,29 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
-                <SelectWrapper>
-                  <select value={puffDiameter} onChange={(e) => setPuffDiameter(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar tamaño...</option>
-                    <option value="40 cm">40 cm — Pequeño</option>
-                    <option value="50 cm">50 cm — Mediano</option>
-                    <option value="60 cm">60 cm — Grande</option>
-                    <option value="70 cm">70 cm — Extra grande</option>
-                  </select>
-                </SelectWrapper>
+                <div className="flex flex-wrap gap-2">
+                  {['40 cm', '50 cm'].map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => setPuffDiameter(sz)}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${puffDiameter === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setPuffDiameter('custom')}
+                    className={`border rounded-md px-4 py-2 text-xs transition-all ${puffDiameter === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                  >
+                    Otra medida
+                  </button>
+                </div>
+                {puffDiameter === 'custom' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={30} max={120} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -1021,40 +1098,43 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 </div>
               </div>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
-                <SelectWrapper>
-                  <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar largo...</option>
-                    <option value="70 cm">70 cm</option>
-                    <option value="80 cm">80 cm</option>
-                    <option value="90 cm">90 cm</option>
-                    <option value="100 cm">100 cm</option>
-                    <option value="120 cm">120 cm</option>
-                  </select>
-                </SelectWrapper>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
-                <SelectWrapper>
-                  <select value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar fondo...</option>
-                    <option value="40 cm">40 cm</option>
-                    <option value="50 cm">50 cm</option>
-                    <option value="60 cm">60 cm</option>
-                    <option value="70 cm">70 cm</option>
-                  </select>
-                </SelectWrapper>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
-                <SelectWrapper>
-                  <select value={benchHeight} onChange={(e) => setBenchHeight(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar alto...</option>
-                    <option value="30 cm">30 cm</option>
-                    <option value="35 cm">35 cm</option>
-                    <option value="40 cm">40 cm</option>
-                  </select>
-                </SelectWrapper>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño (largo × alto × fondo)</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: '120 × 45 × 60 cm', w: '120', h: '45', d: '60' },
+                    { label: '80 × 45 × 80 cm', w: '80', h: '45', d: '80' },
+                  ].map(opt => (
+                    <button
+                      key={opt.label}
+                      onClick={() => { setBenchLength(opt.w + ' cm'); setBenchHeight(opt.h + ' cm'); setBenchDepth(opt.d + ' cm'); }}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${benchLength === opt.w + ' cm' && benchHeight === opt.h + ' cm' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setBenchLength('custom'); setBenchHeight(''); setBenchDepth(''); }}
+                    className={`border rounded-md px-4 py-2 text-xs transition-all ${benchLength === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                  >
+                    Otra medida
+                  </button>
+                </div>
+                {benchLength === 'custom' && (
+                  <div className="mt-3 grid grid-cols-3 gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Largo (cm)</p>
+                      <input type="number" min={40} max={300} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Alto (cm)</p>
+                      <input type="number" min={20} max={100} placeholder="cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Fondo (cm)</p>
+                      <input type="number" min={20} max={150} placeholder="cm" value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -1116,11 +1196,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   {LAMPSHADE_SHAPES.map(s => (
                     <button
                       key={s.id}
-                      onClick={() => { setShape(s.id); const sizes = LAMP_SIZES[s.id] || LAMP_SIZES.cono; setLampDiameter(sizes[Math.floor(sizes.length / 2)]); }}
+                      onClick={() => { setShape(s.id); setLampDiameter(''); }}
                       className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                     >
                       <svg viewBox="0 0 60 44" className="w-12 h-9">
-                        <path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                        {s.svgContent}
                       </svg>
                       <div>
                         <span className="text-xs font-medium block">{s.name}</span>
@@ -1156,11 +1236,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       <AccordionItem value="fabric" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.fabric}</span>
+            <span className="font-serif text-base font-medium text-foreground">3. {STEP_LABELS.fabric}</span>
             <span className="text-xs mt-0.5">{selectionLabel('fabric')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-6">
+        <AccordionContent className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
           {FABRIC_GROUPS.map(group => (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
@@ -1187,28 +1267,48 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             </p>
           )}
 
-          {/* Tela de laterales — solo cabeceros, después de elegir tela principal */}
-          {productType === 'cabecero' && fabricId && (
+          {/* Tela de laterales — cabeceros y Gulpiyuri, después de elegir tela principal */}
+          {(productType === 'cabecero' || (productType === 'cojin' && cushionShape === 'gulpiyuri')) && fabricId && (
             <div className="pt-4 border-t border-border/30">
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional)</span></p>
               <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
-              <div className="flex flex-wrap gap-2">
-                <button onClick={() => setLateralFabricId('')} className="flex flex-col items-center gap-1">
-                  <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
-                    =
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[10px] uppercase text-muted-foreground mb-2">Básicas</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => setLateralFabricId('')} className="flex flex-col items-center gap-1">
+                      <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
+                        =
+                      </div>
+                      <span className="text-[9px] text-muted-foreground font-light">Igual</span>
+                    </button>
+                    {FABRIC_GROUPS[0].fabrics.map(f => (
+                      <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                        <div
+                          className={`w-8 h-8 rounded-full border-2 transition-all overflow-hidden ${lateralFabricId === f.id ? "border-foreground ring-2 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                          style={{ backgroundColor: f.hex }}
+                        >
+                          {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                  <span className="text-[9px] text-muted-foreground font-light">Igual</span>
-                </button>
-                {[...FABRIC_GROUPS[0].fabrics, ...FABRIC_GROUPS[1].fabrics].map(f => (
-                  <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
-                    <div
-                      className={`w-8 h-8 rounded-full border-2 transition-all overflow-hidden ${lateralFabricId === f.id ? "border-foreground ring-2 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
-                      style={{ backgroundColor: f.hex }}
-                    >
-                      {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
-                    </div>
-                  </button>
-                ))}
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase text-muted-foreground mb-2">Premium</p>
+                  <div className="flex flex-wrap gap-2">
+                    {FABRIC_GROUPS[1].fabrics.map(f => (
+                      <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                        <div
+                          className={`w-8 h-8 rounded-full border-2 transition-all overflow-hidden ${lateralFabricId === f.id ? "border-foreground ring-2 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                          style={{ backgroundColor: f.hex }}
+                        >
+                          {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -1218,11 +1318,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       <AccordionItem value="finish" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.finish}</span>
+            <span className="font-serif text-base font-medium text-foreground">4. {STEP_LABELS.finish}</span>
             <span className="text-xs mt-0.5">{selectionLabel('finish')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-3">
+        <AccordionContent className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'banco' || productType === 'cojin' || productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
@@ -1241,9 +1341,24 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           ))}
           {needsVivo && (
             <div className="pt-3">
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Color del vivo</p>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Estampados</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {ALL_FABRICS.filter(f => (f as { pattern?: string }).pattern === 'estampado').map(f => (
+                  <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
+                    <div
+                      className={`w-7 h-7 rounded-full border-2 transition-all overflow-hidden ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
+                      style={{ backgroundColor: f.hex }}
+                    >
+                      {(f as { image?: string }).image && (
+                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Lisos</p>
               <div className="flex flex-wrap gap-2">
-                {ALL_FABRICS.map(f => (
+                {ALL_FABRICS.filter(f => (f as { pattern?: string }).pattern === 'liso').map(f => (
                   <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
                     <div
                       className={`w-7 h-7 rounded-full border-2 transition-all overflow-hidden ${vivoColorId === f.id ? "border-foreground ring-1 ring-offset-1 ring-foreground/30" : "border-transparent hover:border-foreground/40"}`}
@@ -1264,11 +1379,20 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       <AccordionItem value="extras" disabled={!productSelected} className={`border-b border-border ${disabledClass}`}>
         <AccordionTrigger className="py-5 hover:no-underline">
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.extras}</span>
+            <span className="font-serif text-base font-medium text-foreground">5. {STEP_LABELS.extras}</span>
             <span className="text-xs mt-0.5">{selectionLabel('extras')}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-4">
+        <AccordionContent className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
+          {productType === 'cabecero' && (
+            <div className="flex justify-between items-center py-2">
+              <div>
+                <p className="text-base text-foreground font-light">Colgador</p>
+                <p className="text-xs text-muted-foreground">+5€</p>
+              </div>
+              <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
+            </div>
+          )}
           {productType === 'banco' && (
             <>
               <div className="flex justify-between items-center py-2">
@@ -1309,16 +1433,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          <div className="flex justify-between items-center py-2">
-            <div>
-              <p className="text-base text-foreground font-light">Entrega express 7 días</p>
-              <p className="text-xs text-muted-foreground">+xx€</p>
-            </div>
-            <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
-          </div>
-          <p className="text-xs text-muted-foreground italic pt-2 border-t border-border/40">
-            Instalación disponible bajo consulta.
-          </p>
+          {!['cojin', 'puff', 'pantalla', 'cabecero', 'banco', 'mesa'].includes(productType || '') && (
+            <p className="text-sm text-muted-foreground font-light italic">Sin opciones adicionales para este producto.</p>
+          )}
+          {productType && !['cojin', 'puff', 'pantalla'].includes(productType) && productType !== 'cabecero' && productType !== 'banco' && productType !== 'mesa' && null}
         </AccordionContent>
       </AccordionItem>
     </>

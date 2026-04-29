@@ -5,19 +5,47 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const FABRICS = [
-  { name: "Lino Natural", coleccion: "Linos", hex: "#D4C5A9", image: "/telas/tela-01.webp", descripcion: "Tono tierra cálido y natural. Versátil, combina con madera clara y tonos neutros." },
-  { name: "Lino Crudo", coleccion: "Linos", hex: "#E8DCC8", image: "/telas/tela-02.jpg", descripcion: "El más luminoso de los linos. Ideal para espacios nórdicos y minimalistas." },
-  { name: "Gris Perla", coleccion: "Linos", hex: "#C8C4BC", image: "/telas/tela-03.webp", descripcion: "Gris suave con matiz cálido. El favorito para dormitorios contemporáneos." },
-  { name: "Azul Marino", coleccion: "Linos", hex: "#2C3E50", image: "/telas/tela-04.jpg", descripcion: "Profundo y elegante. Aporta personalidad a cualquier pieza tapizada." },
-  { name: "Verde Salvia", coleccion: "Linos", hex: "#7D9B76", image: "/telas/tela-05.jpg", descripcion: "Verde apagado con matiz gris. Tendencia en interiorismo sostenible." },
-  { name: "Esmeralda", coleccion: "Terciopelos", hex: "#1B4D3E", image: "/telas/tela-06.png", descripcion: "Terciopelo con profundidad cromática única. Lujoso y atemporal." },
-  { name: "Burdeos", coleccion: "Terciopelos", hex: "#6D1A36", image: "/telas/tela-07.png", descripcion: "Color intenso y envolvente. Crea una atmósfera cálida y sofisticada." },
-  { name: "Camel", coleccion: "Terciopelos", hex: "#C19A6B", image: "/telas/tela-08.png", descripcion: "Tono dorado suave. Armoniza con madera oscura y metales dorados." },
-  { name: "Negro", coleccion: "Terciopelos", hex: "#1C1C1C", image: "/telas/tela-09.jpg", descripcion: "Clásico atemporal. Da un carácter definido a cabeceros y bancos." },
-  { name: "Bouclé", coleccion: "Bouclé", hex: "#F5F0E8", image: "/telas/tela-10.jpg", descripcion: "Textura rizada con calidez artesanal. La más táctil de nuestra colección." },
+  // Básicas — Lisas
+  { name: "Arequipa Beige", coleccion: "Básicas", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp", descripcion: "Lino en tono tierra cálido y natural. Versátil, combina con madera clara y tonos neutros." },
+  { name: "Lino Natural", coleccion: "Básicas", hex: "#E8DCC8", image: "/telas/basicas/liso-natural-01.webp", descripcion: "El más luminoso de los linos. Ideal para espacios nórdicos y minimalistas." },
+  { name: "Lino Gris Perla", coleccion: "Básicas", hex: "#C8C4BC", image: "/telas/basicas/liso-natural-02.webp", descripcion: "Gris suave con matiz cálido. El favorito para dormitorios contemporáneos." },
+  { name: "Lino Crudo", coleccion: "Básicas", hex: "#D4B896", image: "/telas/basicas/liso-natural-03.webp", descripcion: "Tono crudo natural con textura visible. Aporta calidez artesanal." },
+  // Básicas — Flores
+  { name: "Flor Azul Protea", coleccion: "Básicas", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp", descripcion: "Floral botánico en azul. Perfecto para piezas que quieren protagonismo." },
+  { name: "Floral Natural", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/flor-01.webp", descripcion: "Estampado floral en tono natural. Delicado y atemporal." },
+  // Básicas — Geométricas
+  { name: "Ikat Natural", coleccion: "Básicas", hex: "#C4A882", image: "/telas/basicas/ikat.webp", descripcion: "Tejido ikat en tonos arena. Artesanal con carácter étnico contemporáneo." },
+  { name: "Ikat Verde Agua", coleccion: "Básicas", hex: "#7D9B76", image: "/telas/basicas/ikat-verde.webp", descripcion: "Ikat en verde agua refrescante. Tendencia en interiorismo natural." },
+  { name: "Árbol Kasbah", coleccion: "Básicas", hex: "#8B6554", image: "/telas/basicas/arbol-kasbah.webp", descripcion: "Estampado árbol en tonos terracota. Bohemio y sofisticado." },
+  { name: "Geométrica Kuwait", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/geometrica-kuwait.webp", descripcion: "Geométrico inspirado en la tapicería marroquí. Muy versátil." },
+  { name: "Takada Verde", coleccion: "Básicas", hex: "#5B7355", image: "/telas/basicas/takada-verde.webp", descripcion: "Estampado geométrico en verde oliva. Fresco y contemporáneo." },
+  // Básicas — Rayas
+  { name: "Mil Rayas Gris", coleccion: "Básicas", hex: "#A0A0A0", image: "/telas/basicas/mil-rayas-gris.webp", descripcion: "Rayas finas tejidas en gris. Elegante y atemporal." },
+  { name: "Rayas Arena", coleccion: "Básicas", hex: "#C4A882", image: "/telas/basicas/rayas-arena.webp", descripcion: "Raya duplo en tono arena. Natural y fácil de combinar." },
+  { name: "Mil Rayas Azul Marino", coleccion: "Básicas", hex: "#2C3E50", image: "/telas/basicas/mil-rayas-azul.webp", descripcion: "Rayas tejidas en azul marino. Clásico náutico con personalidad." },
+  { name: "Raya Índigo Acuarela", coleccion: "Básicas", hex: "#4A6FA5", image: "/telas/basicas/raya-indigo.webp", descripcion: "Raya artesanal en índigo acuarela. Efecto pintura único." },
+  { name: "Rayas Tévere", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/rayas-tevere.webp", descripcion: "Raya clásica en tono natural. Versátil y resistente." },
+  { name: "Coral Costero", coleccion: "Básicas", hex: "#E8A87C", image: "/telas/basicas/coral-costero.webp", descripcion: "Raya en coral y arena. Ideal para ambientes mediterráneos y playeros." },
+  { name: "Raya Harvest", coleccion: "Básicas", hex: "#C19A6B", image: "/telas/basicas/raya-harvest.webp", descripcion: "Raya clásica en tonos harvest. Cálida y acogedora." },
+  // Básicas — Otras
+  { name: "Toile de Jouy Azul", coleccion: "Básicas", hex: "#6B8FAA", image: "/telas/basicas/toile-jouy-azul.webp", descripcion: "Clásico toile en azul. Romántico y con mucho carácter." },
+  // Premium
+  { name: "Baqueira", coleccion: "Premium", hex: "#5B4B3A", image: "/telas/premium/baqueira.webp", descripcion: "Tapicería premium de alto gramaje. Textura rica y tacto suave al toque." },
+  { name: "Cérler", coleccion: "Premium", hex: "#8B7355", image: "/telas/premium/cerler.webp", descripcion: "Tejido premium en tono camel dorado. Lujoso y muy resistente." },
+  { name: "Lola Gris", coleccion: "Premium", hex: "#6D6D6D", image: "/telas/premium/lola-gris.webp", descripcion: "Premium en gris marengo. Da carácter y elegancia a cualquier pieza." },
+  { name: "Rocío", coleccion: "Premium", hex: "#D4B896", image: "/telas/premium/rocio.webp", descripcion: "Premium en tono arena suave. Luminoso y muy sofisticado." },
+  { name: "Artesano Beige", coleccion: "Premium", hex: "#D4C5A9", image: "/telas/premium/artesano-beige.webp", descripcion: "Tejido artesanal en beige natural. Textura visible con acabado impecable." },
+  { name: "Lino Verde Botella", coleccion: "Premium", hex: "#2D4A2D", image: "/telas/premium/lino-verde-botella.webp", descripcion: "Lino premium en verde botella intenso. Elegante y muy tendencia." },
+  { name: "Lino Verde", coleccion: "Premium", hex: "#4A6B4A", image: "/telas/premium/lino-verde.webp", descripcion: "Lino viscosa en verde fresco. Fluido y de gran caída." },
+  { name: "Güell Lamadrid", coleccion: "Premium", hex: "#8B7355", image: "/telas/premium/guell-lamadrid.webp", descripcion: "Tejido exclusivo Güell Lamadrid. Calidad de firma para proyectos especiales." },
+  { name: "Rayas Verde Sage", coleccion: "Premium", hex: "#7D9B76", image: "/telas/premium/rayas-verde-sage.webp", descripcion: "Lino a rayas en verde sage. Natural y muy actual." },
+  { name: "Lino Azul Provenzal", coleccion: "Premium", hex: "#4A6FA5", image: "/telas/premium/lino-azul-provenzal.webp", descripcion: "Lino en azul provenzal lavado. Evoca el sur de Francia." },
+  { name: "Vichy Denim", coleccion: "Premium", hex: "#2C3E50", image: "/telas/premium/vichy-denim.webp", descripcion: "Cuadro vichy en denim. Fresco, clásico y con mucho estilo." },
+  { name: "Ramas Siena Azul", coleccion: "Premium", hex: "#5B6B8B", image: "/telas/premium/ramas-siena.webp", descripcion: "Estampado botánico en azul siena. Exclusivo y con personalidad." },
+  { name: "Flores Gardenia", coleccion: "Premium", hex: "#6B8FAA", image: "/telas/premium/flores-gardenia.webp", descripcion: "Lino con flores gardenia en turquesa. Romántico y único." },
 ];
 
-const COLECCIONES = ["Linos", "Terciopelos", "Bouclé"];
+const COLECCIONES = ["Básicas", "Premium"];
 
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me gustaría pedir muestras de tela sin compromiso.");
 
@@ -33,7 +61,7 @@ const TelasPage = () => (
             <h1 className="font-serif text-4xl md:text-6xl font-light text-foreground">Nuestras telas</h1>
             <span className="section-line" />
             <p className="mt-6 text-base text-muted-foreground font-light leading-relaxed max-w-xl mx-auto">
-              Linos naturales, terciopelos italianos y bouclé artesanal. Todas nuestras telas son resistentes, lavables y vienen disponibles en 10 colores para personalizar tu pieza.
+              Telas básicas y premium para personalizar cualquier pieza a tu gusto. Todas resistentes, lavables y disponibles en una amplia variedad de colores y estampados.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               {COLECCIONES.map((c) => (

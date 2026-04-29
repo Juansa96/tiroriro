@@ -5,7 +5,7 @@ import { Check, Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 
-const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Puffs", "Mesas de centro", "Otro"];
+const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Puffs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
 function mapProductName(name: string): string {
@@ -15,6 +15,7 @@ function mapProductName(name: string): string {
   if (n.includes('cojin') || n.includes('cojín') || n.includes('almohad')) return 'Cojines y almohadones';
   if (n.includes('puff')) return 'Puffs';
   if (n.includes('mesa')) return 'Mesas de centro';
+  if (n.includes('pantalla') || n.includes('lámpara') || n.includes('lampara')) return 'Pantallas de lámpara';
   return 'Varios';
 }
 

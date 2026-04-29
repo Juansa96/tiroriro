@@ -119,7 +119,8 @@ const HeroSection = () => {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
+          poster="/hero-poster.webp"
           className="w-full h-full object-cover object-center"
           onPause={() => {
             videoRef.current?.play().catch(() => {});
