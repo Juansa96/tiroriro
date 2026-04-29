@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Check, Loader2, MessageCircle } from "lucide-react";
+import { Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -21,6 +21,7 @@ function mapProductName(name: string): string {
 
 const ContactForm = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const fromConfig = searchParams.get('config');
   const prefilledProduct = searchParams.get('product');
   const expressParam = searchParams.get('express');
@@ -31,7 +32,6 @@ const ContactForm = () => {
   const [rgpd, setRgpd] = useState(false);
   const [otherProductDetail, setOtherProductDetail] = useState("");
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
@@ -114,7 +114,8 @@ const ContactForm = () => {
         },
       });
       if (error) throw error;
-      setSent(true);
+      // Redirigir a página de gracias con el nombre para personalizarla
+      navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       console.error('Error enviando email:', err);
       toast.error("No se pudo enviar el mensaje. Escríbenos por WhatsApp o al email.");
@@ -122,27 +123,6 @@ const ContactForm = () => {
       setSending(false);
     }
   };
-
-  if (sent) {
-    return (
-      <section className="py-20 md:py-32 px-6 bg-background">
-        <div className="container mx-auto max-w-xl text-center py-20">
-          <div className="w-16 h-16 rounded-full bg-accent-warm/10 flex items-center justify-center mx-auto mb-6">
-            <Check size={32} className="text-accent-warm" />
-          </div>
-          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground">Gracias, {form.name.split(' ')[0]}</h2>
-          <span className="section-line" />
-          <p className="mt-6 text-muted-foreground font-light text-lg">Te respondemos en menos de 24 horas laborables.</p>
-          <button
-            onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setOtherProductDetail(''); setRgpd(false); setTouched({}); setErrors({}); }}
-            className="btn-sweep btn-unir btn-unir-outline mt-8 px-8 py-3 text-xs font-light"
-          >
-            <span className="relative z-10">Volver al inicio</span>
-          </button>
-        </div>
-      </section>
-    );
-  }
 
   const hasError = (field: string) => touched[field] && errors[field];
   const inputBase = "w-full bg-secondary border border-border rounded-md px-4 py-3 text-base text-foreground placeholder:text-sm placeholder:text-muted-foreground/40 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
