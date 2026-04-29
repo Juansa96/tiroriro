@@ -378,7 +378,7 @@ const ProductConfigurator = () => {
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
-    setFinish(type === 'pantalla' ? 'vivo-simple' : '');
+    setFinish(newType === 'pantalla' ? 'vivo-simple' : '');
     setVivoColorId('');
     setCustomWidth('');
     setCustomHeight('');
