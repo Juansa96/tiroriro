@@ -9,7 +9,7 @@ const CATEGORIES = [
   {
     id: "cabeceros",
     name: "Cabeceros tapizados",
-    tagline: "5 formas · A tu medida",
+    tagline: "5 formas · Colección Baleares",
     image: "/productos-fotos/cabeceros/pregonda-02.webp",
     priceLabel: "Desde 225€",
     comingSoon: false,
