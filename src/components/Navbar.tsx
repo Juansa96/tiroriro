@@ -105,7 +105,7 @@ const Navbar = () => {
             return (
               <Link key={link.to} to={link.to}
                 onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                className={`nav-link-underline text-sm tracking-extra-wide hover:opacity-80 transition-colors font-body pb-0.5 ${
+                className={`nav-link-underline text-sm tracking-extra-wide uppercase hover:opacity-80 transition-colors font-body font-light pb-0.5 ${
                   onHero ? "text-white underline-white" : "text-foreground underline-primary"
                 }`}
                 style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
@@ -128,7 +128,7 @@ const Navbar = () => {
               {NAV_LINKS.map((link) => (
                 <Link key={link.to} to={link.to}
                   onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                  className="text-sm tracking-wide text-foreground hover:text-primary transition-colors font-body font-normal"
+                  className="text-sm tracking-extra-wide uppercase text-foreground hover:text-primary transition-colors font-body"
                 >{link.label}</Link>
               ))}
             </div>
