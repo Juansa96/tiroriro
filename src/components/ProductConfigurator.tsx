@@ -377,7 +377,7 @@ const ProductConfigurator = () => {
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
-    setFinish(newType === 'pantalla' ? 'vivo-simple' : '');
+    setFinish(newType === 'pantalla' || newType === 'mesa' ? 'vivo-simple' : '');
     setVivoColorId('');
     setCustomWidth('');
     setCustomHeight('');
