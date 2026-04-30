@@ -176,7 +176,7 @@ type Step = "type" | "measures" | "fabric" | "finish" | "extras";
 const STEPS: Step[] = ["type", "measures", "fabric", "finish", "extras"];
 const STEP_LABELS: Record<Step, string> = {
   type: "¿Qué quieres?",
-  measures: "Medidas",
+  measures: "Forma y medida",
   fabric: "Tela y color",
   finish: "Acabado",
   extras: "Extras",
@@ -562,6 +562,9 @@ const ProductConfigurator = () => {
 
   const advanceTo = (next: Step) => {
     setOpenAccordion(next);
+    setTimeout(() => {
+      document.getElementById('acc-' + next)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
   };
 
   const buildOrderUrl = () => {
@@ -950,12 +953,22 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
   const productSelected = !!productType;
   const disabledClass = productSelected ? '' : 'opacity-40 pointer-events-none';
 
+  const openSection = (section: string) => {
+    const isOpening = openAccordion !== section;
+    setOpenAccordion(isOpening ? section : '');
+    if (isOpening) {
+      setTimeout(() => {
+        document.getElementById('acc-' + section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    }
+  };
+
   return (
     <>
-      <div className="border-b border-border">
+      <div id="acc-type" className="border-b border-border">
         <button
           type="button"
-          onClick={() => setOpenAccordion(openAccordion === 'type' ? '' : 'type')}
+          onClick={() => openSection('type')}
           className="flex w-full items-center justify-between py-5 text-left"
         >
           <div className="flex flex-col items-start text-left">
@@ -968,9 +981,17 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
-              {productCard('banco', 'Banco entelado')}
+              <div className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
+                <ProductIcon type="banco" />
+                <span className="text-sm font-light text-foreground">Banco entelado</span>
+                <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
+              </div>
               {productCard('puf', 'Pufs')}
-              {productCard('cojin', 'Almohadones')}
+              <div className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
+                <ProductIcon type="cojin" />
+                <span className="text-sm font-light text-foreground">Almohadones</span>
+                <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
+              </div>
               {productCard('mesa', 'Mesa de centro')}
               {productCard('pantalla', 'Pantalla lámpara')}
             </div>
@@ -978,10 +999,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         )}
       </div>
 
-      <div className={`border-b border-border ${disabledClass}`}>
+      <div id="acc-measures" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
-          onClick={() => setOpenAccordion(openAccordion === 'measures' ? '' : 'measures')}
+          onClick={() => openSection('measures')}
           className="flex w-full items-center justify-between py-5 text-left"
         >
           <div className="flex flex-col items-start text-left">
@@ -1348,10 +1369,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         )}
       </div>
 
-      <div className={`border-b border-border ${disabledClass}`}>
+      <div id="acc-fabric" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
-          onClick={() => setOpenAccordion(openAccordion === 'fabric' ? '' : 'fabric')}
+          onClick={() => openSection('fabric')}
           className="flex w-full items-center justify-between py-5 text-left"
         >
           <div className="flex flex-col items-start text-left">
@@ -1437,10 +1458,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         )}
       </div>
 
-      <div className={`border-b border-border ${disabledClass}`}>
+      <div id="acc-finish" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
-          onClick={() => setOpenAccordion(openAccordion === 'finish' ? '' : 'finish')}
+          onClick={() => openSection('finish')}
           className="flex w-full items-center justify-between py-5 text-left"
         >
           <div className="flex flex-col items-start text-left">
@@ -1506,10 +1527,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </div>
 
       {(!productType || ['cabecero', 'banco'].includes(productType)) && (
-      <div className={`border-b border-border ${disabledClass}`}>
+      <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
-          onClick={() => setOpenAccordion(openAccordion === 'extras' ? '' : 'extras')}
+          onClick={() => openSection('extras')}
           className="flex w-full items-center justify-between py-5 text-left"
         >
           <div className="flex flex-col items-start text-left">

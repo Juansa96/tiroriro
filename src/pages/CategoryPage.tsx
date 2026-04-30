@@ -155,42 +155,36 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   cojines: {
     title: "Almohadones",
     subtitle: "Tapizados a medida para camas, bancos o sofás.",
+    comingSoon: true,
     models: [
       {
         name: "Rodiles — Cuadrado",
-        photos: [
-          "/productos-fotos/almohadones/rodiles-01.webp",
-          "/productos-fotos/almohadones/rodiles-02.webp",
-        ],
-        desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones. Elige tu tela favorita y dale vida.",
+        photos: [],
+        desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones.",
         priceLabel: "",
         configParam: "rodiles",
+        comingSoon: true,
       },
       {
         name: "Covadonga — Rectangular",
-        photos: [
-          "/productos-fotos/almohadones/covadonga-01.webp",
-          "/productos-fotos/almohadones/covadonga-02.webp",
-          "/productos-fotos/almohadones/covadonga-03.webp",
-        ],
+        photos: [],
         desc: "La forma alargada que siempre queda bien. Ideal para el cabecero de la cama o el respaldo del sofá.",
         priceLabel: "",
         configParam: "covadonga",
+        comingSoon: true,
       },
       {
         name: "Gulpiyuri — Rulo",
-        photos: [
-          "/productos-fotos/almohadones/gulpiyuri-01.webp",
-          "/productos-fotos/almohadones/gulpiyuri-02.webp",
-        ],
+        photos: [],
         desc: "Un toque diferente y muy nórdico. Combina a la perfección con cabeceros tapizados.",
         priceLabel: "",
         configParam: "gulpiyuri",
+        comingSoon: true,
       },
       {
         name: "Torimbia — Redondo",
         photos: [],
-        desc: "Próximamente. Almohadón circular tapizado a mano.",
+        desc: "Almohadón circular tapizado a mano.",
         priceLabel: "",
         comingSoon: true,
       },
@@ -203,9 +197,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Patos",
         photos: [
-          "/productos-fotos/puff/patos-card.webp",
-          "/productos-fotos/puff/patos-01.webp",
-          "/productos-fotos/puff/IMG_2497.webp",
+          "/productos-fotos/puff/puff-nuevo.webp",
         ],
         desc: "Cúbico, tapizado a mano y a tu medida. Úsalo de asiento, reposapiés o mesa improvisada.",
         priceLabel: "",
@@ -226,21 +218,20 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "Volúmenes tapizados a medida para el salón.",
     models: [
       {
-        name: "Calblanque",
-        photos: [
-          "/productos-fotos/mesas/calblanque-01.webp",
-          "/productos-fotos/mesas/calblanque-02.webp",
-        ],
-        desc: "Mesa de centro tapizada con patas. Un elemento escultórico para el salón.",
-        priceLabel: "",
-        configParam: "tipo-banco",
-      },
-      {
         name: "Cabo de Palos",
-        photos: [],
-        desc: "Sin patas · Próximamente.",
+        photos: [
+          "/productos-fotos/mesas-centro/cabo-de-palos.webp",
+        ],
+        desc: "Mesa cúbica tapizada sin patas. Versátil y con mucha presencia en el salón.",
         priceLabel: "",
         configParam: "tipo-puf",
+      },
+      {
+        name: "Calblanque",
+        photos: [],
+        desc: "Mesa de centro tapizada con patas. Próximamente.",
+        priceLabel: "",
+        configParam: "tipo-banco",
         comingSoon: true,
       },
     ],

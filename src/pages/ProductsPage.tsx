@@ -15,26 +15,18 @@ const CATEGORIES = [
     comingSoon: false,
   },
   {
-    id: "cojines",
-    name: "Almohadones",
-    tagline: "3 modelos · Colección Asturias",
-    image: "/productos-fotos/almohadones/covadonga-01.webp",
-    priceLabel: "Desde 50€",
-    comingSoon: false,
-  },
-  {
     id: "pufs",
     name: "Pufs",
     tagline: "Tapizados a medida · Colección Galicia",
-    image: "/productos-fotos/puff/patos-card.webp",
+    image: "/productos-fotos/puff/puff-nuevo.webp",
     priceLabel: "Desde 125€",
     comingSoon: false,
   },
   {
     id: "mesas-centro",
     name: "Mesas de centro",
-    tagline: "2 modelos · Colección Murcia",
-    image: "/productos-fotos/mesas/calblanque-01.webp",
+    tagline: "Cabo de Palos · Colección Murcia",
+    image: "/productos-fotos/mesas-centro/cabo-de-palos.webp",
     priceLabel: "Desde 280€",
     comingSoon: false,
   },
@@ -45,6 +37,14 @@ const CATEGORIES = [
     image: "/productos-fotos/pantallas/almanzor-01.webp",
     priceLabel: "Desde 25€",
     comingSoon: false,
+  },
+  {
+    id: "cojines",
+    name: "Almohadones",
+    tagline: "Colección Asturias · Próximamente",
+    image: "",
+    priceLabel: "",
+    comingSoon: true,
   },
   {
     id: "bancos",
@@ -66,65 +66,31 @@ const CATEGORIES = [
 
 const imagePosition = (_id: string) => "center center";
 
-const PLACEHOLDERS: Record<string, JSX.Element> = {
+const COMING_SOON_ICONS: Record<string, JSX.Element> = {
+  cojines: (
+    <svg viewBox="0 0 48 32" className="w-10 h-7 text-foreground/30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <rect x="3" y="4" width="42" height="24" rx="4" />
+      <line x1="3" y1="16" x2="45" y2="16" strokeDasharray="3 3" />
+    </svg>
+  ),
   bancos: (
-    <div className="w-full aspect-[3/4] max-h-72 bg-[#F0EDE8] flex flex-col items-center justify-center gap-3">
-      <svg viewBox="0 0 120 80" className="w-24 h-16 text-foreground/20" fill="none" stroke="currentColor" strokeWidth="1.2">
-        <rect x="10" y="24" width="100" height="32" rx="3" />
-        <line x1="20" y1="56" x2="20" y2="70" />
-        <line x1="100" y1="56" x2="100" y2="70" />
-        <line x1="10" y1="38" x2="110" y2="38" strokeDasharray="4 3" />
-      </svg>
-    </div>
+    <svg viewBox="0 0 56 36" className="w-12 h-8 text-foreground/30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <rect x="4" y="8" width="48" height="16" rx="2" />
+      <line x1="10" y1="24" x2="10" y2="33" />
+      <line x1="46" y1="24" x2="46" y2="33" />
+    </svg>
   ),
   percheros: (
-    <div className="w-full aspect-[3/4] max-h-72 bg-[#F0EDE8] flex flex-col items-center justify-center gap-3">
-      <svg viewBox="0 0 80 80" className="w-20 h-20 text-foreground/20" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
-        <path d="M 40 18 Q 40 10 47 10 Q 56 10 56 18 Q 56 25 40 33" />
-        <path d="M 40 33 L 8 56 M 40 33 L 72 56" />
-        <line x1="6" y1="56" x2="74" y2="56" />
-      </svg>
-    </div>
+    <svg viewBox="0 0 48 44" className="w-10 h-9 text-foreground/30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <path d="M 24 12 Q 24 5 30 5 Q 38 5 38 12 Q 38 18 24 24" />
+      <path d="M 24 24 L 4 38 M 24 24 L 44 38" />
+      <line x1="2" y1="38" x2="46" y2="38" />
+    </svg>
   ),
 };
 
 const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => {
   const [hovered, setHovered] = useState(false);
-
-  if (cat.comingSoon) {
-    return (
-      <AnimatedSection delay={index * 0.08}>
-        <div className="cursor-default">
-          <div className="relative overflow-hidden border border-border/40 rounded-lg">
-            {cat.image ? (
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full aspect-[3/4] object-cover max-h-72 grayscale opacity-70"
-                style={{ objectPosition: imagePosition(cat.id) }}
-                loading="lazy"
-                decoding="async"
-              />
-            ) : (
-              PLACEHOLDERS[cat.id] ?? PLACEHOLDERS.bancos
-            )}
-            <div className="absolute top-3 right-3">
-              <span className="flex items-center gap-1 text-[9px] tracking-[0.18em] uppercase font-medium px-2.5 py-1 rounded-full bg-foreground/75 text-background">
-                <Clock size={9} />
-                Próximamente
-              </span>
-            </div>
-          </div>
-          <div className="mt-4 p-1">
-            <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground/55 leading-tight">
-              {cat.name}
-            </h3>
-            <p className="text-xs text-muted-foreground/60 font-light mt-1 tracking-wide">{cat.tagline}</p>
-          </div>
-        </div>
-      </AnimatedSection>
-    );
-  }
 
   return (
     <AnimatedSection delay={index * 0.08}>
@@ -168,6 +134,26 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
   );
 };
 
+const ComingSoonCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => (
+  <AnimatedSection delay={index * 0.08 + 0.1}>
+    <div className="cursor-default flex flex-col items-center gap-3 py-5 px-4 border border-border/40 rounded-lg bg-muted/10">
+      <div className="w-14 h-14 rounded-full bg-muted/30 flex items-center justify-center">
+        {COMING_SOON_ICONS[cat.id]}
+      </div>
+      <div className="text-center">
+        <h3 className="font-serif text-base font-medium text-foreground/50 leading-tight">{cat.name}</h3>
+        <span className="inline-flex items-center gap-1 text-[9px] tracking-[0.18em] uppercase font-medium px-2 py-0.5 rounded-full bg-foreground/8 text-foreground/35 mt-1.5">
+          <Clock size={8} />
+          Próximamente
+        </span>
+      </div>
+    </div>
+  </AnimatedSection>
+);
+
+const availableCategories = CATEGORIES.filter(c => !c.comingSoon);
+const comingSoonCategories = CATEGORIES.filter(c => c.comingSoon);
+
 const ProductsPage = () => (
   <>
     <Navbar />
@@ -186,10 +172,25 @@ const ProductsPage = () => (
         </AnimatedSection>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
-          {CATEGORIES.map((cat, i) => (
+          {availableCategories.map((cat, i) => (
             <CategoryCard key={cat.id} cat={cat} index={i} />
           ))}
         </div>
+
+        {comingSoonCategories.length > 0 && (
+          <AnimatedSection className="max-w-4xl mx-auto mt-12" delay={0.12}>
+            <div className="border-t border-border/40 pt-8">
+              <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground/60 font-medium text-center mb-5">
+                Próximamente
+              </p>
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                {comingSoonCategories.map((cat, i) => (
+                  <ComingSoonCard key={cat.id} cat={cat} index={i} />
+                ))}
+              </div>
+            </div>
+          </AnimatedSection>
+        )}
 
         <AnimatedSection className="mt-16 flex flex-col items-center gap-4 text-center" delay={0.15}>
           <p className="text-sm text-muted-foreground font-light max-w-md">
