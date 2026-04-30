@@ -690,8 +690,8 @@ const ProductConfigurator = () => {
     selectionLabel,
     productType, productCard,
     shape, setShape,
-    bedWidth, setBedWidth: (v: string) => { setBedWidth(v); if (v) advanceTo('fabric'); },
-    bedHeight, setBedHeight,
+    bedWidth, setBedWidth: (v: string) => { setBedWidth(v); },
+    bedHeight, setBedHeight: (v: string) => { setBedHeight(v); if (v && v !== 'custom') advanceTo('fabric'); },
     benchLength, setBenchLength: (v: string) => { setBenchLength(v); advanceTo('fabric'); },
     benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter: (v: string) => { setPuffDiameter(v); if (v && v !== 'custom') advanceTo('fabric'); },
@@ -700,10 +700,14 @@ const ProductConfigurator = () => {
     cushionSize, setCushionSize: (v: string) => { setCushionSize(v); advanceTo('fabric'); },
     lampDiameter, setLampDiameter: (v: string) => { setLampDiameter(v); advanceTo('fabric'); },
     lampHeight, setLampHeight,
-    fabricId, setFabricId: (id: string) => { setFabricId(id); advanceTo('finish'); },
-    lateralFabricId, setLateralFabricId,
-    finish, setFinish: (f: string) => { setFinish(f); },
-    vivoColorId, setVivoColorId,
+    fabricId, setFabricId: (id: string) => {
+      setFabricId(id);
+      const hasLateral = productType === 'cabecero' || (productType === 'cojin' && cushionShape === 'gulpiyuri');
+      if (!hasLateral) advanceTo('finish');
+    },
+    lateralFabricId, setLateralFabricId: (v: string) => { setLateralFabricId(v); advanceTo('finish'); },
+    finish, setFinish: (f: string) => { setFinish(f); const willNeedVivo = f === 'vivo-simple' || f === 'vivo-doble'; if (!willNeedVivo) advanceTo('extras'); },
+    vivoColorId, setVivoColorId: (v: string) => { setVivoColorId(v); advanceTo('extras'); },
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     puffQuantity, setPuffQuantity,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
