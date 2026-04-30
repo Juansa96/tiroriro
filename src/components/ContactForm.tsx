@@ -132,6 +132,7 @@ const ContactForm = () => {
             configSummary: fromConfig || undefined,
             details: form.details || undefined,
             submittedAt,
+            previewLink,
           },
         },
       });
