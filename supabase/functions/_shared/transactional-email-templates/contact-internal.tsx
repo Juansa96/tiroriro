@@ -1,6 +1,6 @@
 import * as React from 'npm:react@18.3.1'
 import {
-  Body, Container, Head, Heading, Html, Preview, Section, Text, Hr, Link,
+  Body, Button, Container, Head, Heading, Html, Preview, Section, Text, Hr, Link,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
@@ -15,6 +15,7 @@ interface ContactInternalProps {
   configSummary?: string
   details?: string
   submittedAt?: string
+  previewLink?: string
 }
 
 const ContactInternalEmail = ({
@@ -26,6 +27,7 @@ const ContactInternalEmail = ({
   configSummary,
   details,
   submittedAt,
+  previewLink,
 }: ContactInternalProps) => (
   <Html lang="es" dir="ltr">
     <Head />
@@ -48,6 +50,16 @@ const ContactInternalEmail = ({
             <Section style={configBox}>
               <Text style={configLabel}>Configuración del diseñador</Text>
               <Text style={configContent}>{configSummary}</Text>
+              {previewLink ? (
+                <Section style={{ textAlign: 'center', marginTop: '14px' }}>
+                  <Button href={previewLink} style={previewBtn}>
+                    Ver diseño del cliente →
+                  </Button>
+                  <Text style={previewHint}>
+                    Abre el enlace para ver el dibujo y todos los datos seleccionados.
+                  </Text>
+                </Section>
+              ) : null}
             </Section>
           ) : null}
 
@@ -90,6 +102,8 @@ export const template = {
     productList: 'Cabeceros',
     details: 'Hola, me gustaría un cabecero para un colchón de 150cm.',
     submittedAt: 'lunes, 1 de enero de 2025, 10:30',
+    configSummary: 'Cabecero Pregonda · 150 cm × 100 cm · Tela Arequipa Beige · Vivo simple',
+    previewLink: 'https://tirorirohome.com/?previewType=cabecero#contacto',
   },
 } satisfies TemplateEntry
 
@@ -111,3 +125,5 @@ const messageBox = { fontSize: '14px', lineHeight: '1.75', color: '#333', margin
 const hr = { borderColor: '#f0ede8', margin: '20px 0 14px' }
 const replyNote = { fontSize: '13px', color: '#1a4b5b', textAlign: 'center' as const, backgroundColor: '#f0f7f9', padding: '12px', borderRadius: '6px', margin: 0 }
 const footer = { fontSize: '11px', color: '#bbb', textAlign: 'center' as const, marginTop: '16px', fontFamily: 'Arial, sans-serif' }
+const previewBtn = { backgroundColor: '#1a4b5b', color: '#ffffff', textDecoration: 'none', padding: '10px 22px', borderRadius: '6px', fontSize: '13px', fontFamily: 'Arial, sans-serif', fontWeight: 500 }
+const previewHint = { fontSize: '11px', color: '#888', margin: '8px 0 0', fontFamily: 'Arial, sans-serif', fontStyle: 'italic' as const }

@@ -353,6 +353,7 @@ const ProductConfigurator = () => {
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
+      if (tipo === 'pantalla' || tipo === 'mesa') setFinish('vivo-simple');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
@@ -377,7 +378,7 @@ const ProductConfigurator = () => {
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
-    setFinish(newType === 'pantalla' ? 'vivo-simple' : '');
+    setFinish(newType === 'pantalla' || newType === 'mesa' ? 'vivo-simple' : '');
     setVivoColorId('');
     setCustomWidth('');
     setCustomHeight('');
@@ -1484,7 +1485,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
-            if (productType === 'banco' || productType === 'cojin' || productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'mesa') return f.id === 'vivo-simple';
+            if (productType === 'banco' || productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
           })).map(f => (
