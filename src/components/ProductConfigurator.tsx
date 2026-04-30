@@ -537,6 +537,14 @@ const ProductConfigurator = () => {
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
   const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && !finish);
 
+  // Detecta si el usuario ha introducido una medida personalizada (no preset)
+  const hasCustomMeasure = !!(
+    (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
+    (productType === 'puf' && puffDiameter === 'custom' && customWidth) ||
+    (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight))
+  );
+  const customNote = "El precio se ajustará según la medida elegida. Te confirmamos el importe final al recibir tu solicitud.";
+
   const chips: string[] = [];
   if (productType) {
     const pName = PRODUCTS.find(p => p.type === productType)?.name || '';
@@ -733,7 +741,13 @@ const ProductConfigurator = () => {
                 <p className="text-[9px] text-foreground/50 uppercase tracking-widest">Precio</p>
                 <p className="font-serif text-lg font-light text-foreground leading-none">
                   {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
+                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5" aria-hidden>*</span>}
                 </p>
+                {hasCustomMeasure && (
+                  <p className="text-[9px] text-muted-foreground italic font-light mt-0.5 max-w-[140px] leading-tight">
+                    *Precio orientativo
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -808,9 +822,17 @@ const ProductConfigurator = () => {
                 <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
                 <p className="font-serif text-3xl font-light text-foreground leading-none mt-0.5">
                   {priceIsKnown ? `${price} €` : `desde ${basePrice} €`}
+                  {hasCustomMeasure && <span className="text-accent-warm text-xl align-top ml-1" aria-hidden>*</span>}
                 </p>
               </div>
               <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>
+            </div>
+          )}
+          {hasCustomMeasure && (
+            <div className="mt-2 px-1">
+              <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
+                <span className="text-accent-warm not-italic">*</span> {customNote}
+              </p>
             </div>
           )}
           <div className="mt-2 px-1">
@@ -868,7 +890,13 @@ const ProductConfigurator = () => {
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
                 <p className="font-serif text-xl font-light text-foreground">
                   {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
+                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5" aria-hidden>*</span>}
                 </p>
+                {hasCustomMeasure && (
+                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight">
+                    *Precio orientativo, se ajusta a tu medida
+                  </p>
+                )}
               </>
             ) : (
               <p className="text-xs text-muted-foreground font-light">Elige un producto para ver el precio</p>
