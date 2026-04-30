@@ -110,6 +110,12 @@ const ContactForm = () => {
       });
       const idempotencyBase = `${form.email}-${Date.now()}`;
 
+      // Build a public link that recreates the customer's selection (renders the SVG drawing).
+      // This lets the team click the email and see exactly what the customer designed.
+      const previewLink = hasConfigParams
+        ? `${window.location.origin}/?${searchParams.toString()}#contacto`
+        : undefined;
+
       // 1. Email interno a TiroRiro (obligatorio)
       const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
         body: {
