@@ -81,6 +81,14 @@ Deno.serve(async (req: Request) => {
         )
       }
 
+      // Strict allowlist to prevent PostgREST filter injection
+      if (!/^[a-zA-Z0-9_-]{8,64}$/.test(voterCookie)) {
+        return new Response(
+          JSON.stringify({ error: 'Cookie de votante inválida' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
       // IP hash (cf-connecting-ip / x-forwarded-for)
       const ipRaw =
         req.headers.get('cf-connecting-ip') ||
