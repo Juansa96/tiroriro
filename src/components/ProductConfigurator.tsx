@@ -353,6 +353,7 @@ const ProductConfigurator = () => {
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
+      if (tipo === 'pantalla' || tipo === 'mesa') setFinish('vivo-simple');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
