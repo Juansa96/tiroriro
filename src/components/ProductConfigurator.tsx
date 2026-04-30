@@ -353,7 +353,6 @@ const ProductConfigurator = () => {
       if (tipo === 'banco' && !forma) setShape('madera');
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
-      setOpenAccordion('measures');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
@@ -394,7 +393,6 @@ const ProductConfigurator = () => {
       resetConfiguracion(type);
     }
     setProductType(type);
-    setOpenAccordion('measures');
   };
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
@@ -690,24 +688,20 @@ const ProductConfigurator = () => {
     selectionLabel,
     productType, productCard,
     shape, setShape,
-    bedWidth, setBedWidth: (v: string) => { setBedWidth(v); },
-    bedHeight, setBedHeight: (v: string) => { setBedHeight(v); if (v && v !== 'custom') advanceTo('fabric'); },
-    benchLength, setBenchLength: (v: string) => { setBenchLength(v); advanceTo('fabric'); },
+    bedWidth, setBedWidth,
+    bedHeight, setBedHeight,
+    benchLength, setBenchLength,
     benchDepth, setBenchDepth, benchHeight, setBenchHeight,
-    puffDiameter, setPuffDiameter: (v: string) => { setPuffDiameter(v); if (v && v !== 'custom') advanceTo('fabric'); },
+    puffDiameter, setPuffDiameter,
     puffHeight, setPuffHeight,
     cushionShape, setCushionShape,
-    cushionSize, setCushionSize: (v: string) => { setCushionSize(v); advanceTo('fabric'); },
-    lampDiameter, setLampDiameter: (v: string) => { setLampDiameter(v); advanceTo('fabric'); },
+    cushionSize, setCushionSize,
+    lampDiameter, setLampDiameter,
     lampHeight, setLampHeight,
-    fabricId, setFabricId: (id: string) => {
-      setFabricId(id);
-      const hasLateral = productType === 'cabecero' || (productType === 'cojin' && cushionShape === 'gulpiyuri');
-      if (!hasLateral) advanceTo('finish');
-    },
-    lateralFabricId, setLateralFabricId: (v: string) => { setLateralFabricId(v); advanceTo('finish'); },
-    finish, setFinish: (f: string) => { setFinish(f); const willNeedVivo = f === 'vivo-simple' || f === 'vivo-doble'; if (!willNeedVivo) advanceTo('extras'); },
-    vivoColorId, setVivoColorId: (v: string) => { setVivoColorId(v); advanceTo('extras'); },
+    fabricId, setFabricId,
+    lateralFabricId, setLateralFabricId,
+    finish, setFinish,
+    vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     puffQuantity, setPuffQuantity,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
