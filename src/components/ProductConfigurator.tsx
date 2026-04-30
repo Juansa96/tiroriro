@@ -1484,7 +1484,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
-            if (productType === 'banco' || productType === 'cojin' || productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'mesa') return f.id === 'vivo-simple';
+            if (productType === 'banco' || productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
           })).map(f => (
