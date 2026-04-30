@@ -140,10 +140,10 @@ const ComingSoonCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index:
       <div className="w-14 h-14 rounded-full bg-muted/30 flex items-center justify-center">
         {COMING_SOON_ICONS[cat.id]}
       </div>
-      <div className="text-center">
-        <h3 className="font-serif text-base font-medium text-foreground/50 leading-tight">{cat.name}</h3>
-        <span className="inline-flex items-center gap-1 text-[9px] tracking-[0.18em] uppercase font-medium px-2 py-0.5 rounded-full bg-foreground/8 text-foreground/35 mt-1.5">
-          <Clock size={8} />
+      <div className="text-center min-w-0 w-full overflow-hidden">
+        <h3 className="font-serif text-sm font-medium text-foreground/50 leading-tight break-words">{cat.name}</h3>
+        <span className="inline-flex items-center gap-1 text-[8px] tracking-[0.12em] uppercase font-medium px-1.5 py-0.5 rounded-full bg-foreground/8 text-foreground/35 mt-1.5">
+          <Clock size={7} />
           Próximamente
         </span>
       </div>

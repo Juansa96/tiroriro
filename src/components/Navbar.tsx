@@ -64,7 +64,8 @@ const Navbar = () => {
       scrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-white shadow-sm md:bg-transparent md:shadow-none"
     }`}>
       <div className="container mx-auto flex items-center justify-between h-20 md:h-24 px-6">
-        <Link to="/" className="flex items-center" aria-label="Tiroriro inicio">
+        <Link to="/" className="flex items-center" aria-label="Tiroriro inicio"
+          onClick={(e) => { if (handleClick("/")) e.preventDefault(); }}
           <div className="md:hidden">
             <Logo className="text-foreground" viewBox="100 335 730 225" style={{ width: 90, marginTop: "-10px", height: "auto" }} />
           </div>
@@ -104,7 +105,7 @@ const Navbar = () => {
             return (
               <Link key={link.to} to={link.to}
                 onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                className={`nav-link-underline text-sm tracking-extra-wide uppercase hover:opacity-80 transition-colors font-body font-light pb-0.5 ${
+                className={`nav-link-underline text-sm tracking-extra-wide hover:opacity-80 transition-colors font-body pb-0.5 ${
                   onHero ? "text-white underline-white" : "text-foreground underline-primary"
                 }`}
                 style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
@@ -127,7 +128,7 @@ const Navbar = () => {
               {NAV_LINKS.map((link) => (
                 <Link key={link.to} to={link.to}
                   onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                  className="text-sm tracking-extra-wide uppercase text-foreground hover:text-primary transition-colors font-body"
+                  className="text-sm tracking-wide text-foreground hover:text-primary transition-colors font-body font-normal"
                 >{link.label}</Link>
               ))}
             </div>

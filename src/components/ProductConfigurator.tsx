@@ -722,7 +722,7 @@ const ProductConfigurator = () => {
         </p>
       </div>
 
-      <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
+      <div id="mobile-preview" className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
         <div className="px-4 py-3 flex flex-col items-center">
           {/* Precio arriba-derecha en mobile también */}
           <div className="w-full flex items-start justify-between mb-1">
@@ -960,7 +960,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       setTimeout(() => {
         const el = document.getElementById('acc-' + section);
       if (el) {
-        const top = el.getBoundingClientRect().top + window.scrollY - 96;
+        const isMobileView = window.innerWidth < 768;
+        let offset = 96;
+        if (isMobileView) {
+          const preview = document.getElementById('mobile-preview');
+          offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
+        }
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: 'smooth' });
       }
       }, 60);
@@ -1401,7 +1407,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                         <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
                       )}
                     </div>
-                    <span className="text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
+                    <span className="hidden md:block text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
                   </button>
                 ))}
               </div>
