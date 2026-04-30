@@ -80,7 +80,8 @@ const ContactForm = () => {
   const validate = (): Record<string, string> => {
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = "El nombre es obligatorio";
-    if (form.phone.trim() && !/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = "Introduce un teléfono español válido (9 dígitos)";
+    if (!form.phone.trim()) errs.phone = "El teléfono es obligatorio";
+    else if (!/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = "Introduce un teléfono español válido (9 dígitos)";
     if (!form.email.trim()) { errs.email = "El email es obligatorio"; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Introduce un email válido";
     if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
@@ -252,7 +253,7 @@ const ContactForm = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Teléfono / WhatsApp</label>
+              <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Teléfono / WhatsApp *</label>
               <input id="contact-phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="600 000 000" className={`${inputBase} ${hasError('phone') ? 'border-destructive' : ''}`} />
               {hasError('phone') && <p className="text-xs mt-1 text-destructive">{errors.phone}</p>}
             </div>
