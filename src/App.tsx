@@ -17,6 +17,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
 import GraciasPage from "./pages/GraciasPage";
+import UnsubscribePage from "./pages/UnsubscribePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
           <Route path="/quienes-somos" element={<Navigate to="/nosotros" replace />} />
           <Route path="/gracias" element={<GraciasPage />} />
+          <Route path="/unsubscribe" element={<UnsubscribePage />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
           <Route path="/aviso-legal" element={<LegalPage />} />
           <Route path="/cookies" element={<CookiesPage />} />

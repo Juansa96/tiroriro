@@ -970,7 +970,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
-              {productCard('banco', 'Banco entelado', true)}
+              {productCard('banco', 'Banco entelado')}
               {productCard('puf', 'Pufs')}
               {productCard('cojin', 'Almohadones')}
               {productCard('mesa', 'Mesa de centro')}
@@ -1465,7 +1465,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
               <span className="text-sm font-medium text-foreground">{f.name}</span>
-              {f.extra > 0 && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${f.extra}€`}</span>}
+              {((f as { extra?: number }).extra ?? 0) > 0 && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${(f as { extra?: number }).extra}€`}</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
           ))}
