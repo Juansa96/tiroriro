@@ -65,7 +65,7 @@ const Navbar = () => {
     }`}>
       <div className="container mx-auto flex items-center justify-between h-20 md:h-24 px-6">
         <Link to="/" className="flex items-center" aria-label="Tiroriro inicio"
-          onClick={(e) => { if (handleClick("/")) e.preventDefault(); }}
+          onClick={(e) => { if (handleClick("/")) e.preventDefault(); }}>
           <div className="md:hidden">
             <Logo className="text-foreground" viewBox="100 335 730 225" style={{ width: 90, marginTop: "-10px", height: "auto" }} />
           </div>
