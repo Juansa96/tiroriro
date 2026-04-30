@@ -110,7 +110,7 @@ const TelasPage = () => (
                         />
                         <div>
                           <p className="font-serif text-base font-light text-foreground leading-tight">{fabric.name}</p>
-                          <p className="text-xs text-muted-foreground font-light mt-1 leading-relaxed">{fabric.descripcion}</p>
+                          <p className="hidden md:block text-xs text-muted-foreground font-light mt-1 leading-relaxed">{fabric.descripcion}</p>
                         </div>
                       </div>
                     </div>
