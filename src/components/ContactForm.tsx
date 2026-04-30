@@ -101,19 +101,49 @@ const ContactForm = () => {
     if (Object.keys(validationErrors).length > 0) { toast.error("Por favor, corrige los campos marcados en rojo."); return; }
     setSending(true);
     try {
-      const { error } = await supabase.functions.invoke('send-contact-email', {
+      const fullName = [form.name, form.lastName].filter(Boolean).join(' ').trim();
+      const firstName = form.name.trim().split(' ')[0];
+      const productList = selectedProducts.join(', ') || 'No especificado';
+      const submittedAt = new Date().toLocaleString('es-ES', {
+        timeZone: 'Europe/Madrid', dateStyle: 'full', timeStyle: 'short',
+      });
+      const idempotencyBase = `${form.email}-${Date.now()}`;
+
+      // 1. Email interno a TiroRiro (obligatorio)
+      const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
         body: {
-          name: form.name,
-          lastName: form.lastName,
-          phone: form.phone,
-          email: form.email,
-          products: selectedProducts,
-          otherDetail: otherProductDetail,
-          details: form.details,
-          configSummary: fromConfig || undefined,
+          templateName: 'contact-internal',
+          recipientEmail: 'info@tirorirohome.com',
+          replyTo: form.email,
+          idempotencyKey: `contact-internal-${idempotencyBase}`,
+          templateData: {
+            fullName,
+            email: form.email,
+            phone: form.phone || undefined,
+            productList,
+            otherDetail: otherProductDetail || undefined,
+            configSummary: fromConfig || undefined,
+            details: form.details || undefined,
+            submittedAt,
+          },
         },
       });
-      if (error) throw error;
+      if (internalError) throw internalError;
+
+      // 2. Confirmación al cliente (no bloqueante)
+      try {
+        await supabase.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'contact-confirmation',
+            recipientEmail: form.email,
+            idempotencyKey: `contact-confirmation-${idempotencyBase}`,
+            templateData: { firstName, productList },
+          },
+        });
+      } catch (confirmErr) {
+        console.warn('No se pudo enviar la confirmación al cliente:', confirmErr);
+      }
+
       // Redirigir a página de gracias con el nombre para personalizarla
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
