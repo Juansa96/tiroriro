@@ -14,8 +14,8 @@ const STEPS = [
   },
   {
     num: "02",
-    title: "Te llamamos",
-    text: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle y, si quieres, te mandamos telas a casa para que las veas antes de decidir.",
+    title: "Te llamamos y reservas",
+    text: "Beatriz o Rocío te llaman en 24h para confirmar cada detalle. Para reservar tu pieza y ponernos a fabricarla, se abona el 50% del importe. El resto, al recibirlo.",
     Icon: PhoneCall,
     tone: "bg-[#E7E6DD] border-[#D6D5CA]",
     iconTone: "bg-white/75 text-primary border border-primary/8",

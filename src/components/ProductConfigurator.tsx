@@ -958,7 +958,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     setOpenAccordion(isOpening ? section : '');
     if (isOpening) {
       setTimeout(() => {
-        document.getElementById('acc-' + section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const el = document.getElementById('acc-' + section);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 96;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
       }, 60);
     }
   };

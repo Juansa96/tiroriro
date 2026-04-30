@@ -278,14 +278,7 @@ interface CategoryPageProps {
 
 const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: string; name: string }) => {
   const [idx, setIdx] = useState(0);
-  const [hovered, setHovered] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    // Auto-advance disabled — manual navigation only
-    if (timerRef.current) clearInterval(timerRef.current);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [photos.length, hovered]);
+  const touchStartX = useRef<number | null>(null);
 
   if (photos.length === 0) {
     return (
@@ -300,11 +293,24 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
     );
   }
 
+  const prev = () => setIdx(i => (i - 1 + photos.length) % photos.length);
+  const next = () => setIdx(i => (i + 1) % photos.length);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 40) { delta < 0 ? next() : prev(); }
+    touchStartX.current = null;
+  };
+
   return (
     <div
-      className="relative overflow-hidden w-full aspect-[3/4]"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden w-full aspect-[3/4] select-none"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {photos.map((src, i) => (
         <img
@@ -320,22 +326,22 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
       {photos.length > 1 && (
         <>
           <button
-            onClick={e => { e.preventDefault(); setIdx(i => (i - 1 + photos.length) % photos.length); }}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/30 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/50"
+            onClick={prev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
           >
-            <ChevronLeft size={14} />
+            <ChevronLeft size={16} />
           </button>
           <button
-            onClick={e => { e.preventDefault(); setIdx(i => (i + 1) % photos.length); }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/30 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/50"
+            onClick={next}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
           >
-            <ChevronRight size={14} />
+            <ChevronRight size={16} />
           </button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {photos.map((_, i) => (
               <button
                 key={i}
-                onClick={e => { e.preventDefault(); setIdx(i); }}
+                onClick={() => setIdx(i)}
                 className={`w-1.5 h-1.5 rounded-full transition-all ${i === idx ? "bg-white" : "bg-white/40"}`}
               />
             ))}
@@ -373,29 +379,26 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   }
 
   return (
-    <Link
-      to={configHref}
-      className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden group"
-    >
+    <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden">
       <div className="relative overflow-hidden">
         <PhotoSlider photos={model.photos} category={category} name={model.name} />
         {category !== 'pantallas-lampara' && (
           <ShapeCircle configParam={model.configParam} category={category} />
         )}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300 pointer-events-none flex items-center justify-center">
-          <span className="text-white text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">Personalizar →</span>
-        </div>
       </div>
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
-        <div className="mt-4 flex items-center justify-end">
-          <span className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 group-hover:opacity-80 transition-opacity">
-            Personalizar →
-          </span>
+        <div className="mt-4">
+          <Link
+            to={configHref}
+            className="btn-sweep btn-unir inline-flex items-center justify-center w-full px-6 py-3 text-xs uppercase tracking-[0.20em]"
+          >
+            <span className="relative z-10">Diseña el tuyo →</span>
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
