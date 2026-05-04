@@ -84,10 +84,10 @@ const CABECERO_PRICES: Record<string, number> = {
   "90":  225,
   "105": 250,
   "135": 295,
-  "150": 335,
-  "160": 350,
-  "180": 380,
-  "200": 415,
+  "150": 345,
+  "160": 360,
+  "180": 390,
+  "200": 425,
 };
 
 // ─── Almohadones ─────────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@ export const CUSHION_PRICES: Record<string, number> = {
 // Vivo simple: incluido. Metacrilato +50 €, cristal +100 €. Premium: +25 €.
 export const MESA_PRICES: Record<string, number> = {
   "120x45x60": 280,
-  "80x45x80":  285,
+  "80x45x80":  300,
 };
 
 // ─── Pantallas de lámpara ────────────────────────────────────────────────────
@@ -148,14 +148,14 @@ export function calculatePrice(type: ProductType, options: Record<string, string
 
     let base: number;
     if (sizeCm === "40") {
-      base = qty >= 2 ? 220 : 125;
+      base = qty >= 2 ? 250 : 125;
     } else {
       // 50 cm
-      base = qty >= 2 ? 300 : 165;
+      base = qty >= 2 ? 325 : 165;
     }
 
-    // Premium: +15 € por unidad
-    if (isPremium) base += 15 * qty;
+    // Premium: +25 € por unidad
+    if (isPremium) base += 25 * qty;
 
     return base;
   }
@@ -179,7 +179,7 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     let base   = CUSHION_PRICES[key] ?? 0;
     if (!base) return 0;
 
-    if (isPremium) base += 10;
+    if (isPremium) base += 25;
 
     return base;
   }

@@ -773,7 +773,6 @@ const ProductConfigurator = () => {
               <span>Próximamente disponible</span>
             </div>
           )}
-          <RenderNotice />
           <div className="mt-2 w-full">
             <ProgressBar />
           </div>

@@ -133,6 +133,7 @@ const ContactForm = () => {
             details: form.details || undefined,
             submittedAt,
             previewLink,
+            formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
           },
         },
       });
@@ -173,6 +174,16 @@ const ContactForm = () => {
           <span className="section-line" />
           <p className="mt-4 text-base text-muted-foreground font-light italic">Te respondemos en menos de 24 horas — sin compromiso ni presión.</p>
         </div>
+
+        {!hasConfigParams && (
+          <div className="mb-8 p-4 bg-muted/40 border border-border/50 rounded-md flex items-start gap-2.5">
+            <span className="text-muted-foreground mt-0.5 text-sm">📝</span>
+            <p className="text-sm text-muted-foreground font-light">
+              Estás usando el formulario directo. Si quieres ver el resultado antes de pedir,{" "}
+              <a href="/configurador" className="underline hover:text-foreground transition-colors">prueba el configurador</a>.
+            </p>
+          </div>
+        )}
 
         {hasConfigParams && (
           <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30">

@@ -18,7 +18,7 @@ const CATEGORIES = [
     id: "pufs",
     name: "Pufs",
     tagline: "Tapizados a medida · Colección Galicia",
-    image: "/productos-fotos/puff/puff-nuevo.webp",
+    image: "/productos-fotos/puff/puff-horizontal.webp",
     priceLabel: "Desde 125€",
     comingSoon: false,
   },
@@ -26,7 +26,7 @@ const CATEGORIES = [
     id: "mesas-centro",
     name: "Mesas de centro",
     tagline: "Cabo de Palos · Colección Murcia",
-    image: "/productos-fotos/mesas-centro/cabo-de-palos.webp",
+    image: "/productos-fotos/mesas-centro/mesa-centro-horizontal.webp",
     priceLabel: "Desde 280€",
     comingSoon: false,
   },
@@ -34,7 +34,7 @@ const CATEGORIES = [
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
     tagline: "6 formas · Colección Ávila",
-    image: "/productos-fotos/pantallas/almanzor-01.webp",
+    image: "/productos-fotos/pantallas/lampara-horizontal.webp",
     priceLabel: "Desde 25€",
     comingSoon: false,
   },
@@ -100,7 +100,15 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="relative overflow-hidden border border-border/40 rounded-lg">
+        <div
+          className="relative overflow-hidden rounded-lg"
+          style={{
+            boxShadow: hovered
+              ? "0 0 0 2px var(--color-accent-warm, #B89A7A), 0 4px 20px rgba(0,0,0,0.10)"
+              : "0 0 0 1.5px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.06)",
+            transition: "box-shadow 0.3s ease",
+          }}
+        >
           <img
             src={cat.image}
             alt={cat.name}
@@ -136,12 +144,12 @@ const CategoryCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: n
 
 const ComingSoonCard = ({ cat, index }: { cat: typeof CATEGORIES[number]; index: number }) => (
   <AnimatedSection delay={index * 0.08 + 0.1}>
-    <div className="cursor-default flex flex-col items-center gap-3 py-5 px-4 border border-border/40 rounded-lg bg-muted/10">
-      <div className="w-14 h-14 rounded-full bg-muted/30 flex items-center justify-center">
+    <div className="cursor-default flex sm:flex-col items-center gap-4 sm:gap-3 py-4 sm:py-5 px-5 sm:px-4 border border-border/40 rounded-lg bg-muted/10">
+      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-muted/30 flex items-center justify-center flex-shrink-0">
         {COMING_SOON_ICONS[cat.id]}
       </div>
-      <div className="text-center min-w-0 w-full overflow-hidden">
-        <h3 className="font-serif text-sm font-medium text-foreground/50 leading-tight break-words">{cat.name}</h3>
+      <div className="text-left sm:text-center min-w-0 flex-1 overflow-hidden">
+        <h3 className="font-serif text-sm font-medium text-foreground/50 leading-tight">{cat.name}</h3>
         <span className="inline-flex items-center gap-1 text-[8px] tracking-[0.12em] uppercase font-medium px-1.5 py-0.5 rounded-full bg-foreground/8 text-foreground/35 mt-1.5">
           <Clock size={7} />
           Próximamente
@@ -183,7 +191,7 @@ const ProductsPage = () => (
               <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground/60 font-medium text-center mb-5">
                 Próximamente
               </p>
-              <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-xl sm:max-w-none mx-auto">
                 {comingSoonCategories.map((cat, i) => (
                   <ComingSoonCard key={cat.id} cat={cat} index={i} />
                 ))}

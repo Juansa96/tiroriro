@@ -20,7 +20,7 @@ const PRODUCTS_DATA = [
     name: "Pufs",
     badge: "A tu medida",
     price: "desde 125€",
-    image: "/productos-fotos/puff/puff-nuevo.webp",
+    image: "/productos-fotos/puff/puff-vertical.webp",
     alt: "Pufs tapizados a medida de Tiroriro",
     link: "/productos/pufs",
     comingSoon: false,
@@ -30,7 +30,7 @@ const PRODUCTS_DATA = [
     name: "Mesas de centro",
     badge: "Tapizado único",
     price: "desde 280€",
-    image: "/productos-fotos/mesas-centro/cabo-de-palos.webp",
+    image: "/productos-fotos/mesas-centro/mesa-centro-vertical.webp",
     alt: "Mesa de centro tapizada de Tiroriro",
     link: "/productos/mesas-centro",
     comingSoon: false,
@@ -205,10 +205,11 @@ const ProductsPreview = () => {
       {/* ── Franja de telas ── */}
       <section className="bg-[#1a4b5b] py-12 px-6">
         <div className="container mx-auto max-w-4xl text-center">
-          <p className="text-[10px] tracking-[0.22em] uppercase text-white/55 mb-3">Colecciones disponibles</p>
-          <h3 className="font-serif text-2xl md:text-3xl font-light text-white mb-6">
-            Básicas · Premium
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/55 mb-3">Telas disponibles</p>
+          <h3 className="font-serif text-2xl md:text-3xl font-light text-white mb-2">
+            Descubre nuestras telas
           </h3>
+          <p className="text-sm text-white/60 font-light mb-5">Colección Básicas · Colección Premium</p>
           <div className="flex justify-center gap-3 mb-5 flex-wrap">
             {FABRIC_STRIP.map((f) => (
               <div
