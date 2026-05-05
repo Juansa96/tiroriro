@@ -10,59 +10,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
+import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
 import { ChevronDown, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-const FABRIC_GROUPS = [
-  {
-    label: "Básicas",
-    collection: "Colección Básica",
-    fabrics: [
-      // Lisas
-      { id: "basica-arequipa", name: "Arequipa Beige", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp", pattern: "liso" },
-      // Flores
-      { id: "basica-flor-azul", name: "Flor Azul Protea", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp", pattern: "estampado" },
-      { id: "basica-flor-01", name: "Floral Natural", hex: "#8B7355", image: "/telas/basicas/flor-01.webp", pattern: "estampado" },
-      // Geométricas
-      { id: "basica-ikat", name: "Ikat Natural", hex: "#C4A882", image: "/telas/basicas/ikat.webp", pattern: "estampado" },
-      { id: "basica-ikat-verde", name: "Ikat Verde Agua", hex: "#7D9B76", image: "/telas/basicas/ikat-verde.webp", pattern: "estampado" },
-      { id: "basica-kasbah", name: "Árbol Kasbah", hex: "#8B6554", image: "/telas/basicas/arbol-kasbah.webp", pattern: "estampado" },
-      { id: "basica-kuwait", name: "Geométrica Kuwait", hex: "#8B7355", image: "/telas/basicas/geometrica-kuwait.webp", pattern: "estampado" },
-      { id: "basica-takada", name: "Takada Verde", hex: "#5B7355", image: "/telas/basicas/takada-verde.webp", pattern: "estampado" },
-      // Rayas
-      { id: "basica-rayas-gris", name: "Mil Rayas Gris", hex: "#A0A0A0", image: "/telas/basicas/mil-rayas-gris.webp", pattern: "estampado" },
-      { id: "basica-rayas-arena", name: "Rayas Arena", hex: "#C4A882", image: "/telas/basicas/rayas-arena.webp", pattern: "estampado" },
-      { id: "basica-rayas-azul", name: "Mil Rayas Azul", hex: "#2C3E50", image: "/telas/basicas/mil-rayas-azul.webp", pattern: "estampado" },
-      { id: "basica-raya-indigo", name: "Raya Índigo", hex: "#4A6FA5", image: "/telas/basicas/raya-indigo.webp", pattern: "estampado" },
-      { id: "basica-rayas-tevere", name: "Rayas Tévere", hex: "#8B7355", image: "/telas/basicas/rayas-tevere.webp", pattern: "estampado" },
-      { id: "basica-coral", name: "Coral Costero", hex: "#E8A87C", image: "/telas/basicas/coral-costero.webp", pattern: "estampado" },
-      { id: "basica-harvest", name: "Raya Harvest", hex: "#C19A6B", image: "/telas/basicas/raya-harvest.webp", pattern: "estampado" },
-      // Otras
-      { id: "basica-toile", name: "Toile de Jouy Azul", hex: "#6B8FAA", image: "/telas/basicas/toile-jouy-azul.webp", pattern: "estampado" },
-    ],
-  },
-  {
-    label: "Premium",
-    collection: "Colección Premium",
-    fabrics: [
-      { id: "premium-baqueira", name: "Baqueira", hex: "#5B4B3A", image: "/telas/premium/baqueira.webp", pattern: "liso" },
-      { id: "premium-cerler", name: "Cérler", hex: "#8B7355", image: "/telas/premium/cerler.webp", pattern: "liso" },
-      { id: "premium-lola-gris", name: "Lola Gris", hex: "#6D6D6D", image: "/telas/premium/lola-gris.webp", pattern: "liso" },
-      { id: "premium-rocio", name: "Rocío", hex: "#D4B896", image: "/telas/premium/rocio.webp", pattern: "liso" },
-      { id: "premium-artesano", name: "Artesano Beige", hex: "#D4C5A9", image: "/telas/premium/artesano-beige.webp", pattern: "liso" },
-      { id: "premium-verde-botella", name: "Lino Verde Botella", hex: "#2D4A2D", image: "/telas/premium/lino-verde-botella.webp", pattern: "liso" },
-      { id: "premium-lino-verde", name: "Lino Verde", hex: "#4A6B4A", image: "/telas/premium/lino-verde.webp", pattern: "liso" },
-      { id: "premium-guell", name: "Güell Lamadrid", hex: "#8B7355", image: "/telas/premium/guell-lamadrid.webp", pattern: "estampado" },
-      { id: "premium-rayas-sage", name: "Rayas Verde Sage", hex: "#7D9B76", image: "/telas/premium/rayas-verde-sage.webp", pattern: "estampado" },
-      { id: "premium-azul-provenzal", name: "Lino Azul Provenzal", hex: "#4A6FA5", image: "/telas/premium/lino-azul-provenzal.webp", pattern: "estampado" },
-      { id: "premium-vichy", name: "Vichy Denim", hex: "#2C3E50", image: "/telas/premium/vichy-denim.webp", pattern: "estampado" },
-      { id: "premium-ramas-siena", name: "Ramas Siena Azul", hex: "#5B6B8B", image: "/telas/premium/ramas-siena.webp", pattern: "estampado" },
-      { id: "premium-gardenia", name: "Flores Gardenia", hex: "#6B8FAA", image: "/telas/premium/flores-gardenia.webp", pattern: "estampado" },
-    ],
-  },
-];
-
-const ALL_FABRICS = FABRIC_GROUPS.flatMap(g => g.fabrics.map(f => ({ ...f, group: g.label, collection: g.collection })));
 
 // Cabecero: vivo-simple incluido (0€), vivo-doble +10€
 // Resto: vivo-simple incluido (0€) cuando aplica
@@ -1529,31 +1479,31 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           ))}
           {needsVivo && (
             <div className="pt-3">
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Estampados</p>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Básicas</p>
               <div className="flex flex-wrap gap-2 mb-4">
-                {ALL_FABRICS.filter(f => (f as { pattern?: string }).pattern === 'estampado').map(f => (
+                {FABRIC_GROUPS[0].fabrics.map(f => (
                   <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
                     <div
                       className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                       style={{ backgroundColor: f.hex }}
                     >
-                      {(f as { image?: string }).image && (
-                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      {f.image && (
+                        <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
                       )}
                     </div>
                   </button>
                 ))}
               </div>
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Lisos</p>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Premium</p>
               <div className="flex flex-wrap gap-2">
-                {ALL_FABRICS.filter(f => (f as { pattern?: string }).pattern === 'liso').map(f => (
+                {FABRIC_GROUPS[1].fabrics.map(f => (
                   <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
                     <div
                       className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                       style={{ backgroundColor: f.hex }}
                     >
-                      {(f as { image?: string }).image && (
-                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      {f.image && (
+                        <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
                       )}
                     </div>
                   </button>
