@@ -14,7 +14,6 @@ export const FABRICS: SharedFabric[] = [
   // ── Básicas — Flores ──────────────────────────────────────────────────────
   { id: "basica-flor-azul-protea", name: "Flor Azul Protea", coleccion: "Básicas", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp", descripcion: "Floral botánico en azul. Perfecto para piezas que quieren protagonismo." },
   { id: "basica-flor-01", name: "Floral Natural", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/flor-01.webp", descripcion: "Estampado floral en tono natural. Delicado y atemporal." },
-  { id: "basica-hoja-botanica-verde", name: "Hoja Botánica Verde", coleccion: "Básicas", hex: "#7A8B6A", image: "/telas/basicas/hoja-botanica-verde.webp", descripcion: "Estampado de hojas en verde oliva sobre fondo crudo. Natural y muy actual." },
   { id: "basica-flor-hemera-amarilla", name: "Flor Hémera Amarilla", coleccion: "Básicas", hex: "#D4B84A", image: "/telas/basicas/flor-hemera-amarilla.webp", descripcion: "Floral en amarillo cálido. Alegre y luminoso, perfecto para dar vida a cualquier espacio." },
   { id: "basica-morris-granadas-terracota", name: "Morris Granadas Terracota", coleccion: "Básicas", hex: "#B5604A", image: "/telas/basicas/morris-granadas-terracota.webp", descripcion: "Inspirado en William Morris, granadas en terracota. Clásico con mucho carácter." },
   { id: "basica-pajaros-louise-azul", name: "Pájaros Louise Azul", coleccion: "Básicas", hex: "#5B7EA6", image: "/telas/basicas/pajaros-louise-azul.webp", descripcion: "Estampado de pájaros en azul. Delicado y con personalidad propia." },
@@ -63,7 +62,6 @@ export const FABRICS: SharedFabric[] = [
   { id: "premium-baqueira", name: "Baqueira", coleccion: "Premium", hex: "#5B4B3A", image: "/telas/premium/baqueira.webp", descripcion: "Tapicería premium de alto gramaje. Textura rica y tacto suave al toque." },
   { id: "premium-baqueira-roja", name: "Baqueira Roja", coleccion: "Premium", hex: "#8B3A3A", image: "/telas/premium/baqueira-roja.webp", descripcion: "Baqueira en burdeos intenso. Sofisticada y de gran carácter." },
   { id: "premium-cerler", name: "Cérler", coleccion: "Premium", hex: "#8B7355", image: "/telas/premium/cerler.webp", descripcion: "Tejido premium en tono camel dorado. Lujoso y muy resistente." },
-  { id: "premium-cerler-azul", name: "Cérler Azul", coleccion: "Premium", hex: "#4A6B8B", image: "/telas/premium/cerler-azul.webp", descripcion: "Cérler en azul profundo. Elegancia premium con carácter mediterráneo." },
   { id: "premium-lola-gris", name: "Lola Gris", coleccion: "Premium", hex: "#6D6D6D", image: "/telas/premium/lola-gris.webp", descripcion: "Premium en gris marengo. Da carácter y elegancia a cualquier pieza." },
   { id: "premium-rocio", name: "Rocío", coleccion: "Premium", hex: "#D4B896", image: "/telas/premium/rocio.webp", descripcion: "Premium en tono arena suave. Luminoso y muy sofisticado." },
   { id: "premium-artesano-beige", name: "Artesano Beige", coleccion: "Premium", hex: "#D4C5A9", image: "/telas/premium/artesano-beige.webp", descripcion: "Tejido artesanal en beige natural. Textura visible con acabado impecable." },

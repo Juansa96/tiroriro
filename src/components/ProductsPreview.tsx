@@ -89,25 +89,10 @@ const ProductsPreview = () => {
           </AnimatedSection>
 
           <div className="relative max-w-6xl mx-auto">
-            <button
-              onClick={() => api?.scrollPrev()}
-              aria-label="Anterior"
-              className="hidden md:flex absolute -left-14 top-[45%] z-10 h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={() => api?.scrollNext()}
-              aria-label="Siguiente"
-              className="hidden md:flex absolute -right-14 top-[45%] z-10 h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
-            >
-              <ChevronRight size={18} />
-            </button>
-
             <Carousel
               setApi={setApi}
               opts={{ align: "center", loop: true, skipSnaps: false }}
-              className="px-4 md:px-0"
+              className="px-10 md:px-12"
             >
               <CarouselContent className="-ml-3 md:-ml-6">
                 {PRODUCTS_DATA.map((product, idx) => (
@@ -178,6 +163,22 @@ const ProductsPreview = () => {
                 ))}
               </CarouselContent>
             </Carousel>
+
+            {/* Arrows — inside the relative container so they're never clipped */}
+            <button
+              onClick={() => api?.scrollPrev()}
+              aria-label="Anterior"
+              className="absolute left-0 top-[40%] -translate-y-1/2 z-10 h-10 w-10 flex items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] shadow-md transition-colors hover:bg-[#f6f3ee]"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => api?.scrollNext()}
+              aria-label="Siguiente"
+              className="absolute right-0 top-[40%] -translate-y-1/2 z-10 h-10 w-10 flex items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] shadow-md transition-colors hover:bg-[#f6f3ee]"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
 
           <div className="flex justify-center gap-2 mt-8">

@@ -784,12 +784,12 @@ const LampshadeSVG = ({
 
   const getPath = () => {
     switch (shape) {
-      // Almanzor — cilindro: pronounced curves so it reads clearly as a cylinder
+      // Almanzor — cilindro: elliptic arcs so it reads clearly as a 3D cylinder
       case "cilindro":
         return {
-          front: "M 70 56 Q 150 38 230 56 L 230 168 Q 150 186 70 168 Z",
-          top:   "M 70 56 Q 150 38 230 56 L 224 50 Q 150 32 76 50 Z",
-          side:  "M 230 56 L 224 50 L 224 162 L 230 168 Z",
+          front: "M 70 68 A 80 24 0 0 0 230 68 L 230 162 A 80 24 0 0 1 70 162 Z",
+          top:   "M 70 68 A 80 24 0 0 0 230 68 L 224 62 A 74 24 0 0 0 76 62 Z",
+          side:  "M 230 68 L 224 62 L 224 156 L 230 162 Z",
         };
       // La Galana — pirámide
       case "piramide":
