@@ -1028,7 +1028,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 </div>
               </div>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho de cama</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho del cabecero</p>
                 <div className="flex flex-wrap gap-2">
                   {['90 cm', '105 cm', '135 cm', '150 cm', '160 cm', '180 cm', '200 cm'].map(sz => (
                     <button
