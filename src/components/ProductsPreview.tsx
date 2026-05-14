@@ -225,7 +225,7 @@ const ProductsPreview = () => {
               </div>
             ))}
           </div>
-          <p className="text-sm text-white/55 font-light mb-6">13 colores · Pide muestras a casa sin compromiso</p>
+          <p className="text-sm text-white/55 font-light mb-6">Más de 60 telas entre básicas y premium</p>
           <Link
             to="/telas"
             className="btn-sweep btn-unir inline-flex items-center px-7 py-3 text-xs font-light"

@@ -12,8 +12,8 @@ const FAQS = [
     a: "El plazo habitual es de 15 días naturales desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.",
   },
   {
-    q: "¿Puedo pedir una muestra de tela antes de decidir?",
-    a: "Sí. Escríbenos por WhatsApp o rellena el formulario indicando qué muestras quieres y te las enviamos a casa. Así ves el color y la textura real antes de confirmar. El envío de muestras tiene un pequeño coste adicional según el destino.",
+    q: "¿Puedo ver las telas antes de decidir?",
+    a: "Sí. Puedes ver todas nuestras telas en la sección de telas de la web, con foto de detalle y descripción de cada una. Si tienes dudas, escríbenos por WhatsApp y te orientamos sobre cuál encaja mejor con tu espacio.",
   },
   {
     q: "¿Hacéis envíos a toda España?",

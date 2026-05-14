@@ -10,7 +10,7 @@ const COLECCIONES = [
   { name: "Premium", priceBadge: "+25€ sobre el precio base", badgeClass: "bg-amber-50 text-amber-700 border-amber-200" },
 ];
 
-const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me gustaría pedir muestras de tela sin compromiso.");
+const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, tengo dudas sobre las telas y me gustaría orientación.");
 
 const TelasPage = () => (
   <>
@@ -86,16 +86,16 @@ const TelasPage = () => (
         );
       })}
 
-      {/* Muestras CTA */}
+      {/* CTA final */}
       <section className="bg-[#10262e] py-16 px-6">
         <div className="container mx-auto max-w-2xl text-center">
           <AnimatedSection>
-            <p className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3">Sin compromiso</p>
+            <p className="text-[10px] tracking-[0.22em] uppercase text-white/45 mb-3">¿Tienes dudas?</p>
             <h2 className="font-serif text-2xl md:text-3xl font-light text-white mb-4">
-              Pide muestras a casa
+              Te ayudamos a elegir
             </h2>
             <p className="text-sm text-white/60 font-light mb-8 leading-relaxed">
-              Recibe muestras físicas de las telas que más te gusten antes de decidir. Tocas la calidad en tu mano y las ves con la luz de tu espacio.
+              Si no sabes cuál encaja mejor con tu espacio, escríbenos por WhatsApp. Te orientamos sin compromiso.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
@@ -113,7 +113,7 @@ const TelasPage = () => (
                 } as React.CSSProperties}
               >
                 <MessageCircle size={14} className="relative z-10" />
-                <span className="relative z-10">Pedir muestras por WhatsApp</span>
+                <span className="relative z-10">Escríbenos por WhatsApp</span>
               </a>
               <Link
                 to="/configurador"

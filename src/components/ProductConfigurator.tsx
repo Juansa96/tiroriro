@@ -188,7 +188,7 @@ function parseCushionDetails(cushionShape: string, cushionSize: string): { shape
 
 const RenderNotice = () => (
   <p className="text-[11px] text-muted-foreground text-center mt-3 italic leading-relaxed px-2">
-    Render de simulación — los colores pueden variar. ¿Quieres ver la tela antes de decidir? Te enviamos muestras a casa.
+    Render de simulación — los colores pueden variar. Consulta la sección de telas para ver el detalle de cada una.
   </p>
 );
 
