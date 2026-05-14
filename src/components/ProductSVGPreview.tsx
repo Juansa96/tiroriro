@@ -15,6 +15,7 @@ interface Props {
   heightCm?: number;
   depthCm?: number;
   surface?: string;
+  quantity?: number;
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -422,30 +423,35 @@ const BenchSVG = ({
 const PuffSVG = ({
   color,
   fabricImage,
+  lateralFabricImage,
   finish,
   vivoColor,
   forma,
   widthCm,
   depthCm,
   heightCm,
+  quantity = 1,
 }: {
   color: string;
   fabricImage?: string;
+  lateralFabricImage?: string;
   finish: string;
   vivoColor: string;
   forma?: string;
   widthCm?: number;
   depthCm?: number;
   heightCm?: number;
+  quantity?: number;
 }) => {
   const isCircular = forma === "circular";
   const patternId = useId();
+  const lateralPatternId = useId();
   const clipId = useId();
 
   if (isCircular) {
     const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = 84; // fixed height for circular puf
+    const bodyH = 84;
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
@@ -455,66 +461,81 @@ const PuffSVG = ({
         <defs>
           <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`pf-${clipId}`}>
-            <path
-              d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
-            />
+            <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} />
           </clipPath>
         </defs>
         <ellipse cx={150} cy={bodyBottom + 16} rx={topRx * 0.82} ry={8} fill="rgba(0,0,0,0.08)" />
-        <path
-          d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
-          fill={patternFill(patternId, color)}
-          stroke="rgba(0,0,0,0.16)"
-          strokeWidth="1"
-        />
+        <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
         <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill={patternFill(patternId, color)} />
         <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill="rgba(255,255,255,0.14)" />
         <ellipse cx={168} cy={bodyTop + bodyH * 0.5} rx={topRx * 0.18} ry={bodyH * 0.36} fill="rgba(255,255,255,0.12)" />
         <ellipse cx={150} cy={bodyBottom} rx={topRx} ry={topRy} fill={darken(color, 12)} opacity="0.18" />
         {finish === "vivo-simple" && (
           <g clipPath={`url(#pf-${clipId})`}>
-            <path
-              d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
-              fill="none"
-              stroke={vivoColor}
-              strokeWidth="3"
-            />
+            <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
       </svg>
     );
   }
 
-  // Rectangular / cuadrado puf — straight corners
-  const effectiveDepthCm = depthCm ?? widthCm; // cuadrado: depth = width
+  // Rectangular / cuadrado puf
+  const effectiveDepthCm = depthCm ?? widthCm;
   const baseW = scaleRange(widthCm, 40, 120, 112, 190);
   const baseH = scaleRange(heightCm, 30, 50, 72, 118);
   const depthX = scaleRange(effectiveDepthCm, 30, 70, 14, 26);
   const depthY = -depthX * 0.7;
-  const x = (300 - baseW) / 2;
+  // Single puf centered at cx=150
+  const cx = 150;
+  const x = cx - baseW / 2;
   const y = 72;
   const frontPath = `M ${x} ${y} H ${x + baseW} V ${y + baseH} H ${x} Z`;
   const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
   const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
 
+  // For 2 pufs: scale each to 0.58 and place them side by side around center 160
+  const scale2 = 0.58;
+  const pivotY = y + baseH / 2;
+  const gap = 14;
+  const halfSpan = (baseW * scale2) / 2 + gap / 2;
+  const leftCx = 160 - halfSpan + (baseW * scale2) / 2;
+  const rightCx = 160 + halfSpan - (baseW * scale2) / 2;
+
+  const renderPuf = (centerX: number, s: number, clipSuffix: string) => {
+    const tx = centerX - cx * s;
+    const ty = (pivotY - pivotY * s);
+    return (
+      <g key={centerX} transform={`translate(${tx} ${ty}) scale(${s})`}>
+        <ellipse cx={cx} cy={y + baseH + 14} rx={baseW * 0.45} ry={8} fill="rgba(0,0,0,0.08)" />
+        <path d={topPath} fill={patternFill(lateralPatternId, lighten(color, 16))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={topPath} fill="rgba(255,255,255,0.12)" />
+        <path d={sidePath} fill={patternFill(lateralPatternId, darken(color, 18))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={sidePath} fill="rgba(0,0,0,0.10)" />
+        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+        {finish === "vivo-simple" && (
+          <g clipPath={`url(#pf-${clipId}-${clipSuffix})`}>
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+          </g>
+        )}
+      </g>
+    );
+  };
+
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[270px] mx-auto">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
-        <clipPath id={`pf-${clipId}`}>
-          <path d={frontPath} />
-        </clipPath>
+        <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={18} />
+        <clipPath id={`pf-${clipId}-a`}><path d={frontPath} /></clipPath>
+        <clipPath id={`pf-${clipId}-b`}><path d={frontPath} /></clipPath>
       </defs>
-      <ellipse cx={158} cy={y + baseH + 14} rx={baseW * 0.45} ry={8} fill="rgba(0,0,0,0.08)" />
-      <path d={topPath} fill={patternFill(patternId, lighten(color, 16))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-      <path d={topPath} fill="rgba(255,255,255,0.12)" />
-      <path d={sidePath} fill={patternFill(patternId, darken(color, 18))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-      <path d={sidePath} fill="rgba(0,0,0,0.10)" />
-      <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
-      {finish === "vivo-simple" && (
-        <g clipPath={`url(#pf-${clipId})`}>
-          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-        </g>
+      {quantity >= 2 ? (
+        <>
+          {renderPuf(leftCx, scale2, "a")}
+          {renderPuf(rightCx, scale2, "b")}
+        </>
+      ) : (
+        renderPuf(cx, 1, "a")
       )}
     </svg>
   );
@@ -886,6 +907,7 @@ const ProductSVGPreview = ({
   heightCm,
   depthCm,
   surface,
+  quantity = 1,
 }: Props) => {
   const vc = vivoColor || darken(color);
 
@@ -921,12 +943,14 @@ const ProductSVGPreview = ({
         <PuffSVG
           color={color}
           fabricImage={fabricImage}
+          lateralFabricImage={lateralFabricImage}
           finish={finish}
           vivoColor={vc}
           forma={forma}
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
+          quantity={quantity}
         />
       )}
       {type === "cojin" && (

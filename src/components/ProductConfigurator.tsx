@@ -712,7 +712,7 @@ const ProductConfigurator = () => {
           {/* SVG + fabric swatches side-by-side on mobile */}
           <div className="flex w-full gap-3 items-center justify-center min-h-[160px]">
             <div className="flex-1 flex items-center justify-center">
-              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
             </div>
             {fabricId && (
               <div className="w-20 flex-shrink-0 border-l border-border/30 pl-3">
@@ -720,7 +720,7 @@ const ProductConfigurator = () => {
                   fabric={fabric}
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
-                  showLateral={productType === 'cabecero'}
+                  showLateral={productType === 'cabecero' || productType === 'puf'}
                 />
               </div>
             )}
@@ -746,7 +746,7 @@ const ProductConfigurator = () => {
             <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
               <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
               <div className="flex-1 flex items-center justify-center w-full">
-                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} />
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
               </div>
               {!productType && (
                 <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
@@ -767,7 +767,7 @@ const ProductConfigurator = () => {
                   fabric={fabric}
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
-                  showLateral={productType === 'cabecero'}
+                  showLateral={productType === 'cabecero' || productType === 'puf'}
                 />
               </div>
             )}
@@ -1189,7 +1189,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   ))}
                 </div>
                 {puffQuantity === '2' && (
-                  <p className="text-xs text-muted-foreground font-light mt-2 italic">Pareja: precio especial aplicado</p>
+                  <p className="text-xs text-muted-foreground font-light mt-2 italic">Precio pareja: 220 € (40 cm) · 325 € (50 cm)</p>
                 )}
               </div>
             </>
@@ -1409,10 +1409,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             </p>
           )}
 
-          {/* Tela de laterales — cabeceros y Gulpiyuri, después de elegir tela principal */}
-          {(productType === 'cabecero' || (productType === 'cojin' && cushionShape === 'gulpiyuri')) && fabricId && (
+          {/* Tela de laterales — cabeceros, pufs y Gulpiyuri */}
+          {(productType === 'cabecero' || productType === 'puf' || (productType === 'cojin' && cushionShape === 'gulpiyuri')) && fabricId && (
             <div className="pt-4 border-t border-border/30">
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional)</span></p>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional · +15€)</span></p>
               <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
               <div className="space-y-3">
                 <div>

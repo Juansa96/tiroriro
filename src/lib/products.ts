@@ -148,7 +148,7 @@ function _getBasePrice(type: ProductType, options: Record<string, string>): numb
 
     let base: number;
     if (sizeCm === "40") {
-      base = qty >= 2 ? 250 : 125;
+      base = qty >= 2 ? 220 : 125;
     } else {
       base = qty >= 2 ? 325 : 165;
     }
