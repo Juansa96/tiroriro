@@ -119,14 +119,14 @@ export const PANTALLA_PRICES: Record<string, number> = {
   "rectangulo-20×40cm": 65,
 };
 
-export function calculatePrice(type: ProductType, options: Record<string, string>): number {
+function _getBasePrice(type: ProductType, options: Record<string, string>): number {
   const isPremium = options.fabricGroup === "Premium";
 
   // ── Cabecero ──────────────────────────────────────────────────────────────
   if (type === "cabecero") {
     const widthKey = options.bedWidthCm || "";
     let base = CABECERO_PRICES[widthKey] ?? 0;
-    if (!base) return 0; // Sin medida elegida aún
+    if (!base) return 0;
 
     // Altura extra: +15 € por cada 10 cm sobre 100 cm
     const heightCm = parseInt(options.bedHeightCm || "100");
@@ -134,9 +134,9 @@ export function calculatePrice(type: ProductType, options: Record<string, string
       base += Math.ceil((heightCm - 100) / 10) * 15;
     }
 
-    if (isPremium)                    base += 25;
+    if (isPremium)                       base += 25;
     if (options.finish === "vivo-doble") base += 10;
-    if (options.colgador === "true")  base += 5;
+    if (options.colgador === "true")     base += 5;
 
     return base;
   }
@@ -150,11 +150,9 @@ export function calculatePrice(type: ProductType, options: Record<string, string
     if (sizeCm === "40") {
       base = qty >= 2 ? 250 : 125;
     } else {
-      // 50 cm
       base = qty >= 2 ? 325 : 165;
     }
 
-    // Premium: +25 € por unidad
     if (isPremium) base += 25 * qty;
 
     return base;
@@ -187,8 +185,7 @@ export function calculatePrice(type: ProductType, options: Record<string, string
   // ── Pantalla ──────────────────────────────────────────────────────────────
   if (type === "pantalla") {
     const key  = options.pantallaSizeKey || "";
-    const base = PANTALLA_PRICES[key] ?? 0;
-    return base;
+    return PANTALLA_PRICES[key] ?? 0;
   }
 
   // ── Banco (sin precios definitivos) ───────────────────────────────────────
@@ -197,6 +194,20 @@ export function calculatePrice(type: ProductType, options: Record<string, string
   }
 
   return 0;
+}
+
+export function calculatePrice(type: ProductType, options: Record<string, string>): number {
+  let total = _getBasePrice(type, options);
+  if (total === 0) return 0;
+
+  // Tela del vivo distinta a la principal: +5 €
+  if (options.hasCustomVivo === "true") total += 5;
+  // Tela de laterales distinta a la principal: +15 €
+  if (options.hasCustomLateral === "true") total += 15;
+  // Tapetes protectores: +5 €
+  if (options.tapetes === "true") total += 5;
+
+  return total;
 }
 
 export function buildConfigSummary(type: ProductType, options: Record<string, string>): string {
@@ -241,6 +252,9 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
 
   if (options.fabricLabel) parts.push(`Tela: ${options.fabricLabel}`);
   if (options.fabricGroup === "Premium") parts.push("Tela premium");
+  if (options.hasCustomVivo === "true") parts.push("Vivo en tela diferente");
+  if (options.hasCustomLateral === "true") parts.push("Laterales en tela diferente");
+  if (options.tapetes === "true") parts.push("Con tapetes");
 
   return parts.join(" · ");
 }

@@ -340,7 +340,14 @@ const ContactForm = () => {
           </div>
           {touched.rgpd && errors.rgpd && <p className="text-xs text-destructive">{errors.rgpd}</p>}
 
-          <div className="pt-4">
+          <div className="pt-2 p-3 bg-muted/40 border border-border/40 rounded-md">
+            <p className="text-xs text-muted-foreground font-light leading-relaxed">
+              <span className="font-medium text-foreground">Gastos de envío:</span> dentro de Madrid <span className="font-medium">40 €</span> · fuera de Madrid, a consultar según destino.
+            </p>
+            <p className="text-[11px] text-muted-foreground/70 font-light mt-1 italic">Telas sujetas a disponibilidad de stock.</p>
+          </div>
+
+          <div className="pt-2">
             <button
               type="submit"
               disabled={sending}

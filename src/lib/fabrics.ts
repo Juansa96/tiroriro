@@ -19,7 +19,7 @@ export const FABRICS: SharedFabric[] = [
   { id: "basica-pajaros-louise-azul", name: "Pájaros Louise Azul", coleccion: "Básicas", hex: "#5B7EA6", image: "/telas/basicas/pajaros-louise-azul.webp", descripcion: "Estampado de pájaros en azul. Delicado y con personalidad propia." },
   { id: "basica-pajaros-louise-rosa", name: "Pájaros Louise Rosa", coleccion: "Básicas", hex: "#C48080", image: "/telas/basicas/pajaros-louise-rosa.webp", descripcion: "Estampado de pájaros en rosa empolvado. Romántico y atemporal." },
   { id: "basica-pajaros-louise-verde", name: "Pájaros Louise Verde", coleccion: "Básicas", hex: "#5B8A6A", image: "/telas/basicas/pajaros-louise-verde.webp", descripcion: "Estampado de pájaros en verde natural. Fresco y lleno de vida." },
-  { id: "basica-floralia-vintage", name: "Floralia Vintage", coleccion: "Básicas", hex: "#8B6B4A", image: "/telas/basicas/floralia-vintage.webp", descripcion: "Floral vintage en tonos tierra. Evoca la tapicería clásica con aire contemporáneo." },
+  { id: "basica-floralia-vintage", name: "Floralia Vintage", coleccion: "Básicas", hex: "#8B6B4A", image: "/telas/basicas/floralia-vintage.webp", descripcion: "Floral vintage en tonos rosa empolvado. Evoca la tapicería clásica con aire contemporáneo." },
 
   // ── Básicas — Geométricas ─────────────────────────────────────────────────
   { id: "basica-ikat", name: "Ikat Natural", coleccion: "Básicas", hex: "#C4A882", image: "/telas/basicas/ikat.webp", descripcion: "Tejido ikat en tonos arena. Artesanal con carácter étnico contemporáneo." },
@@ -28,7 +28,7 @@ export const FABRICS: SharedFabric[] = [
   { id: "basica-ikat-arrecife", name: "Ikat Arrecife", coleccion: "Básicas", hex: "#6B8B8B", image: "/telas/basicas/ikat-arrecife.webp", descripcion: "Ikat en azul arrecife. Evoca el mar con elegancia." },
   { id: "basica-ikat-bali-azul", name: "Ikat Bali Azul", coleccion: "Básicas", hex: "#4A6B8B", image: "/telas/basicas/ikat-bali-azul.webp", descripcion: "Ikat artesanal en azul Bali. Étnico y sofisticado a la vez." },
   { id: "basica-ikat-yakarta", name: "Ikat Yakarta", coleccion: "Básicas", hex: "#8B7A55", image: "/telas/basicas/ikat-yakarta.webp", descripcion: "Lino ikat en tonos naturales. Carácter artesanal con textura visible." },
-  { id: "basica-arbol-kasbah", name: "Árbol Kasbah", coleccion: "Básicas", hex: "#8B6554", image: "/telas/basicas/arbol-kasbah.webp", descripcion: "Estampado árbol en tonos terracota. Bohemio y sofisticado." },
+  { id: "basica-arbol-kasbah", name: "Árbol Kasbah", coleccion: "Básicas", hex: "#8B6554", image: "/telas/basicas/arbol-kasbah.webp", descripcion: "Estampado árbol en tonos verde salvia. Bohemio y sofisticado." },
   { id: "basica-geometrica-kuwait", name: "Geométrica Kuwait", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/geometrica-kuwait.webp", descripcion: "Geométrico inspirado en la tapicería marroquí. Muy versátil." },
   { id: "basica-takada-verde", name: "Takada Verde", coleccion: "Básicas", hex: "#5B7355", image: "/telas/basicas/takada-verde.webp", descripcion: "Estampado geométrico en verde oliva. Fresco y contemporáneo." },
   { id: "basica-paisley-azul", name: "Paisley Azul", coleccion: "Básicas", hex: "#4A6B8B", image: "/telas/basicas/paisley-azul.webp", descripcion: "Paisley clásico en azul sobre fondo crudo. Sofisticado y con mucho detalle." },
@@ -42,7 +42,7 @@ export const FABRICS: SharedFabric[] = [
   { id: "basica-rayas-tevere", name: "Rayas Tévere", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/rayas-tevere.webp", descripcion: "Raya clásica en tono natural. Versátil y resistente." },
   { id: "basica-coral-costero", name: "Coral Costero", coleccion: "Básicas", hex: "#E8A87C", image: "/telas/basicas/coral-costero.webp", descripcion: "Raya en coral y arena. Ideal para ambientes mediterráneos y playeros." },
   { id: "basica-raya-harvest", name: "Raya Harvest", coleccion: "Básicas", hex: "#C19A6B", image: "/telas/basicas/raya-harvest.webp", descripcion: "Raya clásica en tonos harvest. Cálida y acogedora." },
-  { id: "basica-rayas-laurel-azul", name: "Rayas Laurel Azul", coleccion: "Básicas", hex: "#5B7A9A", image: "/telas/basicas/rayas-laurel-azul.webp", descripcion: "Raya en azul laurel con fondo natural. Fresca y muy combinable." },
+  { id: "basica-rayas-laurel-azul", name: "Rayas Laurel Azul", coleccion: "Básicas", hex: "#5B7A9A", image: "/telas/basicas/rayas-laurel-azul.webp", descripcion: "Raya en verde laurel con fondo natural. Fresca y muy combinable." },
   { id: "basica-lino-greca", name: "Lino Greca", coleccion: "Básicas", hex: "#C4B090", image: "/telas/basicas/lino-greca.webp", descripcion: "Lino con motivo greca tejido. Clásico y de gran elegancia." },
   { id: "basica-raya-rioja", name: "Raya Rioja", coleccion: "Básicas", hex: "#8B3A3A", image: "/telas/basicas/raya-rioja.webp", descripcion: "Raya en burdeos Rioja. Cálida y con mucha personalidad." },
   { id: "basica-rayas-espiga-arena", name: "Rayas Espiga Arena", coleccion: "Básicas", hex: "#C8AA82", image: "/telas/basicas/rayas-espiga-arena.webp", descripcion: "Espiga tejida en tono arena. Textura artesanal muy elegante." },

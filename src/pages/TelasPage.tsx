@@ -26,6 +26,7 @@ const TelasPage = () => (
             <p className="mt-6 text-base text-muted-foreground font-light leading-relaxed max-w-xl mx-auto">
               Telas básicas y premium para personalizar cualquier pieza a tu gusto. Todas resistentes, lavables y disponibles en una amplia variedad de colores y estampados.
             </p>
+            <p className="mt-3 text-xs text-muted-foreground/60 font-light italic">Sujeto a disponibilidad de stock.</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               {COLECCIONES.map((c) => (
                 <span key={c.name} className="px-4 py-1.5 border border-border rounded-full text-xs tracking-widest uppercase text-muted-foreground">

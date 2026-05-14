@@ -285,6 +285,7 @@ const ProductConfigurator = () => {
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
   const [extraTopMaterial, setExtraTopMaterial] = useState("nada");
+  const [extraTapetes, setExtraTapetes] = useState(false);
 
   // Siempre string — un único acordeón type="single" en mobile y desktop
   const [openAccordion, setOpenAccordion] = useState<string>("type");
@@ -337,6 +338,7 @@ const ProductConfigurator = () => {
     setExtraRelleno(false);
     setExtraExpress(false);
     setExtraTopMaterial('nada');
+    setExtraTapetes(false);
   };
 
   const handleProductChange = (type: ProductType) => {
@@ -455,10 +457,14 @@ const ProductConfigurator = () => {
     if (productType === 'banco') o.benchLength = benchLength;
 
     if (extraRelleno) o.relleno = 'true';
+    if (extraTapetes) o.tapetes = 'true';
+    o.hasCustomVivo = vivoColorId ? 'true' : 'false';
+    o.hasCustomLateral = lateralFabricId ? 'true' : 'false';
     return o;
   }, [productType, shape, bedWidth, bedHeight, benchLength, cushionShape, cushionSize,
       puffDiameter, puffQuantity, lampDiameter, finish, fabricGroup, fabricId,
-      extraPatas, extraRelleno, extraTopMaterial, customWidth, customHeight]);
+      extraPatas, extraRelleno, extraTopMaterial, customWidth, customHeight,
+      extraTapetes, vivoColorId, lateralFabricId]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -581,13 +587,14 @@ const ProductConfigurator = () => {
           extraRelleno && 'Relleno',
           extraExpress && 'Express',
           extraTopMaterial !== 'nada' && (extraTopMaterial === 'metacrilato' ? 'Metacrilato' : 'Cristal'),
+          extraTapetes && 'Tapetes',
         ].filter(Boolean);
         return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
       }
     }
   };
 
-  const showExtrasStep = !productType || ['cabecero', 'banco'].includes(productType);
+  const showExtrasStep = true;
   const visibleSteps = showExtrasStep ? STEPS : STEPS.filter(s => s !== 'extras');
   const visibleStepIndex = visibleSteps.indexOf(currentStep as Step);
 
@@ -669,6 +676,7 @@ const ProductConfigurator = () => {
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
     extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
+    extraTapetes, setExtraTapetes,
     advanceTo, needsVivo,
   };
 
@@ -785,7 +793,8 @@ const ProductConfigurator = () => {
             </div>
           )}
           <div className="mt-2 px-1">
-            <p className="text-xs text-muted-foreground font-light text-center">Envío Comunidad de Madrid · Resto bajo consulta</p>
+            <p className="text-xs text-muted-foreground font-light text-center">Envío Madrid <span className="font-medium text-foreground">40 €</span> · Fuera de Madrid, a consultar</p>
+            <p className="text-[11px] text-muted-foreground/60 font-light text-center italic mt-0.5">Telas sujetas a disponibilidad de stock.</p>
           </div>
 
           <div className="flex flex-col gap-3 mt-4">
@@ -900,6 +909,7 @@ interface AccordionContentSharedProps {
   extraRelleno: boolean; setExtraRelleno: (v: boolean) => void;
   extraExpress: boolean; setExtraExpress: (v: boolean) => void;
   extraTopMaterial: string; setExtraTopMaterial: (v: string) => void;
+  extraTapetes: boolean; setExtraTapetes: (v: boolean) => void;
   advanceTo: (step: Step) => void;
   needsVivo: boolean;
 }
@@ -925,6 +935,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     extraPatas, setExtraPatas, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
+    extraTapetes, setExtraTapetes,
     advanceTo, needsVivo,
   } = props;
 
@@ -1371,6 +1382,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </button>
         {openAccordion === 'fabric' && (
           <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
+          <p className="text-[11px] text-muted-foreground/60 font-light italic">Sujeto a disponibilidad de stock.</p>
           {FABRIC_GROUPS.map(group => (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
@@ -1515,7 +1527,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         )}
       </div>
 
-      {(!productType || ['cabecero', 'banco'].includes(productType)) && (
       <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
@@ -1580,13 +1591,19 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          {!['cojin', 'puf', 'pantalla', 'cabecero', 'banco', 'mesa'].includes(productType || '') && (
-            <p className="text-sm text-muted-foreground font-light italic">Sin opciones adicionales para este producto.</p>
+          <div className="flex justify-between items-center py-2">
+            <div>
+              <p className="text-base text-foreground font-light">Tapetes protectores</p>
+              <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
+            </div>
+            <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
+          </div>
+          {!productType && (
+            <p className="text-sm text-muted-foreground font-light italic">Elige un producto para ver los extras disponibles.</p>
           )}
           </div>
         )}
       </div>
-      )}
     </>
   );
 };
