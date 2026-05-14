@@ -81,6 +81,30 @@ const TelasPage = () => (
                   </AnimatedSection>
                 ))}
               </div>
+
+              {/* Mensaje más telas */}
+              <AnimatedSection className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-4 rounded-xl border border-border/50 bg-secondary/60">
+                <p className="text-sm text-muted-foreground font-light">
+                  ¿No encuentras lo que buscas? Tenemos más telas fuera de la web.
+                </p>
+                <div className="flex gap-3 flex-shrink-0">
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground border border-border rounded-full px-4 py-2 hover:border-foreground/60 transition-colors"
+                  >
+                    <MessageCircle size={13} />
+                    WhatsApp
+                  </a>
+                  <Link
+                    to="/#contacto"
+                    className="inline-flex items-center text-xs font-medium text-foreground border border-border rounded-full px-4 py-2 hover:border-foreground/60 transition-colors"
+                  >
+                    Formulario
+                  </Link>
+                </div>
+              </AnimatedSection>
             </div>
           </section>
         );
