@@ -153,6 +153,30 @@ const ContactForm = () => {
         console.warn('No se pudo enviar la confirmación al cliente:', confirmErr);
       }
 
+      // 3. Registrar lead en CRM (no bloqueante, fallo silencioso)
+      try {
+        const mensajeCRM = [
+          selectedProducts.length > 0 ? `Productos: ${selectedProducts.join(', ')}` : null,
+          otherProductDetail ? `Otro: ${otherProductDetail}` : null,
+          fromConfig ? `Configuración: ${fromConfig}` : null,
+          form.details ? `Detalles: ${form.details}` : null,
+        ].filter(Boolean).join('\n');
+        await fetch('https://tirorirocrm.lovable.app/api/public/lead-form', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: fullName,
+            email: form.email,
+            telefono: form.phone,
+            ciudad: '',
+            mensaje: mensajeCRM,
+            origen: hasConfigParams ? 'Configurador' : 'Formulario web',
+          }),
+        });
+      } catch (crmErr) {
+        console.warn('CRM no disponible:', crmErr);
+      }
+
       // Redirigir a página de gracias con el nombre para personalizarla
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
