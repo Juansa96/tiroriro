@@ -161,6 +161,19 @@ const ContactForm = () => {
           fromConfig ? `Configuración: ${fromConfig}` : null,
           form.details ? `Detalles: ${form.details}` : null,
         ].filter(Boolean).join('\n');
+
+        // Build structured configurator data if coming from configurator
+        const configuradorData = hasConfigParams ? {
+          tipo: previewType ?? undefined,
+          forma: searchParams.get('previewForma') ?? undefined,
+          tela: previewFabricName ?? undefined,
+          telaLateral: previewLateralName ?? undefined,
+          anchoCama: previewWidth ?? undefined,
+          altoCm: previewHeight ?? undefined,
+          acabado: previewFinish || 'vivo-simple',
+          coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
+        } : undefined;
+
         await fetch('https://tirorirocrm.lovable.app/api/public/lead-form', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -171,6 +184,7 @@ const ContactForm = () => {
             ciudad: '',
             mensaje: mensajeCRM,
             origen: hasConfigParams ? 'Configurador' : 'Formulario web',
+            configurador: configuradorData,
           }),
         });
       } catch (crmErr) {
