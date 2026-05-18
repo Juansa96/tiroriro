@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
+import SEO from "@/components/SEO";
 
 interface Model {
   name: string;
@@ -266,6 +267,51 @@ const productTypeMap: Record<string, string> = {
   percheros: "perchero",
 };
 
+// Texto descriptivo corto para alt de imágenes ("Cabecero tapizado Pregonda — foto 2 | Tiroriro")
+const categoryAltLabel: Record<string, string> = {
+  cabeceros:           "Cabecero tapizado",
+  bancos:              "Banco entelado",
+  cojines:             "Almohadón tapizado",
+  pufs:                "Puf tapizado",
+  "mesas-centro":      "Mesa de centro tapizada",
+  "pantallas-lampara": "Pantalla de lámpara tapizada",
+  percheros:           "Perchero tapizado",
+};
+
+// SEO por categoría: title + description + canonical únicos
+const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string }> = {
+  cabeceros: {
+    title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
+    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 225 €. Hecho a mano en España en 15 días.",
+    canonical: "https://tirorirohome.com/productos/cabeceros",
+  },
+  bancos: {
+    title: "Bancos entelados a medida | Tiroriro",
+    description: "Bancos tapizados a medida, próximamente disponibles. Hecho a mano en España con más de 60 telas.",
+    canonical: "https://tirorirohome.com/productos/bancos",
+  },
+  cojines: {
+    title: "Almohadones tapizados a medida | Tiroriro",
+    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 50 €. Hecho a mano en España.",
+    canonical: "https://tirorirohome.com/productos/cojines",
+  },
+  pufs: {
+    title: "Pufs tapizados a medida | Solos o en pareja | Tiroriro",
+    description: "Pufs cúbicos tapizados a medida, solos o en pareja. Más de 60 telas disponibles. Desde 125 €. Hecho a mano en España.",
+    canonical: "https://tirorirohome.com/productos/pufs",
+  },
+  "mesas-centro": {
+    title: "Mesas de centro tapizadas a medida | Tiroriro",
+    description: "Mesas de centro tapizadas, sin patas y con opción de superficie de cristal o metacrilato. Desde 280 €. Diseño único, hecho a mano en España.",
+    canonical: "https://tirorirohome.com/productos/mesas-centro",
+  },
+  "pantallas-lampara": {
+    title: "Pantallas de lámpara tapizadas a mano | Tiroriro",
+    description: "Pantallas de lámpara tapizadas a mano en más de 60 telas básicas y premium. Transforma cualquier lámpara en una pieza única. Desde 25 €.",
+    canonical: "https://tirorirohome.com/productos/pantallas-lampara",
+  },
+};
+
 const imagePosition = (category: string) => {
   if (category === "pufs" || category === "mesas-centro") return "center center";
   if (category === "bancos") return "center center";
@@ -316,7 +362,7 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
         <img
           key={src}
           src={src}
-          alt={`${name} ${i + 1}`}
+          alt={`${categoryAltLabel[category] || "Producto tapizado"} ${name}${photos.length > 1 ? ` — foto ${i + 1}` : ""} | Tiroriro`}
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
           style={{ opacity: i === idx ? 1 : 0, objectPosition: imagePosition(category) }}
           loading="lazy"
@@ -423,9 +469,13 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
 
   const activeModels = cat.models.filter(m => !m.comingSoon);
   const comingSoonModels = cat.models.filter(m => m.comingSoon);
+  const seo = CATEGORY_SEO[category];
 
   return (
     <>
+      {seo && (
+        <SEO title={seo.title} description={seo.description} canonical={seo.canonical} />
+      )}
       <Navbar />
       <main className="pt-32 pb-20 px-6">
         <div className="container mx-auto">

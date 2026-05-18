@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Clock } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const CATEGORIES = [
   {
@@ -164,6 +165,11 @@ const comingSoonCategories = CATEGORIES.filter(c => c.comingSoon);
 
 const ProductsPage = () => (
   <>
+    <SEO
+      title="Productos tapizados a medida | Tiroriro"
+      description="Descubre todos nuestros productos tapizados a medida: cabeceros, pufs, mesas de centro y pantallas de lámpara. Más de 60 telas. Hechos a mano en España."
+      canonical="https://tirorirohome.com/productos"
+    />
     <Navbar />
     <main className="pt-32 pb-20 px-6">
       <div className="container mx-auto">

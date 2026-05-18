@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import AnimatedSection from "./AnimatedSection";
 import {
   Accordion,
@@ -33,7 +34,24 @@ const FAQS = [
   },
 ];
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": FAQS.map((faq) => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.a,
+    },
+  })),
+};
+
 const FAQSection = () => (
+  <>
+  <Helmet>
+    <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+  </Helmet>
   <section className="pt-20 md:pt-32 pb-10 md:pb-14 px-6 bg-secondary">
     <div className="container mx-auto max-w-3xl">
       <AnimatedSection className="text-center mb-16">
@@ -56,6 +74,7 @@ const FAQSection = () => (
       </AnimatedSection>
     </div>
   </section>
+  </>
 );
 
 export default FAQSection;

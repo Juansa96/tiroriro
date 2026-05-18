@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import { FABRICS } from "@/lib/fabrics";
+import SEO from "@/components/SEO";
 
 const COLECCIONES = [
   { name: "Básicas", priceBadge: "Sin coste adicional", badgeClass: "bg-green-50 text-green-700 border-green-200" },
@@ -14,6 +15,11 @@ const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hol
 
 const TelasPage = () => (
   <>
+    <SEO
+      title="Telas para tapizado | Más de 60 opciones | Tiroriro"
+      description="Más de 60 telas básicas y premium para tapizar tu pieza a medida: lisas, flores, rayas y geométricas. Consulta disponibilidad de stock."
+      canonical="https://tirorirohome.com/telas"
+    />
     <Navbar />
     <main className="pt-20 md:pt-24">
       {/* Header */}
