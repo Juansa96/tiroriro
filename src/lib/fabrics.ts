@@ -31,7 +31,6 @@ export const FABRICS: SharedFabric[] = [
   { id: "basica-arbol-kasbah", name: "Árbol Kasbah", coleccion: "Básicas", hex: "#8B6554", image: "/telas/basicas/arbol-kasbah.webp", descripcion: "Estampado árbol en tonos verde salvia. Bohemio y sofisticado." },
   { id: "basica-geometrica-kuwait", name: "Geométrica Kuwait", coleccion: "Básicas", hex: "#8B7355", image: "/telas/basicas/geometrica-kuwait.webp", descripcion: "Geométrico inspirado en la tapicería marroquí. Muy versátil." },
   { id: "basica-takada-verde", name: "Takada Verde", coleccion: "Básicas", hex: "#5B7355", image: "/telas/basicas/takada-verde.webp", descripcion: "Estampado geométrico en verde oliva. Fresco y contemporáneo." },
-  { id: "basica-paisley-azul", name: "Paisley Azul", coleccion: "Básicas", hex: "#4A6B8B", image: "/telas/basicas/paisley-azul.webp", descripcion: "Paisley clásico en azul sobre fondo crudo. Sofisticado y con mucho detalle." },
   { id: "basica-espiga-agua", name: "Espiga Agua", coleccion: "Básicas", hex: "#8BA89A", image: "/telas/basicas/espiga-agua.webp", descripcion: "Tejido espiga en tono agua marina. Textura elegante y muy resistente." },
 
   // ── Básicas — Rayas ───────────────────────────────────────────────────────
