@@ -479,38 +479,53 @@ const PuffSVG = ({
     );
   }
 
-  // Rectangular / cuadrado puf
-  const effectiveDepthCm = depthCm ?? widthCm;
-  const baseW = scaleRange(widthCm, 40, 120, 112, 190);
-  const baseH = scaleRange(heightCm, 30, 50, 72, 118);
-  const depthX = scaleRange(effectiveDepthCm, 30, 70, 14, 26);
-  const depthY = -depthX * 0.7;
-  // Single puf centered at cx=150
+  // ── Cuadrado (Patos) — render perfectamente cúbico ─────────────────────────
+  // El puf Patos es cúbico: ancho = alto = fondo. Para que el render lo refleje
+  // usamos baseH = baseW (cara frontal cuadrada) y depthX proporcional al ancho.
+  const baseW = scaleRange(widthCm, 40, 120, 108, 180);
+  // Para forma cuadrada (cúbico) la cara frontal debe ser exactamente cuadrada
+  const baseH = forma === "cuadrado" ? baseW : scaleRange(heightCm, 30, 60, 72, 120);
+  // Profundidad proporcional para que el cubo se vea consistente a cualquier tamaño
+  const depthX = forma === "cuadrado"
+    ? baseW * 0.22
+    : scaleRange(depthCm ?? widthCm, 30, 70, 14, 26);
+  const depthY = -depthX * 0.62;
+
+  // Puf centrado en cx=150
   const cx = 150;
   const x = cx - baseW / 2;
-  const y = 72;
+  const y = 68;
   const frontPath = `M ${x} ${y} H ${x + baseW} V ${y + baseH} H ${x} Z`;
-  const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
-  const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
+  const topPath   = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
+  const sidePath  = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
 
-  // For 2 pufs: scale each to 0.58 and place them side by side around center 160
-  const scale2 = 0.58;
-  const pivotY = y + baseH / 2;
-  const gap = 14;
-  const halfSpan = (baseW * scale2) / 2 + gap / 2;
-  const leftCx = 160 - halfSpan + (baseW * scale2) / 2;
-  const rightCx = 160 + halfSpan - (baseW * scale2) / 2;
+  // ── Layout de 2 pufs ────────────────────────────────────────────────────────
+  // Escala cada puf para que quepan dos. El pivote vertical fija la parte inferior
+  // de los pufs en la misma posición que el puf único.
+  const scale2 = 0.50;
+  // Pivote: mantener la base de los pufs al mismo nivel que el puf único
+  const pivotY = y + baseH;
+  const gap = 18; // espacio en blanco entre ambos pufs (en px del SVG original)
+  const pufHalfW = (baseW * scale2) / 2;
+  // Centros: el espacio total es pufWidth*2 + gap, repartido simétricamente alrededor de 160
+  const leftCx  = 160 - pufHalfW - gap / 2;
+  const rightCx = 160 + pufHalfW + gap / 2;
 
   const renderPuf = (centerX: number, s: number, clipSuffix: string) => {
+    // Trasladar de forma que el punto (cx, pivotY) quede en (centerX, pivotY) tras la escala
     const tx = centerX - cx * s;
-    const ty = (pivotY - pivotY * s);
+    const ty = pivotY - pivotY * s;
     return (
       <g key={centerX} transform={`translate(${tx} ${ty}) scale(${s})`}>
-        <ellipse cx={cx} cy={y + baseH + 14} rx={baseW * 0.45} ry={8} fill="rgba(0,0,0,0.08)" />
+        {/* Sombra suelo */}
+        <ellipse cx={cx} cy={y + baseH + 12} rx={baseW * 0.40} ry={6} fill="rgba(0,0,0,0.08)" />
+        {/* Cara superior (tela lateral) */}
         <path d={topPath} fill={patternFill(lateralPatternId, lighten(color, 16))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={topPath} fill="rgba(255,255,255,0.12)" />
-        <path d={sidePath} fill={patternFill(lateralPatternId, darken(color, 18))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        {/* Cara lateral derecha (tela lateral) */}
+        <path d={sidePath} fill={patternFill(lateralPatternId, darken(color, 20))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={sidePath} fill="rgba(0,0,0,0.10)" />
+        {/* Cara frontal (tela principal) */}
         <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
         {finish === "vivo-simple" && (
           <g clipPath={`url(#pf-${clipId}-${clipSuffix})`}>
@@ -522,16 +537,17 @@ const PuffSVG = ({
   };
 
   return (
-    <svg viewBox="0 0 320 230" className="w-full max-w-[270px] mx-auto">
+    <svg viewBox="0 0 320 230" className="w-full max-w-[280px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
+        <TexturePattern id={patternId}        image={fabricImage}                   color={color} tile={18} />
         <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={18} />
+        {/* Un clipPath por puf para el vivo (mismo path, distinto id para evitar conflictos) */}
         <clipPath id={`pf-${clipId}-a`}><path d={frontPath} /></clipPath>
         <clipPath id={`pf-${clipId}-b`}><path d={frontPath} /></clipPath>
       </defs>
       {quantity >= 2 ? (
         <>
-          {renderPuf(leftCx, scale2, "a")}
+          {renderPuf(leftCx,  scale2, "a")}
           {renderPuf(rightCx, scale2, "b")}
         </>
       ) : (
