@@ -136,7 +136,7 @@ const FABRIC_ESTILO: Record<string, "liso" | "flores" | "geometrico" | "rayas"> 
   "basica-ikat-arena": "geometrico", "basica-ikat-arrecife": "geometrico",
   "basica-ikat-bali-azul": "geometrico", "basica-ikat-yakarta": "geometrico",
   "basica-arbol-kasbah": "geometrico", "basica-geometrica-kuwait": "geometrico",
-  "basica-takada-verde": "geometrico", "basica-paisley-azul": "geometrico",
+  "basica-takada-verde": "geometrico",
   "basica-espiga-agua": "geometrico",
   // Básicas — Rayas
   "basica-mil-rayas-gris": "rayas", "basica-rayas-arena": "rayas",
