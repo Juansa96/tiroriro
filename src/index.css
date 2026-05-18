@@ -189,3 +189,12 @@
     transform: scale(1.05);
   }
 }
+
+@keyframes priceFlash {
+  0%   { transform: scale(1.1); color: hsl(var(--accent-warm)); }
+  100% { transform: scale(1);   color: hsl(var(--foreground)); }
+}
+.price-animate {
+  animation: priceFlash 0.45s ease-out forwards;
+  display: inline-block;
+}

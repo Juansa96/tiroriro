@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
@@ -17,9 +17,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 // Cabecero: vivo-simple incluido (0€), vivo-doble +10€
 // Resto: vivo-simple incluido (0€) cuando aplica
 const FINISHES = [
-  { id: "liso", name: "Sin acabado", desc: "Sin costuras decorativas", extra: 0 },
-  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el perímetro — incluido en el precio", extra: 0, extraLabel: "Incluido" },
-  { id: "vivo-doble", name: "Vivo doble", desc: "Dos líneas de ribete, más elaborado", extra: 10, extraLabel: "+10€" },
+  { id: "liso", name: "Sin vivo", desc: "Sin ribete decorativo en el borde", extra: 0 },
+  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el borde — incluido", extra: 0, extraLabel: "Incluido" },
+  { id: "vivo-doble", name: "Vivo doble", desc: "Doble ribete, más elaborado", extra: 10, extraLabel: "+10€" },
 ];
 
 const HEADBOARD_SHAPES = [
@@ -122,6 +122,54 @@ const CUSHION_SHAPES = [
   },
 ];
 
+// Lookup: fabric id → style category for the filter
+const FABRIC_ESTILO: Record<string, "liso" | "flores" | "geometrico" | "rayas"> = {
+  // Básicas — Lisas
+  "basica-arequipa-beige": "liso",
+  // Básicas — Flores
+  "basica-flor-azul-protea": "flores", "basica-flor-01": "flores",
+  "basica-flor-hemera-amarilla": "flores", "basica-morris-granadas-terracota": "flores",
+  "basica-pajaros-louise-azul": "flores", "basica-pajaros-louise-rosa": "flores",
+  "basica-pajaros-louise-verde": "flores", "basica-floralia-vintage": "flores",
+  // Básicas — Geométricas
+  "basica-ikat": "geometrico", "basica-ikat-verde": "geometrico",
+  "basica-ikat-arena": "geometrico", "basica-ikat-arrecife": "geometrico",
+  "basica-ikat-bali-azul": "geometrico", "basica-ikat-yakarta": "geometrico",
+  "basica-arbol-kasbah": "geometrico", "basica-geometrica-kuwait": "geometrico",
+  "basica-takada-verde": "geometrico", "basica-paisley-azul": "geometrico",
+  "basica-espiga-agua": "geometrico",
+  // Básicas — Rayas
+  "basica-mil-rayas-gris": "rayas", "basica-rayas-arena": "rayas",
+  "basica-mil-rayas-azul": "rayas", "basica-raya-indigo": "rayas",
+  "basica-rayas-tevere": "rayas", "basica-coral-costero": "rayas",
+  "basica-raya-harvest": "rayas", "basica-rayas-laurel-azul": "rayas",
+  "basica-lino-greca": "rayas", "basica-raya-rioja": "rayas",
+  "basica-rayas-espiga-arena": "rayas", "basica-rayas-espiga-azul": "rayas",
+  "basica-rayas-piave": "rayas", "basica-raya-artesanal-lino": "rayas",
+  "basica-raya-relieve-lino": "rayas",
+  // Básicas — Otras
+  "basica-toile-jouy-azul": "flores", "basica-espiga-azul": "rayas",
+  "basica-morris-granadas-azul": "flores", "basica-pata-de-gallo-verde": "geometrico",
+  "basica-ikat-rojo": "geometrico",
+  // Premium — Lisos
+  "premium-baqueira": "liso", "premium-baqueira-roja": "liso",
+  "premium-cerler": "liso", "premium-lola-gris": "liso",
+  "premium-rocio": "liso", "premium-artesano-beige": "liso",
+  "premium-oxford": "liso", "premium-lino-verde-botella": "liso",
+  "premium-lino-verde": "liso", "premium-lino-azul-provenzal": "liso",
+  "premium-bibiana": "liso",
+  // Premium — Geométricas
+  "premium-guell-lamadrid": "geometrico",
+  "premium-vichy-denim": "geometrico", "premium-vichy-verde": "geometrico",
+  // Premium — Flores
+  "premium-ramas-siena": "flores", "premium-flores-gardenia": "flores",
+  "premium-lino-flores-normandia": "flores", "premium-lino-flores-senda": "flores",
+  "premium-prints-botanicos": "flores",
+  // Premium — Rayas
+  "premium-rayas-verde-sage": "rayas", "premium-raya-monina": "rayas",
+  "premium-rayas-jules-verde": "rayas",
+};
+
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
 const STEPS: Step[] = ["type", "measures", "fabric", "finish", "extras"];
 const STEP_LABELS: Record<Step, string> = {
@@ -187,8 +235,8 @@ function parseCushionDetails(cushionShape: string, cushionSize: string): { shape
 }
 
 const RenderNotice = () => (
-  <p className="text-[11px] text-muted-foreground text-center mt-3 italic leading-relaxed px-2">
-    Render de simulación — los colores pueden variar. Consulta la sección de telas para ver el detalle de cada una.
+  <p className="text-[11px] text-muted-foreground text-center mt-3 italic px-2">
+    Simulación orientativa — colores pueden variar.
   </p>
 );
 
@@ -289,6 +337,9 @@ const ProductConfigurator = () => {
 
   // Siempre string — un único acordeón type="single" en mobile y desktop
   const [openAccordion, setOpenAccordion] = useState<string>("type");
+
+  // Fabric filter for Solution 2
+  const [fabricFilter, setFabricFilter] = useState<"todas" | "liso" | "flores" | "geometrico" | "rayas">("todas");
 
   useEffect(() => {
     localStorage.setItem('tiro_configurador_visited', 'true');
@@ -470,6 +521,16 @@ const ProductConfigurator = () => {
     if (!productType) return 0;
     return calculatePrice(productType, options);
   }, [productType, options]);
+
+  // Price flash animation key — increments on every price change
+  const prevPriceRef = useRef(price);
+  const [priceKey, setPriceKey] = useState(0);
+  useEffect(() => {
+    if (price > 0 && price !== prevPriceRef.current) {
+      setPriceKey(k => k + 1);
+    }
+    prevPriceRef.current = price;
+  }, [price]);
 
   const stepComplete: Record<Step, boolean> = {
     type: !!productType,
@@ -656,6 +717,7 @@ const ProductConfigurator = () => {
     setOpenAccordion: handleAccordionChange,
     selectionLabel,
     productType, productCard,
+    fabricFilter, setFabricFilter,
     shape, setShape,
     bedWidth, setBedWidth,
     bedHeight, setBedHeight,
@@ -683,39 +745,19 @@ const ProductConfigurator = () => {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
-        <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-3">Diseña el tuyo</h1>
-        <p className="text-sm text-muted-foreground font-light">
-          Elige el producto, las medidas y la tela — el precio se actualiza en tiempo real.
-        </p>
+        <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-2">Diseña el tuyo</h1>
+        <p className="text-sm text-muted-foreground font-light">Precio en tiempo real · Hecho a medida</p>
       </div>
 
       <div id="mobile-preview" className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
-        <div className="px-4 py-3 flex flex-col items-center">
-          {/* Precio arriba-derecha en mobile también */}
-          <div className="w-full flex items-start justify-between mb-1">
-            <p className="font-serif text-sm text-muted-foreground truncate max-w-[65%]">{previewLabel}</p>
-            {productType && (
-              <div className="text-right flex-shrink-0">
-                <p className="text-[9px] text-foreground/50 uppercase tracking-widest">Precio</p>
-                <p className="font-serif text-lg font-light text-foreground leading-none">
-                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
-                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5" aria-hidden>*</span>}
-                </p>
-                {hasCustomMeasure && (
-                  <p className="text-[9px] text-muted-foreground italic font-light mt-0.5 max-w-[140px] leading-tight">
-                    *Precio orientativo
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
+        <div className="px-4 py-2 flex flex-col items-center">
           {/* SVG + fabric swatches side-by-side on mobile */}
-          <div className="flex w-full gap-3 items-center justify-center min-h-[160px]">
+          <div className="flex w-full gap-3 items-center justify-center min-h-[110px]">
             <div className="flex-1 flex items-center justify-center">
               <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
             </div>
             {fabricId && (
-              <div className="w-20 flex-shrink-0 border-l border-border/30 pl-3">
+              <div className="w-16 flex-shrink-0 border-l border-border/30 pl-2">
                 <FabricSwatchPanel
                   fabric={fabric}
                   vivoFabric={needsVivo ? vivoFabric : undefined}
@@ -725,13 +767,7 @@ const ProductConfigurator = () => {
               </div>
             )}
           </div>
-          {productType === 'banco' && (
-            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground border border-border/40 rounded-full px-3 py-1">
-              <Clock size={11} />
-              <span>Próximamente disponible</span>
-            </div>
-          )}
-          <div className="mt-2 w-full">
+          <div className="mt-1.5 w-full">
             <ProgressBar />
           </div>
         </div>
@@ -774,12 +810,12 @@ const ProductConfigurator = () => {
           </div>
 
           {productType && (
-            <div className="mt-4 flex items-baseline justify-between px-1">
+            <div className="mt-5 flex items-baseline justify-between px-1">
               <div>
                 <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
-                <p className="font-serif text-3xl font-light text-foreground leading-none mt-0.5">
+                <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
                   {priceIsKnown ? `${price} €` : `desde ${basePrice} €`}
-                  {hasCustomMeasure && <span className="text-accent-warm text-xl align-top ml-1" aria-hidden>*</span>}
+                  {hasCustomMeasure && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
                 </p>
               </div>
               <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>
@@ -809,7 +845,7 @@ const ProductConfigurator = () => {
                 disabled={!productType}
                 className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
               >
-                Lo quiero — solicitar presupuesto
+                Solicitar presupuesto
               </button>
             )}
           </div>
@@ -818,7 +854,6 @@ const ProductConfigurator = () => {
         <div className="w-[55%] lg:w-1/2">
           <div className="mb-6">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
-            <p className="mt-2 text-base text-muted-foreground font-light">Elige la forma, el tamaño y el acabado. El precio se actualiza en tiempo real.</p>
           </div>
           <ProgressBar className="mb-6" />
           <ConfigAccordionsSingle
@@ -829,9 +864,9 @@ const ProductConfigurator = () => {
         </div>
       </div>
 
-      <div className="md:hidden px-4 pb-28 pt-4">
-        <div className="mb-4">
-          <h2 className="font-serif text-2xl font-light text-foreground">Configura tu pieza</h2>
+      <div className="md:hidden px-4 pb-28 pt-2">
+        <div className="mb-3">
+          <h2 className="font-serif text-xl font-light text-foreground">Configura tu pieza</h2>
         </div>
         <ConfigAccordionsSingle
           openAccordion={accordionValue}
@@ -846,18 +881,18 @@ const ProductConfigurator = () => {
             {productType ? (
               <>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
-                <p className="font-serif text-xl font-light text-foreground">
+                <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none">
                   {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
-                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5" aria-hidden>*</span>}
+                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
                 </p>
                 {hasCustomMeasure && (
-                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight">
-                    *Precio orientativo, se ajusta a tu medida
+                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
+                    *Orientativo
                   </p>
                 )}
               </>
             ) : (
-              <p className="text-xs text-muted-foreground font-light">Elige un producto para ver el precio</p>
+              <p className="text-xs text-muted-foreground font-light">Elige un producto</p>
             )}
           </div>
           {productType === 'banco' ? (
@@ -886,6 +921,8 @@ interface AccordionContentSharedProps {
   selectionLabel: (step: Step) => React.ReactNode;
   productType: ProductType | null;
   productCard: (type: ProductType, label: string) => React.ReactNode;
+  fabricFilter: "todas" | "liso" | "flores" | "geometrico" | "rayas";
+  setFabricFilter: (v: "todas" | "liso" | "flores" | "geometrico" | "rayas") => void;
   shape: string; setShape: (v: string) => void;
   bedWidth: string; setBedWidth: (v: string) => void;
   bedHeight: string; setBedHeight: (v: string) => void;
@@ -920,6 +957,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     setOpenAccordion,
     selectionLabel,
     productType, productCard,
+    fabricFilter, setFabricFilter,
     shape, setShape,
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
@@ -980,19 +1018,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
-              <div className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <ProductIcon type="banco" />
-                <span className="text-sm font-light text-foreground">Banco entelado</span>
-                <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
-              </div>
               {productCard('puf', 'Pufs')}
+              {productCard('mesa', 'Mesa de centro')}
+              {productCard('pantalla', 'Pantalla lámpara')}
               <div className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
                 <ProductIcon type="cojin" />
                 <span className="text-sm font-light text-foreground">Almohadones</span>
                 <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
               </div>
-              {productCard('mesa', 'Mesa de centro')}
-              {productCard('pantalla', 'Pantalla lámpara')}
             </div>
           </div>
         )}
@@ -1381,13 +1414,40 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'fabric' ? 'rotate-180' : ''}`} />
         </button>
         {openAccordion === 'fabric' && (
-          <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
-          <p className="text-[11px] text-muted-foreground/60 font-light italic">Sujeto a disponibilidad de stock.</p>
-          {FABRIC_GROUPS.map(group => (
+          <div className="pb-6 space-y-5 bg-muted/30 px-4 rounded-b-md pt-3">
+          {/* Filtros por estilo */}
+          <div className="flex flex-wrap gap-2">
+            {([
+              { id: "todas", label: "Todas" },
+              { id: "liso", label: "Lisas" },
+              { id: "flores", label: "Flores" },
+              { id: "geometrico", label: "Geométrico" },
+              { id: "rayas", label: "Rayas" },
+            ] as const).map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFabricFilter(f.id)}
+                className={`px-3 py-1 rounded-full text-xs transition-all border ${
+                  fabricFilter === f.id
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted-foreground hover:border-foreground/50"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-[11px] text-muted-foreground/60 font-light italic -mt-1">Sujeto a disponibilidad de stock.</p>
+          {FABRIC_GROUPS.map(group => {
+            const filtered = fabricFilter === "todas"
+              ? group.fabrics
+              : group.fabrics.filter(f => FABRIC_ESTILO[f.id] === fabricFilter);
+            if (filtered.length === 0) return null;
+            return (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
               <div className="flex flex-wrap gap-3">
-                {group.fabrics.map(f => (
+                {filtered.map(f => (
                   <button key={f.id} onClick={() => setFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
                     <div
                       className={`w-10 h-10 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-2 ${fabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
@@ -1402,7 +1462,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
           {fabricId && (
             <p className="text-xs text-muted-foreground font-light">
               {ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}
