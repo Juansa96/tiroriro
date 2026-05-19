@@ -20,6 +20,72 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="/hero-portada.jpg" as="image" fetchpriority="high" />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- GEO / SEO: Organization + LocalBusiness identity for AI assistants & search engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tirorirohome.com/#organization",
+          "name": "Tiroriro",
+          "alternateName": "Tiroriro Home",
+          "url": "https://tirorirohome.com",
+          "logo": "https://tirorirohome.com/hero-poster.webp",
+          "image": "https://tirorirohome.com/hero-poster.webp",
+          "email": "info@tirorirohome.com",
+          "telephone": "+34660786453",
+          "description": "Taller artesanal español especializado en mobiliario tapizado a medida: cabeceros, pufs, mesas de centro y pantallas de lámpara. Más de 60 telas. Hecho a mano en España en 15 días.",
+          "sameAs": [
+            "https://www.instagram.com/tirorirohome/"
+          ],
+          "areaServed": {
+            "@type": "Country",
+            "name": "España"
+          }
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://tirorirohome.com/#localbusiness",
+          "name": "Tiroriro",
+          "image": "https://tirorirohome.com/hero-poster.webp",
+          "url": "https://tirorirohome.com",
+          "telephone": "+34660786453",
+          "email": "info@tirorirohome.com",
+          "priceRange": "€€",
+          "address": {
+            "@type": "PostalAddress",
+            "addressRegion": "Comunidad de Madrid",
+            "addressCountry": "ES"
+          },
+          "areaServed": [
+            { "@type": "AdministrativeArea", "name": "Comunidad de Madrid" },
+            { "@type": "Country", "name": "España" }
+          ],
+          "makesOffer": [
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Cabeceros tapizados a medida" }, "priceCurrency": "EUR", "price": "225" },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Pufs tapizados a medida" }, "priceCurrency": "EUR", "price": "125" },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Mesas de centro tapizadas a medida" }, "priceCurrency": "EUR", "price": "280" },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Pantallas de lámpara tapizadas a mano" }, "priceCurrency": "EUR", "price": "25" }
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "3",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://tirorirohome.com/#website",
+          "url": "https://tirorirohome.com",
+          "name": "Tiroriro",
+          "inLanguage": "es-ES",
+          "publisher": { "@id": "https://tirorirohome.com/#organization" }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
