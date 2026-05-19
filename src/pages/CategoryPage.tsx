@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
 import SEO from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 
 interface Model {
   name: string;
@@ -312,6 +313,15 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
   },
 };
 
+// Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
+const CATEGORY_PRICE_FROM: Record<string, number> = {
+  cabeceros: 225,
+  pufs: 125,
+  "mesas-centro": 280,
+  "pantallas-lampara": 25,
+  cojines: 50,
+};
+
 const imagePosition = (category: string) => {
   if (category === "pufs" || category === "mesas-centro") return "center center";
   if (category === "bancos") return "center center";
@@ -470,11 +480,55 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
   const activeModels = cat.models.filter(m => !m.comingSoon);
   const comingSoonModels = cat.models.filter(m => m.comingSoon);
   const seo = CATEGORY_SEO[category];
+  const priceFrom = CATEGORY_PRICE_FROM[category];
+  const productJsonLd = seo && priceFrom
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: cat.title,
+        description: seo.description,
+        brand: { "@type": "Brand", name: "Tiroriro" },
+        category: cat.title,
+        image: activeModels[0]?.photos[0]
+          ? `https://tirorirohome.com${activeModels[0].photos[0]}`
+          : "https://tirorirohome.com/hero-poster.webp",
+        offers: {
+          "@type": "AggregateOffer",
+          priceCurrency: "EUR",
+          lowPrice: priceFrom,
+          offerCount: activeModels.length || 1,
+          availability: "https://schema.org/InStock",
+          areaServed: "ES",
+          seller: { "@type": "Organization", name: "Tiroriro", url: "https://tirorirohome.com" },
+        },
+      }
+    : null;
+  const breadcrumbJsonLd = seo
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: "https://tirorirohome.com/" },
+          { "@type": "ListItem", position: 2, name: "Productos", item: "https://tirorirohome.com/productos" },
+          { "@type": "ListItem", position: 3, name: cat.title, item: seo.canonical },
+        ],
+      }
+    : null;
 
   return (
     <>
       {seo && (
         <SEO title={seo.title} description={seo.description} canonical={seo.canonical} />
+      )}
+      {(productJsonLd || breadcrumbJsonLd) && (
+        <Helmet>
+          {productJsonLd && (
+            <script type="application/ld+json">{JSON.stringify(productJsonLd)}</script>
+          )}
+          {breadcrumbJsonLd && (
+            <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
+          )}
+        </Helmet>
       )}
       <Navbar />
       <main className="pt-32 pb-20 px-6">
