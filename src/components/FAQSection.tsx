@@ -9,6 +9,26 @@ import {
 
 const FAQS = [
   {
+    q: "¿Cuánto cuesta un cabecero tapizado a medida?",
+    a: "Nuestros cabeceros tapizados a medida parten de 225 € e incluyen la tela básica que elijas, el tamaño que necesites y el acabado a mano. El precio final depende de la forma (recto, arco, corona o ondas), del ancho y de la tela: las telas premium suben unos 40-80 € sobre la básica. En el configurador puedes ver el precio exacto en tiempo real antes de pedirlo.",
+  },
+  {
+    q: "¿Qué tela es mejor para un cabecero?",
+    a: "Para un dormitorio principal solemos recomendar lino lavado o bouclé: son cálidos, no destiñen con la luz y aguantan muy bien el paso del tiempo. Si hay mascotas o niños, mejor un velvet o un tejido con tratamiento antimanchas. Si quieres un look más nórdico, los algodones en tonos crudo o piedra funcionan siempre. Tenemos más de 60 telas y, si dudas, te ayudamos por WhatsApp con fotos del espacio.",
+  },
+  {
+    q: "¿Merece la pena un cabecero hecho a medida frente a uno estándar?",
+    a: "Sí, por tres motivos: encaja al milímetro con tu cama y pared (los estándar suelen quedar cortos o desproporcionados), eliges la tela y el color exactos para tu dormitorio, y al estar tapizado a mano la calidad y durabilidad es muy superior a la de un cabecero industrial. Y el precio (desde 225 €) suele ser competitivo frente a tiendas de gama media.",
+  },
+  {
+    q: "¿Cómo se limpia un cabecero tapizado?",
+    a: "Para el día a día basta con aspirar la superficie cada 2-3 semanas con la boquilla suave. Si hay una mancha puntual, retírala con un paño húmedo y jabón neutro, frotando desde fuera hacia dentro. Para una limpieza profunda recomendamos llamar a una tapicería local: la mayoría de nuestras telas no se pueden lavar a máquina porque el cabecero lleva relleno interior.",
+  },
+  {
+    q: "¿Dónde se fabrican los productos de Tiroriro?",
+    a: "Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 15 días: nada está prefabricado.",
+  },
+  {
     q: "¿Cuánto tarda en llegar mi pedido?",
     a: "El plazo habitual es de 15 días naturales desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.",
   },
