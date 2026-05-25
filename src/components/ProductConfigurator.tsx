@@ -1,124 +1,211 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
-import ProductSVGPreview from "./ProductSVGPreview";
+import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  BED_WIDTH_OPTIONS,
-  BASE_DEPTH_OPTIONS,
-  BASE_HEIGHT_OPTIONS,
-  BASE_WIDTH_OPTIONS,
-  BENCH_TYPES,
-  CUSHION_SHAPES,
-  CUSHION_SIZES,
-  FABRIC_COLORS,
-  FINISHES,
-  HEADBOARD_HEIGHT_OPTIONS,
-  HEADBOARD_SHAPES,
-  PRODUCTS,
-  ProductType,
-  PUFF_SHAPES,
-  buildConfigSummary,
-} from "@/lib/products";
+import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
+import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
+import { ChevronDown, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { safeLocalStorageSet } from "@/lib/safe-storage";
+
+// Cabecero: vivo-simple incluido (0€), vivo-doble +10€
+// Resto: vivo-simple incluido (0€) cuando aplica
+const FINISHES = [
+  { id: "liso", name: "Sin vivo", desc: "Sin ribete decorativo en el borde", extra: 0 },
+  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el borde — incluido", extra: 0, extraLabel: "Incluido" },
+  { id: "vivo-doble", name: "Vivo doble", desc: "Doble ribete, más elaborado", extra: 10, extraLabel: "+10€" },
+];
+
+const HEADBOARD_SHAPES = [
+  { id: "recto", name: "Calobra", svgPreview: "M 5 35 L 5 8 L 55 8 L 55 35 Z" },
+  { id: "semicirculo", name: "Pregonda", svgPreview: "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z" },
+  { id: "corona-simple", name: "Macarella", svgPreview: "M 3 37 L 3 24 C 13.6 24 18 20 18.8 16.8 A 11.2 3.2 0 0 1 41.2 16.8 C 42 20 46.4 24 57 24 L 57 37 Z" },
+  { id: "corona-doble", name: "Conta", svgPreview: "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z" },
+  { id: "ondas", name: "Barbaria", svgPreview: "M 3 37 L 3 26 Q 8.4 12 13.8 26 Q 19.2 12 24.6 26 Q 30 12 35.4 26 Q 40.8 12 46.2 26 Q 51.6 12 57 26 L 57 37 Z" },
+];
+
+// Colección Ávila — solo cilindro, cuadrado y rectangulo activos (el resto próximamente)
+const LAMPSHADE_SHAPES: Array<{ id: string; name: string; subtitle: string; svgContent: React.ReactNode; comingSoon?: boolean }> = [
+  {
+    id: "cilindro", name: "Almanzor", subtitle: "Cilíndrico",
+    svgContent: (
+      <>
+        <rect x="8" y="12" width="44" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="12" rx="22" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="32" rx="22" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
+  {
+    id: "cuadrado", name: "Tormes", subtitle: "Cuadrado",
+    svgContent: (
+      <rect x="13" y="8" width="34" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "rectangulo", name: "La Serrota", subtitle: "Rectangular",
+    svgContent: (
+      <rect x="5" y="12" width="50" height="20" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "cono", name: "Gredos", subtitle: "Cónico", comingSoon: true,
+    svgContent: (
+      <>
+        <path d="M 20 14 L 40 14 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="14" rx="10" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
+  {
+    id: "piramide", name: "La Galana", subtitle: "Pirámide", comingSoon: true,
+    svgContent: (
+      <path d="M 16 8 L 44 8 L 52 36 L 8 36 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    ),
+  },
+  {
+    id: "ovalado", name: "La Paramera", subtitle: "Ovalado", comingSoon: true,
+    svgContent: (
+      <>
+        <ellipse cx="30" cy="14" rx="18" ry="7" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="12" y1="14" x2="12" y2="32" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="48" y1="14" x2="48" y2="32" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="30" cy="32" rx="18" ry="7" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
+];
+
+// Medidas y precios reales por forma de pantalla (key = "<shape>-<medida>" para el lookup)
+const LAMP_SIZES: Record<string, string[]> = {
+  cilindro:   ["Ø15×20cm", "Ø25×25cm", "Ø40×40cm"],
+  cuadrado:   ["20×20cm"],
+  rectangulo: ["20×40cm"],
+};
+
+// Ribete incluido en el precio — no se muestra como opción separada
+const PANTALLA_FINISHES = [
+  { id: "vivo-simple", name: "Ribete incluido", desc: "Ribete en el borde superior e inferior — sin coste adicional" },
+];
+
+const CUSHION_SHAPES = [
+  {
+    id: "rodiles", name: "Rodiles", subtitle: "Cuadrado",
+    svgPath: <rect x="10" y="10" width="40" height="40" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+    sizes: ["40×40 cm", "45×45 cm", "50×50 cm"],
+    getDetails: (sz: string) => {
+      if (sz.includes("50")) return { shape: "cuadrada", widthCm: 50, heightCm: 50 };
+      if (sz.includes("45")) return { shape: "cuadrada", widthCm: 45, heightCm: 45 };
+      return { shape: "cuadrada", widthCm: 40, heightCm: 40 };
+    },
+  },
+  {
+    id: "covadonga", name: "Covadonga", subtitle: "Rectangular",
+    svgPath: <rect x="4" y="14" width="52" height="32" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+    sizes: ["50×30 cm", "60×40 cm"],
+    getDetails: (sz: string) => {
+      if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
+      return { shape: "rectangular", widthCm: 50, heightCm: 30 };
+    },
+  },
+  {
+    id: "gulpiyuri", name: "Gulpiyuri", subtitle: "Rulo",
+    svgPath: <><rect x="4" y="20" width="52" height="20" rx="10" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="4" cy="30" rx="5" ry="10" fill="none" stroke="currentColor" strokeWidth="1.5" /></>,
+    sizes: ["13×90 cm"],
+    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 90, heightCm: 13 }),
+  },
+];
+
+// Lookup: fabric id → style category for the filter
+const FABRIC_ESTILO: Record<string, "liso" | "flores" | "geometrico" | "rayas"> = {
+  // Básicas — Lisas
+  "basica-arequipa-beige": "liso",
+  // Básicas — Flores
+  "basica-flor-azul-protea": "flores", "basica-flor-01": "flores",
+  "basica-flor-hemera-amarilla": "flores", "basica-morris-granadas-terracota": "flores",
+  "basica-pajaros-louise-azul": "flores", "basica-pajaros-louise-rosa": "flores",
+  "basica-pajaros-louise-verde": "flores", "basica-floralia-vintage": "flores",
+  // Básicas — Geométricas
+  "basica-ikat": "geometrico", "basica-ikat-verde": "geometrico",
+  "basica-ikat-arena": "geometrico", "basica-ikat-arrecife": "geometrico",
+  "basica-ikat-bali-azul": "geometrico", "basica-ikat-yakarta": "geometrico",
+  "basica-arbol-kasbah": "geometrico", "basica-geometrica-kuwait": "geometrico",
+  "basica-takada-verde": "geometrico",
+  "basica-espiga-agua": "geometrico",
+  // Básicas — Rayas
+  "basica-mil-rayas-gris": "rayas", "basica-rayas-arena": "rayas",
+  "basica-mil-rayas-azul": "rayas", "basica-raya-indigo": "rayas",
+  "basica-rayas-tevere": "rayas", "basica-coral-costero": "rayas",
+  "basica-raya-harvest": "rayas", "basica-rayas-laurel-azul": "rayas",
+  "basica-lino-greca": "rayas", "basica-raya-rioja": "rayas",
+  "basica-rayas-espiga-arena": "rayas", "basica-rayas-espiga-azul": "rayas",
+  "basica-rayas-piave": "rayas", "basica-raya-artesanal-lino": "rayas",
+  "basica-raya-relieve-lino": "rayas",
+  // Básicas — Otras
+  "basica-toile-jouy-azul": "flores", "basica-espiga-azul": "rayas",
+  "basica-morris-granadas-azul": "flores", "basica-pata-de-gallo-verde": "geometrico",
+  "basica-ikat-rojo": "geometrico",
+  // Premium — Lisos
+  "premium-baqueira": "liso", "premium-baqueira-roja": "liso",
+  "premium-cerler": "liso", "premium-lola-gris": "liso",
+  "premium-rocio": "liso", "premium-artesano-beige": "liso",
+  "premium-oxford": "liso", "premium-lino-verde-botella": "liso",
+  "premium-lino-verde": "liso", "premium-lino-azul-provenzal": "liso",
+  "premium-bibiana": "liso",
+  // Premium — Geométricas
+  "premium-guell-lamadrid": "geometrico",
+  "premium-vichy-denim": "geometrico", "premium-vichy-verde": "geometrico",
+  // Premium — Flores
+  "premium-ramas-siena": "flores", "premium-flores-gardenia": "flores",
+  "premium-lino-flores-normandia": "flores", "premium-lino-flores-senda": "flores",
+  "premium-prints-botanicos": "flores",
+  // Premium — Rayas
+  "premium-rayas-verde-sage": "rayas", "premium-raya-monina": "rayas",
+  "premium-rayas-jules-verde": "rayas",
+};
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
-
-type FabricOption = {
-  id: string;
-  name: string;
-  hex: string;
-  image: string;
-  group: string;
-};
-
-const darken = (hex: string, amount = 40): string => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgb(${Math.max(0, r - amount)}, ${Math.max(0, g - amount)}, ${Math.max(0, b - amount)})`;
-};
-
+const STEPS: Step[] = ["type", "measures", "fabric", "finish", "extras"];
 const STEP_LABELS: Record<Step, string> = {
   type: "¿Qué quieres?",
-  measures: "Medidas",
+  measures: "Forma y medida",
   fabric: "Tela y color",
   finish: "Acabado",
   extras: "Extras",
 };
 
-const STEPS: Step[] = ["type", "measures", "fabric", "finish", "extras"];
-
-const FABRICS: FabricOption[] = [
-  { id: "tela-01", name: "Tela 01", hex: "#D9D0C3", image: "/telas/tela-01.webp", group: "Colección" },
-  { id: "tela-02", name: "Tela 02", hex: "#D8C8B5", image: "/telas/tela-02.png", group: "Colección" },
-  { id: "tela-03", name: "Tela 03", hex: "#D1CDC7", image: "/telas/tela-03.webp", group: "Colección" },
-  { id: "tela-04", name: "Tela 04", hex: "#C7CFD2", image: "/telas/tela-04.png", group: "Colección" },
-  { id: "tela-05", name: "Tela 05", hex: "#B3B39C", image: "/telas/tela-05.png", group: "Colección" },
-  { id: "tela-06", name: "Tela 06", hex: "#BAC1BD", image: "/telas/tela-06.png", group: "Colección" },
-  { id: "tela-07", name: "Tela 07", hex: "#C4B5A8", image: "/telas/tela-07.png", group: "Colección" },
-  { id: "tela-08", name: "Tela 08", hex: "#919A91", image: "/telas/tela-08.png", group: "Colección" },
-  { id: "tela-09", name: "Tela 09", hex: "#5C656E", image: "/telas/tela-09.png", group: "Colección" },
-  { id: "tela-10", name: "Tela 10", hex: "#746E6A", image: "/telas/tela-10.jpg", group: "Colección" },
-];
-
-const HEADBOARD_SIDE_OPTIONS = [
-  { id: "misma-tela", name: "Misma tela que frontal" },
-  { id: "otra-tela", name: "Otra tela a elegir" },
-];
-
-const headboardSelectorPath = (shape: string) => {
-  switch (shape) {
-    case "semicirculo":
-      return "M 5 35 L 5 22 Q 30 2 55 22 L 55 35 Z";
-    case "corona-simple":
-      return "M 3 37 L 3 24 C 13.6 24 18 20 18.8 16.8 A 11.2 3.2 0 0 1 41.2 16.8 C 42 20 46.4 24 57 24 L 57 37 Z";
-    case "corona-doble":
-      return "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z";
-    case "corona-triple":
-      return "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z";
-    case "recto":
+const ProductIcon = ({ type }: { type: string }) => {
+  switch (type) {
+    case 'cabecero':
+      return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="2" y="4" width="36" height="22" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'banco':
+      return <svg viewBox="0 0 40 24" className="w-8 h-5"><rect x="2" y="4" width="36" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="6" y1="16" x2="6" y2="22" stroke="currentColor" strokeWidth="2" /><line x1="34" y1="16" x2="34" y2="22" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'puf':
+      return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="8" y="5" width="24" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'cojin':
+      return <svg viewBox="0 0 40 24" className="w-8 h-5"><rect x="3" y="4" width="34" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'mesa':
+      return <svg viewBox="0 0 42 30" className="w-8 h-6"><rect x="5" y="5" width="32" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="10" y1="15" x2="10" y2="25" stroke="currentColor" strokeWidth="2" /><line x1="32" y1="15" x2="32" y2="25" stroke="currentColor" strokeWidth="2" /></svg>;
+    case 'pantalla':
+      return <svg viewBox="0 0 40 32" className="w-8 h-6"><path d="M 14 4 L 26 4 L 34 28 L 6 28 Z" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     default:
-      return "M 5 35 L 5 8 L 55 8 L 55 35 Z";
+      return null;
   }
 };
 
-const MESA_TYPES = [
-  { id: "tipo-puff", name: "Mesa de centro tapizada" },
-  { id: "tipo-banco", name: "Mesa de centro tipo banco" },
+const BENCH_VARIANTS = [
+  { id: "madera", name: "Patas de madera" },
+  { id: "enteladas", name: "Patas enteladas" },
+  { id: "baul", name: "Estilo baúl" },
 ];
 
-const SURFACE_OPTIONS = [
-  { id: "sin-superficie", name: "Sin cristal ni metacrilato" },
-  { id: "cristal", name: "Con cristal" },
-  { id: "metacrilato", name: "Con metacrilato" },
-];
-
-const selectClass =
-  "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
-
-const ProductIcon = ({ type }: { type: ProductType }) => {
-  if (type === "cabecero") {
-    return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="2" y="4" width="36" height="22" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
-  }
-  if (type === "banco") {
-    return <svg viewBox="0 0 40 24" className="w-8 h-5"><rect x="2" y="4" width="36" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="6" y1="16" x2="6" y2="22" stroke="currentColor" strokeWidth="2" /><line x1="34" y1="16" x2="34" y2="22" stroke="currentColor" strokeWidth="2" /></svg>;
-  }
-  if (type === "puff") {
-    return <svg viewBox="0 0 40 30" className="w-8 h-6"><ellipse cx="20" cy="17" rx="16" ry="11" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
-  }
-  if (type === "mesa") {
-    return <svg viewBox="0 0 42 30" className="w-8 h-6"><rect x="5" y="5" width="32" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="10" y1="15" x2="10" y2="25" stroke="currentColor" strokeWidth="2" /><line x1="32" y1="15" x2="32" y2="25" stroke="currentColor" strokeWidth="2" /></svg>;
-  }
-  return <svg viewBox="0 0 30 30" className="w-6 h-6"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
-};
+const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
 
 const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="relative">
@@ -127,73 +214,92 @@ const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-const groupedFabrics = FABRICS.reduce<Record<string, FabricOption[]>>((acc, fabric) => {
-  acc[fabric.group] = acc[fabric.group] || [];
-  acc[fabric.group].push(fabric);
-  return acc;
-}, {});
+function parseCm(selectVal: string): number | undefined {
+  if (!selectVal) return undefined;
+  const n = parseInt(selectVal);
+  return isNaN(n) ? undefined : n;
+}
 
-const parseMeasureToNumber = (value: string, custom: string) => {
-  if (value === "Otro") return Number(custom.replace(",", ".")) || 0;
-  if (value.includes("m")) {
-    const meters = value.match(/(\d+(?:,\d+)?)/)?.[1];
-    return meters ? Math.round(parseFloat(meters.replace(",", ".")) * 100) : 0;
-  }
-  return Number(value.replace(/[^\d]/g, "")) || 0;
-};
+function parseLampSize(sz: string): { widthCm: number; heightCm: number } {
+  const diameter = sz.match(/Ø(\d+)/);
+  if (diameter) { const d = parseInt(diameter[1]); return { widthCm: d, heightCm: d }; }
+  const dims = sz.match(/(\d+)[×x](\d+)/);
+  if (dims) return { widthCm: parseInt(dims[1]), heightCm: parseInt(dims[2]) };
+  return { widthCm: 30, heightCm: 30 };
+}
 
-const parseCushionDimensions = (shape: string, size: string, customWidth: string, customHeight: string) => {
-  if (size === "Otro") {
-    return {
-      width: Number(customWidth.replace(",", ".")) || 0,
-      height: Number(customHeight.replace(",", ".")) || 0,
-    };
-  }
+function parseCushionDetails(cushionShape: string, cushionSize: string): { shape: string; widthCm: number; heightCm: number } {
+  const shapeObj = CUSHION_SHAPES.find(s => s.id === cushionShape);
+  if (shapeObj && cushionSize) return shapeObj.getDetails(cushionSize);
+  return { shape: 'cuadrada', widthCm: 45, heightCm: 45 };
+}
 
-  const match = size.match(/(\d+)\D+(\d+)/);
-  if (match) {
-    return {
-      width: Number(match[1]) || 0,
-      height: Number(match[2]) || 0,
-    };
-  }
+const RenderNotice = () => (
+  <p className="text-[11px] text-muted-foreground text-center mt-3 italic px-2">
+    Simulación orientativa — colores pueden variar.
+  </p>
+);
 
-  if (shape === "cilindro") {
-    return { width: 60, height: 22 };
-  }
-
-  return { width: 45, height: 45 };
-};
-
-const formatMeasure = (value: string, custom: string) => {
-  if (!value) return "";
-  return value === "Otro" ? (custom ? `${custom} cm` : "") : value;
-};
-
-const FabricSwatch = ({
+// Fabric swatch panel shown next to the render
+// Order: tela principal → tela laterales → vivo
+const FabricSwatchPanel = ({
   fabric,
-  active,
-  onClick,
+  vivoFabric,
+  lateralFabric,
+  showLateral = true,
 }: {
-  fabric: FabricOption;
-  active: boolean;
-  onClick: () => void;
+  fabric?: { name: string; hex: string; image?: string };
+  vivoFabric?: { name: string; hex: string; image?: string };
+  lateralFabric?: { name: string; hex: string; image?: string };
+  showLateral?: boolean;
 }) => (
-  <button onClick={onClick} type="button" className="flex flex-col items-center gap-2 text-center">
-    <span
-      className={`h-14 w-14 overflow-hidden rounded-md border transition-all ${
-        active ? "border-foreground ring-2 ring-foreground/15 ring-offset-2" : "border-border hover:border-foreground/50"
-      }`}
-      style={{
-        backgroundImage: `url(${fabric.image})`,
-        backgroundSize: "contain",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundColor: fabric.hex,
-      }}
-    />
-    <span className="max-w-[76px] text-[10px] leading-tight text-muted-foreground">{fabric.name}</span>
-  </button>
+  <div className="flex flex-col gap-3 justify-center">
+    {/* 1. Tela elegida */}
+    <div className="flex flex-col gap-1">
+      <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela</p>
+      <div
+        className="w-full h-14 rounded-md border border-border/40 overflow-hidden"
+        style={{ backgroundColor: fabric?.hex || '#E8E4DC' }}
+      >
+        {fabric?.image && (
+          <img src={fabric.image} alt={fabric.name} className="w-full h-full object-cover" loading="lazy" />
+        )}
+      </div>
+      <p className="text-[10px] text-muted-foreground font-light leading-tight">{fabric?.name || '—'}</p>
+    </div>
+
+    {/* 2. Tela laterales */}
+    {showLateral && (
+      <div className="flex flex-col gap-1">
+        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Laterales</p>
+        <div
+          className="w-full h-14 rounded-md border border-border/40 overflow-hidden"
+          style={{ backgroundColor: lateralFabric?.hex || fabric?.hex || '#E8E4DC' }}
+        >
+          {(lateralFabric?.image || fabric?.image) && (
+            <img src={lateralFabric?.image || fabric?.image} alt={lateralFabric?.name || fabric?.name} className="w-full h-full object-cover" loading="lazy" />
+          )}
+        </div>
+        <p className="text-[10px] text-muted-foreground font-light leading-tight">{lateralFabric?.name || fabric?.name || '—'}</p>
+      </div>
+    )}
+
+    {/* 3. Vivo elegido */}
+    {vivoFabric && (
+      <div className="flex flex-col gap-1">
+        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Vivo</p>
+        <div
+          className="w-full h-9 rounded-md border border-border/40 overflow-hidden"
+          style={{ backgroundColor: vivoFabric.hex }}
+        >
+          {vivoFabric.image && (
+            <img src={vivoFabric.image} alt={vivoFabric.name} className="w-full h-full object-cover" loading="lazy" />
+          )}
+        </div>
+        <p className="text-[10px] text-muted-foreground font-light leading-tight">{vivoFabric.name}</p>
+      </div>
+    )}
+  </div>
 );
 
 const ProductConfigurator = () => {
@@ -202,1147 +308,1371 @@ const ProductConfigurator = () => {
   const isMobile = useIsMobile();
 
   const [productType, setProductType] = useState<ProductType | null>(null);
-
-  const [headboardShape, setHeadboardShape] = useState("recto");
-  const [headboardWidth, setHeadboardWidth] = useState("");
-  const [headboardWidthCustom, setHeadboardWidthCustom] = useState("");
-  const [headboardHeight, setHeadboardHeight] = useState("");
-  const [headboardHeightCustom, setHeadboardHeightCustom] = useState("");
-  const [headboardLateralMode, setHeadboardLateralMode] = useState("misma-tela");
-  const [headboardLateralFabric, setHeadboardLateralFabric] = useState("");
-  const [headboardHanging, setHeadboardHanging] = useState(false);
-
-  const [benchKind, setBenchKind] = useState("madera");
+  const [shape, setShape] = useState("recto");
+  const [bedWidth, setBedWidth] = useState("");
+  const [bedHeight, setBedHeight] = useState("");
   const [benchLength, setBenchLength] = useState("");
-  const [benchLengthCustom, setBenchLengthCustom] = useState("");
   const [benchDepth, setBenchDepth] = useState("");
-  const [benchDepthCustom, setBenchDepthCustom] = useState("");
   const [benchHeight, setBenchHeight] = useState("");
-  const [benchHeightCustom, setBenchHeightCustom] = useState("");
-  const [benchExtraFirm, setBenchExtraFirm] = useState(false);
-
-  const [puffShape, setPuffShape] = useState("cuadrado");
-  const [puffWidth, setPuffWidth] = useState("");
-  const [puffWidthCustom, setPuffWidthCustom] = useState("");
-  const [puffDepth, setPuffDepth] = useState("");
-  const [puffDepthCustom, setPuffDepthCustom] = useState("");
+  const [puffDiameter, setPuffDiameter] = useState("");
   const [puffHeight, setPuffHeight] = useState("");
-  const [puffHeightCustom, setPuffHeightCustom] = useState("");
-  const [puffPair, setPuffPair] = useState(false);
-
-  const [mesaKind, setMesaKind] = useState("tipo-puff");
-  const [mesaWidth, setMesaWidth] = useState("");
-  const [mesaWidthCustom, setMesaWidthCustom] = useState("");
-  const [mesaDepth, setMesaDepth] = useState("");
-  const [mesaDepthCustom, setMesaDepthCustom] = useState("");
-  const [mesaHeight, setMesaHeight] = useState("");
-  const [mesaHeightCustom, setMesaHeightCustom] = useState("");
-  const [mesaSurface, setMesaSurface] = useState("sin-superficie");
-
-  const [cushionShape, setCushionShape] = useState("cuadrada");
+  const [cushionShape, setCushionShape] = useState("");
   const [cushionSize, setCushionSize] = useState("");
-  const [cushionWidthCustom, setCushionWidthCustom] = useState("");
-  const [cushionHeightCustom, setCushionHeightCustom] = useState("");
-
+  const [lampDiameter, setLampDiameter] = useState("");
+  const [lampHeight, setLampHeight] = useState("");
   const [fabricId, setFabricId] = useState("");
+  const [lateralFabricId, setLateralFabricId] = useState("");
   const [finish, setFinish] = useState("");
   const [vivoColorId, setVivoColorId] = useState("");
+  const [customWidth, setCustomWidth] = useState("");
+  const [customHeight, setCustomHeight] = useState("");
+
+  const [puffQuantity, setPuffQuantity] = useState("1");
+
+  const [extraPatas, setExtraPatas] = useState(false);
+  const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState<string | string[]>(isMobile ? "type" : ["type"]);
+  const [extraTopMaterial, setExtraTopMaterial] = useState("nada");
+  const [extraTapetes, setExtraTapetes] = useState(false);
+
+  // Siempre string — un único acordeón type="single" en mobile y desktop
+  const [openAccordion, setOpenAccordion] = useState<string>("type");
+
+  // Fabric filter for Solution 2
+  const [fabricFilter, setFabricFilter] = useState<"todas" | "liso" | "flores" | "geometrico" | "rayas">("todas");
 
   useEffect(() => {
-    safeLocalStorageSet("tiro_configurador_visited", "true");
-    safeLocalStorageSet("configurador_visitado", "true");
+    localStorage.setItem('tiro_configurador_visited', 'true');
+    localStorage.setItem('configurador_visitado', 'true');
   }, []);
 
   useEffect(() => {
-    setOpenAccordion(isMobile ? "type" : ["type"]);
-  }, [isMobile]);
-
-  const resetAll = (nextType?: ProductType) => {
-    setHeadboardShape("recto");
-    setHeadboardWidth("");
-    setHeadboardWidthCustom("");
-    setHeadboardHeight("");
-    setHeadboardHeightCustom("");
-    setHeadboardLateralMode("misma-tela");
-    setHeadboardLateralFabric("");
-    setHeadboardHanging(false);
-    setBenchKind("madera");
-    setBenchLength("");
-    setBenchLengthCustom("");
-    setBenchDepth("");
-    setBenchDepthCustom("");
-    setBenchHeight("");
-    setBenchHeightCustom("");
-    setBenchExtraFirm(false);
-    setPuffShape("cuadrado");
-    setPuffWidth("");
-    setPuffWidthCustom("");
-    setPuffDepth("");
-    setPuffDepthCustom("");
-    setPuffHeight("");
-    setPuffHeightCustom("");
-    setPuffPair(false);
-    setMesaKind("tipo-puff");
-    setMesaWidth("");
-    setMesaWidthCustom("");
-    setMesaDepth("");
-    setMesaDepthCustom("");
-    setMesaHeight("");
-    setMesaHeightCustom("");
-    setMesaSurface("sin-superficie");
-    setCushionShape("cuadrada");
-    setCushionSize("");
-    setCushionWidthCustom("");
-    setCushionHeightCustom("");
-    setFabricId("");
-    setFinish("");
-    setVivoColorId("");
-    setExtraExpress(false);
-    if (nextType) setProductType(nextType);
-  };
-
-  useEffect(() => {
-    const tipo = searchParams.get("tipo");
-    const forma = searchParams.get("forma");
-    if (!tipo || !["cabecero", "banco", "cojin", "puff", "mesa"].includes(tipo)) return;
-    setProductType(tipo as ProductType);
-    if (tipo === "cabecero" && forma) setHeadboardShape(forma);
-    if (tipo === "puff" && forma && ["cuadrado", "circular"].includes(forma)) setPuffShape(forma);
-    if (tipo === "mesa" && forma && ["tipo-puff", "tipo-banco"].includes(forma)) setMesaKind(forma);
-    if (isMobile) setOpenAccordion("measures");
-    else setOpenAccordion(["measures"]);
+    const tipo = searchParams.get('tipo');
+    const forma = searchParams.get('forma');
+    if (tipo && ['cabecero', 'banco', 'cojin', 'puf', 'mesa', 'pantalla'].includes(tipo)) {
+      setProductType(tipo as ProductType);
+      if (tipo === 'puf' && !forma) setShape('cuadrado');
+      if (tipo === 'banco' && !forma) setShape('madera');
+      if (tipo === 'mesa' && !forma) setShape('tipo-puf');
+      if (tipo === 'pantalla' && !forma) setShape('cilindro');
+      if (tipo === 'pantalla' || tipo === 'mesa') setFinish('vivo-simple');
+    }
+    if (forma) setShape(forma);
   }, [searchParams, isMobile]);
 
-  const currentFabric = FABRICS.find((fabric) => fabric.id === fabricId);
-  const currentVivoFabric = FABRICS.find((fabric) => fabric.id === (vivoColorId || fabricId));
-  const currentLateralFabric = FABRICS.find((fabric) => fabric.id === headboardLateralFabric);
-  const fillColor = currentFabric?.hex || "#D4C5A9";
-  const simpleVivo = FABRIC_COLORS.find((item) => item.id === (vivoColorId || ""))?.hex;
-  const vivoColor = simpleVivo || currentVivoFabric?.hex || darken(fillColor);
+  const resetConfiguracion = (newType?: ProductType) => {
+    const defaultShape = newType === 'puf' ? 'cuadrado'
+      : newType === 'banco' ? 'madera'
+      : newType === 'mesa' ? 'tipo-puf'
+      : newType === 'pantalla' ? 'cilindro'
+      : 'recto';
+    setShape(defaultShape);
+    setBedWidth('');
+    setBedHeight('');
+    setBenchLength('');
+    setBenchDepth('');
+    setBenchHeight('');
+    setPuffDiameter('');
+    setPuffHeight('');
+    setCushionShape('');
+    setCushionSize('');
+    setLampDiameter('');
+    setLampHeight('');
+    setFabricId('');
+    setLateralFabricId('');
+    setFinish(newType === 'pantalla' || newType === 'mesa' ? 'vivo-simple' : '');
+    setVivoColorId('');
+    setCustomWidth('');
+    setCustomHeight('');
+    setPuffQuantity('1');
+    setExtraPatas(false);
+    setExtraRelleno(false);
+    setExtraExpress(false);
+    setExtraTopMaterial('nada');
+    setExtraTapetes(false);
+  };
 
-  const currentFinishOptions = productType ? FINISHES[productType] : [];
-  const finishLabel = currentFinishOptions.find((item) => item.id === finish)?.name || "";
-  const needsVivo = finish === "vivo-simple" || finish === "vivo-doble";
+  const handleProductChange = (type: ProductType) => {
+    if (type !== productType) {
+      resetConfiguracion(type);
+    }
+    setProductType(type);
+  };
 
-  const cushionPreview = parseCushionDimensions(cushionShape, cushionSize, cushionWidthCustom, cushionHeightCustom);
+  const fabric = ALL_FABRICS.find(f => f.id === fabricId);
+  const lateralFabric = ALL_FABRICS.find(f => f.id === lateralFabricId);
+  const vivoFabric = ALL_FABRICS.find(f => f.id === vivoColorId);
+  const fillColor = fabric?.hex || "#D4C5A9";
+  const fabricImage = (fabric as { image?: string })?.image || undefined;
+  const lateralFabricImage = (lateralFabric as { image?: string })?.image || undefined;
+  const vivoColor = vivoFabric?.hex || darken(fillColor);
 
-  const previewForma =
-    productType === "cabecero" ? headboardShape :
-    productType === "banco" ? benchKind :
-    productType === "puff" ? puffShape :
-    productType === "mesa" ? mesaKind :
-    productType === "cojin" ? cushionShape :
-    undefined;
+  // Cushion details parsed from shape + size
+  const cushionDetails = productType === 'cojin' && cushionShape && cushionSize
+    ? parseCushionDetails(cushionShape, cushionSize)
+    : null;
 
-  const previewWidthCm =
-    productType === "cabecero" ? parseMeasureToNumber(headboardWidth, headboardWidthCustom) :
-    productType === "banco" ? parseMeasureToNumber(benchLength, benchLengthCustom) :
-    productType === "puff" ? parseMeasureToNumber(puffWidth, puffWidthCustom) :
-    productType === "mesa" ? parseMeasureToNumber(mesaWidth, mesaWidthCustom) :
-    0;
+  const lampSizeParsed = productType === 'pantalla' && lampDiameter ? parseLampSize(lampDiameter) : null;
 
-  const previewHeightCm =
-    productType === "cabecero" ? parseMeasureToNumber(headboardHeight, headboardHeightCustom) :
-    productType === "banco" ? parseMeasureToNumber(benchHeight, benchHeightCustom) :
-    productType === "puff" ? parseMeasureToNumber(puffHeight, puffHeightCustom) :
-    productType === "mesa" ? parseMeasureToNumber(mesaHeight, mesaHeightCustom) :
-    productType === "cojin" ? cushionPreview.height :
-    0;
+  const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
+    : productType === 'banco' ? parseCm(benchLength)
+    : productType === 'mesa' ? parseCm(benchLength)
+    : productType === 'puf' ? (parseCm(puffDiameter) ?? 60)
+    : productType === 'cojin' ? cushionDetails?.widthCm
+    : productType === 'pantalla' ? (lampSizeParsed?.widthCm ?? 30)
+    : undefined;
 
-  const previewDepthCm =
-    productType === "banco" ? parseMeasureToNumber(benchDepth, benchDepthCustom) :
-    productType === "puff" ? parseMeasureToNumber(puffDepth, puffDepthCustom) :
-    productType === "mesa" ? parseMeasureToNumber(mesaDepth, mesaDepthCustom) :
-    productType === "cojin" ? cushionPreview.height :
-    0;
+  // For puf cuadrado (Patos): height = width to make it perfectly cubic
+  const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
+    : productType === 'banco' ? parseCm(benchHeight)
+    : productType === 'mesa' ? parseCm(benchHeight)
+    : productType === 'puf' ? (shape === 'cuadrado' ? widthCm : parseCm(puffHeight))
+    : productType === 'cojin' ? cushionDetails?.heightCm
+    : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
+    : undefined;
 
-  const previewWidthValue =
-    productType === "cojin" ? cushionPreview.width : previewWidthCm;
+  const depthCm = productType === 'mesa' ? parseCm(benchDepth) : undefined;
 
-  const formattedOptions = useMemo(() => {
-    const options: Record<string, string> = {};
-    if (!productType) return options;
+  // For cojin, derive svgForma directly from cushionShape (immediate, no wait for size)
+  const cushionShapeToForma: Record<string, string> = {
+    rodiles: 'cuadrada',
+    covadonga: 'rectangular',
+    gulpiyuri: 'cilindro',
+    torimbia: 'circular',
+  };
+  const svgForma = productType === 'cojin'
+    ? (cushionShape ? cushionShapeToForma[cushionShape] || 'cuadrada' : 'cuadrada')
+    : shape;
 
-    options.fabricLabel = currentFabric?.name || "";
-    options.finish = finish;
-    options.finishLabel = finishLabel;
-    options.color = fabricId;
-    options.vivoLabel = currentVivoFabric?.name || "";
-    options.express = extraExpress ? "true" : "false";
+  // Derivar el grupo de tela (Básicas / Premium) desde fabricId
+  const fabricGroup = ALL_FABRICS.find(f => f.id === fabricId)?.group ?? '';
 
-    if (productType === "cabecero") {
-      options.shape = headboardShape;
-      options.shapeLabel = HEADBOARD_SHAPES.find((item) => item.id === headboardShape)?.name || "";
-      options.width = formatMeasure(headboardWidth, headboardWidthCustom);
-      options.height = formatMeasure(headboardHeight, headboardHeightCustom);
-      options.lateralMode = headboardLateralMode;
-      options.lateralLabel =
-        headboardLateralMode === "otra-tela"
-          ? currentLateralFabric?.name || "Otra tela"
-          : "Misma tela que frontal";
-      options.hangingAccessories = headboardHanging ? "true" : "false";
+  // Clave de cushion: "rodiles-40x40" desde shape="rodiles" + size="40×40 cm"
+  const cushionKey = cushionShape && cushionSize
+    ? `${cushionShape}-${cushionSize.replace(/[×x]/g, 'x').replace(/ cm/g, '').replace(/ /g, '')}`
+    : '';
+
+  // Clave de pantalla: "cilindro-Ø15×20cm"
+  const pantallaSizeKey = lampDiameter ? `${shape}-${lampDiameter}` : '';
+
+  // Preset de mesa: "120x45x60" o "80x45x80"
+  const mesaPreset = benchLength.includes('120') ? '120x45x60'
+    : benchLength.includes('80') ? '80x45x80'
+    : '';
+
+  // Ancho en cm (solo el número) para cabeceros
+  const bedWidthCm = bedWidth === 'custom' ? customWidth : bedWidth.replace(' cm', '');
+  // Alto en cm para cabeceros
+  const bedHeightCm = bedHeight === 'custom' ? customHeight
+    : bedHeight.includes('100') ? '100'
+    : bedHeight.includes('120') ? '120'
+    : bedHeight.replace(' cm', '');
+
+  const options = useMemo(() => {
+    const o: Record<string, string> = {};
+    o.fabricGroup = fabricGroup;
+    o.finish      = finish;
+
+    if (productType === 'cabecero') {
+      o.shape      = shape;
+      o.bedWidthCm = bedWidth === 'custom' ? customWidth : bedWidth.replace(' cm', '');
+      o.bedHeightCm = bedHeight === 'custom' ? customHeight
+        : bedHeight.includes('100') ? '100'
+        : bedHeight.includes('120') ? '120'
+        : bedHeight.replace(' cm', '');
+      o.shapeLabel = HEADBOARD_SHAPES.find(s => s.id === shape)?.name ?? shape;
+      if (extraPatas) o.colgador = 'true';
     }
 
-    if (productType === "banco") {
-      options.kind = benchKind;
-      options.kindLabel = BENCH_TYPES.find((item) => item.id === benchKind)?.name || "";
-      options.length = formatMeasure(benchLength, benchLengthCustom);
-      options.depth = formatMeasure(benchDepth, benchDepthCustom);
-      options.height = formatMeasure(benchHeight, benchHeightCustom);
-      options.extraFirm = benchExtraFirm ? "true" : "false";
+    if (productType === 'puf') {
+      o.pufSizeCm   = puffDiameter.includes('40') ? '40' : puffDiameter.includes('50') ? '50' : '';
+      o.pufQuantity = puffQuantity;
     }
 
-    if (productType === "puff") {
-      options.shape = puffShape;
-      options.shapeLabel = PUFF_SHAPES.find((item) => item.id === puffShape)?.name || "";
-      options.width = formatMeasure(puffWidth, puffWidthCustom);
-      options.depth = formatMeasure(puffDepth, puffDepthCustom);
-      options.height = formatMeasure(puffHeight, puffHeightCustom);
-      options.doubleSet = puffPair ? "true" : "false";
+    if (productType === 'mesa') {
+      o.mesaPreset = benchLength.includes('120') ? '120x45x60'
+        : benchLength.includes('80') ? '80x45x80' : '';
+      o.surface = extraTopMaterial !== 'nada' ? extraTopMaterial : '';
     }
 
-    if (productType === "mesa") {
-      options.kind = mesaKind;
-      options.kindLabel = MESA_TYPES.find((item) => item.id === mesaKind)?.name || "";
-      options.width = formatMeasure(mesaWidth, mesaWidthCustom);
-      options.depth = formatMeasure(mesaDepth, mesaDepthCustom);
-      options.height = formatMeasure(mesaHeight, mesaHeightCustom);
-      options.surface = mesaSurface;
-      options.surfaceLabel = SURFACE_OPTIONS.find((item) => item.id === mesaSurface)?.name || "";
+    if (productType === 'cojin') {
+      o.cushionKey = cushionShape && cushionSize
+        ? `${cushionShape}-${cushionSize.replace(/[×x]/g, 'x').replace(/ cm/g, '').replace(/ /g, '')}`
+        : '';
     }
 
-    if (productType === "cojin") {
-      options.shape = cushionShape;
-      options.shapeLabel = CUSHION_SHAPES.find((item) => item.id === cushionShape)?.name || "";
-      options.sizeLabel =
-        cushionSize === "Otro"
-          ? (cushionWidthCustom && cushionHeightCustom ? `${cushionWidthCustom}×${cushionHeightCustom} cm` : "")
-          : cushionSize;
-      options.width = cushionSize === "Otro" ? `${cushionWidthCustom} cm` : "";
-      options.depth = cushionSize === "Otro" ? `${cushionHeightCustom} cm` : "";
+    if (productType === 'pantalla') {
+      o.pantallaSizeKey = lampDiameter ? `${shape}-${lampDiameter}` : '';
     }
 
-    return options;
-  }, [
-    productType,
-    currentFabric,
-    finish,
-    finishLabel,
-    currentVivoFabric,
-    fabricId,
-    extraExpress,
-    headboardShape,
-    headboardWidth,
-    headboardWidthCustom,
-    headboardHeight,
-    headboardHeightCustom,
-    headboardLateralMode,
-    currentLateralFabric,
-    headboardHanging,
-    benchKind,
-    benchLength,
-    benchLengthCustom,
-    benchDepth,
-    benchDepthCustom,
-    benchHeight,
-    benchHeightCustom,
-    benchExtraFirm,
-    puffShape,
-    puffWidth,
-    puffWidthCustom,
-    puffDepth,
-    puffDepthCustom,
-    puffHeight,
-    puffHeightCustom,
-    puffPair,
-    mesaKind,
-    mesaWidth,
-    mesaWidthCustom,
-    mesaDepth,
-    mesaDepthCustom,
-    mesaHeight,
-    mesaHeightCustom,
-    mesaSurface,
-    cushionShape,
-    cushionSize,
-    cushionWidthCustom,
-    cushionHeightCustom,
-  ]);
+    if (productType === 'banco') o.benchLength = benchLength;
 
-  const measuresComplete =
-    productType === "cabecero"
-      ? !!formatMeasure(headboardWidth, headboardWidthCustom) && !!formatMeasure(headboardHeight, headboardHeightCustom)
-      : productType === "banco"
-        ? !!formatMeasure(benchLength, benchLengthCustom) && !!formatMeasure(benchDepth, benchDepthCustom) && !!formatMeasure(benchHeight, benchHeightCustom)
-        : productType === "puff"
-          ? !!puffShape && !!formatMeasure(puffWidth, puffWidthCustom) && !!formatMeasure(puffDepth, puffDepthCustom) && !!formatMeasure(puffHeight, puffHeightCustom)
-          : productType === "mesa"
-            ? !!mesaKind && !!formatMeasure(mesaWidth, mesaWidthCustom) && !!formatMeasure(mesaDepth, mesaDepthCustom) && !!formatMeasure(mesaHeight, mesaHeightCustom)
-            : productType === "cojin"
-              ? !!cushionShape && !!(cushionSize === "Otro" ? cushionWidthCustom && cushionHeightCustom : cushionSize)
-              : false;
+    if (extraRelleno) o.relleno = 'true';
+    if (extraTapetes) o.tapetes = 'true';
+    o.hasCustomVivo = vivoColorId ? 'true' : 'false';
+    o.hasCustomLateral = lateralFabricId ? 'true' : 'false';
+    return o;
+  }, [productType, shape, bedWidth, bedHeight, benchLength, cushionShape, cushionSize,
+      puffDiameter, puffQuantity, lampDiameter, finish, fabricGroup, fabricId,
+      extraPatas, extraRelleno, extraTopMaterial, customWidth, customHeight,
+      extraTapetes, vivoColorId, lateralFabricId]);
 
-  const fabricComplete = !!fabricId && (productType !== "cabecero" || headboardLateralMode !== "otra-tela" || !!headboardLateralFabric);
-  const finishComplete = !!finish;
-  const extrasComplete =
-    productType === "mesa"
-      ? !!mesaSurface
-      : productType === "cabecero"
-        ? headboardHanging || extraExpress
-        : productType === "banco"
-          ? benchExtraFirm || extraExpress
-          : productType === "puff"
-            ? puffPair || extraExpress
-            : extraExpress;
+  const price = useMemo(() => {
+    if (!productType) return 0;
+    return calculatePrice(productType, options);
+  }, [productType, options]);
+
+  // Price flash animation key — increments on every price change
+  const prevPriceRef = useRef(price);
+  const [priceKey, setPriceKey] = useState(0);
+  useEffect(() => {
+    if (price > 0 && price !== prevPriceRef.current) {
+      setPriceKey(k => k + 1);
+    }
+    prevPriceRef.current = price;
+  }, [price]);
 
   const stepComplete: Record<Step, boolean> = {
     type: !!productType,
-    measures: measuresComplete,
-    fabric: fabricComplete,
-    finish: finishComplete,
-    extras: extrasComplete,
+    measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
+      : productType === 'banco' ? !!benchLength
+      : productType === 'mesa' ? !!benchLength
+      : productType === 'puf' ? !!puffDiameter
+      : productType === 'cojin' ? !!cushionShape && !!cushionSize
+      : productType === 'pantalla' ? !!lampDiameter
+      : false,
+    fabric: !!fabricId,
+    finish: productType === 'pantalla' ? !!lampDiameter : !!finish,
+    extras: !productType || !['cabecero', 'banco'].includes(productType),
   };
 
-  const currentStep = isMobile
-    ? (typeof openAccordion === "string" ? (openAccordion || "type") : "type")
-    : (Array.isArray(openAccordion) ? openAccordion[0] || "type" : "type");
+  const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
   const activeStepIndex = STEPS.indexOf(currentStep as Step);
-  const canOrder = !!productType && measuresComplete && fabricComplete && finishComplete;
 
-  const chips = [
-    productType ? PRODUCTS.find((product) => product.type === productType)?.name : "",
-    productType === "cabecero" ? formatMeasure(headboardWidth, headboardWidthCustom) : "",
-    productType === "banco" ? formatMeasure(benchLength, benchLengthCustom) : "",
-    productType === "puff" ? formatMeasure(puffWidth, puffWidthCustom) : "",
-    productType === "mesa" ? formatMeasure(mesaWidth, mesaWidthCustom) : "",
-    productType === "cojin" ? (cushionSize === "Otro" ? `${cushionWidthCustom}×${cushionHeightCustom} cm` : cushionSize) : "",
-    currentFabric?.name || "",
-    finishLabel,
-  ].filter(Boolean) as string[];
+  // El precio es "en progreso" cuando no hay precio calculado aún (medidas no elegidas)
+  const priceIsKnown = price > 0;
+  const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
+  const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && !finish);
+
+  // Detecta si el usuario ha introducido una medida personalizada (no preset)
+  const hasCustomMeasure = !!(
+    (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
+    (productType === 'puf' && puffDiameter === 'custom' && customWidth) ||
+    (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight))
+  );
+  const customNote = "El precio se ajustará según la medida elegida. Te confirmamos el importe final al recibir tu solicitud.";
+
+  const chips: string[] = [];
+  if (productType) {
+    const pName = PRODUCTS.find(p => p.type === productType)?.name || '';
+    chips.push(pName.split(' ')[0]);
+  }
+  if (productType === 'cabecero') {
+    chips.push(bedWidth || customWidth ? (bedWidth || `${customWidth} cm`) : "—");
+    chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
+  }
+  if (productType === 'banco') chips.push(benchLength || "—");
+  if (productType === 'puf') chips.push(puffDiameter || "—");
+  if (productType === 'cojin') chips.push(cushionSize || "—");
+  if (productType === 'pantalla') chips.push(lampDiameter || "—");
+  chips.push(fabric?.name || "—");
+  const finishObj = FINISHES.find(f => f.id === finish);
+  if (finishObj) chips.push(finishObj.name);
+  else chips.push("—");
 
   const previewLabel = [
-    productType ? PRODUCTS.find((product) => product.type === productType)?.name : "",
-    currentFabric?.name || "",
-  ].filter(Boolean).join(" · ") || "Tu pieza aparecerá aquí";
-
-  const previewKey = [
-    productType || "empty",
-    previewForma || "",
-    previewWidthValue || 0,
-    previewHeightCm || 0,
-    previewDepthCm || 0,
-    finish || "",
-    currentFabric?.image || "",
-    productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image || "" : "",
-    vivoColor || "",
-  ].join("|");
+    productType ? (PRODUCTS.find(p => p.type === productType)?.name.split(' ')[0] || '') : '',
+    productType === 'cabecero' ? (bedWidth || (customWidth ? `${customWidth} cm` : '')) : '',
+    fabric?.name || '',
+  ].filter(Boolean).join(' · ') || 'Tu pieza aparecerá aquí';
 
   const advanceTo = (next: Step) => {
-    if (isMobile) setOpenAccordion(next);
-    else setOpenAccordion((prev) => {
-      const current = Array.isArray(prev) ? [...prev] : [prev];
-      return current.includes(next) ? current : [...current, next];
-    });
+    setOpenAccordion(next);
+    setTimeout(() => {
+      document.getElementById('acc-' + next)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
   };
 
   const buildOrderUrl = () => {
-    if (!productType) return "/#contacto";
-    const product = PRODUCTS.find((item) => item.type === productType);
-    const summary = buildConfigSummary(productType, formattedOptions);
+    if (!productType) return '/#contacto';
+    const product = PRODUCTS.find(p => p.type === productType);
+    const summary = buildConfigSummary(productType, options);
     const params = new URLSearchParams({
-      product: product?.name || "",
-      config: `Hemos recuperado esta selección: ${summary}. Si hace falta, podemos ajustar medidas o detalles antes de cerrar el presupuesto.`,
+      product: product?.name || '',
+      config: `Me interesa: ${summary}`,
       previewType: productType,
-      previewForma: previewForma || "",
+      previewForma: svgForma || '',
       previewColor: fillColor,
-      previewTexture: currentFabric?.image || "",
-      previewLateralTexture: productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image || "" : "",
+      previewTexture: fabricImage || '',
+      previewLateralTexture: lateralFabricImage || '',
       previewFinish: finish,
-      previewVivo: needsVivo ? vivoColor : "",
-      previewWidth: previewWidthValue ? String(previewWidthValue) : "",
-      previewHeight: previewHeightCm ? String(previewHeightCm) : "",
-      previewDepth: previewDepthCm ? String(previewDepthCm) : "",
+      previewVivo: vivoFabric?.hex || '',
+      previewVivoName: vivoFabric?.name || '',
+      previewVivoImage: (vivoFabric as { image?: string })?.image || '',
+      previewFabricName: fabric?.name || '',
+      previewLateralHex: lateralFabric?.hex || fabric?.hex || fillColor,
+      previewLateralImage: lateralFabricImage || fabricImage || '',
+      previewLateralName: lateralFabric?.name || fabric?.name || '',
+      previewWidth: widthCm?.toString() || '',
+      previewHeight: heightCm?.toString() || '',
+      previewDepth: depthCm?.toString() || '',
     });
-    if (extraExpress) params.set("express", "true");
+    if (extraExpress) params.set('express', 'true');
     return `/?${params.toString()}#contacto`;
   };
 
   const handleOrder = () => {
-    if (!canOrder) return;
+    if (!productType) return;
     navigate(buildOrderUrl());
   };
 
   const selectionLabel = (step: Step): React.ReactNode => {
-    if (step === "type") {
-      return productType
-        ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{PRODUCTS.find((product) => product.type === productType)?.name}</span>
-        : <span className="text-muted-foreground italic">Elige una opción</span>;
+    switch (step) {
+      case 'type':
+        return productType ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {PRODUCTS.find(p => p.type === productType)?.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+      case 'measures':
+        if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
+        if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
+        if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
+        if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
+        if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
+        if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter} / {lampHeight}</span>;
+        return <span className="text-muted-foreground italic">Elige una opción</span>;
+      case 'fabric':
+        return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+      case 'finish':
+        return finishObj ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishObj.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+      case 'extras': {
+        const extras = [
+          extraPatas && (productType === 'cabecero' ? 'Colgador' : 'Patas'),
+          extraRelleno && 'Relleno',
+          extraExpress && 'Express',
+          extraTopMaterial !== 'nada' && (extraTopMaterial === 'metacrilato' ? 'Metacrilato' : 'Cristal'),
+          extraTapetes && 'Tapetes',
+        ].filter(Boolean);
+        return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
+      }
     }
-    if (step === "measures") {
-      if (!measuresComplete) return <span className="text-muted-foreground italic">Completa el paso</span>;
-      if (productType === "cabecero") return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{formatMeasure(headboardWidth, headboardWidthCustom)} × {formatMeasure(headboardHeight, headboardHeightCustom)}</span>;
-      if (productType === "banco") return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{formatMeasure(benchLength, benchLengthCustom)} × {formatMeasure(benchDepth, benchDepthCustom)} × {formatMeasure(benchHeight, benchHeightCustom)}</span>;
-      if (productType === "puff") return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{formatMeasure(puffWidth, puffWidthCustom)} × {formatMeasure(puffDepth, puffDepthCustom)} × {formatMeasure(puffHeight, puffHeightCustom)}</span>;
-      if (productType === "mesa") return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{formatMeasure(mesaWidth, mesaWidthCustom)} × {formatMeasure(mesaDepth, mesaDepthCustom)} × {formatMeasure(mesaHeight, mesaHeightCustom)}</span>;
-      return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{cushionSize === "Otro" ? `${cushionWidthCustom}×${cushionHeightCustom} cm` : cushionSize}</span>;
-    }
-    if (step === "fabric") {
-      return fabricComplete
-        ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{currentFabric?.name}</span>
-        : <span className="text-muted-foreground italic">Completa el paso</span>;
-    }
-    if (step === "finish") {
-      return finishComplete
-        ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{finishLabel}</span>
-        : <span className="text-muted-foreground italic">Completa el paso</span>;
-    }
-    if (!extrasComplete) return <span className="text-muted-foreground italic">Opcional</span>;
-    const extras = [
-      headboardHanging && "Accesorios para colgar",
-      benchExtraFirm && "Relleno firme",
-      puffPair && "Pareja de puffs",
-      mesaSurface !== "sin-superficie" && SURFACE_OPTIONS.find((item) => item.id === mesaSurface)?.name,
-      extraExpress && "Entrega express",
-    ].filter(Boolean);
-    return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span>{extras.join(", ")}</span>;
   };
+
+  const showExtrasStep = true;
+  const visibleSteps = showExtrasStep ? STEPS : STEPS.filter(s => s !== 'extras');
+  const visibleStepIndex = visibleSteps.indexOf(currentStep as Step);
 
   const ProgressBar = ({ className = "" }: { className?: string }) => (
     <div className={className}>
       <div className="flex gap-1">
-        {STEPS.map((step) => (
-          <div key={step} className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
-            <div className="h-full rounded-full transition-all duration-300" style={{ width: stepComplete[step] ? "100%" : "0%", backgroundColor: "hsl(var(--accent-warm))" }} />
+        {visibleSteps.map((s) => (
+          <div key={s} className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{
+                width: stepComplete[s] ? '100%' : '0%',
+                backgroundColor: 'hsl(var(--accent-warm))',
+              }}
+            />
           </div>
         ))}
       </div>
       <p className="text-xs text-muted-foreground font-light mt-2">
-        Paso {Math.max(1, activeStepIndex + 1)} de {STEPS.length} · {STEP_LABELS[currentStep as Step] || STEP_LABELS.type}
+        Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · {STEP_LABELS[currentStep as Step] || STEP_LABELS.type}
       </p>
     </div>
   );
 
-  const productCard = (type: ProductType, label: string) => (
-    <button
-      key={type}
-      type="button"
-      onClick={() => {
-        if (type !== productType) resetAll(type);
-        else setProductType(type);
-        advanceTo("measures");
-      }}
-      className={`border rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
-        productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
-      }`}
-    >
-      <ProductIcon type={type} />
-      <span className="text-sm font-light text-foreground">{label}</span>
-    </button>
+  const needsVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
+
+  const productCard = (type: ProductType, label: string, blocked = false) => (
+    blocked ? (
+      <div
+        key={type}
+        className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed relative"
+      >
+        <ProductIcon type={type} />
+        <span className="text-sm font-light text-foreground">{label}</span>
+        <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
+      </div>
+    ) : (
+      <button
+        key={type}
+        onClick={() => handleProductChange(type)}
+        className={`border rounded-md p-4 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${
+          productType === type ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"
+        }`}
+      >
+        <ProductIcon type={type} />
+        <span className="text-sm font-light text-foreground">{label}</span>
+      </button>
+    )
   );
 
-  const accordionValue = isMobile
-    ? (typeof openAccordion === "string" ? openAccordion : "")
-    : (Array.isArray(openAccordion) ? openAccordion : [openAccordion]);
+  // Siempre string — acordeón tipo single en todas las vistas
+  const accordionValue = openAccordion;
+  const handleAccordionChange = (val: string) => {
+    setOpenAccordion(val || '');
+  };
 
   const sharedAccordionProps = {
-    productType,
+    openAccordion: accordionValue,
+    setOpenAccordion: handleAccordionChange,
     selectionLabel,
-    productCard,
-    headboardShape,
-    setHeadboardShape,
-    headboardWidth,
-    setHeadboardWidth,
-    headboardWidthCustom,
-    setHeadboardWidthCustom,
-    headboardHeight,
-    setHeadboardHeight,
-    headboardHeightCustom,
-    setHeadboardHeightCustom,
-    headboardLateralMode,
-    setHeadboardLateralMode,
-    headboardLateralFabric,
-    setHeadboardLateralFabric,
-    benchKind,
-    setBenchKind,
-    benchLength,
-    setBenchLength,
-    benchLengthCustom,
-    setBenchLengthCustom,
-    benchDepth,
-    setBenchDepth,
-    benchDepthCustom,
-    setBenchDepthCustom,
-    benchHeight,
-    setBenchHeight,
-    benchHeightCustom,
-    setBenchHeightCustom,
-    puffShape,
-    setPuffShape,
-    puffWidth,
-    setPuffWidth,
-    puffWidthCustom,
-    setPuffWidthCustom,
-    puffDepth,
-    setPuffDepth,
-    puffDepthCustom,
-    setPuffDepthCustom,
-    puffHeight,
-    setPuffHeight,
-    puffHeightCustom,
-    setPuffHeightCustom,
-    mesaKind,
-    setMesaKind,
-    mesaWidth,
-    setMesaWidth,
-    mesaWidthCustom,
-    setMesaWidthCustom,
-    mesaDepth,
-    setMesaDepth,
-    mesaDepthCustom,
-    setMesaDepthCustom,
-    mesaHeight,
-    setMesaHeight,
-    mesaHeightCustom,
-    setMesaHeightCustom,
-    cushionShape,
-    setCushionShape,
-    cushionSize,
-    setCushionSize,
-    cushionWidthCustom,
-    setCushionWidthCustom,
-    cushionHeightCustom,
-    setCushionHeightCustom,
-    fabricId,
-    setFabricId: (id: string) => {
-      setFabricId(id);
-      if (!vivoColorId) setVivoColorId(id);
-    },
-    finish,
-    setFinish,
-    vivoColorId,
-    setVivoColorId,
-    headboardHanging,
-    setHeadboardHanging,
-    benchExtraFirm,
-    setBenchExtraFirm,
-    puffPair,
-    setPuffPair,
-    mesaSurface,
-    setMesaSurface,
-    extraExpress,
-    setExtraExpress,
-    needsVivo,
-    advanceTo,
+    productType, productCard,
+    fabricFilter, setFabricFilter,
+    shape, setShape,
+    bedWidth, setBedWidth,
+    bedHeight, setBedHeight,
+    benchLength, setBenchLength,
+    benchDepth, setBenchDepth, benchHeight, setBenchHeight,
+    puffDiameter, setPuffDiameter,
+    puffHeight, setPuffHeight,
+    cushionShape, setCushionShape,
+    cushionSize, setCushionSize,
+    lampDiameter, setLampDiameter,
+    lampHeight, setLampHeight,
+    fabricId, setFabricId,
+    lateralFabricId, setLateralFabricId,
+    finish, setFinish,
+    vivoColorId, setVivoColorId,
+    customWidth, setCustomWidth, customHeight, setCustomHeight,
+    puffQuantity, setPuffQuantity,
+    extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
+    extraExpress, setExtraExpress,
+    extraTopMaterial, setExtraTopMaterial,
+    extraTapetes, setExtraTapetes,
+    advanceTo, needsVivo,
   };
 
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
-        <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-3">Diseña el tuyo</h1>
-        <p className="text-sm text-muted-foreground font-light">Elige la pieza, la tela y las medidas. Si necesitas algo especial, lo afinamos contigo después.</p>
+        <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-2">Diseña el tuyo</h1>
+        <p className="text-sm text-muted-foreground font-light">Precio en tiempo real · Hecho a medida</p>
       </div>
 
-      <div className="md:hidden sticky top-16 z-30" style={{ backgroundColor: "#F0EDE8" }}>
-        <div className="px-4 py-3 flex flex-col items-center min-h-[220px]">
-          <p className="font-serif text-sm text-muted-foreground mb-2 text-center truncate max-w-full">{previewLabel}</p>
-          <div className="flex-1 flex items-center justify-center w-full">
-            <ProductSVGPreview
-              key={previewKey}
-              type={productType}
-              color={fillColor}
-              fabricImage={currentFabric?.image}
-              lateralFabricImage={productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image : undefined}
-              finish={finish}
-              vivoColor={vivoColor}
-              forma={previewForma}
-              widthCm={previewWidthValue || undefined}
-              heightCm={previewHeightCm || undefined}
-              depthCm={previewDepthCm || undefined}
-            />
+      <div id="mobile-preview" className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
+        <div className="px-4 py-2 flex flex-col items-center">
+          {/* SVG + fabric swatches side-by-side on mobile */}
+          <div className="flex w-full gap-3 items-center justify-center min-h-[110px]">
+            <div className="flex-1 flex items-center justify-center">
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
+            </div>
+            {fabricId && (
+              <div className="w-16 flex-shrink-0 border-l border-border/30 pl-2">
+                <FabricSwatchPanel
+                  fabric={fabric}
+                  vivoFabric={needsVivo ? vivoFabric : undefined}
+                  lateralFabric={lateralFabric || undefined}
+                  showLateral={productType === 'cabecero' || productType === 'puf'}
+                />
+              </div>
+            )}
           </div>
-          <div className="flex flex-wrap gap-1.5 justify-center mt-2">
-            {chips.map((chip) => (
-              <span key={chip} className="text-xs border rounded-full px-2 py-0.5 text-foreground bg-background border-border">{chip}</span>
-            ))}
+          <div className="mt-1.5 w-full">
+            <ProgressBar />
           </div>
-          <div className="mt-2 w-full"><ProgressBar /></div>
         </div>
       </div>
 
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
-        <div className="w-[40%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: "calc(100vh - 80px)" }}>
-          <div className="rounded-lg p-6 lg:p-10 flex flex-col items-center justify-center min-h-[400px]" style={{ backgroundColor: "#F0EDE8" }}>
-            <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
-            <div className="flex-1 flex items-center justify-center w-full">
-              <ProductSVGPreview
-                key={previewKey}
-                type={productType}
-                color={fillColor}
-                fabricImage={currentFabric?.image}
-                lateralFabricImage={productType === "cabecero" && headboardLateralMode === "otra-tela" ? currentLateralFabric?.image : undefined}
-                finish={finish}
-                vivoColor={vivoColor}
-                forma={previewForma}
-                widthCm={previewWidthValue || undefined}
-                heightCm={previewHeightCm || undefined}
-                depthCm={previewDepthCm || undefined}
-              />
+        {/* Left column: render + fabric swatches + actions */}
+        <div className="w-[45%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+          <div className="rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
+
+            {/* SVG render */}
+            <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
+              <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
+              <div className="flex-1 flex items-center justify-center w-full">
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
+              </div>
+              {!productType && (
+                <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
+              )}
+              {productType === 'banco' && (
+                <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground border border-border/50 rounded-full px-3 py-1.5">
+                  <Clock size={12} />
+                  <span>Producto próximamente disponible — puedes explorar el configurador</span>
+                </div>
+              )}
+              <RenderNotice />
             </div>
-            {!productType && <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>}
+
+            {/* Fabric swatch panel — only when fabric is selected */}
+            {fabricId && (
+              <div className="w-28 flex-shrink-0 border-l border-border/30 pl-4">
+                <FabricSwatchPanel
+                  fabric={fabric}
+                  vivoFabric={needsVivo ? vivoFabric : undefined}
+                  lateralFabric={lateralFabric || undefined}
+                  showLateral={productType === 'cabecero' || productType === 'puf'}
+                />
+              </div>
+            )}
           </div>
-          <div className="flex flex-wrap gap-1.5 justify-center mt-4">
-            {chips.map((chip) => (
-              <span key={chip} className="text-xs border rounded-full px-2 py-0.5 text-foreground bg-background border-border">{chip}</span>
-            ))}
+
+          {productType && (
+            <div className="mt-5 flex items-baseline justify-between px-1">
+              <div>
+                <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
+                <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
+                  {priceIsKnown ? `${price} €` : `desde ${basePrice} €`}
+                  {hasCustomMeasure && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
+                </p>
+              </div>
+              <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>
+            </div>
+          )}
+          {hasCustomMeasure && (
+            <div className="mt-2 px-1">
+              <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
+                <span className="text-accent-warm not-italic">*</span> {customNote}
+              </p>
+            </div>
+          )}
+          <div className="mt-2 px-1">
+            <p className="text-xs text-muted-foreground font-light text-center">Envío Madrid <span className="font-medium text-foreground">40 €</span> · Fuera de Madrid, a consultar</p>
+            <p className="text-[11px] text-muted-foreground/60 font-light text-center italic mt-0.5">Telas sujetas a disponibilidad de stock.</p>
           </div>
-          <div className="mt-6 text-center">
-            <p className="font-serif text-2xl lg:text-3xl font-light text-foreground transition-opacity duration-150">
-              {productType ? "Tu selección" : "—"}
-            </p>
-            <p className="text-xs text-muted-foreground font-light mt-1">Revisamos contigo todos los detalles antes de confirmarlo.</p>
-          </div>
-          <div className="flex flex-col gap-3 mt-6">
-            <button onClick={handleOrder} disabled={!canOrder} className="btn-sweep btn-unir btn-unir-outline w-full px-6 py-3.5 text-sm text-center font-medium disabled:opacity-40">
-              <span className="relative z-10">Lo quiero — solicitar presupuesto</span>
-            </button>
+
+          <div className="flex flex-col gap-3 mt-4">
+            {productType === 'banco' ? (
+              <div className="w-full px-6 py-3.5 bg-muted text-muted-foreground text-sm tracking-wide uppercase text-center font-medium rounded-sm cursor-not-allowed flex items-center justify-center gap-2">
+                <Clock size={14} />
+                Próximamente — no disponible aún
+              </div>
+            ) : (
+              <button
+                onClick={handleOrder}
+                disabled={!productType}
+                className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+              >
+                Solicitar presupuesto
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="w-[60%] lg:w-1/2">
+        <div className="w-[55%] lg:w-1/2">
           <div className="mb-6">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
-            <p className="mt-2 text-base text-muted-foreground font-light">La estructura se mantiene limpia y cada decisión queda ordenada paso a paso.</p>
           </div>
           <ProgressBar className="mb-6" />
-          <ConfigAccordionsMultiple
-            openAccordion={Array.isArray(accordionValue) ? accordionValue : [accordionValue as string]}
-            setOpenAccordion={(value) => setOpenAccordion(value)}
+          <ConfigAccordionsSingle
+            openAccordion={accordionValue}
+            setOpenAccordion={handleAccordionChange}
             {...sharedAccordionProps}
           />
         </div>
       </div>
 
-      <div className="md:hidden px-4 pb-28 pt-4">
-        <div className="mb-4"><h2 className="font-serif text-2xl font-light text-foreground">Configura tu pieza</h2></div>
+      <div className="md:hidden px-4 pb-28 pt-2">
+        <div className="mb-3">
+          <h2 className="font-serif text-xl font-light text-foreground">Configura tu pieza</h2>
+        </div>
         <ConfigAccordionsSingle
-          openAccordion={typeof accordionValue === "string" ? accordionValue : ""}
-          setOpenAccordion={(value) => setOpenAccordion(value)}
+          openAccordion={accordionValue}
+          setOpenAccordion={handleAccordionChange}
           {...sharedAccordionProps}
         />
       </div>
 
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="font-serif text-xl text-foreground">{productType ? "Tu selección" : "—"}</p>
-            <p className="text-xs text-muted-foreground">Listo para enviarlo</p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            {productType ? (
+              <>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
+                <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none">
+                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
+                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
+                </p>
+                {hasCustomMeasure && (
+                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
+                    *Orientativo
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-xs text-muted-foreground font-light">Elige un producto</p>
+            )}
           </div>
-          <button onClick={handleOrder} disabled={!canOrder} className="btn-sweep btn-unir px-6 py-3 text-sm font-medium disabled:opacity-40">
-            <span className="relative z-10">Lo quiero →</span>
-          </button>
+          {productType === 'banco' ? (
+            <div className="bg-muted text-muted-foreground px-4 py-3 text-xs tracking-wide font-medium text-center flex items-center gap-1.5 cursor-not-allowed">
+              <Clock size={12} />
+              Próximamente
+            </div>
+          ) : (
+            <button
+              onClick={handleOrder}
+              disabled={!productType}
+              className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+            >
+              Lo quiero →
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-interface SharedProps {
-  productType: ProductType | null;
+interface AccordionContentSharedProps {
+  openAccordion: string;
+  setOpenAccordion: (v: string) => void;
   selectionLabel: (step: Step) => React.ReactNode;
+  productType: ProductType | null;
   productCard: (type: ProductType, label: string) => React.ReactNode;
-  headboardShape: string;
-  setHeadboardShape: (value: string) => void;
-  headboardWidth: string;
-  setHeadboardWidth: (value: string) => void;
-  headboardWidthCustom: string;
-  setHeadboardWidthCustom: (value: string) => void;
-  headboardHeight: string;
-  setHeadboardHeight: (value: string) => void;
-  headboardHeightCustom: string;
-  setHeadboardHeightCustom: (value: string) => void;
-  headboardLateralMode: string;
-  setHeadboardLateralMode: (value: string) => void;
-  headboardLateralFabric: string;
-  setHeadboardLateralFabric: (value: string) => void;
-  benchKind: string;
-  setBenchKind: (value: string) => void;
-  benchLength: string;
-  setBenchLength: (value: string) => void;
-  benchLengthCustom: string;
-  setBenchLengthCustom: (value: string) => void;
-  benchDepth: string;
-  setBenchDepth: (value: string) => void;
-  benchDepthCustom: string;
-  setBenchDepthCustom: (value: string) => void;
-  benchHeight: string;
-  setBenchHeight: (value: string) => void;
-  benchHeightCustom: string;
-  setBenchHeightCustom: (value: string) => void;
-  puffShape: string;
-  setPuffShape: (value: string) => void;
-  puffWidth: string;
-  setPuffWidth: (value: string) => void;
-  puffWidthCustom: string;
-  setPuffWidthCustom: (value: string) => void;
-  puffDepth: string;
-  setPuffDepth: (value: string) => void;
-  puffDepthCustom: string;
-  setPuffDepthCustom: (value: string) => void;
-  puffHeight: string;
-  setPuffHeight: (value: string) => void;
-  puffHeightCustom: string;
-  setPuffHeightCustom: (value: string) => void;
-  mesaKind: string;
-  setMesaKind: (value: string) => void;
-  mesaWidth: string;
-  setMesaWidth: (value: string) => void;
-  mesaWidthCustom: string;
-  setMesaWidthCustom: (value: string) => void;
-  mesaDepth: string;
-  setMesaDepth: (value: string) => void;
-  mesaDepthCustom: string;
-  setMesaDepthCustom: (value: string) => void;
-  mesaHeight: string;
-  setMesaHeight: (value: string) => void;
-  mesaHeightCustom: string;
-  setMesaHeightCustom: (value: string) => void;
-  cushionShape: string;
-  setCushionShape: (value: string) => void;
-  cushionSize: string;
-  setCushionSize: (value: string) => void;
-  cushionWidthCustom: string;
-  setCushionWidthCustom: (value: string) => void;
-  cushionHeightCustom: string;
-  setCushionHeightCustom: (value: string) => void;
-  fabricId: string;
-  setFabricId: (value: string) => void;
-  finish: string;
-  setFinish: (value: string) => void;
-  vivoColorId: string;
-  setVivoColorId: (value: string) => void;
-  headboardHanging: boolean;
-  setHeadboardHanging: (value: boolean) => void;
-  benchExtraFirm: boolean;
-  setBenchExtraFirm: (value: boolean) => void;
-  puffPair: boolean;
-  setPuffPair: (value: boolean) => void;
-  mesaSurface: string;
-  setMesaSurface: (value: string) => void;
-  extraExpress: boolean;
-  setExtraExpress: (value: boolean) => void;
-  needsVivo: boolean;
+  fabricFilter: "todas" | "liso" | "flores" | "geometrico" | "rayas";
+  setFabricFilter: (v: "todas" | "liso" | "flores" | "geometrico" | "rayas") => void;
+  shape: string; setShape: (v: string) => void;
+  bedWidth: string; setBedWidth: (v: string) => void;
+  bedHeight: string; setBedHeight: (v: string) => void;
+  benchLength: string; setBenchLength: (v: string) => void;
+  benchDepth: string; setBenchDepth: (v: string) => void;
+  benchHeight: string; setBenchHeight: (v: string) => void;
+  puffDiameter: string; setPuffDiameter: (v: string) => void;
+  puffHeight: string; setPuffHeight: (v: string) => void;
+  puffQuantity: string; setPuffQuantity: (v: string) => void;
+  cushionShape: string; setCushionShape: (v: string) => void;
+  cushionSize: string; setCushionSize: (v: string) => void;
+  lampDiameter: string; setLampDiameter: (v: string) => void;
+  lampHeight: string; setLampHeight: (v: string) => void;
+  fabricId: string; setFabricId: (v: string) => void;
+  lateralFabricId: string; setLateralFabricId: (v: string) => void;
+  finish: string; setFinish: (v: string) => void;
+  vivoColorId: string; setVivoColorId: (v: string) => void;
+  customWidth: string; setCustomWidth: (v: string) => void;
+  customHeight: string; setCustomHeight: (v: string) => void;
+  extraPatas: boolean; setExtraPatas: (v: boolean) => void;
+  extraRelleno: boolean; setExtraRelleno: (v: boolean) => void;
+  extraExpress: boolean; setExtraExpress: (v: boolean) => void;
+  extraTopMaterial: string; setExtraTopMaterial: (v: string) => void;
+  extraTapetes: boolean; setExtraTapetes: (v: boolean) => void;
   advanceTo: (step: Step) => void;
+  needsVivo: boolean;
 }
 
-const MeasureSelect = ({
-  label,
-  value,
-  onChange,
-  options,
-  customValue,
-  onCustomChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: string[];
-  customValue: string;
-  onCustomChange: (value: string) => void;
-}) => (
-  <div>
-    <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{label}</p>
-    <SelectWrapper>
-      <select value={value} onChange={(event) => { onChange(event.target.value); if (event.target.value !== "Otro") onCustomChange(""); }} className={selectClass}>
-        <option value="">Seleccionar...</option>
-        {options.map((option) => <option key={option} value={option}>{option}</option>)}
-      </select>
-    </SelectWrapper>
-    {value === "Otro" && (
-      <div className="mt-3 flex items-center gap-2">
-        <input
-          type="number"
-          min={1}
-          value={customValue}
-          onChange={(event) => onCustomChange(event.target.value)}
-          placeholder="Indica los cm"
-          className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1"
-        />
-        <span className="text-xs text-muted-foreground">cm</span>
-      </div>
-    )}
-  </div>
-);
-
-const AccordionItems = (props: SharedProps) => {
+const AccordionItems = (props: AccordionContentSharedProps) => {
   const {
-    productType,
+    openAccordion,
+    setOpenAccordion,
     selectionLabel,
-    productCard,
-    headboardShape,
-    setHeadboardShape,
-    headboardWidth,
-    setHeadboardWidth,
-    headboardWidthCustom,
-    setHeadboardWidthCustom,
-    headboardHeight,
-    setHeadboardHeight,
-    headboardHeightCustom,
-    setHeadboardHeightCustom,
-    headboardLateralMode,
-    setHeadboardLateralMode,
-    headboardLateralFabric,
-    setHeadboardLateralFabric,
-    benchKind,
-    setBenchKind,
-    benchLength,
-    setBenchLength,
-    benchLengthCustom,
-    setBenchLengthCustom,
-    benchDepth,
-    setBenchDepth,
-    benchDepthCustom,
-    setBenchDepthCustom,
-    benchHeight,
-    setBenchHeight,
-    benchHeightCustom,
-    setBenchHeightCustom,
-    puffShape,
-    setPuffShape,
-    puffWidth,
-    setPuffWidth,
-    puffWidthCustom,
-    setPuffWidthCustom,
-    puffDepth,
-    setPuffDepth,
-    puffDepthCustom,
-    setPuffDepthCustom,
-    puffHeight,
-    setPuffHeight,
-    puffHeightCustom,
-    setPuffHeightCustom,
-    mesaKind,
-    setMesaKind,
-    mesaWidth,
-    setMesaWidth,
-    mesaWidthCustom,
-    setMesaWidthCustom,
-    mesaDepth,
-    setMesaDepth,
-    mesaDepthCustom,
-    setMesaDepthCustom,
-    mesaHeight,
-    setMesaHeight,
-    mesaHeightCustom,
-    setMesaHeightCustom,
-    cushionShape,
-    setCushionShape,
-    cushionSize,
-    setCushionSize,
-    cushionWidthCustom,
-    setCushionWidthCustom,
-    cushionHeightCustom,
-    setCushionHeightCustom,
-    fabricId,
-    setFabricId,
-    finish,
-    setFinish,
-    vivoColorId,
-    setVivoColorId,
-    headboardHanging,
-    setHeadboardHanging,
-    benchExtraFirm,
-    setBenchExtraFirm,
-    puffPair,
-    setPuffPair,
-    mesaSurface,
-    setMesaSurface,
-    extraExpress,
-    setExtraExpress,
-    needsVivo,
-    advanceTo,
+    productType, productCard,
+    fabricFilter, setFabricFilter,
+    shape, setShape,
+    bedWidth, setBedWidth, bedHeight, setBedHeight,
+    benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
+    puffDiameter, setPuffDiameter,
+    puffQuantity, setPuffQuantity,
+    cushionShape, setCushionShape,
+    cushionSize, setCushionSize,
+    lampDiameter, setLampDiameter, lampHeight, setLampHeight,
+    fabricId, setFabricId,
+    lateralFabricId, setLateralFabricId,
+    finish, setFinish,
+    vivoColorId, setVivoColorId,
+    customWidth, setCustomWidth, customHeight, setCustomHeight,
+    extraPatas, setExtraPatas, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
+    extraTopMaterial, setExtraTopMaterial,
+    extraTapetes, setExtraTapetes,
+    advanceTo, needsVivo,
   } = props;
 
-  const disabledClass = productType ? "" : "opacity-40 pointer-events-none";
+  const productSelected = !!productType;
+  const disabledClass = productSelected ? '' : 'opacity-40 pointer-events-none';
+
+  const openSection = (section: string) => {
+    const isOpening = openAccordion !== section;
+    setOpenAccordion(isOpening ? section : '');
+    if (isOpening) {
+      setTimeout(() => {
+        const el = document.getElementById('acc-' + section);
+      if (el) {
+        const isMobileView = window.innerWidth < 768;
+        let offset = 96;
+        if (isMobileView) {
+          const preview = document.getElementById('mobile-preview');
+          offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
+        }
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+      }, 60);
+    }
+  };
 
   return (
     <>
-      <AccordionItem value="type" className="border-b border-border">
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div id="acc-type" className="border-b border-border">
+        <button
+          type="button"
+          onClick={() => openSection('type')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.type}</span>
-            <span className="text-xs mt-0.5">{selectionLabel("type")}</span>
+            <span className="font-serif text-base font-medium text-foreground">1. {STEP_LABELS.type}</span>
+            <span className="text-xs mt-0.5">{selectionLabel('type')}</span>
           </div>
-        </AccordionTrigger>
-        <AccordionContent className="pb-6">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {productCard("cabecero", "Cabeceros")}
-            {productCard("banco", "Bancos entelados")}
-            {productCard("cojin", "Cojines y almohadones")}
-            {productCard("puff", "Puffs")}
-            {productCard("mesa", "Mesas de centro")}
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'type' ? 'rotate-180' : ''}`} />
+        </button>
+        {openAccordion === 'type' && (
+          <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+              {productCard('cabecero', 'Cabecero')}
+              {productCard('puf', 'Pufs')}
+              {productCard('mesa', 'Mesa de centro')}
+              {productCard('pantalla', 'Pantalla lámpara')}
+              <div className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
+                <ProductIcon type="cojin" />
+                <span className="text-sm font-light text-foreground">Almohadones</span>
+                <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
+              </div>
+            </div>
           </div>
-        </AccordionContent>
-      </AccordionItem>
+        )}
+      </div>
 
-      <AccordionItem value="measures" disabled={!productType} className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div id="acc-measures" className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => openSection('measures')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.measures}</span>
-            <span className="text-xs mt-0.5">{selectionLabel("measures")}</span>
+            <span className="font-serif text-base font-medium text-foreground">2. {STEP_LABELS.measures}</span>
+            <span className="text-xs mt-0.5">{selectionLabel('measures')}</span>
           </div>
-        </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-6">
-          {productType === "cabecero" && (
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'measures' ? 'rotate-180' : ''}`} />
+        </button>
+        {openAccordion === 'measures' && (
+          <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
+          {productType === 'cabecero' && (
             <>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {HEADBOARD_SHAPES.map((shape) => (
-                    <button key={shape.id} type="button" onClick={() => setHeadboardShape(shape.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${headboardShape === shape.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                  {HEADBOARD_SHAPES.map(s => (
+                    <button key={s.id} onClick={() => setShape(s.id)} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
                       <svg viewBox="0 0 60 40" className="w-12 h-8">
-                        <path d={headboardSelectorPath(shape.id)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                        <path d={s.svgPreview} fill="none" stroke="currentColor" strokeWidth="1.5" />
                       </svg>
-                      <span className="text-xs font-light">{shape.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <MeasureSelect label="Ancho de cama" value={headboardWidth} onChange={setHeadboardWidth} options={BED_WIDTH_OPTIONS} customValue={headboardWidthCustom} onCustomChange={setHeadboardWidthCustom} />
-              <MeasureSelect label="Alto del cabecero" value={headboardHeight} onChange={setHeadboardHeight} options={HEADBOARD_HEIGHT_OPTIONS} customValue={headboardHeightCustom} onCustomChange={setHeadboardHeightCustom} />
-            </>
-          )}
-
-          {productType === "banco" && (
-            <>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de banco</p>
-                <div className="grid md:grid-cols-3 gap-3">
-                  {BENCH_TYPES.map((option) => (
-                    <button key={option.id} type="button" onClick={() => setBenchKind(option.id)} className={`border rounded p-3 text-center transition-all ${benchKind === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                      <span className="text-xs font-light">{option.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <MeasureSelect label="Largo" value={benchLength} onChange={setBenchLength} options={BASE_WIDTH_OPTIONS} customValue={benchLengthCustom} onCustomChange={setBenchLengthCustom} />
-              <MeasureSelect label="Fondo" value={benchDepth} onChange={setBenchDepth} options={BASE_DEPTH_OPTIONS} customValue={benchDepthCustom} onCustomChange={setBenchDepthCustom} />
-              <MeasureSelect label="Alto" value={benchHeight} onChange={setBenchHeight} options={BASE_HEIGHT_OPTIONS} customValue={benchHeightCustom} onCustomChange={setBenchHeightCustom} />
-            </>
-          )}
-
-          {productType === "puff" && (
-            <>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {PUFF_SHAPES.map((option) => (
-                    <button key={option.id} type="button" onClick={() => setPuffShape(option.id)} className={`border rounded p-3 text-center transition-all ${puffShape === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                      <span className="text-xs font-light">{option.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <MeasureSelect label="Ancho" value={puffWidth} onChange={setPuffWidth} options={BASE_WIDTH_OPTIONS} customValue={puffWidthCustom} onCustomChange={setPuffWidthCustom} />
-              <MeasureSelect label="Fondo" value={puffDepth} onChange={setPuffDepth} options={BASE_DEPTH_OPTIONS} customValue={puffDepthCustom} onCustomChange={setPuffDepthCustom} />
-              <MeasureSelect label="Alto" value={puffHeight} onChange={setPuffHeight} options={BASE_HEIGHT_OPTIONS} customValue={puffHeightCustom} onCustomChange={setPuffHeightCustom} />
-            </>
-          )}
-
-          {productType === "mesa" && (
-            <>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de mesa de centro</p>
-                <div className="grid gap-3">
-                  {MESA_TYPES.map((option) => (
-                    <button key={option.id} type="button" onClick={() => setMesaKind(option.id)} className={`border rounded p-3 text-left transition-all ${mesaKind === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                      <span className="text-sm font-light">{option.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <MeasureSelect label="Ancho" value={mesaWidth} onChange={setMesaWidth} options={BASE_WIDTH_OPTIONS} customValue={mesaWidthCustom} onCustomChange={setMesaWidthCustom} />
-              <MeasureSelect label="Fondo" value={mesaDepth} onChange={setMesaDepth} options={BASE_DEPTH_OPTIONS} customValue={mesaDepthCustom} onCustomChange={setMesaDepthCustom} />
-              <MeasureSelect label="Alto" value={mesaHeight} onChange={setMesaHeight} options={BASE_HEIGHT_OPTIONS} customValue={mesaHeightCustom} onCustomChange={setMesaHeightCustom} />
-            </>
-          )}
-
-          {productType === "cojin" && (
-            <>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma</p>
-                <div className="grid md:grid-cols-3 gap-3">
-                  {CUSHION_SHAPES.map((option) => (
-                    <button key={option.id} type="button" onClick={() => setCushionShape(option.id)} className={`border rounded p-3 text-center transition-all ${cushionShape === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                      <span className="text-xs font-light">{option.name}</span>
+                      <span className="text-xs font-light">{s.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medidas</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Ancho del cabecero</p>
+                <div className="flex flex-wrap gap-2">
+                  {['90 cm', '105 cm', '135 cm', '150 cm', '160 cm', '180 cm', '200 cm'].map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => { setBedWidth(sz); setCustomWidth(''); }}
+                      className={`border rounded-md px-3 py-2 text-xs transition-all ${bedWidth === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setBedWidth('custom'); }}
+                    className={`border rounded-md px-3 py-2 text-xs transition-all ${bedWidth === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                  >
+                    Otra medida
+                  </button>
+                </div>
+                {bedWidth === 'custom' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
                 <SelectWrapper>
-                  <select value={cushionSize} onChange={(event) => { setCushionSize(event.target.value); if (event.target.value !== "Otro") { setCushionWidthCustom(""); setCushionHeightCustom(""); } }} className={selectClass}>
-                    <option value="">Seleccionar...</option>
-                    {CUSHION_SIZES.map((option) => <option key={option} value={option}>{option}</option>)}
+                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); if (e.target.value !== 'custom') setCustomHeight(''); }} className={selectClass}>
+                    <option value="">Seleccionar alto...</option>
+                    <option value="100 cm">100 cm — Medida estándar</option>
+                    <option value="120 cm">120 cm</option>
+                    <option value="custom">Otra medida</option>
                   </select>
                 </SelectWrapper>
-                {cushionSize === "Otro" && (
-                  <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <input type="number" min={1} placeholder="Ancho" value={cushionWidthCustom} onChange={(event) => setCushionWidthCustom(event.target.value)} className="w-28 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">×</span>
-                    <input type="number" min={1} placeholder="Fondo" value={cushionHeightCustom} onChange={(event) => setCushionHeightCustom(event.target.value)} className="w-28 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                {bedHeight === 'custom' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
                     <span className="text-xs text-muted-foreground">cm</span>
                   </div>
                 )}
               </div>
             </>
           )}
-        </AccordionContent>
-      </AccordionItem>
 
-      <AccordionItem value="fabric" disabled={!productType} className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.fabric}</span>
-            <span className="text-xs mt-0.5">{selectionLabel("fabric")}</span>
-          </div>
-        </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-6">
-          {Object.entries(groupedFabrics).map(([group, fabrics]) => (
-            <div key={group}>
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group}</p>
-              <div className="flex flex-wrap gap-3">
-                {fabrics.map((fabric) => (
-                  <FabricSwatch key={fabric.id} fabric={fabric} active={fabricId === fabric.id} onClick={() => { setFabricId(fabric.id); advanceTo("finish"); }} />
-                ))}
+          {productType === 'banco' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de banco</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {BENCH_VARIANTS.map(v => (
+                    <button key={v.id} onClick={() => setShape(v.id)} className={`border rounded-md p-3 text-center cursor-pointer transition-all ${shape === v.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                      <span className="text-xs font-light">{v.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          {productType === "cabecero" && (
-            <div className="pt-2 space-y-4">
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground font-light">Lateral</p>
-              <div className="grid gap-3">
-                {HEADBOARD_SIDE_OPTIONS.map((option) => (
-                  <button key={option.id} type="button" onClick={() => setHeadboardLateralMode(option.id)} className={`border rounded p-3 text-left transition-all ${headboardLateralMode === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                    <span className="text-sm font-light">{option.name}</span>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
+                <SelectWrapper>
+                  <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar largo...</option>
+                    <option value="80 cm">80 cm</option>
+                    <option value="100 cm">100 cm</option>
+                    <option value="120 cm">120 cm</option>
+                    <option value="140 cm">140 cm</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
+                <SelectWrapper>
+                  <select value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar fondo...</option>
+                    <option value="35 cm">35 cm</option>
+                    <option value="40 cm">40 cm</option>
+                    <option value="45 cm">45 cm</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
+                <SelectWrapper>
+                  <select value={benchHeight} onChange={(e) => setBenchHeight(e.target.value)} className={selectClass}>
+                    <option value="">Seleccionar alto...</option>
+                    <option value="40 cm">40 cm</option>
+                    <option value="45 cm">45 cm</option>
+                  </select>
+                </SelectWrapper>
+              </div>
+            </>
+          )}
+
+          {productType === 'puf' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Galicia</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setShape('cuadrado')}
+                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'cuadrado' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                  >
+                    <svg viewBox="0 0 40 40" className="w-8 h-8">
+                      <rect x="6" y="6" width="28" height="28" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                    <div>
+                      <span className="text-xs font-medium block">Patos</span>
+                      <span className="text-[10px] text-muted-foreground">Cúbico · Galicia</span>
+                    </div>
+                  </button>
+                  <div className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-50 cursor-not-allowed">
+                    <svg viewBox="0 0 40 40" className="w-8 h-8">
+                      <circle cx="20" cy="20" r="14" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                    <div>
+                      <span className="text-xs font-medium block">Monteferro</span>
+                      <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
+                <div className="flex flex-wrap gap-2">
+                  {['40 cm', '50 cm'].map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => setPuffDiameter(sz)}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${puffDiameter === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setPuffDiameter('custom')}
+                    className={`border rounded-md px-4 py-2 text-xs transition-all ${puffDiameter === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                  >
+                    Otra medida
+                  </button>
+                </div>
+                {puffDiameter === 'custom' && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <input type="number" min={30} max={120} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                    <span className="text-xs text-muted-foreground">cm</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
+                <div className="flex gap-2">
+                  {['1', '2'].map(qty => (
+                    <button
+                      key={qty}
+                      onClick={() => setPuffQuantity(qty)}
+                      className={`border rounded-md px-5 py-2 text-xs transition-all ${puffQuantity === qty ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {qty === '1' ? '1 puf' : '2 pufs (pareja)'}
+                    </button>
+                  ))}
+                </div>
+                {puffQuantity === '2' && (
+                  <p className="text-xs text-muted-foreground font-light mt-2 italic">Precio pareja: 220 € (40 cm) · 325 € (50 cm)</p>
+                )}
+              </div>
+            </>
+          )}
+
+          {productType === 'mesa' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de mesa · Colección Murcia</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={() => setShape('tipo-puf')} className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'tipo-puf' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
+                    <svg viewBox="0 0 42 28" className="w-8 h-6"><rect x="4" y="4" width="34" height="20" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    <div>
+                      <span className="text-xs font-medium block">Cabo de Palos</span>
+                      <span className="text-[10px] text-muted-foreground">Sin patas</span>
+                    </div>
+                  </button>
+                  <div className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-45 cursor-not-allowed">
+                    <svg viewBox="0 0 42 28" className="w-8 h-6"><rect x="4" y="4" width="34" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="8" y1="18" x2="8" y2="26" stroke="currentColor" strokeWidth="1.5" /><line x1="34" y1="18" x2="34" y2="26" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    <div>
+                      <span className="text-xs font-medium block">Calblanque</span>
+                      <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño (largo × alto × fondo)</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: '120 × 45 × 60 cm', w: '120', h: '45', d: '60' },
+                    { label: '80 × 45 × 80 cm', w: '80', h: '45', d: '80' },
+                  ].map(opt => (
+                    <button
+                      key={opt.label}
+                      onClick={() => { setBenchLength(opt.w + ' cm'); setBenchHeight(opt.h + ' cm'); setBenchDepth(opt.d + ' cm'); }}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${benchLength === opt.w + ' cm' && benchHeight === opt.h + ' cm' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setBenchLength('custom'); setBenchHeight(''); setBenchDepth(''); }}
+                    className={`border rounded-md px-4 py-2 text-xs transition-all ${benchLength === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                  >
+                    Otra medida
+                  </button>
+                </div>
+                {benchLength === 'custom' && (
+                  <div className="mt-3 grid grid-cols-3 gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Largo (cm)</p>
+                      <input type="number" min={40} max={300} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Alto (cm)</p>
+                      <input type="number" min={20} max={100} placeholder="cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Fondo (cm)</p>
+                      <input type="number" min={20} max={150} placeholder="cm" value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {productType === 'cojin' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Asturias</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {CUSHION_SHAPES.map(s => (
+                    (s as { comingSoon?: boolean }).comingSoon ? (
+                      <div key={s.id} className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-50 cursor-not-allowed">
+                        <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        key={s.id}
+                        onClick={() => { setCushionShape(s.id); setCushionSize(''); }}
+                        className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${cushionShape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                      >
+                        <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                        </div>
+                      </button>
+                    )
+                  ))}
+                </div>
+              </div>
+              {cushionShape && (
+                <div>
+                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(CUSHION_SHAPES.find(s => s.id === cushionShape)?.sizes || []).map(sz => (
+                      <button
+                        key={sz}
+                        onClick={() => setCushionSize(sz)}
+                        className={`border rounded-md px-4 py-2 text-xs transition-all ${cushionSize === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {productType === 'pantalla' && (
+            <>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Forma · Colección Ávila</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {LAMPSHADE_SHAPES.map(s =>
+                    s.comingSoon ? (
+                      <div
+                        key={s.id}
+                        className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-45 cursor-not-allowed"
+                      >
+                        <svg viewBox="0 0 60 44" className="w-12 h-9">
+                          {s.svgContent}
+                        </svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        key={s.id}
+                        onClick={() => { setShape(s.id); setLampDiameter(''); }}
+                        className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                      >
+                        <svg viewBox="0 0 60 44" className="w-12 h-9">
+                          {s.svgContent}
+                        </svg>
+                        <div>
+                          <span className="text-xs font-medium block">{s.name}</span>
+                          <span className="text-[10px] text-muted-foreground">{s.subtitle}</span>
+                        </div>
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Medida</p>
+                <div className="flex flex-wrap gap-2">
+                  {(LAMP_SIZES[shape] || []).map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => setLampDiameter(sz)}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${lampDiameter === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {!productType && (
+            <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
+          )}
+          </div>
+        )}
+      </div>
+
+      <div id="acc-fabric" className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => openSection('fabric')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
+          <div className="flex flex-col items-start text-left">
+            <span className="font-serif text-base font-medium text-foreground">3. {STEP_LABELS.fabric}</span>
+            <span className="text-xs mt-0.5">{selectionLabel('fabric')}</span>
+          </div>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'fabric' ? 'rotate-180' : ''}`} />
+        </button>
+        {openAccordion === 'fabric' && (
+          <div className="pb-6 space-y-5 bg-muted/30 px-4 rounded-b-md pt-3">
+          {/* Filtros por estilo */}
+          <div className="flex flex-wrap gap-2">
+            {([
+              { id: "todas", label: "Todas" },
+              { id: "liso", label: "Lisas" },
+              { id: "flores", label: "Flores" },
+              { id: "geometrico", label: "Geométrico" },
+              { id: "rayas", label: "Rayas" },
+            ] as const).map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFabricFilter(f.id)}
+                className={`px-3 py-1 rounded-full text-xs transition-all border ${
+                  fabricFilter === f.id
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted-foreground hover:border-foreground/50"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-[11px] text-muted-foreground/60 font-light italic -mt-1">Sujeto a disponibilidad de stock.</p>
+          {FABRIC_GROUPS.map(group => {
+            const filtered = fabricFilter === "todas"
+              ? group.fabrics
+              : group.fabrics.filter(f => FABRIC_ESTILO[f.id] === fabricFilter);
+            if (filtered.length === 0) return null;
+            return (
+            <div key={group.label}>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
+              <div className="flex flex-wrap gap-3">
+                {filtered.map(f => (
+                  <button key={f.id} onClick={() => setFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                    <div
+                      className={`w-10 h-10 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-2 ${fabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                      style={{ backgroundColor: f.hex }}
+                    >
+                      {(f as { image?: string }).image && (
+                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </div>
+                    <span className="hidden md:block text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
                   </button>
                 ))}
               </div>
-              {headboardLateralMode === "otra-tela" && (
-                <div className="flex flex-wrap gap-3">
-                  {FABRICS.map((fabric) => (
-                    <FabricSwatch key={`lateral-${fabric.id}`} fabric={fabric} active={headboardLateralFabric === fabric.id} onClick={() => setHeadboardLateralFabric(fabric.id)} />
-                  ))}
+            </div>
+            );
+          })}
+          {fabricId && (
+            <p className="text-xs text-muted-foreground font-light">
+              {ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}
+            </p>
+          )}
+
+          {/* Tela de laterales — cabeceros, pufs y Gulpiyuri */}
+          {(productType === 'cabecero' || productType === 'puf' || (productType === 'cojin' && cushionShape === 'gulpiyuri')) && fabricId && (
+            <div className="pt-4 border-t border-border/30">
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional · +15€)</span></p>
+              <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[10px] uppercase text-muted-foreground mb-2">Básicas</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => setLateralFabricId('')} className="flex flex-col items-center gap-1">
+                      <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
+                        =
+                      </div>
+                      <span className="text-[9px] text-muted-foreground font-light">Igual</span>
+                    </button>
+                    {FABRIC_GROUPS[0].fabrics.map(f => (
+                      <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                        <div
+                          className={`w-8 h-8 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${lateralFabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                          style={{ backgroundColor: f.hex }}
+                        >
+                          {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
+                <div>
+                  <p className="text-[10px] uppercase text-muted-foreground mb-2">Premium</p>
+                  <div className="flex flex-wrap gap-2">
+                    {FABRIC_GROUPS[1].fabrics.map(f => (
+                      <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                        <div
+                          className={`w-8 h-8 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${lateralFabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                          style={{ backgroundColor: f.hex }}
+                        >
+                          {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
-        </AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="finish" disabled={!productType} className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.finish}</span>
-            <span className="text-xs mt-0.5">{selectionLabel("finish")}</span>
           </div>
-        </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-3">
-          {productType && FINISHES[productType].map((option) => (
-            <button key={option.id} type="button" onClick={() => { setFinish(option.id); advanceTo("extras"); }} className={`w-full text-left px-5 py-4 border rounded transition-all ${finish === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-              <span className="text-sm font-medium text-foreground">{option.name}</span>
-              <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{option.desc}</span>
+        )}
+      </div>
+
+      <div id="acc-finish" className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => openSection('finish')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
+          <div className="flex flex-col items-start text-left">
+            <span className="font-serif text-base font-medium text-foreground">4. {STEP_LABELS.finish}</span>
+            <span className="text-xs mt-0.5">{selectionLabel('finish')}</span>
+          </div>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'finish' ? 'rotate-180' : ''}`} />
+        </button>
+        {openAccordion === 'finish' && (
+          <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
+          {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
+            if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
+            if (productType === 'mesa') return f.id === 'vivo-simple';
+            if (productType === 'banco' || productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
+            return true;
+          })).map(f => (
+            <button
+              key={f.id}
+              onClick={() => setFinish(f.id)}
+              className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+            >
+              <span className="text-sm font-medium text-foreground">{f.name}</span>
+              {((f as { extra?: number }).extra ?? 0) > 0 && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${(f as { extra?: number }).extra}€`}</span>}
+              <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
           ))}
           {needsVivo && (
             <div className="pt-3">
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tela del vivo</p>
-              <div className="flex flex-wrap gap-3">
-                {FABRIC_COLORS.map((color) => (
-                  <button key={`vivo-${color.id}`} type="button" onClick={() => setVivoColorId(color.id)} className="flex flex-col items-center gap-2 text-center">
-                    <span className={`h-10 w-10 rounded-full border transition-all ${vivoColorId === color.id ? "border-foreground ring-2 ring-foreground/15 ring-offset-2" : "border-border hover:border-foreground/50"}`} style={{ backgroundColor: color.hex }} />
-                    <span className="max-w-[70px] text-[10px] leading-tight text-muted-foreground">{color.name}</span>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Básicas</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {FABRIC_GROUPS[0].fabrics.map(f => (
+                  <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
+                    <div
+                      className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                      style={{ backgroundColor: f.hex }}
+                    >
+                      {f.image && (
+                        <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Premium</p>
+              <div className="flex flex-wrap gap-2">
+                {FABRIC_GROUPS[1].fabrics.map(f => (
+                  <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
+                    <div
+                      className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                      style={{ backgroundColor: f.hex }}
+                    >
+                      {f.image && (
+                        <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
           )}
-        </AccordionContent>
-      </AccordionItem>
+          </div>
+        )}
+      </div>
 
-      <AccordionItem value="extras" disabled={!productType} className={`border-b border-border ${disabledClass}`}>
-        <AccordionTrigger className="py-5 hover:no-underline">
+      <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
+        <button
+          type="button"
+          onClick={() => openSection('extras')}
+          className="flex w-full items-center justify-between py-5 text-left"
+        >
           <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">{STEP_LABELS.extras}</span>
-            <span className="text-xs mt-0.5">{selectionLabel("extras")}</span>
+            <span className="font-serif text-base font-medium text-foreground">5. {STEP_LABELS.extras}</span>
+            <span className="text-xs mt-0.5">{selectionLabel('extras')}</span>
           </div>
-        </AccordionTrigger>
-        <AccordionContent className="pb-6 space-y-4">
-          {productType === "cabecero" && (
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'extras' ? 'rotate-180' : ''}`} />
+        </button>
+        {openAccordion === 'extras' && (
+          <div className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
+          {productType === 'cabecero' && (
             <div className="flex justify-between items-center py-2">
               <div>
-                <p className="text-base text-foreground font-light">Accesorios para colgar</p>
-                <p className="text-xs text-muted-foreground">Te lo dejamos previsto para colgarlo con facilidad.</p>
+                <p className="text-base text-foreground font-light">Colgador</p>
+                <p className="text-xs text-muted-foreground">+5€</p>
               </div>
-              <Switch checked={headboardHanging} onCheckedChange={setHeadboardHanging} />
+              <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
             </div>
           )}
-          {productType === "banco" && (
-            <div className="flex justify-between items-center py-2">
-              <div>
-                <p className="text-base text-foreground font-light">Relleno más firme</p>
-                <p className="text-xs text-muted-foreground">Para una sentada más estructurada.</p>
+          {productType === 'banco' && (
+            <>
+              <div className="flex justify-between items-center py-2">
+                <div>
+                  <p className="text-base text-foreground font-light">Patas de madera</p>
+                  <p className="text-xs text-muted-foreground">Consultar precio</p>
+                </div>
+                <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
               </div>
-              <Switch checked={benchExtraFirm} onCheckedChange={setBenchExtraFirm} />
-            </div>
-          )}
-          {productType === "puff" && (
-            <div className="flex justify-between items-center py-2">
-              <div>
-                <p className="text-base text-foreground font-light">Quiero dos puffs iguales</p>
-                <p className="text-xs text-muted-foreground">Muy útil cuando van en pareja o a los lados de una mesa.</p>
+              <div className="flex justify-between items-center py-2">
+                <div>
+                  <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
+                  <p className="text-xs text-muted-foreground">Consultar precio</p>
+                </div>
+                <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
               </div>
-              <Switch checked={puffPair} onCheckedChange={setPuffPair} />
-            </div>
+            </>
           )}
-          {productType === "mesa" && (
-            <div className="space-y-3">
-              <p className="text-base text-foreground font-light">Superficie</p>
-              <div className="grid gap-3">
-                {SURFACE_OPTIONS.map((option) => (
-                  <button key={option.id} type="button" onClick={() => setMesaSurface(option.id)} className={`border rounded p-3 text-left transition-all ${mesaSurface === option.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                    <span className="text-sm font-light">{option.name}</span>
+          {productType === 'mesa' && (
+            <div className="py-2">
+              <p className="text-base text-foreground font-light mb-1">Superficie encima de la mesa</p>
+              <p className="text-xs text-muted-foreground mb-3">Añade una superficie rígida sobre el tapizado</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: 'nada', label: 'Sin superficie', price: null },
+                  { id: 'metacrilato', label: 'Metacrilato 5mm', price: '+50€', note: 'Puede retrasar el envío' },
+                  { id: 'cristal', label: 'Cristal 6mm', price: '+100€', note: 'Puede retrasar el envío' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setExtraTopMaterial(opt.id)}
+                    className={`border rounded p-3 text-center text-xs transition-all ${extraTopMaterial === opt.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/60'}`}
+                  >
+                    <span className="block font-light text-foreground">{opt.label}</span>
+                    {opt.price && <span className="block text-accent-warm mt-0.5">{opt.price}</span>}
+                    {'note' in opt && opt.note && <span className="block text-muted-foreground/70 mt-0.5 text-[10px] leading-tight">{opt.note}</span>}
                   </button>
                 ))}
               </div>
             </div>
           )}
-
-          <div className="flex justify-between items-center py-2 border-t border-border/40 pt-4">
+          <div className="flex justify-between items-center py-2">
             <div>
-              <p className="text-base text-foreground font-light">Entrega express 7 días</p>
-              <p className="text-xs text-muted-foreground">Si necesitas acelerar plazos, lo vemos contigo.</p>
+              <p className="text-base text-foreground font-light">Tapetes protectores</p>
+              <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
             </div>
-            <Switch checked={extraExpress} onCheckedChange={setExtraExpress} />
+            <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
           </div>
-        </AccordionContent>
-      </AccordionItem>
+          {!productType && (
+            <p className="text-sm text-muted-foreground font-light italic">Elige un producto para ver los extras disponibles.</p>
+          )}
+          </div>
+        )}
+      </div>
     </>
   );
 };
 
-const ConfigAccordionsSingle = ({ openAccordion, setOpenAccordion, ...rest }: SharedProps & { openAccordion: string; setOpenAccordion: (value: string) => void }) => (
-  <Accordion type="single" collapsible value={openAccordion} onValueChange={(value) => setOpenAccordion(value || "")}>
-    <AccordionItems {...rest} />
-  </Accordion>
-);
+type SingleAccordionProps = AccordionContentSharedProps;
 
-const ConfigAccordionsMultiple = ({ openAccordion, setOpenAccordion, ...rest }: SharedProps & { openAccordion: string[]; setOpenAccordion: (value: string[]) => void }) => (
-  <Accordion type="multiple" value={openAccordion} onValueChange={setOpenAccordion}>
-    <AccordionItems {...rest} />
-  </Accordion>
-);
+const ConfigAccordionsSingle = (props: SingleAccordionProps) => {
+  return <AccordionItems {...props} />;
+};
 
 export default ProductConfigurator;

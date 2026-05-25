@@ -1,126 +1,460 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
+import SEO from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 
 interface Model {
   name: string;
-  photo: string;
+  photos: string[];
   desc: string;
   priceLabel: string;
   configParam?: string;
+  comingSoon?: boolean;
 }
 
-const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[] }> = {
+// Pequeño círculo con la silueta de la forma del producto
+const getShapePath = (configParam: string | undefined, category: string): React.ReactNode => {
+  if (category === 'cabeceros') {
+    switch (configParam) {
+      case 'recto': return <rect x="4" y="6" width="24" height="16" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'semicirculo': return <path d="M 4 22 L 4 14 Q 16 4 28 14 L 28 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'corona-simple': return <path d="M 2 22 L 2 14 C 8 14 10 11 10.4 9.2 A 5.6 1.6 0 0 1 21.6 9.2 C 22 11 24 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'corona-doble': return <path d="M 2 22 L 2 14 Q 7 14 7 11.5 Q 12 11.5 12 9 A 4 2 0 0 1 20 9 Q 20 11.5 25 11.5 Q 25 14 30 14 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'ondas': return <path d="M 2 22 L 2 15 Q 5.5 8 9 15 Q 12.5 8 16 15 Q 19.5 8 23 15 Q 26.5 8 30 15 L 30 22 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+    }
+  }
+  if (category === 'cojines') {
+    switch (configParam) {
+      case 'rodiles': return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'covadonga': return <rect x="3" y="9" width="26" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'gulpiyuri': return <><rect x="3" y="12" width="26" height="8" rx="4" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="3" cy="16" rx="2" ry="4" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+    }
+  }
+  if (category === 'pufs') return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+  if (category === 'mesas-centro') {
+    if (configParam === 'tipo-banco') return <><rect x="3" y="7" width="26" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="6" y1="17" x2="6" y2="25" stroke="currentColor" strokeWidth="1.5" /><line x1="26" y1="17" x2="26" y2="25" stroke="currentColor" strokeWidth="1.5" /></>;
+    return <rect x="3" y="10" width="26" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+  }
+  if (category === 'pantallas-lampara') {
+    switch (configParam) {
+      case 'cono': return <><path d="M 12 8 L 20 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="4" ry="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      case 'cilindro': return <><rect x="4" y="8" width="24" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="8" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="24" rx="12" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      case 'rectangulo': return <rect x="4" y="10" width="24" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'cuadrado': return <rect x="7" y="6" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+      case 'ovalado': return <><ellipse cx="16" cy="10" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="16" cy="22" rx="10" ry="5" fill="none" stroke="currentColor" strokeWidth="1.5" /></>;
+      case 'piramide': return <path d="M 9 8 L 23 8 L 27 24 L 5 24 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+    }
+  }
+  return null;
+};
+
+const ShapeCircle = ({ configParam, category }: { configParam?: string; category: string }) => {
+  const path = getShapePath(configParam, category);
+  if (!path) return null;
+  return (
+    <div className="absolute top-2.5 right-2.5 z-10 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
+      <svg viewBox="0 0 32 32" className="w-5 h-5 text-foreground/70">{path}</svg>
+    </div>
+  );
+};
+
+const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[]; comingSoon?: boolean }> = {
   cabeceros: {
     title: "Cabeceros tapizados",
     subtitle: "El punto de partida de cualquier dormitorio que merece la pena.",
     models: [
-      { name: "Recto Clásico", photo: "/productos-fotos/cabeceros/IMG_2555.PNG", desc: "Líneas limpias, atemporal. El más solicitado.", priceLabel: "Desde xx€", configParam: "recto" },
-      { name: "Arco Suave", photo: "/productos-fotos/cabeceros/IMG_2535.PNG", desc: "Remate en arco que aporta calidez sin renunciar a la elegancia.", priceLabel: "Desde xx€", configParam: "arco" },
-      { name: "Alto Moderno", photo: "/productos-fotos/cabeceros/IMG_2502.PNG", desc: "Para dormitorios con altura de techo — hace la habitación más grande.", priceLabel: "Desde xx€", configParam: "alto" },
-      { name: "Con Patas", photo: "/productos-fotos/cabeceros/IMG_2218.PNG", desc: "Se ancla al suelo. Estable y con personalidad propia.", priceLabel: "Desde xx€", configParam: "con-patas" },
+      {
+        name: "Calobra",
+        photos: [
+          "/productos-fotos/cabeceros/calobra-01.webp",
+          "/productos-fotos/cabeceros/calobra-02.webp",
+          "/productos-fotos/cabeceros/calobra-03.webp",
+        ],
+        desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
+        priceLabel: "",
+        configParam: "recto",
+      },
+      {
+        name: "Pregonda",
+        photos: [
+          "/productos-fotos/cabeceros/pregonda-01.webp",
+          "/productos-fotos/cabeceros/pregonda-02.webp",
+        ],
+        desc: "Remate en arco suave. Aporta calidez sin renunciar a la elegancia.",
+        priceLabel: "",
+        configParam: "semicirculo",
+      },
+      {
+        name: "Macarella",
+        photos: [
+          "/productos-fotos/cabeceros/macarella-01.webp",
+          "/productos-fotos/cabeceros/macarella-02.webp",
+        ],
+        desc: "Corona simple con una ondulación central. Carácter escultórico y elegante.",
+        priceLabel: "",
+        configParam: "corona-simple",
+      },
+      {
+        name: "Conta",
+        photos: [
+          "/productos-fotos/cabeceros/conta-01.webp",
+          "/productos-fotos/cabeceros/conta-02.webp",
+          "/productos-fotos/cabeceros/conta-03.webp",
+          "/productos-fotos/cabeceros/conta-04.webp",
+        ],
+        desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
+        priceLabel: "",
+        configParam: "corona-doble",
+      },
+      {
+        name: "Barbaria",
+        photos: [
+          "/productos-fotos/cabeceros/barbaria-01.webp",
+          "/productos-fotos/cabeceros/barbaria-02.webp",
+        ],
+        desc: "Corona quíntuple con cinco arcos. Movimiento escultórico y mucha presencia.",
+        priceLabel: "",
+        configParam: "ondas",
+      },
     ],
   },
   bancos: {
     title: "Bancos entelados",
     subtitle: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista.",
+    comingSoon: true,
     models: [
-      { name: "Banco Largo", photo: "/productos-fotos/bancos/IMG_2552.PNG", desc: "Para el pie de la cama. Disponible de 80 a 160cm.", priceLabel: "Desde xx€" },
-      { name: "Banco Entrada", photo: "/productos-fotos/bancos/IMG_2554.PNG", desc: "Más compacto, perfecto para el recibidor.", priceLabel: "Desde xx€" },
-      { name: "Banco con Almacenaje", photo: "/productos-fotos/bancos/IMG_2491.PNG", desc: "Tapa abatible con espacio interior. Funcional y bonito.", priceLabel: "Desde xx€" },
+      {
+        name: "Oyambre",
+        photos: [
+          "/productos-fotos/bancos/oyambre-01.webp",
+          "/productos-fotos/bancos/oyambre-02.webp",
+          "/productos-fotos/bancos/oyambre-03.webp",
+        ],
+        desc: "Banco entelado de pie de cama. De 80 a 160 cm.",
+        priceLabel: "",
+        comingSoon: true,
+      },
+      {
+        name: "Gerra",
+        photos: [],
+        desc: "Con patas. Más compacto, perfecto para el recibidor.",
+        priceLabel: "",
+        comingSoon: true,
+      },
+      {
+        name: "Ris",
+        photos: [],
+        desc: "Baúl con tapa abatible y espacio interior.",
+        priceLabel: "",
+        comingSoon: true,
+      },
     ],
   },
   cojines: {
-    title: "Cojines y almohadones",
-    subtitle: "Detalles tapizados a medida para camas, bancos, sofás o cualquier rincón que necesite un toque especial.",
+    title: "Almohadones",
+    subtitle: "Tapizados a medida para camas, bancos o sofás.",
+    comingSoon: true,
     models: [
-      { name: "Cojín Cuadrado 45×45", photo: "/productos-fotos/almohadones/IMG_2523.PNG", desc: "El tamaño clásico. Queda bien en cualquier cama, banco o sofá.", priceLabel: "Desde xx€" },
-      { name: "Cojín Rectangular 50×30", photo: "/productos-fotos/almohadones/IMG_2514.PNG", desc: "Rectangular, ligero y muy versátil para sumar apoyo o un acento decorativo.", priceLabel: "Desde xx€" },
-      { name: "Cojín Grande 60×60", photo: "/productos-fotos/almohadones/IMG_2523.PNG", desc: "Generoso y mullido. Para camas grandes y sofás amplios.", priceLabel: "Desde xx€" },
-      { name: "Set de 2 coordinados", photo: "/productos-fotos/almohadones/IMG_2524.PNG", desc: "Dos cojines en la misma tela. El combo perfecto.", priceLabel: "Desde xx€" },
-      { name: "Almohadón decorativo", photo: "/productos-fotos/almohadones/IMG_2525.PNG", desc: "Pieza estatement: tela, vivo y remate trabajados a mano.", priceLabel: "Desde xx€" },
-      { name: "Cojín con vivo", photo: "/productos-fotos/almohadones/IMG_2539.PNG", desc: "Detalle de costura que convierte un cojín en una pieza de autor.", priceLabel: "Desde xx€" },
-      { name: "Cojín a juego", photo: "/productos-fotos/almohadones/IMG_2545.PNG", desc: "Combinable con tu cabecero o banco en la misma tela.", priceLabel: "Desde xx€" },
+      {
+        name: "Rodiles — Cuadrado",
+        photos: [],
+        desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones.",
+        priceLabel: "",
+        configParam: "rodiles",
+        comingSoon: true,
+      },
+      {
+        name: "Covadonga — Rectangular",
+        photos: [],
+        desc: "La forma alargada que siempre queda bien. Ideal para el cabecero de la cama o el respaldo del sofá.",
+        priceLabel: "",
+        configParam: "covadonga",
+        comingSoon: true,
+      },
+      {
+        name: "Gulpiyuri — Rulo",
+        photos: [],
+        desc: "Un toque diferente y muy nórdico. Combina a la perfección con cabeceros tapizados.",
+        priceLabel: "",
+        configParam: "gulpiyuri",
+        comingSoon: true,
+      },
+      {
+        name: "Torimbia — Redondo",
+        photos: [],
+        desc: "Almohadón circular tapizado a mano.",
+        priceLabel: "",
+        comingSoon: true,
+      },
     ],
   },
-  puffs: {
-    title: "Puffs",
-    subtitle: "Tapizados a medida, versátiles y fáciles de mover. Pensados para acompañar la casa sin ocuparla.",
+  pufs: {
+    title: "Pufs",
+    subtitle: "Tapizados a medida, versátiles y fáciles de mover.",
     models: [
-      { name: "Puffs circulares", photo: "/productos-fotos/crops/puff-2497-tight.png", desc: "Redondos, ligeros visualmente y fáciles de mover de un rincón a otro.", priceLabel: "Desde xx€" },
-      { name: "Puffs cuadrados", photo: "/productos-fotos/crops/puff-2497-1-tight.png", desc: "Líneas más rectas para ambientes serenos y bien estructurados.", priceLabel: "Desde xx€" },
+      {
+        name: "Patos",
+        photos: [
+          "/productos-fotos/puff/puff-nuevo.webp",
+        ],
+        desc: "Cúbico, tapizado a mano y a tu medida. Úsalo de asiento, reposapiés o mesa improvisada.",
+        priceLabel: "",
+        configParam: "cuadrado",
+      },
+      {
+        name: "Monteferro",
+        photos: [],
+        desc: "Redondo · Próximamente.",
+        priceLabel: "",
+        configParam: "circular",
+        comingSoon: true,
+      },
     ],
   },
   "mesas-centro": {
     title: "Mesas de centro",
-    subtitle: "Volúmenes tapizados a medida para el salón, con una presencia suave y mucho más original que una pieza estándar.",
+    subtitle: "Volúmenes tapizados a medida para el salón.",
     models: [
-      { name: "Mesa de centro tapizada", photo: "/productos-fotos/crops/puff-2497-tight.png", desc: "Volumen tapizado, limpio y sin patas, con una lectura más blanda y contemporánea.", priceLabel: "Desde xx€", configParam: "tipo-puff" },
-      { name: "Mesa tipo banco", photo: "/productos-fotos/crops/puff-2497-1-tight.png", desc: "Más alargada y con estructura, para un resultado más arquitectónico.", priceLabel: "Desde xx€", configParam: "tipo-banco" },
+      {
+        name: "Cabo de Palos",
+        photos: [
+          "/productos-fotos/mesas-centro/cabo-de-palos.webp",
+        ],
+        desc: "Mesa cúbica tapizada sin patas. Versátil y con mucha presencia en el salón.",
+        priceLabel: "",
+        configParam: "tipo-puf",
+      },
+      {
+        name: "Calblanque",
+        photos: [],
+        desc: "Mesa de centro tapizada con patas. Próximamente.",
+        priceLabel: "",
+        configParam: "tipo-banco",
+        comingSoon: true,
+      },
     ],
+  },
+  "pantallas-lampara": {
+    title: "Pantallas de lámpara",
+    subtitle: "Tapizadas a mano en telas básicas y premium.",
+    models: [
+      { name: "Almanzor", photos: ["/productos-fotos/pantallas/almanzor-01.webp", "/productos-fotos/pantallas/almanzor-02.webp", "/productos-fotos/pantallas/almanzor-03.webp"], desc: "Cilíndrica. La más clásica y versátil. Transforma cualquier lámpara con un toque artesanal.", priceLabel: "", configParam: "cilindro" },
+      { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp", "/productos-fotos/pantallas/tormes-02.webp"], desc: "Cuadrada. Líneas limpias para espacios modernos y contemporáneos.", priceLabel: "", configParam: "cuadrado" },
+      { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica. Elegante y con carácter. Ideal para lámparas de pie y de sobremesa.", priceLabel: "", configParam: "cono", comingSoon: true },
+      { name: "La Serrota", photos: ["/productos-fotos/pantallas/serrota-01.webp"], desc: "Rectangular. Perfecta para apliques de pared y lámparas de diseño.", priceLabel: "", configParam: "rectangulo" },
+      { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada. Suave y sofisticada. Da una luz difusa y muy cálida.", priceLabel: "", configParam: "ovalado", comingSoon: true },
+      { name: "La Galana", photos: ["/productos-fotos/pantallas/galana-01.webp"], desc: "Pirámide. Forma original con mucha personalidad. Un objeto decorativo en sí mismo.", priceLabel: "", configParam: "piramide", comingSoon: true },
+    ],
+  },
+  percheros: {
+    title: "Percheros",
+    subtitle: "Próximamente.",
+    comingSoon: true,
+    models: [],
   },
 };
 
 const productTypeMap: Record<string, string> = {
-  cabeceros: 'cabecero',
-  bancos: 'banco',
-  cojines: 'cojin',
-  puffs: 'puff',
-  'mesas-centro': 'mesa',
+  cabeceros: "cabecero",
+  bancos: "banco",
+  cojines: "cojin",
+  pufs: "puf",
+  "mesas-centro": "mesa",
+  "pantallas-lampara": "pantalla",
+  percheros: "perchero",
 };
 
-const imagePosition = (category: string) =>
-  category === "puffs" || category === "mesas-centro" ? "center 6%" : undefined;
+// Texto descriptivo corto para alt de imágenes ("Cabecero tapizado Pregonda — foto 2 | Tiroriro")
+const categoryAltLabel: Record<string, string> = {
+  cabeceros:           "Cabecero tapizado",
+  bancos:              "Banco entelado",
+  cojines:             "Almohadón tapizado",
+  pufs:                "Puf tapizado",
+  "mesas-centro":      "Mesa de centro tapizada",
+  "pantallas-lampara": "Pantalla de lámpara tapizada",
+  percheros:           "Perchero tapizado",
+};
+
+// SEO por categoría: title + description + canonical únicos
+const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string }> = {
+  cabeceros: {
+    title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
+    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 225 €. Hecho a mano en España en 15 días.",
+    canonical: "https://tirorirohome.com/productos/cabeceros",
+  },
+  bancos: {
+    title: "Bancos entelados a medida | Tiroriro",
+    description: "Bancos tapizados a medida, próximamente disponibles. Hecho a mano en España con más de 60 telas.",
+    canonical: "https://tirorirohome.com/productos/bancos",
+  },
+  cojines: {
+    title: "Almohadones tapizados a medida | Tiroriro",
+    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 50 €. Hecho a mano en España.",
+    canonical: "https://tirorirohome.com/productos/cojines",
+  },
+  pufs: {
+    title: "Pufs tapizados a medida | Solos o en pareja | Tiroriro",
+    description: "Pufs cúbicos tapizados a medida, solos o en pareja. Más de 60 telas disponibles. Desde 125 €. Hecho a mano en España.",
+    canonical: "https://tirorirohome.com/productos/pufs",
+  },
+  "mesas-centro": {
+    title: "Mesas de centro tapizadas a medida | Tiroriro",
+    description: "Mesas de centro tapizadas, sin patas y con opción de superficie de cristal o metacrilato. Desde 280 €. Diseño único, hecho a mano en España.",
+    canonical: "https://tirorirohome.com/productos/mesas-centro",
+  },
+  "pantallas-lampara": {
+    title: "Pantallas de lámpara tapizadas a mano | Tiroriro",
+    description: "Pantallas de lámpara tapizadas a mano en más de 60 telas básicas y premium. Transforma cualquier lámpara en una pieza única. Desde 25 €.",
+    canonical: "https://tirorirohome.com/productos/pantallas-lampara",
+  },
+};
+
+// Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
+const CATEGORY_PRICE_FROM: Record<string, number> = {
+  cabeceros: 225,
+  pufs: 125,
+  "mesas-centro": 280,
+  "pantallas-lampara": 25,
+  cojines: 50,
+};
+
+const imagePosition = (category: string) => {
+  if (category === "pufs" || category === "mesas-centro") return "center center";
+  if (category === "bancos") return "center center";
+  return undefined;
+};
 
 interface CategoryPageProps {
   categoryKey?: string;
 }
 
-const ModelCard = ({ model, category }: { model: Model; category: string }) => {
-  const [hovered, setHovered] = useState(false);
-  const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ''}`;
+const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: string; name: string }) => {
+  const [idx, setIdx] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+
+  if (photos.length === 0) {
+    return (
+      <div className="w-full aspect-[3/4] flex flex-col items-center justify-center gap-3" style={{ backgroundColor: '#F0EDE8' }}>
+        <svg viewBox="0 0 80 100" className="w-14 h-18 text-foreground/25" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round">
+          <path d="M 32 14 L 48 14 L 64 82 L 16 82 Z" />
+          <line x1="40" y1="4" x2="40" y2="14" />
+          <ellipse cx="40" cy="84" rx="24" ry="4" />
+        </svg>
+        <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium">Próximamente fotos</span>
+      </div>
+    );
+  }
+
+  const prev = () => setIdx(i => (i - 1 + photos.length) % photos.length);
+  const next = () => setIdx(i => (i + 1) % photos.length);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 40) { delta < 0 ? next() : prev(); }
+    touchStartX.current = null;
+  };
 
   return (
-    <Link
-      to={configHref}
-      className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden group"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <div
+      className="relative overflow-hidden w-full aspect-[3/4] select-none"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      <div className="relative overflow-hidden">
+      {photos.map((src, i) => (
         <img
-          src={model.photo}
-          alt={model.name}
-          className="w-full aspect-[4/3] object-cover"
-          style={{
-            transform: hovered ? 'scale(1.04)' : 'scale(1)',
-            transition: 'transform 0.4s ease',
-            objectPosition: imagePosition(category),
-          }}
+          key={src}
+          src={src}
+          alt={`${categoryAltLabel[category] || "Producto tapizado"} ${name}${photos.length > 1 ? ` — foto ${i + 1}` : ""} | Tiroriro`}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          style={{ opacity: i === idx ? 1 : 0, objectPosition: imagePosition(category) }}
           loading="lazy"
           decoding="async"
         />
-        <div
-          style={{ opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }}
-          className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none"
-        >
-          <span className="text-white text-sm tracking-widest uppercase">Personalizar →</span>
+      ))}
+      {photos.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
+          >
+            <ChevronRight size={16} />
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {photos.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIdx(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-all ${i === idx ? "bg-white" : "bg-white/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+const ModelCard = ({ model, category }: { model: Model; category: string }) => {
+  const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ""}`;
+
+  if (model.comingSoon) {
+    return (
+      <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden">
+        <div className="relative overflow-hidden">
+          <PhotoSlider photos={model.photos} category={category} name={model.name} />
+          {model.photos.length > 0 && (
+            <div className="absolute inset-0 bg-foreground/20 pointer-events-none" />
+          )}
+          <div className="absolute top-2 right-2 z-10">
+            <span className="flex items-center gap-1 text-[9px] tracking-[0.18em] uppercase font-medium px-2.5 py-1 rounded-full bg-foreground/75 text-background">
+              <Clock size={9} />
+              Próximamente
+            </span>
+          </div>
         </div>
+        <div className="p-5 flex flex-col flex-1">
+          <h3 className="font-serif text-lg font-medium text-foreground/60">{model.name}</h3>
+          <p className="mt-1 text-sm text-muted-foreground/60 font-light flex-1">{model.desc}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden">
+      <div className="relative overflow-hidden">
+        <PhotoSlider photos={model.photos} category={category} name={model.name} />
+        {category !== 'pantallas-lampara' && (
+          <ShapeCircle configParam={model.configParam} category={category} />
+        )}
       </div>
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-base text-foreground font-medium">{model.priceLabel}</p>
-          <span className="text-xs tracking-extra-wide uppercase text-accent-warm border-b border-accent-warm pb-0.5 group-hover:opacity-80 transition-opacity">
-            Personalizar
-          </span>
+        <div className="mt-4">
+          <Link
+            to={configHref}
+            className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center w-full px-6 py-3 text-xs uppercase tracking-[0.20em]"
+          >
+            <span className="relative z-10">Diseña el tuyo →</span>
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
@@ -134,15 +468,68 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
         <Navbar />
         <main className="pt-24 pb-20 px-6 text-center">
           <h1 className="font-serif text-3xl font-light text-foreground">Categoría no encontrada</h1>
-          <Link to="/productos" className="mt-4 inline-block text-accent-warm underline">Volver a productos</Link>
+          <Link to="/productos" className="mt-4 inline-block text-accent-warm underline">
+            Volver a productos
+          </Link>
         </main>
         <Footer />
       </>
     );
   }
 
+  const activeModels = cat.models.filter(m => !m.comingSoon);
+  const comingSoonModels = cat.models.filter(m => m.comingSoon);
+  const seo = CATEGORY_SEO[category];
+  const priceFrom = CATEGORY_PRICE_FROM[category];
+  const productJsonLd = seo && priceFrom
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: cat.title,
+        description: seo.description,
+        brand: { "@type": "Brand", name: "Tiroriro" },
+        category: cat.title,
+        image: activeModels[0]?.photos[0]
+          ? `https://tirorirohome.com${activeModels[0].photos[0]}`
+          : "https://tirorirohome.com/hero-poster.webp",
+        offers: {
+          "@type": "AggregateOffer",
+          priceCurrency: "EUR",
+          lowPrice: priceFrom,
+          offerCount: activeModels.length || 1,
+          availability: "https://schema.org/InStock",
+          areaServed: "ES",
+          seller: { "@type": "Organization", name: "Tiroriro", url: "https://tirorirohome.com" },
+        },
+      }
+    : null;
+  const breadcrumbJsonLd = seo
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: "https://tirorirohome.com/" },
+          { "@type": "ListItem", position: 2, name: "Productos", item: "https://tirorirohome.com/productos" },
+          { "@type": "ListItem", position: 3, name: cat.title, item: seo.canonical },
+        ],
+      }
+    : null;
+
   return (
     <>
+      {seo && (
+        <SEO title={seo.title} description={seo.description} canonical={seo.canonical} />
+      )}
+      {(productJsonLd || breadcrumbJsonLd) && (
+        <Helmet>
+          {productJsonLd && (
+            <script type="application/ld+json">{JSON.stringify(productJsonLd)}</script>
+          )}
+          {breadcrumbJsonLd && (
+            <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
+          )}
+        </Helmet>
+      )}
       <Navbar />
       <main className="pt-32 pb-20 px-6">
         <div className="container mx-auto">
@@ -156,17 +543,58 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
           <AnimatedSection className="text-center mb-12">
             <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground">{cat.title}</h1>
             <p className="mt-3 text-muted-foreground font-light italic">{cat.subtitle}</p>
+            {cat.comingSoon && (
+              <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 border border-border rounded-full">
+                <Clock size={14} className="text-muted-foreground" />
+                <span className="text-xs text-muted-foreground tracking-wider uppercase">Próximamente disponibles</span>
+              </div>
+            )}
             <span className="section-line" />
           </AnimatedSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cat.models.map((model, i) => (
-              <AnimatedSection key={model.name} delay={i * 0.08} className="h-full">
-                <div className="h-full">
-                  <ModelCard model={model} category={category} />
+          {activeModels.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activeModels.map((model, i) => (
+                <AnimatedSection key={model.name} delay={i * 0.08} className="h-full">
+                  <div className="h-full">
+                    <ModelCard model={model} category={category} />
+                  </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
+
+          {/* Próximamente — grouped at the bottom without photos */}
+          {comingSoonModels.length > 0 && (
+            <AnimatedSection delay={0.3} className="mt-14">
+              <div className="border-t border-border/40 pt-8">
+                <div className="flex items-center gap-2 mb-5">
+                  <Clock size={13} className="text-muted-foreground/70" />
+                  <span className="text-[10px] tracking-[0.20em] uppercase text-muted-foreground/70 font-medium">Próximamente</span>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
+                <div className="flex flex-wrap gap-3">
+                  {comingSoonModels.map(model => {
+                    const shapePath = getShapePath(model.configParam, category);
+                    return (
+                      <div
+                        key={model.name}
+                        className="flex items-center gap-3 px-4 py-3 border border-border/40 rounded-lg bg-muted/20"
+                      >
+                        {shapePath && (
+                          <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                            <svg viewBox="0 0 32 32" className="w-5 h-5 text-foreground/40">{shapePath}</svg>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium text-foreground/50 font-serif">{model.name}</p>
+                          <p className="text-[10px] text-muted-foreground/60 font-light tracking-wide uppercase">Próximamente</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </AnimatedSection>
+          )}
         </div>
       </main>
       <Footer />

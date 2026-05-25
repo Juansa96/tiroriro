@@ -1,5 +1,5 @@
-import inakiRocioPhoto from "@/assets/team/inaki-rocio.jpeg";
-import juanBeaPhoto from "@/assets/team/juan-bea.jpeg";
+import inakiRocioPhoto from "@/assets/team/inaki-rocio.webp";
+import juanBeaPhoto from "@/assets/team/juan-bea.webp";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -147,7 +147,7 @@ const TeamSection = () => {
           <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Quiénes somos</h2>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic text-base">
-            "2 hermanos, 2 amigas, 2 casas, 2 bebés recién nacidos y un montón de cosas por encajar — así nació Tiroriro: porque ninguna encontraba lo que de verdad quería para su casa."
+            "2 hermanos, 2 amigas, 2 bebés recién nacidos y un montón de cosas por encajar — así nació Tiroriro: porque ninguna encontraba lo que de verdad quería para su casa."
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-10 max-w-6xl mx-auto">

@@ -37,4 +37,4 @@ export const supabase = hasSupabaseConfig
           error: new Error("Supabase no configurado en este entorno"),
         }),
       },
-    } as ReturnType<typeof createClient<Database>>);
+    } as unknown as ReturnType<typeof createClient<Database>>);

@@ -1,24 +1,34 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Check, Loader2, MessageCircle } from "lucide-react";
+import { Loader2, MessageCircle } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
 import ProductSVGPreview from "./ProductSVGPreview";
+import { supabase } from "@/integrations/supabase/client";
 
-const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Puffs", "Mesas de centro", "Otro"];
-const WHATSAPP_URL = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
+// Cliente del CRM (clave pública anon — puede estar en el código)
+const crmSupabase = createClient(
+  "https://jemsimqvksucmxvtmote.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbXNpbXF2a3N1Y214dnRtb3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzY4MzUsImV4cCI6MjA5NDM1MjgzNX0.Gbo0fbIjXzXCX0EqG1vvUiM1uXqy-eKYRxLvKb2iQpE"
+);
+
+const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
+const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
 function mapProductName(name: string): string {
   const n = name.toLowerCase();
   if (n.includes('cabecero')) return 'Cabeceros';
   if (n.includes('banco')) return 'Bancos entelados';
   if (n.includes('cojin') || n.includes('cojín') || n.includes('almohad')) return 'Cojines y almohadones';
-  if (n.includes('puff')) return 'Puffs';
+  if (n.includes('puf')) return 'Pufs';
   if (n.includes('mesa')) return 'Mesas de centro';
+  if (n.includes('pantalla') || n.includes('lámpara') || n.includes('lampara')) return 'Pantallas de lámpara';
   return 'Varios';
 }
 
 const ContactForm = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const fromConfig = searchParams.get('config');
   const prefilledProduct = searchParams.get('product');
   const expressParam = searchParams.get('express');
@@ -29,11 +39,10 @@ const ContactForm = () => {
   const [rgpd, setRgpd] = useState(false);
   const [otherProductDetail, setOtherProductDetail] = useState("");
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puff" | "mesa" | null;
+  const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puf" | "mesa" | "pantalla" | null;
   const previewForma = searchParams.get("previewForma") || undefined;
   const previewColor = searchParams.get("previewColor") || "#D4C5A9";
   const previewTexture = searchParams.get("previewTexture") || undefined;
@@ -43,6 +52,12 @@ const ContactForm = () => {
   const previewWidth = searchParams.get("previewWidth");
   const previewHeight = searchParams.get("previewHeight");
   const previewDepth = searchParams.get("previewDepth");
+  const previewFabricName = searchParams.get("previewFabricName") || undefined;
+  const previewVivoName = searchParams.get("previewVivoName") || undefined;
+  const previewVivoImage = searchParams.get("previewVivoImage") || undefined;
+  const previewLateralHex = searchParams.get("previewLateralHex") || undefined;
+  const previewLateralImage = searchParams.get("previewLateralImage") || undefined;
+  const previewLateralName = searchParams.get("previewLateralName") || undefined;
 
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
@@ -72,7 +87,8 @@ const ContactForm = () => {
   const validate = (): Record<string, string> => {
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = "El nombre es obligatorio";
-    if (form.phone.trim() && !/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = "Introduce un teléfono español válido (9 dígitos)";
+    if (!form.phone.trim()) errs.phone = "El teléfono es obligatorio";
+    else if (!/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = "Introduce un teléfono español válido (9 dígitos)";
     if (!form.email.trim()) { errs.email = "El email es obligatorio"; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Introduce un email válido";
     if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
@@ -92,75 +108,125 @@ const ContactForm = () => {
     setTouched({ name: true, phone: true, email: true, product: true, other: true, rgpd: true });
     if (Object.keys(validationErrors).length > 0) { toast.error("Por favor, corrige los campos marcados en rojo."); return; }
     setSending(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSent(true);
-    setSending(false);
+    try {
+      const fullName = [form.name, form.lastName].filter(Boolean).join(' ').trim();
+      const firstName = form.name.trim().split(' ')[0];
+      const productList = selectedProducts.includes("Otro")
+        ? [...selectedProducts.filter(p => p !== "Otro"), `Otro: ${otherProductDetail}`].join(', ')
+        : selectedProducts.join(', ') || 'No especificado';
+
+      // Guardar lead en el Supabase del CRM (no bloqueante)
+      try {
+        await crmSupabase.from('contact_leads').insert({
+          nombre: form.name.trim(),
+          apellidos: form.lastName.trim() || null,
+          email: form.email.trim(),
+          telefono: form.phone.trim() || null,
+          productos: productList,
+          detalles: form.details.trim() || null,
+          config_resumen: fromConfig || null,
+        });
+      } catch (leadErr) {
+        console.warn('No se pudo guardar el lead en el CRM:', leadErr);
+      }
+      const submittedAt = new Date().toLocaleString('es-ES', {
+        timeZone: 'Europe/Madrid', dateStyle: 'full', timeStyle: 'short',
+      });
+      const idempotencyBase = `${form.email}-${Date.now()}`;
+
+      // Build a public link that recreates the customer's selection (renders the SVG drawing).
+      // This lets the team click the email and see exactly what the customer designed.
+      const previewLink = hasConfigParams
+        ? `${window.location.origin}/?${searchParams.toString()}#contacto`
+        : undefined;
+
+      // 1. Email interno a TiroRiro (obligatorio)
+      const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'contact-internal',
+          recipientEmail: 'info@tirorirohome.com',
+          replyTo: form.email,
+          idempotencyKey: `contact-internal-${idempotencyBase}`,
+          templateData: {
+            fullName,
+            email: form.email,
+            phone: form.phone || undefined,
+            productList,
+            otherDetail: otherProductDetail || undefined,
+            configSummary: fromConfig || undefined,
+            details: form.details || undefined,
+            submittedAt,
+            previewLink,
+            formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
+          },
+        },
+      });
+      if (internalError) throw internalError;
+
+      // 2. Confirmación al cliente (no bloqueante)
+      try {
+        await supabase.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'contact-confirmation',
+            recipientEmail: form.email,
+            idempotencyKey: `contact-confirmation-${idempotencyBase}`,
+            templateData: { firstName, productList },
+          },
+        });
+      } catch (confirmErr) {
+        console.warn('No se pudo enviar la confirmación al cliente:', confirmErr);
+      }
+
+      // 3. Registrar lead en CRM (no bloqueante, fallo silencioso)
+      try {
+        const mensajeCRM = [
+          selectedProducts.length > 0 ? `Productos: ${selectedProducts.join(', ')}` : null,
+          otherProductDetail ? `Otro: ${otherProductDetail}` : null,
+          fromConfig ? `Configuración: ${fromConfig}` : null,
+          form.details ? `Detalles: ${form.details}` : null,
+        ].filter(Boolean).join('\n');
+
+        // Build structured configurator data if coming from configurator
+        const configuradorData = hasConfigParams ? {
+          tipo: previewType ?? undefined,
+          forma: searchParams.get('previewForma') ?? undefined,
+          tela: previewFabricName ?? undefined,
+          telaLateral: previewLateralName ?? undefined,
+          anchoCama: previewWidth ?? undefined,
+          altoCm: previewHeight ?? undefined,
+          acabado: previewFinish || 'vivo-simple',
+          coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
+        } : undefined;
+
+        await fetch('https://tirorirocrm.lovable.app/api/public/lead-form', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: fullName,
+            email: form.email,
+            telefono: form.phone,
+            ciudad: '',
+            mensaje: mensajeCRM,
+            origen: hasConfigParams ? 'Configurador' : 'Formulario web',
+            configurador: configuradorData,
+          }),
+        });
+      } catch (crmErr) {
+        console.warn('CRM no disponible:', crmErr);
+      }
+
+      // Redirigir a página de gracias con el nombre para personalizarla
+      navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
+    } catch (err) {
+      console.error('Error enviando email:', err);
+      toast.error("No se pudo enviar el mensaje. Escríbenos por WhatsApp o al email.");
+    } finally {
+      setSending(false);
+    }
   };
 
-  if (sent) {
-    const WHATSAPP_PRISA = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, acabo de enviar una solicitud y tengo algo de prisa. ¿Podéis responderme pronto?");
-    return (
-      <section className="py-24 md:py-36 px-6 bg-background">
-        <div className="container mx-auto max-w-lg text-center">
-
-          {/* Icono check */}
-          <div className="w-14 h-14 rounded-full border border-accent-warm/30 bg-accent-warm/6 flex items-center justify-center mx-auto mb-10">
-            <Check size={22} strokeWidth={1.8} className="text-accent-warm" />
-          </div>
-
-          {/* Título */}
-          <h2 className="font-serif text-4xl md:text-5xl font-light text-foreground tracking-tight">
-            Gracias, {form.name.split(' ')[0]}
-          </h2>
-          <span className="section-line mt-5" />
-
-          {/* Texto principal */}
-          <p className="mt-8 text-muted-foreground font-light text-base md:text-lg leading-relaxed max-w-sm mx-auto">
-            Hemos recibido tu solicitud.<br className="hidden sm:block" />
-            Te respondemos en <strong className="text-foreground font-medium">menos de 24 horas laborables</strong>.
-          </p>
-
-          {/* Pasos del proceso */}
-          <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-px bg-border/40 rounded-2xl overflow-hidden border border-border/40">
-            {[
-              { n: "01", title: "Revisamos tu solicitud", text: "Estudiamos tu petición con detalle." },
-              { n: "02", title: "Te enviamos presupuesto", text: "Sin compromiso, ajustado a ti." },
-              { n: "03", title: "Empezamos a hacer magia", text: "Manos a la obra cuando confirmes." },
-            ].map(({ n, title, text }) => (
-              <div key={n} className="bg-secondary/50 px-6 py-7 text-left flex flex-col gap-2">
-                <span className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground/60 font-medium">{n}</span>
-                <p className="font-medium text-foreground text-sm leading-snug">{title}</p>
-                <p className="text-xs text-muted-foreground font-light leading-relaxed">{text}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* CTAs */}
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            <button
-              onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setOtherProductDetail(''); setRgpd(false); setTouched({}); setErrors({}); }}
-              className="btn-sweep btn-unir btn-unir-outline px-10 py-3.5 text-xs tracking-widest font-medium"
-            >
-              <span className="relative z-10 flex items-center gap-2">Volver al inicio <span className="opacity-60">→</span></span>
-            </button>
-            <a
-              href={WHATSAPP_PRISA}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-light"
-            >
-              <MessageCircle size={15} className="text-accent-warm shrink-0" />
-              ¿Tienes prisa? Escríbenos por WhatsApp
-            </a>
-          </div>
-
-        </div>
-      </section>
-    );
-  }
-
   const hasError = (field: string) => touched[field] && errors[field];
-  const inputBase = "w-full bg-background border border-border px-4 py-3 text-base text-foreground placeholder:text-sm placeholder:text-muted-foreground/40 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
+  const inputBase = "w-full bg-secondary border border-border rounded-md px-4 py-3 text-base text-foreground placeholder:text-sm placeholder:text-muted-foreground/40 placeholder:font-light focus:outline-none focus:border-accent-warm focus:ring-1 focus:ring-accent-warm/30 transition-colors";
 
   return (
     <section id="contacto" className="py-20 md:py-32 px-6 bg-background">
@@ -171,6 +237,16 @@ const ContactForm = () => {
           <p className="mt-4 text-base text-muted-foreground font-light italic">Te respondemos en menos de 24 horas — sin compromiso ni presión.</p>
         </div>
 
+        {!hasConfigParams && (
+          <div className="mb-8 p-4 bg-muted/40 border border-border/50 rounded-md flex items-start gap-2.5">
+            <span className="text-muted-foreground mt-0.5 text-sm">📝</span>
+            <p className="text-sm text-muted-foreground font-light">
+              Estás usando el formulario directo. Si quieres ver el resultado antes de pedir,{" "}
+              <a href="/configurador" className="underline hover:text-foreground transition-colors">prueba el configurador</a>.
+            </p>
+          </div>
+        )}
+
         {hasConfigParams && (
           <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30">
             <p className="text-sm font-medium text-foreground flex items-start gap-2">
@@ -179,18 +255,64 @@ const ContactForm = () => {
             </p>
             {previewType && (
               <div className="mt-5 rounded-2xl border border-border bg-background px-4 py-5">
-                <ProductSVGPreview
-                  type={previewType}
-                  color={previewColor}
-                  fabricImage={previewTexture}
-                  lateralFabricImage={previewLateralTexture}
-                  finish={previewFinish}
-                  vivoColor={previewVivo}
-                  forma={previewForma}
-                  widthCm={previewWidth ? Number(previewWidth) : undefined}
-                  heightCm={previewHeight ? Number(previewHeight) : undefined}
-                  depthCm={previewDepth ? Number(previewDepth) : undefined}
-                />
+                {/* Resumen de medidas */}
+                {fromConfig && (
+                  <div className="mb-4 pb-4 border-b border-border/40">
+                    <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground font-medium mb-2">Tu configuración</p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                      {fromConfig.replace('Me interesa: ', '').split(' · ').map((part, i) => (
+                        <span key={i} className="text-xs text-foreground font-light">
+                          {i === 0 ? <strong>{part}</strong> : `· ${part}`}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-4 items-center">
+                  <div className="flex-1">
+                    <ProductSVGPreview
+                      type={previewType}
+                      color={previewColor}
+                      fabricImage={previewTexture}
+                      lateralFabricImage={previewLateralTexture}
+                      finish={previewFinish}
+                      vivoColor={previewVivo}
+                      forma={previewForma}
+                      widthCm={previewWidth ? Number(previewWidth) : undefined}
+                      heightCm={previewHeight ? Number(previewHeight) : undefined}
+                      depthCm={previewDepth ? Number(previewDepth) : undefined}
+                    />
+                  </div>
+                  {previewFabricName && (
+                    <div className="w-20 flex-shrink-0 border-l border-border/30 pl-4 flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <p className="text-[10px] tracking-wide uppercase text-muted-foreground font-medium">Tela</p>
+                        <div className="w-full h-12 rounded border border-border/40 overflow-hidden" style={{ backgroundColor: previewColor }}>
+                          {previewTexture && <img src={previewTexture} alt={previewFabricName} className="w-full h-full object-cover" />}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground font-light leading-tight">{previewFabricName}</p>
+                      </div>
+                      {previewType === 'cabecero' && previewLateralName && (
+                        <div className="flex flex-col gap-1">
+                          <p className="text-[10px] tracking-wide uppercase text-muted-foreground font-medium">Laterales</p>
+                          <div className="w-full h-12 rounded border border-border/40 overflow-hidden" style={{ backgroundColor: previewLateralHex || previewColor }}>
+                            {previewLateralImage && <img src={previewLateralImage} alt={previewLateralName} className="w-full h-full object-cover" />}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground font-light leading-tight">{previewLateralName}</p>
+                        </div>
+                      )}
+                      {previewVivo && previewVivoName && (
+                        <div className="flex flex-col gap-1">
+                          <p className="text-[10px] tracking-wide uppercase text-muted-foreground font-medium">Vivo</p>
+                          <div className="w-full h-8 rounded border border-border/40 overflow-hidden" style={{ backgroundColor: previewVivo }}>
+                            {previewVivoImage && <img src={previewVivoImage} alt={previewVivoName} className="w-full h-full object-cover" />}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground font-light leading-tight">{previewVivoName}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -211,7 +333,7 @@ const ContactForm = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Teléfono / WhatsApp</label>
+              <label htmlFor="contact-phone" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Teléfono / WhatsApp *</label>
               <input id="contact-phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="600 000 000" className={`${inputBase} ${hasError('phone') ? 'border-destructive' : ''}`} />
               {hasError('phone') && <p className="text-xs mt-1 text-destructive">{errors.phone}</p>}
             </div>
@@ -231,7 +353,7 @@ const ContactForm = () => {
                 const active = selectedProducts.includes(p);
                 return (
                   <button key={p} type="button" onClick={() => toggleProduct(p)} aria-pressed={active}
-                    className={`min-h-[40px] px-4 py-2 text-sm border transition-all ${
+                    className={`min-h-[40px] px-4 py-2 text-sm border rounded-md transition-all ${
                       active ? 'border-accent-warm bg-accent-warm/10 text-accent-warm font-medium' : 'border-border bg-background text-foreground hover:border-foreground/60'
                     }`}
                   >
@@ -280,7 +402,14 @@ const ContactForm = () => {
           </div>
           {touched.rgpd && errors.rgpd && <p className="text-xs text-destructive">{errors.rgpd}</p>}
 
-          <div className="pt-4">
+          <div className="pt-2 p-3 bg-muted/40 border border-border/40 rounded-md">
+            <p className="text-xs text-muted-foreground font-light leading-relaxed">
+              <span className="font-medium text-foreground">Gastos de envío:</span> dentro de Madrid <span className="font-medium">40 €</span> · fuera de Madrid, a consultar según destino.
+            </p>
+            <p className="text-[11px] text-muted-foreground/70 font-light mt-1 italic">Telas sujetas a disponibilidad de stock.</p>
+          </div>
+
+          <div className="pt-2">
             <button
               type="submit"
               disabled={sending}

@@ -15,12 +15,13 @@ const WhyTiroRiro = () => (
         <span className="section-line" />
       </AnimatedSection>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-stretch">
-        <AnimatedSection className="h-full">
+        <AnimatedSection className="relative overflow-hidden min-h-[420px] lg:min-h-[580px]">
           <img
-            src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=800&q=85"
+            src="/hero-why-tiroriro.webp"
             alt="Manos artesanas trabajando en tapicería de muebles"
-            className="w-full h-full object-cover min-h-[500px]"
-            loading="lazy" decoding="async"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </AnimatedSection>
         <div className="flex flex-col justify-center">

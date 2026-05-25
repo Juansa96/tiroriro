@@ -2,20 +2,25 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Instagram } from "lucide-react";
 
-const WHATSAPP_URL = "https://wa.me/34645363323?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
+const WHATSAPP_URL = "https://wa.me/34660786453?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
+const WHATSAPP_CONFIGURADOR_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, estoy usando el configurador y me gustaría orientación para elegir.");
 
 const FloatingButtons = () => {
   const [whatsappHovered, setWhatsappHovered] = useState(false);
   const [igHovered, setIgHovered] = useState(false);
   const location = useLocation();
 
-  if (location.pathname === '/configurador') return null;
+  const isConfigurador = location.pathname === '/configurador';
+  // On configurador mobile, the fixed bottom bar sits at ~72px — push buttons above it
+  const bottomClass = isConfigurador ? "bottom-24 md:bottom-6" : "bottom-6";
+  const whatsappUrl = isConfigurador ? WHATSAPP_CONFIGURADOR_URL : WHATSAPP_URL;
+  const whatsappLabel = isConfigurador ? "¿Dudas? Escríbenos" : "Escríbenos por WhatsApp";
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className={`fixed ${bottomClass} right-6 z-50 flex flex-col items-end gap-3`}>
 
-      {/* Instagram — solo desktop */}
-      <div className="hidden md:block relative">
+      {/* Instagram — solo fuera del configurador */}
+      {!isConfigurador && <div className="relative">
         {igHovered && (
           <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-foreground text-background text-xs rounded px-2 py-1 whitespace-nowrap">
             Síguenos en Instagram
@@ -33,20 +38,20 @@ const FloatingButtons = () => {
         >
           <Instagram size={24} />
         </a>
-      </div>
+      </div>}
 
-      {/* WhatsApp — siempre visible */}
+      {/* WhatsApp — siempre visible, incluso en el configurador */}
       <div className="relative">
         {whatsappHovered && (
           <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-foreground text-background text-xs rounded px-2 py-1 whitespace-nowrap">
-            Escríbenos por WhatsApp
+            {whatsappLabel}
           </div>
         )}
         <a
-          href={WHATSAPP_URL}
+          href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Escríbenos por WhatsApp"
+          aria-label={whatsappLabel}
           className="flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-transform duration-200 hover:scale-110"
           style={{ backgroundColor: '#25D366' }}
           onMouseEnter={() => setWhatsappHovered(true)}

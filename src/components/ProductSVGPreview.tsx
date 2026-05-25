@@ -14,6 +14,8 @@ interface Props {
   widthCm?: number;
   heightCm?: number;
   depthCm?: number;
+  surface?: string;
+  quantity?: number;
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -26,7 +28,7 @@ const scaleRange = (value: number | undefined, inputMin: number, inputMax: numbe
   return clamp(scaled, Math.min(outputMin, outputMax), Math.max(outputMin, outputMax));
 };
 
-function darken(hex: string, amount = 40): string {
+export function darken(hex: string, amount = 40): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
@@ -87,82 +89,74 @@ const headboardSelectorPath = (forma: string) => {
       return "M 3 37 L 3 24 Q 11.4 24 11.4 19.8 Q 19.8 19.8 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 19.8 48.6 19.8 Q 48.6 24 57 24 L 57 37 Z";
     case "corona-triple":
       return "M 3 37 L 3 24 Q 8.6 24 8.6 21.2 Q 14.2 21.2 14.2 18.4 Q 19.8 18.4 19.8 15.6 A 10.2 4.4 0 0 1 40.2 15.6 Q 40.2 18.4 45.8 18.4 Q 45.8 21.2 51.4 21.2 Q 51.4 24 57 24 L 57 37 Z";
+    case "ondas":
+      return "M 3 37 L 3 26 Q 8.4 12 13.8 26 Q 19.2 12 24.6 26 Q 30 12 35.4 26 Q 40.8 12 46.2 26 Q 51.6 12 57 26 L 57 37 Z";
     case "recto":
     default:
       return "M 5 35 L 5 8 L 55 8 L 55 35 Z";
   }
 };
 
-const headboardTopPoints = (forma: string) => {
+const headboardCorners = (forma: string): [[number, number], [number, number]] => {
   switch (forma) {
-    case "semicirculo":
-      return [
-        [15, 110],
-        [82, 56],
-        [150, 25],
-        [218, 56],
-        [285, 110],
-      ];
+    case "semicirculo": return [[15, 110], [285, 110]];
     case "corona-simple":
-      return [
-        [15, 120],
-        [68, 120],
-        [90, 100],
-        [94, 84],
-        [150, 68],
-        [206, 84],
-        [210, 100],
-        [232, 120],
-        [285, 120],
-      ];
     case "corona-doble":
-      return [
-        [15, 120],
-        [57, 120],
-        [57, 99],
-        [99, 99],
-        [99, 78],
-        [150, 56],
-        [201, 78],
-        [201, 99],
-        [243, 99],
-        [243, 120],
-        [285, 120],
-      ];
     case "corona-triple":
-      return [
-        [15, 120],
-        [43, 120],
-        [43, 106],
-        [71, 106],
-        [71, 92],
-        [99, 92],
-        [99, 78],
-        [150, 56],
-        [201, 78],
-        [201, 92],
-        [229, 92],
-        [229, 106],
-        [257, 106],
-        [257, 120],
-        [285, 120],
-      ];
+    case "ondas": return [[15, 120], [285, 120]];
     case "recto":
-    default:
-      return [
-        [15, 50],
-        [285, 50],
-      ];
+    default: return [[15, 50], [285, 50]];
   }
 };
 
-const buildTopFacePath = (points: number[][], dx: number, dy: number) => {
-  const front = points.map(([x, y]) => `${x} ${y}`).join(" L ");
-  const back = [...points]
-    .reverse()
-    .map(([x, y]) => `${x + dx} ${y + dy}`)
-    .join(" L ");
-  return `M ${front} L ${back} Z`;
+const headboardTopFacePath = (forma: string, dx: number, dy: number): string => {
+  switch (forma) {
+    case "semicirculo":
+      return `M 15 110 Q 150 25 285 110 L ${285+dx} ${110+dy} Q ${150+dx} ${25+dy} ${15+dx} ${110+dy} Z`;
+    case "corona-simple":
+      return (
+        `M 15 120 C 68 120 90 100 94 84 A 56 16 0 0 1 206 84 C 210 100 232 120 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `C ${232+dx} ${120+dy} ${210+dx} ${100+dy} ${206+dx} ${84+dy} ` +
+        `A 56 16 0 0 0 ${94+dx} ${84+dy} ` +
+        `C ${90+dx} ${100+dy} ${68+dx} ${120+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "corona-doble":
+      return (
+        `M 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `Q ${243+dx} ${120+dy} ${243+dx} ${99+dy} ` +
+        `Q ${201+dx} ${99+dy} ${201+dx} ${78+dy} ` +
+        `A 51 22 0 0 0 ${99+dx} ${78+dy} ` +
+        `Q ${99+dx} ${99+dy} ${57+dx} ${99+dy} ` +
+        `Q ${57+dx} ${120+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "corona-triple":
+      return (
+        `M 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `Q ${257+dx} ${120+dy} ${257+dx} ${106+dy} ` +
+        `Q ${229+dx} ${106+dy} ${229+dx} ${92+dy} ` +
+        `Q ${201+dx} ${92+dy} ${201+dx} ${78+dy} ` +
+        `A 51 22 0 0 0 ${99+dx} ${78+dy} ` +
+        `Q ${99+dx} ${92+dy} ${71+dx} ${92+dy} ` +
+        `Q ${71+dx} ${106+dy} ${43+dx} ${106+dy} ` +
+        `Q ${43+dx} ${120+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "ondas":
+      return (
+        `M 15 120 Q 42 50 69 120 Q 96 50 123 120 Q 150 50 177 120 Q 204 50 231 120 Q 258 50 285 120 ` +
+        `L ${285+dx} ${120+dy} ` +
+        `Q ${258+dx} ${50+dy} ${231+dx} ${120+dy} ` +
+        `Q ${204+dx} ${50+dy} ${177+dx} ${120+dy} ` +
+        `Q ${150+dx} ${50+dy} ${123+dx} ${120+dy} ` +
+        `Q ${96+dx} ${50+dy} ${69+dx} ${120+dy} ` +
+        `Q ${42+dx} ${50+dy} ${15+dx} ${120+dy} Z`
+      );
+    case "recto":
+    default:
+      return `M 15 50 L 285 50 L ${285+dx} ${50+dy} L ${15+dx} ${50+dy} Z`;
+  }
 };
 
 const headboardPath = (forma: string, bottomY: number) => {
@@ -175,6 +169,8 @@ const headboardPath = (forma: string, bottomY: number) => {
       return `M 15 ${bottomY} L 15 120 Q 57 120 57 99 Q 99 99 99 78 A 51 22 0 0 1 201 78 Q 201 99 243 99 Q 243 120 285 120 L 285 ${bottomY} Z`;
     case "corona-triple":
       return `M 15 ${bottomY} L 15 120 Q 43 120 43 106 Q 71 106 71 92 Q 99 92 99 78 A 51 22 0 0 1 201 78 Q 201 92 229 92 Q 229 106 257 106 Q 257 120 285 120 L 285 ${bottomY} Z`;
+    case "ondas":
+      return `M 15 ${bottomY} L 15 120 Q 42 50 69 120 Q 96 50 123 120 Q 150 50 177 120 Q 204 50 231 120 Q 258 50 285 120 L 285 ${bottomY} Z`;
     case "recto":
     default:
       return `M 15 ${bottomY} L 15 50 L 285 50 L 285 ${bottomY} Z`;
@@ -205,19 +201,21 @@ const HeadboardSVG = ({
   const lateralPatternId = useId();
   const clipId = useId();
   const scaleX = scaleRange(widthCm, 90, 200, 0.72, 1.02);
-  const heightScale = scaleRange(heightCm, 100, 130, 0.82, 1.12);
+  const heightScale = scaleRange(heightCm, 60, 130, 0.72, 1.12);
   const bottomY = 188;
   const dx = 8;
   const dy = -5;
   const frontPath = headboardPath(shape, bottomY);
-  const topPoints = headboardTopPoints(shape);
-  const firstTop = topPoints[0];
-  const lastTop = topPoints[topPoints.length - 1];
-  const topFacePath = buildTopFacePath(topPoints, dx, dy);
+  const [firstTop, lastTop] = headboardCorners(shape);
+  const topFacePath = headboardTopFacePath(shape, dx, dy);
   const leftSidePath = `M 15 ${bottomY} L ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${15 + dx} ${bottomY + dy} Z`;
   const rightSidePath = `M 285 ${bottomY} L ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${285 + dx} ${bottomY + dy} Z`;
   const topColor = lighten(color, 16);
   const sideColor = darken(color, 18);
+
+  // Corner cap patches at arch base corners to ensure no gap between top face and side faces
+  const leftCapPath = `M ${firstTop[0]} ${firstTop[1]} L ${firstTop[0] + dx} ${firstTop[1] + dy} L ${firstTop[0] + dx} ${firstTop[1] + dy + 10} L ${firstTop[0]} ${firstTop[1] + 10} Z`;
+  const rightCapPath = `M ${lastTop[0]} ${lastTop[1]} L ${lastTop[0] + dx} ${lastTop[1] + dy} L ${lastTop[0] + dx} ${lastTop[1] + dy + 10} L ${lastTop[0]} ${lastTop[1] + 10} Z`;
 
   return (
     <svg viewBox="0 0 330 220" className="w-full max-w-[320px] mx-auto">
@@ -253,8 +251,14 @@ const HeadboardSVG = ({
         <path d={topFacePath} fill="rgba(255,255,255,0.12)" />
         <path d={leftSidePath} fill={patternFill(lateralPatternId, sideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={leftSidePath} fill="rgba(0,0,0,0.08)" />
+        {/* Corner cap patches so arch base corners render cleanly */}
+        <path d={leftCapPath} fill={patternFill(lateralPatternId, sideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={rightCapPath} fill={patternFill(lateralPatternId, darken(color, 24))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={rightSidePath} fill={patternFill(lateralPatternId, darken(color, 24))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={rightSidePath} fill="rgba(0,0,0,0.12)" />
+        {finish === "vivo-doble" && (
+          <path d={frontPath} transform={`translate(${dx} ${dy})`} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
+        )}
         <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
 
         {finish === "vivo-simple" && (
@@ -263,12 +267,13 @@ const HeadboardSVG = ({
           </g>
         )}
         {finish === "vivo-doble" && (
-          <g clipPath={`url(#hb-${clipId})`}>
-            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-            <g transform="translate(150 188) scale(0.94) translate(-150 -188)">
-              <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2" strokeLinejoin="round" />
+          <>
+            <path d={leftSidePath} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
+            <path d={rightSidePath} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
+            <g clipPath={`url(#hb-${clipId})`}>
+              <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
             </g>
-          </g>
+          </>
         )}
       </g>
     </svg>
@@ -296,6 +301,7 @@ const BenchSVG = ({
 }) => {
   const mode = variant || "madera";
   const patternId = useId();
+  const woodPatternId = useId();
   const clipId = useId();
   const scaleX = scaleRange(widthCm, 40, 120, 0.72, 1.16);
   const scaleY = scaleRange(heightCm, 30, 50, 0.8, 1.14);
@@ -308,27 +314,31 @@ const BenchSVG = ({
   const seatH = mode === "baul" ? 92 : 48;
   const seatTop = `M ${seatX} ${seatY} L ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + depthX} ${seatY + depthY} Z`;
   const seatSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + seatH + depthY} L ${seatX + seatW} ${seatY + seatH} Z`;
-  const seatFrontRect = `M ${seatX + 8} ${seatY} H ${seatX + seatW - 8} Q ${seatX + seatW} ${seatY} ${seatX + seatW} ${seatY + 8} V ${seatY + seatH} H ${seatX} V ${seatY + 8} Q ${seatX} ${seatY} ${seatX + 8} ${seatY} Z`;
+  // Straight corners (no Q bezier)
+  const seatFrontRect = `M ${seatX} ${seatY} H ${seatX + seatW} V ${seatY + seatH} H ${seatX} Z`;
 
   const openLegW = 38;
   const cutTop = seatY + 52;
+  // Straight corners (no Q bezier)
   const uFrontPath =
-    `M ${seatX + 8} ${seatY} H ${seatX + seatW - 8} Q ${seatX + seatW} ${seatY} ${seatX + seatW} ${seatY + 8} ` +
-    `V ${seatY + 112} H ${seatX + seatW - openLegW} V ${cutTop} H ${seatX + openLegW} V ${seatY + 112} H ${seatX} V ${seatY + 8} ` +
-    `Q ${seatX} ${seatY} ${seatX + 8} ${seatY} Z`;
+    `M ${seatX} ${seatY} H ${seatX + seatW} ` +
+    `V ${seatY + 112} H ${seatX + seatW - openLegW} V ${cutTop} H ${seatX + openLegW} V ${seatY + 112} H ${seatX} Z`;
+  const seatFrontOnly = `M ${seatX} ${seatY} H ${seatX + seatW} V ${cutTop} H ${seatX} Z`;
   const rightOuterSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW} ${seatY + 112} Z`;
   const innerLeftSide = `M ${seatX + openLegW} ${cutTop} L ${seatX + openLegW + depthX} ${cutTop + depthY} L ${seatX + openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + openLegW} ${seatY + 112} Z`;
   const innerRightSide = `M ${seatX + seatW - openLegW} ${cutTop} L ${seatX + seatW - openLegW + depthX} ${cutTop + depthY} L ${seatX + seatW - openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW - openLegW} ${seatY + 112} Z`;
 
   const seatTopColor = lighten(color, 14);
   const seatSideColor = darken(color, 18);
+  const woodColor = "#C8B89A";
 
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
+        <TexturePattern id={woodPatternId} color={woodColor} tile={18} />
         <clipPath id={`bn-${clipId}`}>
-          <path d={mode === "baul" ? seatFrontRect : uFrontPath} />
+          <path d={mode === "baul" ? seatFrontRect : (mode === "madera" ? seatFrontOnly : uFrontPath)} />
         </clipPath>
       </defs>
 
@@ -341,7 +351,27 @@ const BenchSVG = ({
       >
         <ellipse cx={157} cy={204} rx={110} ry={8} fill="rgba(0,0,0,0.08)" />
 
-        {(mode === "madera" || mode === "enteladas") && (
+        {mode === "madera" && (
+          <>
+            {/* Top face — fabric */}
+            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
+            {/* Right outer side — wood for full height */}
+            <path d={rightOuterSide} fill={patternFill(woodPatternId, darken(woodColor, 10))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={rightOuterSide} fill="rgba(0,0,0,0.10)" />
+            {/* Leg inner sides — wood */}
+            <path d={innerLeftSide} fill={patternFill(woodPatternId, darken(woodColor, 14))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerLeftSide} fill="rgba(0,0,0,0.08)" />
+            <path d={innerRightSide} fill={patternFill(woodPatternId, darken(woodColor, 16))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+            <path d={innerRightSide} fill="rgba(0,0,0,0.10)" />
+            {/* Full front — wood base */}
+            <path d={uFrontPath} fill={patternFill(woodPatternId, woodColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            {/* Seat front area — fabric overlay */}
+            <path d={seatFrontOnly} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+          </>
+        )}
+
+        {mode === "enteladas" && (
           <>
             <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
             <path d={seatTop} fill="rgba(255,255,255,0.12)" />
@@ -357,17 +387,33 @@ const BenchSVG = ({
 
         {mode === "baul" && (
           <>
-            <path d={seatTop} fill={seatTopColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatSide} fill={seatSideColor} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill={patternFill(patternId, seatTopColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
+            <path d={seatSide} fill={patternFill(patternId, seatSideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+            <path d={seatSide} fill="rgba(0,0,0,0.10)" />
             <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
             <path d={`M ${seatX + seatW / 2 - 16} ${seatY + 42} Q ${seatX + seatW / 2} ${seatY + 54} ${seatX + seatW / 2 + 16} ${seatY + 42}`} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="2.2" strokeLinecap="round" />
           </>
         )}
 
         {finish === "vivo-simple" && (
-          <g clipPath={`url(#bn-${clipId})`}>
-            <path d={mode === "baul" ? seatFrontRect : uFrontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-          </g>
+          <>
+            {(mode === "madera" || mode === "enteladas") && (
+              <>
+                <path d={seatTop} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+                <path d={rightOuterSide} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+              </>
+            )}
+            {mode === "baul" && (
+              <>
+                <path d={seatTop} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+                <path d={seatSide} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+              </>
+            )}
+            <g clipPath={`url(#bn-${clipId})`}>
+              <path d={mode === "baul" ? seatFrontRect : (mode === "madera" ? seatFrontOnly : uFrontPath)} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+            </g>
+          </>
         )}
       </g>
     </svg>
@@ -377,30 +423,35 @@ const BenchSVG = ({
 const PuffSVG = ({
   color,
   fabricImage,
+  lateralFabricImage,
   finish,
   vivoColor,
   forma,
   widthCm,
   depthCm,
   heightCm,
+  quantity = 1,
 }: {
   color: string;
   fabricImage?: string;
+  lateralFabricImage?: string;
   finish: string;
   vivoColor: string;
   forma?: string;
   widthCm?: number;
   depthCm?: number;
   heightCm?: number;
+  quantity?: number;
 }) => {
   const isCircular = forma === "circular";
   const patternId = useId();
+  const lateralPatternId = useId();
   const clipId = useId();
 
   if (isCircular) {
     const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = scaleRange(heightCm, 30, 50, 62, 112);
+    const bodyH = 84;
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
@@ -410,64 +461,97 @@ const PuffSVG = ({
         <defs>
           <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`pf-${clipId}`}>
-            <path
-              d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
-            />
+            <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} />
           </clipPath>
         </defs>
         <ellipse cx={150} cy={bodyBottom + 16} rx={topRx * 0.82} ry={8} fill="rgba(0,0,0,0.08)" />
-        <path
-          d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
-          fill={patternFill(patternId, color)}
-          stroke="rgba(0,0,0,0.16)"
-          strokeWidth="1"
-        />
+        <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
         <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill={patternFill(patternId, color)} />
         <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill="rgba(255,255,255,0.14)" />
         <ellipse cx={168} cy={bodyTop + bodyH * 0.5} rx={topRx * 0.18} ry={bodyH * 0.36} fill="rgba(255,255,255,0.12)" />
         <ellipse cx={150} cy={bodyBottom} rx={topRx} ry={topRy} fill={darken(color, 12)} opacity="0.18" />
         {finish === "vivo-simple" && (
           <g clipPath={`url(#pf-${clipId})`}>
-            <path
-              d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`}
-              fill="none"
-              stroke={vivoColor}
-              strokeWidth="3"
-            />
+            <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
       </svg>
     );
   }
 
-  const baseW = scaleRange(widthCm, 40, 120, 112, 190);
-  const baseH = scaleRange(heightCm, 30, 50, 72, 118);
-  const depthX = scaleRange(depthCm, 30, 70, 14, 26);
-  const depthY = -depthX * 0.7;
-  const x = (300 - baseW) / 2;
-  const y = 72;
-  const frontPath = `M ${x + 10} ${y} H ${x + baseW - 10} Q ${x + baseW} ${y} ${x + baseW} ${y + 10} V ${y + baseH - 10} Q ${x + baseW} ${y + baseH} ${x + baseW - 10} ${y + baseH} H ${x + 10} Q ${x} ${y + baseH} ${x} ${y + baseH - 10} V ${y + 10} Q ${x} ${y} ${x + 10} ${y} Z`;
-  const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
-  const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
+  // ── Cuadrado (Patos) — render perfectamente cúbico ─────────────────────────
+  // El puf Patos es cúbico: ancho = alto = fondo. Para que el render lo refleje
+  // usamos baseH = baseW (cara frontal cuadrada) y depthX proporcional al ancho.
+  const baseW = scaleRange(widthCm, 40, 120, 108, 180);
+  // Para forma cuadrada (cúbico) la cara frontal debe ser exactamente cuadrada
+  const baseH = forma === "cuadrado" ? baseW : scaleRange(heightCm, 30, 60, 72, 120);
+  // Profundidad proporcional para que el cubo se vea consistente a cualquier tamaño
+  const depthX = forma === "cuadrado"
+    ? baseW * 0.22
+    : scaleRange(depthCm ?? widthCm, 30, 70, 14, 26);
+  const depthY = -depthX * 0.62;
+
+  // Puf centrado en cx=150
+  const cx = 150;
+  const x = cx - baseW / 2;
+  const y = 68;
+  const frontPath = `M ${x} ${y} H ${x + baseW} V ${y + baseH} H ${x} Z`;
+  const topPath   = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
+  const sidePath  = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
+
+  // ── Layout de 2 pufs ────────────────────────────────────────────────────────
+  // Escala cada puf para que quepan dos. El pivote vertical fija la parte inferior
+  // de los pufs en la misma posición que el puf único.
+  const scale2 = 0.50;
+  // Pivote: mantener la base de los pufs al mismo nivel que el puf único
+  const pivotY = y + baseH;
+  const gap = 18; // espacio en blanco entre ambos pufs (en px del SVG original)
+  const pufHalfW = (baseW * scale2) / 2;
+  // Centros: el espacio total es pufWidth*2 + gap, repartido simétricamente alrededor de 160
+  const leftCx  = 160 - pufHalfW - gap / 2;
+  const rightCx = 160 + pufHalfW + gap / 2;
+
+  const renderPuf = (centerX: number, s: number, clipSuffix: string) => {
+    // Trasladar de forma que el punto (cx, pivotY) quede en (centerX, pivotY) tras la escala
+    const tx = centerX - cx * s;
+    const ty = pivotY - pivotY * s;
+    return (
+      <g key={centerX} transform={`translate(${tx} ${ty}) scale(${s})`}>
+        {/* Sombra suelo */}
+        <ellipse cx={cx} cy={y + baseH + 12} rx={baseW * 0.40} ry={6} fill="rgba(0,0,0,0.08)" />
+        {/* Cara superior (tela lateral) */}
+        <path d={topPath} fill={patternFill(lateralPatternId, lighten(color, 16))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={topPath} fill="rgba(255,255,255,0.12)" />
+        {/* Cara lateral derecha (tela lateral) */}
+        <path d={sidePath} fill={patternFill(lateralPatternId, darken(color, 20))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={sidePath} fill="rgba(0,0,0,0.10)" />
+        {/* Cara frontal (tela principal) */}
+        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+        {finish === "vivo-simple" && (
+          <g clipPath={`url(#pf-${clipId}-${clipSuffix})`}>
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+          </g>
+        )}
+      </g>
+    );
+  };
 
   return (
-    <svg viewBox="0 0 320 230" className="w-full max-w-[270px] mx-auto">
+    <svg viewBox="0 0 320 230" className="w-full max-w-[280px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
-        <clipPath id={`pf-${clipId}`}>
-          <path d={frontPath} />
-        </clipPath>
+        <TexturePattern id={patternId}        image={fabricImage}                   color={color} tile={18} />
+        <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={18} />
+        {/* Un clipPath por puf para el vivo (mismo path, distinto id para evitar conflictos) */}
+        <clipPath id={`pf-${clipId}-a`}><path d={frontPath} /></clipPath>
+        <clipPath id={`pf-${clipId}-b`}><path d={frontPath} /></clipPath>
       </defs>
-      <ellipse cx={158} cy={y + baseH + 14} rx={baseW * 0.45} ry={8} fill="rgba(0,0,0,0.08)" />
-      <path d={topPath} fill={patternFill(patternId, lighten(color, 16))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-      <path d={topPath} fill="rgba(255,255,255,0.12)" />
-      <path d={sidePath} fill={patternFill(patternId, darken(color, 18))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-      <path d={sidePath} fill="rgba(0,0,0,0.10)" />
-      <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
-      {finish === "vivo-simple" && (
-        <g clipPath={`url(#pf-${clipId})`}>
-          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
-        </g>
+      {quantity >= 2 ? (
+        <>
+          {renderPuf(leftCx,  scale2, "a")}
+          {renderPuf(rightCx, scale2, "b")}
+        </>
+      ) : (
+        renderPuf(cx, 1, "a")
       )}
     </svg>
   );
@@ -516,6 +600,40 @@ const CushionSVG = ({
             <rect x={x} y={y} width={length} height={radius * 2} rx={radius} fill="none" stroke={vivoColor} strokeWidth="3" />
           </g>
         )}
+      </svg>
+    );
+  }
+
+  if (kind === "circular") {
+    const r = scaleRange(widthCm, 30, 80, 0.85, 1.3);
+    const outerPath =
+      "M 52 40 Q 100 28 148 40 Q 164 40 164 56 Q 174 100 164 144 Q 164 160 148 160 Q 100 172 52 160 Q 36 160 36 144 Q 26 100 36 56 Q 36 40 52 40 Z";
+    const innerPath =
+      "M 58 48 Q 100 38 142 48 Q 154 48 154 60 Q 162 100 154 140 Q 154 152 142 152 Q 100 162 58 152 Q 46 152 46 140 Q 38 100 46 60 Q 46 48 58 48 Z";
+    return (
+      <svg viewBox="0 0 200 200" className="w-full max-w-[220px] mx-auto">
+        <defs>
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
+          <clipPath id={`cu-${clipId}`}>
+            <path d={outerPath} />
+          </clipPath>
+        </defs>
+        <g
+          style={{
+            transform: `scale(${r})`,
+            transformOrigin: "100px 100px",
+            transition: "transform 0.4s ease",
+          }}
+        >
+          <ellipse cx="102" cy="108" rx="64" ry="58" fill="rgba(0,0,0,0.07)" />
+          <path d={outerPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />
+          <path d={innerPath} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+          {finish === "vivo-simple" && (
+            <g clipPath={`url(#cu-${clipId})`}>
+              <path d={outerPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+            </g>
+          )}
+        </g>
       </svg>
     );
   }
@@ -599,6 +717,7 @@ const MesaSVG = ({
   widthCm,
   heightCm,
   depthCm,
+  surface,
 }: {
   color: string;
   fabricImage?: string;
@@ -608,8 +727,9 @@ const MesaSVG = ({
   widthCm?: number;
   heightCm?: number;
   depthCm?: number;
+  surface?: string;
 }) => {
-  const mode = variant || "tipo-puff";
+  const mode = variant || "tipo-puf";
   const patternId = useId();
   const clipId = useId();
   const baseW = scaleRange(widthCm, 50, 120, 150, 230);
@@ -618,7 +738,8 @@ const MesaSVG = ({
   const depthY = -depthX * 0.72;
   const x = (300 - baseW) / 2;
   const y = 62;
-  const frontPath = `M ${x + 8} ${y} H ${x + baseW - 8} Q ${x + baseW} ${y} ${x + baseW} ${y + 8} V ${y + baseH - 8} Q ${x + baseW} ${y + baseH} ${x + baseW - 8} ${y + baseH} H ${x + 8} Q ${x} ${y + baseH} ${x} ${y + baseH - 8} V ${y + 8} Q ${x} ${y} ${x + 8} ${y} Z`;
+  // Straight corners (no Q bezier)
+  const frontPath = `M ${x} ${y} H ${x + baseW} V ${y + baseH} H ${x} Z`;
   const topPath = `M ${x} ${y} L ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + depthX} ${y + depthY} Z`;
   const sidePath = `M ${x + baseW} ${y} L ${x + baseW + depthX} ${y + depthY} L ${x + baseW + depthX} ${y + baseH + depthY} L ${x + baseW} ${y + baseH} Z`;
 
@@ -632,7 +753,7 @@ const MesaSVG = ({
       </defs>
       <ellipse cx="158" cy={y + baseH + 72} rx={baseW * 0.38} ry={8} fill="rgba(0,0,0,0.08)" />
 
-      {mode === "tipo-puff" ? (
+      {mode === "tipo-puf" ? (
         <>
           <path d={topPath} fill={patternFill(patternId, lighten(color, 14))} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
           <path d={topPath} fill="rgba(255,255,255,0.12)" />
@@ -651,11 +772,141 @@ const MesaSVG = ({
         </>
       )}
 
-      {finish === "vivo-simple" && (
-        <g clipPath={`url(#ms-${clipId})`}>
-          <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
-        </g>
+      {/* Glass / metacrilato surface overlay on top face */}
+      {surface === "cristal" && (
+        <>
+          <path d={topPath} fill="rgba(180,210,230,0.45)" stroke="rgba(100,160,210,0.55)" strokeWidth="1" />
+          <path d={topPath} fill="rgba(255,255,255,0.22)" />
+        </>
       )}
+      {surface === "metacrilato" && (
+        <>
+          <path d={topPath} fill="rgba(220,220,215,0.50)" stroke="rgba(180,180,170,0.50)" strokeWidth="1" />
+          <path d={topPath} fill="rgba(255,255,255,0.28)" />
+        </>
+      )}
+
+      {finish === "vivo-simple" && (
+        <>
+          <path d={topPath} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+          <g clipPath={`url(#ms-${clipId})`}>
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+          </g>
+        </>
+      )}
+    </svg>
+  );
+};
+
+const LampshadeSVG = ({
+  color,
+  fabricImage,
+  finish,
+  vivoColor,
+  forma,
+  widthCm,
+  heightCm,
+}: {
+  color: string;
+  fabricImage?: string;
+  finish: string;
+  vivoColor: string;
+  forma?: string;
+  widthCm?: number;
+  heightCm?: number;
+}) => {
+  const patternId = useId();
+  const clipId = useId();
+  const shape = forma || "cono";
+
+  const getPath = () => {
+    switch (shape) {
+      // Almanzor — cilindro: elliptic arcs so it reads clearly as a 3D cylinder
+      case "cilindro":
+        return {
+          front: "M 70 68 A 80 24 0 0 0 230 68 L 230 162 A 80 24 0 0 1 70 162 Z",
+          top:   "M 70 68 A 80 24 0 0 0 230 68 L 224 62 A 74 24 0 0 0 76 62 Z",
+          side:  "M 230 68 L 224 62 L 224 156 L 230 162 Z",
+        };
+      // La Galana — pirámide
+      case "piramide":
+        return {
+          front: "M 95 62 L 205 62 L 228 170 L 72 170 Z",
+          top:   "M 95 62 L 205 62 L 199 56 L 101 56 Z",
+          side:  "M 205 62 L 228 170 L 222 164 L 199 56 Z",
+        };
+      // Tormes — cuadrado
+      case "cuadrado":
+        return {
+          front: "M 88 58 L 212 58 L 212 168 L 88 168 Z",
+          top:   "M 88 58 L 212 58 L 206 52 L 94 52 Z",
+          side:  "M 212 58 L 206 52 L 206 162 L 212 168 Z",
+        };
+      // La Serrota — rectángulo (wide and shallow, clearly 3D)
+      case "rectangulo":
+        return {
+          front: "M 58 88 L 242 88 L 242 162 L 58 162 Z",
+          top:   "M 58 88 L 242 88 L 236 82 L 64 82 Z",
+          side:  "M 242 88 L 236 82 L 236 156 L 242 162 Z",
+        };
+      // La Paramera — ovalado
+      case "ovalado":
+        return {
+          front: "M 78 74 Q 150 60 222 74 L 226 158 Q 150 172 74 158 Z",
+          top:   "M 78 74 Q 150 60 222 74 L 216 68 Q 150 54 84 68 Z",
+          side:  "M 222 74 L 216 68 L 220 152 L 226 158 Z",
+        };
+      // Gredos — cono
+      case "cono":
+      default:
+        return {
+          front: "M 110 52 L 190 52 L 228 170 L 72 170 Z",
+          top:   "M 110 52 L 190 52 L 184 46 L 116 46 Z",
+          side:  "M 190 52 L 228 170 L 222 164 L 184 46 Z",
+        };
+    }
+  };
+
+  const paths = getPath();
+  const topColor = lighten(color, 16);
+  const sideColor = darken(color, 18);
+
+  // Scale shape based on selected size dimensions
+  const refW = shape === "rectangulo" || shape === "ovalado" ? 50 : 30;
+  const refH = shape === "rectangulo" || shape === "ovalado" ? 25 : 30;
+  const scaleW = scaleRange(widthCm ?? refW, refW * 0.55, refW * 1.45, 0.76, 1.24);
+  const scaleH = scaleRange(heightCm ?? refH, refH * 0.55, refH * 1.45, 0.78, 1.22);
+
+  return (
+    <svg viewBox="0 0 300 230" className="w-full max-w-[280px] mx-auto">
+      <defs>
+        <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
+        <clipPath id={`ls-${clipId}`}>
+          <path d={paths.front} />
+        </clipPath>
+      </defs>
+      {/* Floor shadow only */}
+      <ellipse cx="153" cy="188" rx="82" ry="8" fill="rgba(0,0,0,0.07)" />
+      <g style={{ transform: `scale(${scaleW}, ${scaleH})`, transformOrigin: "150px 115px", transition: "transform 0.4s ease" }}>
+        {/* Side face */}
+        <path d={paths.side} fill={patternFill(patternId, sideColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <path d={paths.side} fill="rgba(0,0,0,0.10)" />
+        {/* Top face */}
+        <path d={paths.top} fill={patternFill(patternId, topColor)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <path d={paths.top} fill="rgba(255,255,255,0.15)" />
+        {/* Front face */}
+        <path d={paths.front} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
+        <path d={paths.front} fill="rgba(255,255,255,0.05)" />
+        {/* Ribete — top rim and bottom edge only (not sides) */}
+        {finish === "vivo-simple" && (
+          <>
+            <path d={paths.top} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
+            <g clipPath={`url(#ls-${clipId})`}>
+              <path d={paths.front} fill="none" stroke={vivoColor} strokeWidth="3.2" strokeLinejoin="round" />
+            </g>
+          </>
+        )}
+      </g>
     </svg>
   );
 };
@@ -671,6 +922,8 @@ const ProductSVGPreview = ({
   widthCm,
   heightCm,
   depthCm,
+  surface,
+  quantity = 1,
 }: Props) => {
   const vc = vivoColor || darken(color);
 
@@ -702,16 +955,18 @@ const ProductSVGPreview = ({
           depthCm={depthCm}
         />
       )}
-      {type === "puff" && (
+      {type === "puf" && (
         <PuffSVG
           color={color}
           fabricImage={fabricImage}
+          lateralFabricImage={lateralFabricImage}
           finish={finish}
           vivoColor={vc}
           forma={forma}
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
+          quantity={quantity}
         />
       )}
       {type === "cojin" && (
@@ -747,6 +1002,18 @@ const ProductSVGPreview = ({
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
+          surface={surface}
+        />
+      )}
+      {type === "pantalla" && (
+        <LampshadeSVG
+          color={color}
+          fabricImage={fabricImage}
+          finish={finish}
+          vivoColor={vc}
+          forma={forma}
+          widthCm={widthCm}
+          heightCm={heightCm}
         />
       )}
     </div>

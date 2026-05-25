@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup Cards — Tiroriro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #F4F0EB; font-family: 'Inter', sans-serif; }
+  .serif { font-family: 'Cormorant Garamond', serif; }
+
+  /* ─── OPCIÓN A: Actual con mejoras ──────────────────────── */
+  .section { padding: 40px 0 60px; }
+  .section-title { text-align: center; margin-bottom: 40px; }
+  .section-title h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #10262e; }
+  .section-title .line { display: block; width: 50px; height: 1px; background: #1a4b5b; margin: 12px auto 0; }
+
+  /* ─── OPCIÓN A: Carousel actual mejorado ─── */
+  .label-option { display: inline-block; background: #1a4b5b; color: white; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; margin-bottom: 16px; }
+
+  .carousel-wrapper { position: relative; overflow: hidden; }
+  .carousel-track { display: flex; gap: 12px; padding: 0 8% 0 8%; }
+  .carousel-track.desktop { padding: 0; gap: 24px; }
+
+  /* Mobile card */
+  .card-mobile { flex: 0 0 80%; position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; }
+  .card-mobile img { width: 100%; aspect-ratio: 3/5; object-fit: cover; display: block; transition: transform 0.6s ease; }
+  .card-mobile:hover img { transform: scale(1.03); }
+  .card-mobile .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 40%, transparent 70%); }
+  .card-mobile .text { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 18px; }
+  .card-mobile .text h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: white; }
+  .card-mobile .text span { font-size: 10px; color: rgba(255,255,255,0.65); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 4px; display: block; }
+
+  /* Desktop card */
+  .card-desktop { flex: 0 0 calc(33.33% - 16px); position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; }
+  .card-desktop img { width: 100%; aspect-ratio: 3/5; object-fit: cover; display: block; transition: transform 0.6s ease; }
+  .card-desktop:hover img { transform: scale(1.03); }
+  .card-desktop .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); transition: background 0.4s; }
+  .card-desktop:hover .overlay { background: rgba(0,0,0,0.2); }
+  .card-desktop .title { padding: 14px 4px 0; }
+  .card-desktop .title h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: #10262e; }
+
+  /* Navigation dots */
+  .dots { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(16,38,46,0.18); cursor: pointer; transition: background 0.2s; }
+  .dot.active { background: #10262e; }
+
+  /* Nav arrows */
+  .arrow { position: absolute; top: 42%; transform: translateY(-50%); z-index: 10; width: 38px; height: 38px; border-radius: 50%; background: white; border: 1px solid #1a4b5b; color: #1a4b5b; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+  .arrow.left { left: -14px; }
+  .arrow.right { right: -14px; }
+
+  /* ─── OPCIÓN B: Cards con badge de categoría ─── */
+  .card-badge { flex: 0 0 80%; position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; }
+  .card-badge img { width: 100%; aspect-ratio: 3/5; object-fit: cover; display: block; }
+  .card-badge .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(16,38,46,0.75) 0%, rgba(0,0,0,0.05) 55%, transparent 75%); }
+  .card-badge .badge { position: absolute; top: 14px; left: 14px; background: rgba(255,255,255,0.92); color: #1a4b5b; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+  .card-badge .text { position: absolute; bottom: 0; left: 0; right: 0; padding: 22px 18px; }
+  .card-badge .text h3 { font-family: 'Cormorant Garamond', serif; font-size: 23px; font-weight: 400; color: white; }
+  .card-badge .text .cta { display: inline-block; margin-top: 10px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 2px; }
+
+  /* ─── OPCIÓN C: Horizontal con info lateral ─── */
+  .card-horizontal { flex: 0 0 85%; display: flex; border-radius: 10px; overflow: hidden; background: white; cursor: pointer; height: 280px; }
+  .card-horizontal img { width: 55%; object-fit: cover; flex-shrink: 0; }
+  .card-horizontal .info { padding: 28px 22px; display: flex; flex-direction: column; justify-content: space-between; }
+  .card-horizontal .info .num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: rgba(16,38,46,0.15); }
+  .card-horizontal .info h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: #10262e; margin-top: -10px; }
+  .card-horizontal .info p { font-size: 12px; color: #7a8a90; font-weight: 300; line-height: 1.6; margin-top: 8px; }
+  .card-horizontal .info .btn-small { display: inline-block; margin-top: 16px; padding: 8px 16px; background: #10262e; color: white; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; border-radius: 4px; text-decoration: none; width: fit-content; }
+
+  /* ─── Layout wrappers ─── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+  .demo-block { background: white; border-radius: 16px; padding: 32px 24px 40px; margin-bottom: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+  .demo-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #9aacb2; font-weight: 500; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #eee; }
+
+  /* Placeholder image via CSS */
+  .img-placeholder { background: linear-gradient(135deg, #d4c5a9 0%, #c8b89a 40%, #b8a888 100%); }
+  .img-placeholder-2 { background: linear-gradient(135deg, #c8d0d4 0%, #b0bcc4 40%, #9aaab4 100%); }
+  .img-placeholder-3 { background: linear-gradient(135deg, #e8e0d8 0%, #d8d0c8 40%, #c8c0b8 100%); }
+  .img-placeholder-4 { background: linear-gradient(135deg, #b4c4c4 0%, #9ab0b0 40%, #88a0a0 100%); }
+  .img-placeholder-5 { background: linear-gradient(135deg, #d4c8bc 0%, #c4b8ac 40%, #b4a89c 100%); }
+
+  .img-fill { width: 100%; height: 100%; }
+
+  .peek-note { font-size: 11px; color: #9aacb2; text-align: center; margin-top: 10px; font-style: italic; }
+
+  /* Mobile frame */
+  .mobile-frame { width: 390px; margin: 0 auto; border: 2px solid #ddd; border-radius: 40px; overflow: hidden; background: #F4F0EB; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  .mobile-notch { height: 40px; background: #10262e; display: flex; align-items: center; justify-content: center; }
+  .mobile-notch span { display: block; width: 100px; height: 8px; background: #000; border-radius: 4px; }
+  .mobile-content { padding: 24px 0 40px; }
+  .mobile-section-title { text-align: center; margin-bottom: 24px; padding: 0 20px; }
+  .mobile-section-title h2 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: #10262e; }
+  .mobile-section-title .line { display: block; width: 40px; height: 1px; background: #1a4b5b; margin: 8px auto 0; }
+</style>
+</head>
+<body>
+
+<div style="padding: 40px 0 20px; text-align: center;">
+  <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #10262e;">Mockup Cards de Productos — Tiroriro</h1>
+  <p style="font-size: 12px; color: #7a8a90; margin-top: 6px; letter-spacing: 0.1em; text-transform: uppercase;">3 opciones para elegir</p>
+</div>
+
+<div class="container">
+
+  <!-- ══════════════════════════════════════════════════
+       OPCIÓN A — La actual mejorada (cards altas + peek)
+  ══════════════════════════════════════════════════ -->
+  <div class="demo-block">
+    <div class="demo-label">Opción A — La actual mejorada · Vertical + peek lateral en móvil</div>
+
+    <div class="mobile-frame">
+      <div class="mobile-notch"><span></span></div>
+      <div class="mobile-content">
+        <div class="mobile-section-title">
+          <h2>Nuestros productos</h2>
+          <span class="line"></span>
+        </div>
+        <!-- Carousel simulado -->
+        <div class="carousel-wrapper" style="overflow: hidden;">
+          <div class="carousel-track" style="display: flex; gap: 12px; padding-left: 8%; transform: translateX(0);">
+            <!-- Card activa -->
+            <div class="card-mobile" style="flex: 0 0 80%;">
+              <div class="img-placeholder img-fill" style="aspect-ratio: 3/5; border-radius: 10px;"></div>
+              <div class="overlay" style="border-radius: 10px;"></div>
+              <div class="text">
+                <h3>Cabeceros tapizados</h3>
+                <span>Explorar →</span>
+              </div>
+            </div>
+            <!-- Peek siguiente (10%) -->
+            <div style="flex: 0 0 80%; position: relative; border-radius: 10px; overflow: hidden; opacity: 0.7;">
+              <div class="img-placeholder-2 img-fill" style="aspect-ratio: 3/5; border-radius: 10px;"></div>
+              <div class="overlay" style="border-radius: 10px;"></div>
+              <div class="text">
+                <h3>Bancos entelados</h3>
+                <span>Explorar →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dots" style="margin-top: 18px;">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <p class="peek-note" style="padding: 0 20px;">80% visible · Peek del 10% en cada lado</p>
+      </div>
+    </div>
+
+    <p style="font-size: 12px; color: #7a8a90; text-align: center; margin-top: 16px; line-height: 1.8;">
+      ✅ Simple, limpio, similar a lo actual<br>
+      ✅ Gradient + texto siempre visible en móvil<br>
+      ✅ Aspect ratio 3/5 (más alto que antes)
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       OPCIÓN B — Con badge de categoría (más premium)
+  ══════════════════════════════════════════════════ -->
+  <div class="demo-block">
+    <div class="demo-label">Opción B — Con badge + CTA interno · Más editorial</div>
+
+    <div class="mobile-frame">
+      <div class="mobile-notch"><span></span></div>
+      <div class="mobile-content">
+        <div class="mobile-section-title">
+          <h2>Nuestros productos</h2>
+          <span class="line"></span>
+        </div>
+        <div class="carousel-wrapper" style="overflow: hidden;">
+          <div class="carousel-track" style="display: flex; gap: 12px; padding-left: 8%;">
+            <div class="card-badge" style="flex: 0 0 80%;">
+              <div class="img-placeholder img-fill" style="aspect-ratio: 3/5; border-radius: 10px;"></div>
+              <div class="overlay" style="border-radius: 10px; position: absolute; inset: 0;"></div>
+              <span class="badge">Hecho a mano</span>
+              <div class="text">
+                <h3>Cabeceros tapizados</h3>
+                <span class="cta">Personaliza el tuyo →</span>
+              </div>
+            </div>
+            <div class="card-badge" style="flex: 0 0 80%; opacity: 0.65;">
+              <div class="img-placeholder-4 img-fill" style="aspect-ratio: 3/5; border-radius: 10px;"></div>
+              <div class="overlay" style="border-radius: 10px; position: absolute; inset: 0;"></div>
+              <span class="badge">A medida</span>
+              <div class="text">
+                <h3>Bancos entelados</h3>
+                <span class="cta">Personaliza el tuyo →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dots" style="margin-top: 18px;">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size: 12px; color: #7a8a90; text-align: center; margin-top: 16px; line-height: 1.8;">
+      ✅ Más editorial, badges dan contexto<br>
+      ✅ CTA "Personaliza el tuyo" dentro de la card<br>
+      ⚡ Más diferenciado visualmente de otras webs
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       OPCIÓN C — Horizontal con info lateral
+  ══════════════════════════════════════════════════ -->
+  <div class="demo-block">
+    <div class="demo-label">Opción C — Cards horizontales con descripción · Más informativo</div>
+
+    <div class="mobile-frame">
+      <div class="mobile-notch"><span></span></div>
+      <div class="mobile-content">
+        <div class="mobile-section-title">
+          <h2>Nuestros productos</h2>
+          <span class="line"></span>
+        </div>
+        <div class="carousel-wrapper" style="overflow: hidden;">
+          <div class="carousel-track" style="display: flex; gap: 14px; padding-left: 5%;">
+            <div class="card-horizontal" style="flex: 0 0 88%; border-radius: 12px;">
+              <div class="img-placeholder img-fill" style="width: 52%; aspect-ratio: unset; border-radius: 12px 0 0 12px;"></div>
+              <div class="info">
+                <div>
+                  <div class="num">01</div>
+                  <h3 style="margin-top: 2px;">Cabeceros tapizados</h3>
+                  <p>El punto de partida de cualquier dormitorio. A tu medida, en tu tela.</p>
+                </div>
+                <a class="btn-small">Explorar →</a>
+              </div>
+            </div>
+            <div class="card-horizontal" style="flex: 0 0 88%; border-radius: 12px; opacity: 0.6;">
+              <div class="img-placeholder-2 img-fill" style="width: 52%; border-radius: 12px 0 0 12px;"></div>
+              <div class="info">
+                <div>
+                  <div class="num">02</div>
+                  <h3 style="margin-top: 2px;">Bancos entelados</h3>
+                  <p>Para el pie de cama, la entrada o donde quieras.</p>
+                </div>
+                <a class="btn-small">Explorar →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dots" style="margin-top: 18px;">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size: 12px; color: #7a8a90; text-align: center; margin-top: 16px; line-height: 1.8;">
+      ✅ Más info sin hacer scroll<br>
+      ✅ Diferente a lo típico<br>
+      ⚠️ Menos impacto visual, más texto
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SECCIÓN EXTRA: Franja de colección (mi recomendación)
+  ══════════════════════════════════════════════════ -->
+  <div class="demo-block">
+    <div class="demo-label">💡 Idea extra — Franja "Nuestras telas" debajo de las cards</div>
+
+    <div style="background: #10262e; padding: 32px 24px; border-radius: 12px; color: white; text-align: center; margin-bottom: 16px;">
+      <p style="font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 10px;">Colecciones disponibles</p>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; margin-bottom: 18px;">Linos · Terciopelos · Bouclé</h3>
+      <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 18px;">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #D4C5A9; border: 2px solid rgba(255,255,255,0.3);"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #E8DCC8; border: 2px solid rgba(255,255,255,0.3);"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #C8C4BC; border: 2px solid rgba(255,255,255,0.3);"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #1B4D3E; border: 2px solid rgba(255,255,255,0.3);"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #6D1A36; border: 2px solid rgba(255,255,255,0.3);"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #C19A6B; border: 2px solid rgba(255,255,255,0.3);"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #F5F0E8; border: 2px solid rgba(255,255,255,0.3);"></div>
+      </div>
+      <p style="font-size: 11px; color: rgba(255,255,255,0.55); margin-bottom: 16px;">13 colores · Pide muestras a casa gratis</p>
+      <a style="display: inline-block; padding: 10px 22px; border: 1px solid rgba(255,255,255,0.7); color: white; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 4px; text-decoration: none;">Ver telas →</a>
+    </div>
+
+    <p style="font-size: 12px; color: #7a8a90; text-align: center; line-height: 1.8;">
+      ⚡ Va justo debajo del carousel de productos<br>
+      ✅ Da mucha presencia a las telas sin romper el flow<br>
+      ✅ El color oscuro contrasta perfectamente con las secciones claras<br>
+      ✅ Lleva al configurador de forma natural
+    </p>
+  </div>
+
+</div>
+
+<div style="padding: 40px; text-align: center; font-size: 11px; color: #9aacb2; letter-spacing: 0.1em; text-transform: uppercase;">
+  Tiroriro · Mockup Cards v1 · 2026
+</div>
+
+</body>
+</html>

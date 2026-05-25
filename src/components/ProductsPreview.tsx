@@ -5,11 +5,59 @@ import AnimatedSection from "./AnimatedSection";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 
 const PRODUCTS_DATA = [
-  { id: "cabeceros", name: "Cabeceros tapizados", image: "/productos-fotos/cabeceros/IMG_2555.PNG", alt: "Cabecero tapizado artesanal de Tiroriro", link: "/productos/cabeceros" },
-  { id: "bancos", name: "Bancos entelados", image: "/productos-fotos/bancos/IMG_2552.PNG", alt: "Banco entelado a medida de Tiroriro", link: "/productos/bancos" },
-  { id: "cojines", name: "Cojines y almohadones", image: "/productos-fotos/almohadones/IMG_2514.PNG", alt: "Cojines y almohadones artesanales de Tiroriro", link: "/productos/cojines" },
-  { id: "puffs", name: "Puffs", image: "/productos-fotos/crops/puff-2497-tight.png", alt: "Puffs tapizados a medida de Tiroriro", link: "/productos/puffs" },
-  { id: "mesas-centro", name: "Mesas de centro", image: "/productos-fotos/crops/puff-2497-1-tight.png", alt: "Mesa de centro tapizada de Tiroriro", link: "/productos/mesas-centro" },
+  {
+    id: "cabeceros",
+    name: "Cabeceros tapizados",
+    badge: "Hecho a mano",
+    price: "desde 225€",
+    image: "/productos-fotos/cabeceros/pregonda-02.webp",
+    alt: "Cabecero tapizado artesanal de Tiroriro",
+    link: "/productos/cabeceros",
+    comingSoon: false,
+  },
+  {
+    id: "pufs",
+    name: "Pufs",
+    badge: "A tu medida",
+    price: "desde 125€",
+    image: "/productos-fotos/puff/puff-vertical.webp",
+    alt: "Pufs tapizados a medida de Tiroriro",
+    link: "/productos/pufs",
+    comingSoon: false,
+  },
+  {
+    id: "mesas-centro",
+    name: "Mesas de centro",
+    badge: "Tapizado único",
+    price: "desde 280€",
+    image: "/productos-fotos/mesas-centro/mesa-centro-vertical.webp",
+    alt: "Mesa de centro tapizada de Tiroriro",
+    link: "/productos/mesas-centro",
+    comingSoon: false,
+  },
+  {
+    id: "pantallas-lampara",
+    name: "Pantallas de lámpara",
+    badge: "Nuevo",
+    price: "desde 25€",
+    image: "/productos-fotos/pantallas/almanzor-01.webp",
+    alt: "Pantallas de lámpara tapizadas de Tiroriro",
+    link: "/productos/pantallas-lampara",
+    comingSoon: false,
+  },
+];
+
+const FABRIC_STRIP = [
+  { name: "Arequipa Beige", hex: "#D4C5A9", image: "/telas/basicas/arequipa-beige.webp" },
+  { name: "Flor Azul Protea", hex: "#6B8FAA", image: "/telas/basicas/flor-azul-protea.webp" },
+  { name: "Ikat Natural", hex: "#C4A882", image: "/telas/basicas/ikat.webp" },
+  { name: "Mil Rayas Gris", hex: "#A0A0A0", image: "/telas/basicas/mil-rayas-gris.webp" },
+  { name: "Mil Rayas Azul", hex: "#2C3E50", image: "/telas/basicas/mil-rayas-azul.webp" },
+  { name: "Baqueira", hex: "#5B4B3A", image: "/telas/premium/baqueira.webp" },
+  { name: "Lola Gris", hex: "#6D6D6D", image: "/telas/premium/lola-gris.webp" },
+  { name: "Lino Verde Botella", hex: "#2D4A2D", image: "/telas/premium/lino-verde-botella.webp" },
+  { name: "Vichy Denim", hex: "#2C3E50", image: "/telas/premium/vichy-denim.webp" },
+  { name: "Flores Gardenia", hex: "#6B8FAA", image: "/telas/premium/flores-gardenia.webp" },
 ];
 
 const ProductsPreview = () => {
@@ -18,16 +66,11 @@ const ProductsPreview = () => {
 
   useEffect(() => {
     if (!api) return;
-
     const onSelect = () => setCurrent(api.selectedScrollSnap());
     onSelect();
     api.on("select", onSelect);
     api.on("reInit", onSelect);
-
-    const autoplay = window.setInterval(() => {
-      api.scrollNext();
-    }, 3500);
-
+    const autoplay = window.setInterval(() => api.scrollNext(), 3500);
     return () => {
       window.clearInterval(autoplay);
       api.off("select", onSelect);
@@ -36,79 +79,170 @@ const ProductsPreview = () => {
   }, [api]);
 
   return (
-    <section id="productos-home" className="pt-8 pb-20 md:py-32 px-6">
-      <div className="container mx-auto">
-        <AnimatedSection className="text-center mb-12">
-          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
-          <span className="section-line" />
-        </AnimatedSection>
+    <>
+      {/* ── Carousel de productos ── */}
+      <section id="productos-home" className="pt-8 pb-10 md:py-32 md:px-6">
+        <div className="container mx-auto">
+          <AnimatedSection className="text-center mb-12">
+            <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Nuestros productos</h2>
+            <span className="section-line" />
+          </AnimatedSection>
 
-        <div className="relative max-w-6xl mx-auto">
-          <button
-            onClick={() => api?.scrollPrev()}
-            aria-label="Anterior"
-            className="absolute -left-5 md:-left-14 top-[40%] z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
-          >
-            <ChevronLeft size={18} />
-          </button>
+          <div className="relative max-w-6xl mx-auto">
+            <Carousel
+              setApi={setApi}
+              opts={{ align: "center", loop: true, skipSnaps: false }}
+              className="px-10 md:px-12"
+            >
+              <CarouselContent className="-ml-3 md:-ml-6">
+                {PRODUCTS_DATA.map((product, idx) => (
+                  <CarouselItem key={product.id} className="pl-3 basis-[80%] md:pl-6 md:basis-1/3">
+                    <Link to={product.link} className="block group h-full">
+                      <div className="relative overflow-hidden rounded-xl">
+                        <img
+                          src={product.image}
+                          alt={product.alt}
+                          className="w-full aspect-[3/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                          loading={idx === 0 ? "eager" : "lazy"}
+                          decoding="async"
+                          fetchPriority={idx === 0 ? "high" : "low"}
+                        />
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
 
-          <button
-            onClick={() => api?.scrollNext()}
-            aria-label="Siguiente"
-            className="absolute -right-5 md:-right-14 top-[40%] z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] transition-colors duration-200 hover:bg-[#f6f3ee]"
-          >
-            <ChevronRight size={18} />
-          </button>
+                        {/* Coming soon overlay */}
+                        {product.comingSoon && (
+                          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-3 pointer-events-none">
+                            <span className="text-white text-xs tracking-[0.22em] uppercase font-medium border border-white/60 px-4 py-2">
+                              Próximamente
+                            </span>
+                            <span className="text-white/70 text-[11px] font-light tracking-wide">
+                              Muy pronto disponible
+                            </span>
+                          </div>
+                        )}
 
-          <Carousel
-            setApi={setApi}
-            opts={{ align: "center", loop: true, skipSnaps: false }}
-            className="px-4 md:px-0"
-          >
-            <CarouselContent className="-ml-3 md:-ml-6">
-              {PRODUCTS_DATA.map((product) => (
-                <CarouselItem key={product.id} className="pl-3 basis-[86%] md:pl-6 md:basis-1/3">
-                  <Link to={product.link} className="block group h-full">
-                    <div className="relative overflow-hidden border border-border/40 rounded-lg">
-                      <img
-                        src={product.image}
-                        alt={product.alt}
-                        className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        style={{ objectPosition: product.id === "puffs" || product.id === "mesas-centro" ? "center 8%" : undefined }}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 md:hidden bg-gradient-to-t from-black/60 via-black/15 to-transparent px-4 pb-4 pt-10 pointer-events-none">
-                        <h3 className="font-serif text-xl font-medium text-white leading-tight">{product.name}</h3>
-                      </div>
-                      <div className="absolute inset-0 bg-black/10 md:bg-black/0 md:group-hover:bg-black/25 transition-colors duration-500 flex items-center justify-center pointer-events-none">
-                        <span className="text-white text-sm tracking-widest uppercase opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">
-                          Explorar →
+                        {/* Badge top-left */}
+                        <span className={`absolute top-3.5 left-3.5 text-[9px] font-medium tracking-[0.18em] uppercase px-3 py-1.5 rounded-full ${product.comingSoon ? 'bg-[#1a4b5b] text-white' : 'bg-white/90 text-[#1a4b5b]'}`}>
+                          {product.badge}
                         </span>
-                      </div>
-                    </div>
-                    <div className="mt-4 h-12 items-start hidden md:flex">
-                      <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground leading-tight">{product.name}</h3>
-                    </div>
-                  </Link>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </div>
 
-        <div className="flex justify-center gap-2 mt-8">
-          {PRODUCTS_DATA.map((product, i) => (
+                        {/* Text bottom */}
+                        {!product.comingSoon && (
+                          <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
+                            <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
+                                Personaliza el tuyo →
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        {product.comingSoon && (
+                          <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
+                            <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
+                          </div>
+                        )}
+
+                        {/* Hover overlay */}
+                        {!product.comingSoon && (
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-400 pointer-events-none" />
+                        )}
+                      </div>
+                      {/* Desktop: name below */}
+                      <div className="mt-4 hidden md:block">
+                        <div className="flex items-baseline justify-between">
+                          <h3 className="font-serif text-xl md:text-2xl font-medium text-foreground">{product.name}</h3>
+                        </div>
+                        {product.comingSoon && (
+                          <p className="text-xs text-muted-foreground font-light mt-0.5 tracking-wider uppercase">Próximamente</p>
+                        )}
+                      </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+
+            {/* Arrows — inside the relative container so they're never clipped */}
             <button
-              key={product.id}
-              onClick={() => api?.scrollTo(i)}
-              aria-label={`Ver ${product.name}`}
-              className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === current ? "bg-foreground" : "bg-foreground/20"}`}
-            />
-          ))}
+              onClick={() => api?.scrollPrev()}
+              aria-label="Anterior"
+              className="absolute left-0 top-[40%] -translate-y-1/2 z-10 h-10 w-10 flex items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] shadow-md transition-colors hover:bg-[#f6f3ee]"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => api?.scrollNext()}
+              aria-label="Siguiente"
+              className="absolute right-0 top-[40%] -translate-y-1/2 z-10 h-10 w-10 flex items-center justify-center rounded-full border border-[#1a4b5b] bg-white text-[#1a4b5b] shadow-md transition-colors hover:bg-[#f6f3ee]"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+
+          <div className="flex justify-center gap-2 mt-8">
+            {PRODUCTS_DATA.map((product, i) => (
+              <button
+                key={product.id}
+                onClick={() => api?.scrollTo(i)}
+                aria-label={`Ver ${product.name}`}
+                className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === current ? "bg-foreground" : "bg-foreground/20"}`}
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-center mt-10">
+            <Link
+              to="/productos"
+              className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+            >
+              <span className="relative z-10">Ver todos los productos →</span>
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* ── Franja de telas ── */}
+      <section className="bg-[#1a4b5b] py-12 px-6">
+        <div className="container mx-auto max-w-4xl text-center">
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/55 mb-3">Telas disponibles</p>
+          <h3 className="font-serif text-2xl md:text-3xl font-light text-white mb-2">
+            Descubre nuestras telas
+          </h3>
+          <p className="text-sm text-white/60 font-light mb-5">Colección Básicas · Colección Premium</p>
+          <div className="flex justify-center gap-3 mb-5 flex-wrap">
+            {FABRIC_STRIP.map((f) => (
+              <div
+                key={f.name}
+                title={f.name}
+                className="w-9 h-9 rounded-full border-2 border-white/25 overflow-hidden flex-shrink-0"
+                style={{ backgroundColor: f.hex }}
+              >
+                {f.image && (
+                  <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-white/55 font-light mb-6">Más de 60 telas entre básicas y premium</p>
+          <Link
+            to="/telas"
+            className="btn-sweep btn-unir inline-flex items-center px-7 py-3 text-xs font-light"
+            style={{
+              "--btn-bg": "transparent",
+              "--btn-fg": "#ffffff",
+              "--btn-border": "rgba(255,255,255,0.65)",
+              "--btn-hover-bg": "rgba(255,255,255,0.12)",
+              "--btn-hover-fg": "#ffffff",
+              "--btn-hover-border": "rgba(255,255,255,0.65)",
+            } as React.CSSProperties}
+          >
+            <span className="relative z-10">Ver todas las telas →</span>
+          </Link>
+        </div>
+      </section>
+    </>
   );
 };
 

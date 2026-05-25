@@ -6,8 +6,9 @@ import Logo from "./Logo";
 const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/productos", label: "Productos" },
+  { to: "/telas", label: "Telas" },
   { to: "/configurador", label: "Diseña el tuyo" },
-  { to: "/#equipo", label: "Quiénes somos" },
+  { to: "/nosotros", label: "Quiénes somos" },
   { to: "/contacto", label: "Solicita información", highlight: true },
 ];
 
@@ -63,7 +64,8 @@ const Navbar = () => {
       scrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-white shadow-sm md:bg-transparent md:shadow-none"
     }`}>
       <div className="container mx-auto flex items-center justify-between h-20 md:h-24 px-6">
-        <Link to="/" className="flex items-center" aria-label="Tiroriro inicio">
+        <Link to="/" className="flex items-center" aria-label="Tiroriro inicio"
+          onClick={(e) => { if (handleClick("/")) e.preventDefault(); }}>
           <div className="md:hidden">
             <Logo className="text-foreground" viewBox="100 335 730 225" style={{ width: 90, marginTop: "-10px", height: "auto" }} />
           </div>

@@ -1,14 +1,35 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import AnimatedSection from "./AnimatedSection";
-import francescaPhoto from "@/assets/testimonials/francesca-cirenei.jpeg";
-import gabrielPhoto from "@/assets/testimonials/gabriel-di-stefano.png";
-import almuPhoto from "@/assets/testimonials/almu-alonso.jpeg";
+import francescaPhoto from "@/assets/testimonials/francesca-cirenei.webp";
+import gabrielPhoto from "@/assets/testimonials/gabriel-di-stefano.webp";
+import almuPhoto from "@/assets/testimonials/almu-alonso.webp";
 
 const TESTIMONIALS = [
-  { name: "Francesca Cirenei", location: "Madrid", photo: francescaPhoto, text: "Pedí un cabecero en lino crudo para una cama de 150 y quedó exactamente como lo imaginaba. Beatriz me llamó al día siguiente de rellenar el formulario y en 12 días lo tenía en casa. El acabado es precioso y todo el proceso fue muchísimo más fácil de lo que esperaba." },
-  { name: "Gabriel Di Stefano", location: "Barcelona", photo: gabrielPhoto, text: "Llevaba meses buscando un banco para el pie de la cama que no fuera la típica pieza estándar. Lo encontré aquí. Me dejaron elegir la tela, el color y la altura — y llegó en dos semanas con un embalaje muy cuidado. Repetiré sin duda." },
-  { name: "Almu Alonso", location: "Valencia", photo: almuPhoto, text: "Tenía dudas porque es una compra importante sin verlo en persona. Rocío me mandó muestras de tela antes de confirmar y resolvió todas mis dudas por teléfono. El resultado es espectacular. Mi dormitorio ha cambiado por completo." },
+  { name: "Francesca Cirenei", location: "Villanueva de la Cañada - Madrid", photo: francescaPhoto, text: "Pedí un cabecero en lino crudo para una cama de 150 y quedó exactamente como lo imaginaba. Beatriz me llamó al día siguiente de rellenar el formulario y en 12 días lo tenía en casa. El acabado es precioso y todo el proceso fue muchísimo más fácil de lo que esperaba." },
+  { name: "Gabriel Di Stefano", location: "Zaragoza", photo: gabrielPhoto, text: "Llevaba meses buscando un banco para el pie de la cama que no fuera la típica pieza estándar. Lo encontré aquí. Me dejaron elegir la tela, el color y la altura — y llegó en dos semanas con un embalaje muy cuidado. Repetiré sin duda." },
+  { name: "Almu Alonso", location: "Tres Cantos - Madrid", photo: almuPhoto, text: "Tenía dudas porque es una compra importante sin verlo en persona. Rocío resolvió todas mis dudas por teléfono y me ayudó a elegir la tela perfecta. El resultado es espectacular. Mi dormitorio ha cambiado por completo." },
 ];
+
+const reviewJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://tirorirohome.com/#organization",
+  "name": "Tiroriro",
+  "url": "https://tirorirohome.com",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5",
+    "reviewCount": TESTIMONIALS.length,
+    "bestRating": "5",
+  },
+  "review": TESTIMONIALS.map((t) => ({
+    "@type": "Review",
+    "author": { "@type": "Person", "name": t.name },
+    "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+    "reviewBody": t.text,
+  })),
+};
 
 const Star = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="hsl(29,43%,59%)" xmlns="http://www.w3.org/2000/svg">
@@ -17,7 +38,11 @@ const Star = () => (
 );
 
 const Testimonials = () => (
-  <section id="testimoniales" className="py-20 md:py-32 px-6 bg-background">
+  <>
+  <Helmet>
+    <script type="application/ld+json">{JSON.stringify(reviewJsonLd)}</script>
+  </Helmet>
+  <section id="testimoniales" className="py-20 md:py-32 px-6 bg-secondary">
     <div className="container mx-auto">
       <AnimatedSection className="text-center mb-16">
         <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Lo que dicen nuestros clientes</h2>
@@ -51,6 +76,7 @@ const Testimonials = () => (
       </div>
     </div>
   </section>
+  </>
 );
 
 export default Testimonials;
