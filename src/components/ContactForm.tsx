@@ -2,8 +2,15 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2, MessageCircle } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
+
+// Cliente del CRM (clave pública anon — puede estar en el código)
+const crmSupabase = createClient(
+  "https://jemsimqvksucmxvtmote.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbXNpbXF2a3N1Y214dnRtb3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzY4MzUsImV4cCI6MjA5NDM1MjgzNX0.Gbo0fbIjXzXCX0EqG1vvUiM1uXqy-eKYRxLvKb2iQpE"
+);
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
@@ -104,7 +111,24 @@ const ContactForm = () => {
     try {
       const fullName = [form.name, form.lastName].filter(Boolean).join(' ').trim();
       const firstName = form.name.trim().split(' ')[0];
-      const productList = selectedProducts.join(', ') || 'No especificado';
+      const productList = selectedProducts.includes("Otro")
+        ? [...selectedProducts.filter(p => p !== "Otro"), `Otro: ${otherProductDetail}`].join(', ')
+        : selectedProducts.join(', ') || 'No especificado';
+
+      // Guardar lead en el Supabase del CRM (no bloqueante)
+      try {
+        await crmSupabase.from('contact_leads').insert({
+          nombre: form.name.trim(),
+          apellidos: form.lastName.trim() || null,
+          email: form.email.trim(),
+          telefono: form.phone.trim() || null,
+          productos: productList,
+          detalles: form.details.trim() || null,
+          config_resumen: fromConfig || null,
+        });
+      } catch (leadErr) {
+        console.warn('No se pudo guardar el lead en el CRM:', leadErr);
+      }
       const submittedAt = new Date().toLocaleString('es-ES', {
         timeZone: 'Europe/Madrid', dateStyle: 'full', timeStyle: 'short',
       });
