@@ -2,15 +2,12 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2, MessageCircle } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 
-// Cliente del CRM (clave pública anon — puede estar en el código)
-const crmSupabase = createClient(
-  "https://jemsimqvksucmxvtmote.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbXNpbXF2a3N1Y214dnRtb3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzY4MzUsImV4cCI6MjA5NDM1MjgzNX0.Gbo0fbIjXzXCX0EqG1vvUiM1uXqy-eKYRxLvKb2iQpE"
-);
+// API key del CRM (sólo da permiso para enviar leads desde el formulario web)
+const CRM_API_URL = "https://tirorirocrm.lovable.app/api/public/lead-form";
+const CRM_API_KEY = "IwNBaElm-MaxyWxTaA-7ofhsrwsnUMHSEJL5qGZxLgo";
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
@@ -115,39 +112,6 @@ const ContactForm = () => {
         ? [...selectedProducts.filter(p => p !== "Otro"), `Otro: ${otherProductDetail}`].join(', ')
         : selectedProducts.join(', ') || 'No especificado';
 
-      // Insertar directamente en leads del CRM (dispara realtime) y guardar detalle en contact_leads
-      try {
-        await crmSupabase.from('leads').insert({
-          nombre: fullName,
-          email: form.email.trim(),
-          telefono: form.phone.trim() || '',
-          ciudad: '',
-          producto: productList.split(',')[0].trim(),
-          vendedor: '',
-          etapa: 'Primer Contacto',
-          valor: 0,
-          valor_producto: 0,
-          valor_envio: 0,
-          origen: 'web',
-          red_social: '',
-          edad: '',
-        });
-      } catch (leadErr) {
-        console.warn('No se pudo crear el lead en el CRM:', leadErr);
-      }
-      try {
-        await crmSupabase.from('contact_leads').insert({
-          nombre: form.name.trim(),
-          apellidos: form.lastName.trim() || null,
-          email: form.email.trim(),
-          telefono: form.phone.trim() || null,
-          productos: productList,
-          detalles: form.details.trim() || null,
-          config_resumen: fromConfig || null,
-        });
-      } catch (leadErr) {
-        console.warn('No se pudo guardar el detalle del lead:', leadErr);
-      }
       const submittedAt = new Date().toLocaleString('es-ES', {
         timeZone: 'Europe/Madrid', dateStyle: 'full', timeStyle: 'short',
       });
@@ -217,9 +181,12 @@ const ContactForm = () => {
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
         } : undefined;
 
-        await fetch('https://tirorirocrm.lovable.app/api/public/lead-form', {
+        await fetch(CRM_API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Api-Key': CRM_API_KEY,
+          },
           body: JSON.stringify({
             nombre: fullName,
             email: form.email,
