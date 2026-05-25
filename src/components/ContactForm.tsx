@@ -98,21 +98,62 @@ const ContactForm = () => {
   };
 
   if (sent) {
+    const WHATSAPP_PRISA = "https://wa.me/34645363323?text=" + encodeURIComponent("Hola, acabo de enviar una solicitud y tengo algo de prisa. ¿Podéis responderme pronto?");
     return (
-      <section className="py-20 md:py-32 px-6 bg-background">
-        <div className="container mx-auto max-w-xl text-center py-20">
-          <div className="w-16 h-16 rounded-full bg-accent-warm/10 flex items-center justify-center mx-auto mb-6">
-            <Check size={32} className="text-accent-warm" />
+      <section className="py-24 md:py-36 px-6 bg-background">
+        <div className="container mx-auto max-w-lg text-center">
+
+          {/* Icono check */}
+          <div className="w-14 h-14 rounded-full border border-accent-warm/30 bg-accent-warm/6 flex items-center justify-center mx-auto mb-10">
+            <Check size={22} strokeWidth={1.8} className="text-accent-warm" />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground">Gracias, {form.name.split(' ')[0]}</h2>
-          <span className="section-line" />
-          <p className="mt-6 text-muted-foreground font-light text-lg">Te respondemos en menos de 24 horas laborables.</p>
-          <button
-            onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setOtherProductDetail(''); setRgpd(false); setTouched({}); setErrors({}); }}
-            className="btn-sweep btn-unir btn-unir-outline mt-8 px-8 py-3 text-xs font-light"
-          >
-            <span className="relative z-10">Volver al inicio</span>
-          </button>
+
+          {/* Título */}
+          <h2 className="font-serif text-4xl md:text-5xl font-light text-foreground tracking-tight">
+            Gracias, {form.name.split(' ')[0]}
+          </h2>
+          <span className="section-line mt-5" />
+
+          {/* Texto principal */}
+          <p className="mt-8 text-muted-foreground font-light text-base md:text-lg leading-relaxed max-w-sm mx-auto">
+            Hemos recibido tu solicitud.<br className="hidden sm:block" />
+            Te respondemos en <strong className="text-foreground font-medium">menos de 24 horas laborables</strong>.
+          </p>
+
+          {/* Pasos del proceso */}
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-px bg-border/40 rounded-2xl overflow-hidden border border-border/40">
+            {[
+              { n: "01", title: "Revisamos tu solicitud", text: "Estudiamos tu petición con detalle." },
+              { n: "02", title: "Te enviamos presupuesto", text: "Sin compromiso, ajustado a ti." },
+              { n: "03", title: "Empezamos a hacer magia", text: "Manos a la obra cuando confirmes." },
+            ].map(({ n, title, text }) => (
+              <div key={n} className="bg-secondary/50 px-6 py-7 text-left flex flex-col gap-2">
+                <span className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground/60 font-medium">{n}</span>
+                <p className="font-medium text-foreground text-sm leading-snug">{title}</p>
+                <p className="text-xs text-muted-foreground font-light leading-relaxed">{text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTAs */}
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+            <button
+              onClick={() => { setSent(false); setForm({ name: '', lastName: '', phone: '', email: '', details: '' }); setSelectedProducts([]); setOtherProductDetail(''); setRgpd(false); setTouched({}); setErrors({}); }}
+              className="btn-sweep btn-unir btn-unir-outline px-10 py-3.5 text-xs tracking-widest font-medium"
+            >
+              <span className="relative z-10 flex items-center gap-2">Volver al inicio <span className="opacity-60">→</span></span>
+            </button>
+            <a
+              href={WHATSAPP_PRISA}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-light"
+            >
+              <MessageCircle size={15} className="text-accent-warm shrink-0" />
+              ¿Tienes prisa? Escríbenos por WhatsApp
+            </a>
+          </div>
+
         </div>
       </section>
     );
