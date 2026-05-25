@@ -30,6 +30,7 @@ const ContactForm = () => {
   const prefilledProduct = searchParams.get('product');
   const expressParam = searchParams.get('express');
   const hasConfigParams = !!(prefilledProduct || fromConfig);
+  const previewPrice = searchParams.get('previewPrice');
 
   const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", details: "" });
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -179,6 +180,7 @@ const ContactForm = () => {
           altoCm: previewHeight ?? undefined,
           acabado: previewFinish || 'vivo-simple',
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
+          precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
         } : undefined;
 
         await fetch(CRM_API_URL, {

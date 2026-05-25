@@ -618,6 +618,8 @@ const ProductConfigurator = () => {
       previewDepth: depthCm?.toString() || '',
     });
     if (extraExpress) params.set('express', 'true');
+    if (price > 0) params.set('previewPrice', price.toString());
+    if (fabricGroup) params.set('fabricGroup', fabricGroup);
     return `/?${params.toString()}#contacto`;
   };
 
