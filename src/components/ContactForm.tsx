@@ -115,7 +115,26 @@ const ContactForm = () => {
         ? [...selectedProducts.filter(p => p !== "Otro"), `Otro: ${otherProductDetail}`].join(', ')
         : selectedProducts.join(', ') || 'No especificado';
 
-      // Guardar lead en el Supabase del CRM (no bloqueante)
+      // Insertar directamente en leads del CRM (dispara realtime) y guardar detalle en contact_leads
+      try {
+        await crmSupabase.from('leads').insert({
+          nombre: fullName,
+          email: form.email.trim(),
+          telefono: form.phone.trim() || '',
+          ciudad: '',
+          producto: productList.split(',')[0].trim(),
+          vendedor: '',
+          etapa: 'Primer Contacto',
+          valor: 0,
+          valor_producto: 0,
+          valor_envio: 0,
+          origen: 'web',
+          red_social: '',
+          edad: '',
+        });
+      } catch (leadErr) {
+        console.warn('No se pudo crear el lead en el CRM:', leadErr);
+      }
       try {
         await crmSupabase.from('contact_leads').insert({
           nombre: form.name.trim(),
@@ -127,7 +146,7 @@ const ContactForm = () => {
           config_resumen: fromConfig || null,
         });
       } catch (leadErr) {
-        console.warn('No se pudo guardar el lead en el CRM:', leadErr);
+        console.warn('No se pudo guardar el detalle del lead:', leadErr);
       }
       const submittedAt = new Date().toLocaleString('es-ES', {
         timeZone: 'Europe/Madrid', dateStyle: 'full', timeStyle: 'short',
