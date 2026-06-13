@@ -54,6 +54,13 @@ Deno.serve(async (req) => {
     )
   }
 
+  // Extract caller IP for rate limiting (used by anon callers like the contact form).
+  const callerIp =
+    req.headers.get('cf-connecting-ip') ||
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'unknown'
+
   // Parse request body
   let templateName: string
   let recipientEmail: string
@@ -122,8 +129,56 @@ Deno.serve(async (req) => {
     )
   }
 
+  // Basic recipient format validation to avoid header injection / malformed addresses
+  if (!/^[^\s@<>"']{1,64}@[^\s@<>"']{1,255}\.[^\s@<>"']{1,64}$/.test(effectiveRecipient)) {
+    return new Response(
+      JSON.stringify({ error: 'Invalid recipient email' }),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
   // Create Supabase client with service role (bypasses RLS)
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+  // Rate limit anon-callable templates by IP and by recipient to prevent
+  // abuse of the endpoint as an open email relay. Templates with a fixed
+  // `to` recipient and admin/internal templates are exempt.
+  const isCallerControlledRecipient = !template.to
+  if (isCallerControlledRecipient) {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+
+    // Limit per IP: max 10 sends/hour
+    const { count: ipCount } = await supabase
+      .from('email_send_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('metadata->>caller_ip', callerIp)
+      .gte('created_at', oneHourAgo)
+
+    if ((ipCount ?? 0) >= 10) {
+      console.warn('Rate limit exceeded for IP', { callerIp })
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Limit per recipient: max 3 sends/10min for the same template
+    const { count: recipCount } = await supabase
+      .from('email_send_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('recipient_email', effectiveRecipient)
+      .eq('template_name', templateName)
+      .gte('created_at', tenMinutesAgo)
+
+    if ((recipCount ?? 0) >= 3) {
+      console.warn('Rate limit exceeded for recipient', { effectiveRecipient, templateName })
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+  }
 
   // 2. Check suppression list (fail-closed: if we can't verify, don't send)
   const { data: suppressed, error: suppressionError } = await supabase
@@ -306,6 +361,7 @@ Deno.serve(async (req) => {
     template_name: templateName,
     recipient_email: effectiveRecipient,
     status: 'pending',
+    metadata: { caller_ip: callerIp },
   })
 
   const { error: enqueueError } = await supabase.rpc('enqueue_email', {
