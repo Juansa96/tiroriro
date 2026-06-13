@@ -8,7 +8,7 @@ const FACTS = [
   { label: "Origen", value: "Hecho a mano en la Comunidad de Madrid, España" },
   { label: "Catálogo", value: "Cabeceros, pufs, mesas de centro y pantallas de lámpara" },
   { label: "Telas", value: "Más de 60 referencias entre básicas y premium" },
-  { label: "Plazo de entrega", value: "15 días naturales desde la confirmación" },
+  { label: "Plazo de entrega", value: "20 días naturales desde la confirmación" },
   { label: "Envío", value: "Toda la península ibérica · Baleares y Canarias bajo consulta" },
   { label: "Pago", value: "Bizum, Stripe y transferencia bancaria · sin anticipo hasta confirmar" },
   { label: "Garantía", value: "Defectos de fabricación cubiertos · sin devoluciones por cambio de opinión (productos personalizados)" },

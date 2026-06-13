@@ -14,48 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      contact_leads: {
-        Row: {
-          id: string
-          nombre: string
-          apellidos: string | null
-          email: string
-          telefono: string | null
-          productos: string
-          detalles: string | null
-          config_resumen: string | null
-          origen: string
-          estado: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          nombre: string
-          apellidos?: string | null
-          email: string
-          telefono?: string | null
-          productos: string
-          detalles?: string | null
-          config_resumen?: string | null
-          origen?: string
-          estado?: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          nombre?: string
-          apellidos?: string | null
-          email?: string
-          telefono?: string | null
-          productos?: string
-          detalles?: string | null
-          config_resumen?: string | null
-          origen?: string
-          estado?: string
-          created_at?: string
-        }
-        Relationships: []
-      }
       email_send_log: {
         Row: {
           created_at: string

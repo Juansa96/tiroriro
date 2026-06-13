@@ -24,7 +24,7 @@ const STEPS = [
   {
     num: "03",
     title: "Lo recibes en casa",
-    text: "En unos 15 días lo recibes listo para colocar, ya sea apoyado, colgado o tal y como lo hayas elegido. Y si estás en Madrid, también podemos instalarlo por ti.",
+    text: "En unos 20 días lo recibes listo para colocar, ya sea apoyado, colgado o tal y como lo hayas elegido. Y si estás en Madrid, también podemos instalarlo por ti.",
     Icon: House,
     tone: "bg-[#D7E0E1] border-[#C5D0D2]",
     iconTone: "bg-white/75 text-primary border border-primary/8",
