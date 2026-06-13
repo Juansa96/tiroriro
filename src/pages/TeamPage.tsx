@@ -24,6 +24,7 @@ const TeamPage = () => (
     />
     <Navbar />
     <main className="pt-20 md:pt-24">
+      <h1 className="sr-only">Quiénes somos · Tiroriro</h1>
       <TeamSection />
       <section className="py-16 md:py-24 px-6 bg-secondary">
         <div className="container mx-auto max-w-3xl">

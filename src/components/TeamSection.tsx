@@ -200,6 +200,7 @@ const TeamSection = () => {
                   <button
                     onClick={() => handleVote(opt.id)}
                     disabled={!!voted}
+                    aria-label={`Votar por ${opt.label}`}
                     className={`w-14 h-14 rounded-full border-2 flex items-center justify-center text-2xl transition-all duration-200 ${
                       voted === opt.id
                         ? "border-accent-warm bg-accent-warm/10 scale-110"

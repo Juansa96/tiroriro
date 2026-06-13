@@ -16,6 +16,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://tirorirohome.com/productos/bancos</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tirorirohome.com/productos/cojines</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://tirorirohome.com/productos/pufs</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -41,7 +51,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://tirorirohome.com/probador</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://tirorirohome.com/nosotros</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tirorirohome.com/equipo</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

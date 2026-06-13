@@ -383,12 +383,14 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
         <>
           <button
             onClick={prev}
+            aria-label="Foto anterior"
             className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             onClick={next}
+            aria-label="Foto siguiente"
             className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
           >
             <ChevronRight size={16} />
@@ -398,6 +400,8 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
               <button
                 key={i}
                 onClick={() => setIdx(i)}
+                aria-label={`Ir a la foto ${i + 1}`}
+                aria-current={i === idx ? "true" : undefined}
                 className={`w-1.5 h-1.5 rounded-full transition-all ${i === idx ? "bg-white" : "bg-white/40"}`}
               />
             ))}
