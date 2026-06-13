@@ -141,7 +141,7 @@ const HeroSection = () => {
             transform: showRest ? "translateY(0)" : "translateY(12px)",
           }}
         >
-          <p className="text-xs tracking-[0.18em] uppercase text-white/55 font-light">
+          <p className="text-xs tracking-[0.18em] uppercase text-white/80 font-light">
             Tapizado artesanal · España
           </p>
         </div>
@@ -159,7 +159,7 @@ const HeroSection = () => {
             transform: showRest ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          <p className="hidden md:block mt-6 text-sm md:text-base text-white/75 font-light max-w-xl mx-auto leading-relaxed">
+          <p className="hidden md:block mt-6 text-sm md:text-base text-white/90 font-light max-w-xl mx-auto leading-relaxed">
             Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 20 días lo tienes en casa.
           </p>
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
@@ -176,7 +176,7 @@ const HeroSection = () => {
               <span className="relative z-10">Ver productos</span>
             </Link>
           </div>
-          <div className="mt-5 flex flex-col items-center gap-1 text-white/55">
+          <div className="mt-5 flex flex-col items-center gap-1 text-white/85">
             <span className="text-[12px] md:text-[11px] font-normal tracking-widest">Cabeceros desde 225€ · Mesas de centro desde 280€ · Pufs desde 125€ · Pantallas de lámpara desde 25€</span>
           </div>
 
@@ -198,21 +198,21 @@ const HeroSection = () => {
       <div className="md:hidden absolute bottom-0 left-0 right-0 bg-white z-10 py-4 px-6">
         <div className="flex items-start justify-around">
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <Award size={18} className="text-foreground/50" />
+            <Award size={18} className="text-foreground/70" />
             <span className="text-xs font-medium text-foreground leading-tight">Atención</span>
-            <span className="text-[10px] text-foreground/45 font-light">personalizada</span>
+            <span className="text-[10px] text-foreground/70 font-light">personalizada</span>
           </div>
           <div className="w-px self-stretch bg-foreground/10" />
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <Heart size={18} className="text-foreground/50" />
+            <Heart size={18} className="text-foreground/70" />
             <span className="text-xs font-medium text-foreground leading-tight">Hecho a mano</span>
-            <span className="text-[10px] text-foreground/45 font-light">en España</span>
+            <span className="text-[10px] text-foreground/70 font-light">en España</span>
           </div>
           <div className="w-px self-stretch bg-foreground/10" />
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <Truck size={18} className="text-foreground/50" />
+            <Truck size={18} className="text-foreground/70" />
             <span className="text-xs font-medium text-foreground leading-tight">Entrega</span>
-            <span className="text-[10px] text-foreground/45 font-light">en 20 días</span>
+            <span className="text-[10px] text-foreground/70 font-light">en 20 días</span>
           </div>
         </div>
       </div>
