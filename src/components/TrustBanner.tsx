@@ -5,7 +5,7 @@ const TrustBanner = () => (
       <span className="hidden sm:inline text-foreground/30">·</span>
       <span className="text-sm tracking-wide uppercase text-foreground/70 font-light">Hecho a mano en España</span>
       <span className="hidden sm:inline text-foreground/30">·</span>
-      <span className="text-sm tracking-wide uppercase text-foreground/70 font-light">Entrega en 15 días</span>
+      <span className="text-sm tracking-wide uppercase text-foreground/70 font-light">Entrega en 20 días</span>
     </div>
   </section>
 );

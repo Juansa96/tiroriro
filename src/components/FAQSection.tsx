@@ -26,11 +26,11 @@ const FAQS = [
   },
   {
     q: "¿Dónde se fabrican los productos de Tiroriro?",
-    a: "Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 15 días: nada está prefabricado.",
+    a: "Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 20 días: nada está prefabricado.",
   },
   {
     q: "¿Cuánto tarda en llegar mi pedido?",
-    a: "El plazo habitual es de 15 días naturales desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.",
+    a: "El plazo habitual es de 20 días naturales desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.",
   },
   {
     q: "¿Puedo ver las telas antes de decidir?",
