@@ -72,7 +72,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         photos: [
           "/productos-fotos/cabeceros/calobra-01.webp",
           "/productos-fotos/cabeceros/calobra-02.webp",
-          "/productos-fotos/cabeceros/calobra-03.webp",
         ],
         desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
         priceLabel: "",
@@ -82,7 +81,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Pregonda",
         photos: [
           "/productos-fotos/cabeceros/pregonda-01.webp",
-          "/productos-fotos/cabeceros/pregonda-02.webp",
         ],
         desc: "Remate en arco suave. Aporta calidez sin renunciar a la elegancia.",
         priceLabel: "",
@@ -104,7 +102,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/cabeceros/conta-01.webp",
           "/productos-fotos/cabeceros/conta-02.webp",
           "/productos-fotos/cabeceros/conta-03.webp",
-          "/productos-fotos/cabeceros/conta-04.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "",
@@ -243,7 +240,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
     subtitle: "Tapizadas a mano en telas básicas y premium.",
     models: [
       { name: "Almanzor", photos: ["/productos-fotos/pantallas/almanzor-01.webp", "/productos-fotos/pantallas/almanzor-02.webp", "/productos-fotos/pantallas/almanzor-03.webp"], desc: "Cilíndrica. La más clásica y versátil. Transforma cualquier lámpara con un toque artesanal.", priceLabel: "", configParam: "cilindro" },
-      { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp", "/productos-fotos/pantallas/tormes-02.webp"], desc: "Cuadrada. Líneas limpias para espacios modernos y contemporáneos.", priceLabel: "", configParam: "cuadrado" },
+      { name: "Tormes", photos: ["/productos-fotos/pantallas/tormes-01.webp"], desc: "Cuadrada. Líneas limpias para espacios modernos y contemporáneos.", priceLabel: "", configParam: "cuadrado" },
       { name: "Gredos", photos: ["/productos-fotos/pantallas/gredos-01.webp"], desc: "Cónica. Elegante y con carácter. Ideal para lámparas de pie y de sobremesa.", priceLabel: "", configParam: "cono", comingSoon: true },
       { name: "La Serrota", photos: ["/productos-fotos/pantallas/serrota-01.webp"], desc: "Rectangular. Perfecta para apliques de pared y lámparas de diseño.", priceLabel: "", configParam: "rectangulo" },
       { name: "La Paramera", photos: ["/productos-fotos/pantallas/paramera-01.webp"], desc: "Ovalada. Suave y sofisticada. Da una luz difusa y muy cálida.", priceLabel: "", configParam: "ovalado", comingSoon: true },
