@@ -71,7 +71,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Calobra",
         photos: [
           "/productos-fotos/cabeceros/calobra-01.webp",
-          "/productos-fotos/cabeceros/calobra-02.webp",
+          "/productos-fotos/cabeceros/calobra-03.webp",
         ],
         desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
         priceLabel: "",
@@ -100,8 +100,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Conta",
         photos: [
           "/productos-fotos/cabeceros/conta-01.webp",
-          "/productos-fotos/cabeceros/conta-02.webp",
           "/productos-fotos/cabeceros/conta-03.webp",
+          "/productos-fotos/cabeceros/conta-04.webp",
         ],
         desc: "Corona doble con dos niveles escalonados. Más elaborada y con mayor presencia.",
         priceLabel: "",
