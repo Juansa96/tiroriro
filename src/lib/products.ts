@@ -33,7 +33,7 @@ export const PRODUCTS: Product[] = [
     name: "Cabeceros tapizados",
     tagline: "El punto de partida de cualquier dormitorio que merece la pena",
     basePrice: 225,
-    image: "/productos-fotos/cabeceros/pregonda-02.webp",
+    image: "/productos-fotos/cabeceros/pregonda-01.webp",
   },
   {
     id: "banco-entelado",
