@@ -232,7 +232,13 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
 
   if (type === "puf") {
     const qty = parseInt(options.pufQuantity || "1");
-    parts.push(`${options.pufSizeCm ?? "40"} cm`);
+    if (options.pufShapeLabel) parts.push(options.pufShapeLabel);
+    if (options.pufShape === "circular") {
+      if (options.pufDiameter) parts.push(`Ø ${options.pufDiameter}`);
+      if (options.pufHeight)   parts.push(`Alto ${options.pufHeight}`);
+    } else {
+      parts.push(`${options.pufSizeCm ?? "40"} cm`);
+    }
     if (qty >= 2) parts.push("Pareja (×2)");
   }
 
