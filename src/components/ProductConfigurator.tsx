@@ -573,7 +573,10 @@ const ProductConfigurator = () => {
     chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
   }
   if (productType === 'banco') chips.push(benchLength || "—");
-  if (productType === 'puf') chips.push(puffDiameter || "—");
+  if (productType === 'puf') {
+    chips.push(puffDiameter || "—");
+    if (shape === 'circular') chips.push(puffHeight || "—");
+  }
   if (productType === 'cojin') chips.push(cushionSize || "—");
   if (productType === 'pantalla') chips.push(lampDiameter || "—");
   chips.push(fabric?.name || "—");
