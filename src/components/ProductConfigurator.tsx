@@ -1173,19 +1173,22 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <span className="text-[10px] text-muted-foreground">Cúbico · Galicia</span>
                     </div>
                   </button>
-                  <div className="border border-border rounded p-3 text-center flex flex-col items-center gap-2 opacity-50 cursor-not-allowed">
+                  <button
+                    onClick={() => setShape('circular')}
+                    className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${shape === 'circular' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                  >
                     <svg viewBox="0 0 40 40" className="w-8 h-8">
                       <circle cx="20" cy="20" r="14" fill="none" stroke="currentColor" strokeWidth="1.5" />
                     </svg>
                     <div>
                       <span className="text-xs font-medium block">Monteferro</span>
-                      <span className="text-[10px] text-muted-foreground">Próximamente</span>
+                      <span className="text-[10px] text-muted-foreground">Redondo · Galicia</span>
                     </div>
-                  </div>
+                  </button>
                 </div>
               </div>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{shape === 'circular' ? 'Diámetro' : 'Tamaño'}</p>
                 <div className="flex flex-wrap gap-2">
                   {['40 cm', '50 cm'].map(sz => (
                     <button
@@ -1210,6 +1213,34 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </div>
                 )}
               </div>
+              {shape === 'circular' && (
+                <div>
+                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Altura</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['40 cm', '45 cm', '50 cm'].map(sz => (
+                      <button
+                        key={sz}
+                        onClick={() => setPuffHeight(sz)}
+                        className={`border rounded-md px-4 py-2 text-xs transition-all ${puffHeight === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setPuffHeight('custom')}
+                      className={`border rounded-md px-4 py-2 text-xs transition-all ${puffHeight === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      Otra medida
+                    </button>
+                  </div>
+                  {puffHeight === 'custom' && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <input type="number" min={25} max={80} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                  )}
+                </div>
+              )}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
                 <div className="flex gap-2">
