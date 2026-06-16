@@ -1696,13 +1696,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          <div className="flex justify-between items-center py-2">
-            <div>
-              <p className="text-base text-foreground font-light">Tapetes protectores</p>
-              <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
+          {productType === 'cabecero' && (
+            <div className="flex justify-between items-center py-2">
+              <div>
+                <p className="text-base text-foreground font-light">Tapetes protectores</p>
+                <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
+              </div>
+              <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
             </div>
-            <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
-          </div>
+          )}
           {!productType && (
             <p className="text-sm text-muted-foreground font-light italic">Elige un producto para ver los extras disponibles.</p>
           )}
