@@ -558,6 +558,7 @@ const ProductConfigurator = () => {
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
     (productType === 'puf' && puffDiameter === 'custom' && customWidth) ||
+    (productType === 'puf' && shape === 'circular' && puffHeight === 'custom' && customHeight) ||
     (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight))
   );
   const customNote = "El precio se ajustará según la medida elegida. Te confirmamos el importe final al recibir tu solicitud.";
