@@ -537,7 +537,7 @@ const ProductConfigurator = () => {
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
       : productType === 'banco' ? !!benchLength
       : productType === 'mesa' ? !!benchLength
-      : productType === 'puf' ? !!puffDiameter
+      : productType === 'puf' ? (shape === 'circular' ? !!puffDiameter && !!puffHeight : !!puffDiameter)
       : productType === 'cojin' ? !!cushionShape && !!cushionSize
       : productType === 'pantalla' ? !!lampDiameter
       : false,
