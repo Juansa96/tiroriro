@@ -514,7 +514,7 @@ const ProductConfigurator = () => {
     if (productType === 'banco') o.benchLength = benchLength;
 
     if (extraRelleno) o.relleno = 'true';
-    if (extraTapetes) o.tapetes = 'true';
+    if (extraTapetes && productType === 'cabecero') o.tapetes = 'true';
     o.hasCustomVivo = vivoColorId ? 'true' : 'false';
     o.hasCustomLateral = lateralFabricId ? 'true' : 'false';
     return o;
