@@ -70,8 +70,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Calobra",
         photos: [
-          "/productos-fotos/cabeceros/calobra-01.webp",
           "/productos-fotos/cabeceros/calobra-02.webp",
+          "/productos-fotos/cabeceros/calobra-03.webp",
         ],
         desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
         priceLabel: "",
