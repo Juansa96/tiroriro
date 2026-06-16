@@ -204,11 +204,13 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       },
       {
         name: "Monteferro",
-        photos: [],
-        desc: "Redondo · Próximamente.",
+        photos: [
+          "/productos-fotos/puff/monteferro-01.webp",
+          "/productos-fotos/puff/monteferro-02.webp",
+        ],
+        desc: "Redondo, tapizado a mano y a tu medida. Cómodo, mullido y perfecto para sumar asiento extra en cualquier rincón.",
         priceLabel: "",
         configParam: "circular",
-        comingSoon: true,
       },
     ],
   },
