@@ -1633,6 +1633,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         )}
       </div>
 
+      {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
       <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
@@ -1712,6 +1713,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         )}
       </div>
+      )}
     </>
   );
 };
