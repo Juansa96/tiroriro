@@ -514,7 +514,7 @@ const ProductConfigurator = () => {
     if (productType === 'banco') o.benchLength = benchLength;
 
     if (extraRelleno) o.relleno = 'true';
-    if (extraTapetes) o.tapetes = 'true';
+    if (extraTapetes && productType === 'cabecero') o.tapetes = 'true';
     o.hasCustomVivo = vivoColorId ? 'true' : 'false';
     o.hasCustomLateral = lateralFabricId ? 'true' : 'false';
     return o;
@@ -660,7 +660,7 @@ const ProductConfigurator = () => {
           extraRelleno && 'Relleno',
           extraExpress && 'Express',
           extraTopMaterial !== 'nada' && (extraTopMaterial === 'metacrilato' ? 'Metacrilato' : 'Cristal'),
-          extraTapetes && 'Tapetes',
+          extraTapetes && productType === 'cabecero' && 'Tapetes',
         ].filter(Boolean);
         return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
       }
@@ -1696,13 +1696,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          <div className="flex justify-between items-center py-2">
-            <div>
-              <p className="text-base text-foreground font-light">Tapetes protectores</p>
-              <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
+          {productType === 'cabecero' && (
+            <div className="flex justify-between items-center py-2">
+              <div>
+                <p className="text-base text-foreground font-light">Tapetes protectores</p>
+                <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
+              </div>
+              <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
             </div>
-            <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
-          </div>
+          )}
           {!productType && (
             <p className="text-sm text-muted-foreground font-light italic">Elige un producto para ver los extras disponibles.</p>
           )}
