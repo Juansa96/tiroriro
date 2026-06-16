@@ -487,6 +487,12 @@ const ProductConfigurator = () => {
     if (productType === 'puf') {
       o.pufSizeCm   = puffDiameter.includes('40') ? '40' : puffDiameter.includes('50') ? '50' : '';
       o.pufQuantity = puffQuantity;
+      o.pufShape    = shape === 'circular' ? 'circular' : 'cuadrado';
+      o.pufShapeLabel = shape === 'circular' ? 'Monteferro · Redondo' : 'Patos · Cúbico';
+      if (shape === 'circular') {
+        o.pufDiameter = puffDiameter === 'custom' ? `${customWidth} cm` : puffDiameter;
+        o.pufHeight   = puffHeight === 'custom' ? `${customHeight} cm` : puffHeight;
+      }
     }
 
     if (productType === 'mesa') {
