@@ -660,7 +660,7 @@ const ProductConfigurator = () => {
           extraRelleno && 'Relleno',
           extraExpress && 'Express',
           extraTopMaterial !== 'nada' && (extraTopMaterial === 'metacrilato' ? 'Metacrilato' : 'Cristal'),
-          extraTapetes && 'Tapetes',
+          extraTapetes && productType === 'cabecero' && 'Tapetes',
         ].filter(Boolean);
         return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
       }
