@@ -667,7 +667,8 @@ const ProductConfigurator = () => {
     }
   };
 
-  const showExtrasStep = true;
+  // Solo mostramos el paso "Extras" si el producto tiene opciones extra reales.
+  const showExtrasStep = !productType || ['cabecero', 'banco', 'mesa'].includes(productType);
   const visibleSteps = showExtrasStep ? STEPS : STEPS.filter(s => s !== 'extras');
   const visibleStepIndex = visibleSteps.indexOf(currentStep as Step);
 
@@ -1632,6 +1633,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         )}
       </div>
 
+      {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
       <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
         <button
           type="button"
@@ -1711,6 +1713,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           </div>
         )}
       </div>
+      )}
     </>
   );
 };
