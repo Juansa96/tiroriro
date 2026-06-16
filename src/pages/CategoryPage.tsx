@@ -71,7 +71,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Calobra",
         photos: [
           "/productos-fotos/cabeceros/calobra-01.webp",
-          "/productos-fotos/cabeceros/calobra-03.webp",
+          "/productos-fotos/cabeceros/calobra-02.webp",
         ],
         desc: "Forma recta y líneas limpias. El más versátil: encaja en cualquier estilo.",
         priceLabel: "",
@@ -197,6 +197,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
         name: "Patos",
         photos: [
           "/productos-fotos/puff/puff-nuevo.webp",
+          "/productos-fotos/puff/patos-02.webp",
+          "/productos-fotos/puff/patos-03.webp",
+          "/productos-fotos/puff/patos-04.webp",
         ],
         desc: "Cúbico, tapizado a mano y a tu medida. Úsalo de asiento, reposapiés o mesa improvisada.",
         priceLabel: "",
