@@ -964,6 +964,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     bedWidth, setBedWidth, bedHeight, setBedHeight,
     benchLength, setBenchLength, benchDepth, setBenchDepth, benchHeight, setBenchHeight,
     puffDiameter, setPuffDiameter,
+    puffHeight, setPuffHeight,
     puffQuantity, setPuffQuantity,
     cushionShape, setCushionShape,
     cushionSize, setCushionSize,
