@@ -667,7 +667,8 @@ const ProductConfigurator = () => {
     }
   };
 
-  const showExtrasStep = true;
+  // Solo mostramos el paso "Extras" si el producto tiene opciones extra reales.
+  const showExtrasStep = !productType || ['cabecero', 'banco', 'mesa'].includes(productType);
   const visibleSteps = showExtrasStep ? STEPS : STEPS.filter(s => s !== 'extras');
   const visibleStepIndex = visibleSteps.indexOf(currentStep as Step);
 
