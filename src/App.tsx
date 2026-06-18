@@ -7,19 +7,20 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import FloatingButtons from "@/components/FloatingButtons";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollToTop from "@/components/ScrollToTop";
-import Index from "./pages/Index";
-import ProductsPage from "./pages/ProductsPage";
-import CategoryPage from "./pages/CategoryPage";
-import ConfiguratorPage from "./pages/ConfiguratorPage";
-import TryOnPage from "./pages/TryOnPage";
-import TeamPage from "./pages/TeamPage";
-import TelasPage from "./pages/TelasPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import LegalPage from "./pages/LegalPage";
-import CookiesPage from "./pages/CookiesPage";
-import GraciasPage from "./pages/GraciasPage";
-import UnsubscribePage from "./pages/UnsubscribePage";
-import NotFound from "./pages/NotFound";
+import { lazy, Suspense } from "react";
+import Index from "./pages/Index"; // home se mantiene eager (LCP)
+const ProductsPage = lazy(() => import("./pages/ProductsPage"));
+const CategoryPage = lazy(() => import("./pages/CategoryPage"));
+const ConfiguratorPage = lazy(() => import("./pages/ConfiguratorPage"));
+const TryOnPage = lazy(() => import("./pages/TryOnPage"));
+const TeamPage = lazy(() => import("./pages/TeamPage"));
+const TelasPage = lazy(() => import("./pages/TelasPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const LegalPage = lazy(() => import("./pages/LegalPage"));
+const CookiesPage = lazy(() => import("./pages/CookiesPage"));
+const GraciasPage = lazy(() => import("./pages/GraciasPage"));
+const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 const categoryRoutes = [
@@ -40,6 +41,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/productos" element={<ProductsPage />} />
@@ -64,6 +66,7 @@ const App = () => (
           <Route path="/cookies" element={<CookiesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
         <FloatingButtons />
         <CookieBanner />
       </BrowserRouter>

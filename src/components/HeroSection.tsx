@@ -87,6 +87,19 @@ const HeroSection = () => {
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
+    // Pausa el vídeo cuando sale del viewport (ahorra CPU/batería)
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) attemptPlay();
+          else video.pause();
+        },
+        { threshold: 0.05 }
+      );
+      observer.observe(video);
+    }
+
     // On mobile: allow user touch to trigger play (low power mode fallback)
     const handleTouch = () => {
       if (video.paused) attemptPlay();
@@ -97,6 +110,7 @@ const HeroSection = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("touchstart", handleTouch);
       video.removeEventListener("timeupdate", handleTimeUpdate);
+      observer?.disconnect();
     };
   }, []);
 
@@ -122,9 +136,6 @@ const HeroSection = () => {
           preload="metadata"
           poster="/hero-poster.webp"
           className="w-full h-full object-cover object-center"
-          onPause={() => {
-            videoRef.current?.play().catch(() => {});
-          }}
         >
           <source src="/Herovideo.webm" type="video/webm" />
           <source src="/Herovideo.mp4" type="video/mp4" />
