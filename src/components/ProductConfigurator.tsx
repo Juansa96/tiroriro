@@ -221,6 +221,10 @@ function parseCm(selectVal: string): number | undefined {
 }
 
 function parseLampSize(sz: string): { widthCm: number; heightCm: number } {
+  // Cilindros: "Ø15×20cm" → diámetro 15, alto 20
+  const cyl = sz.match(/Ø(\d+)[×x](\d+)/);
+  if (cyl) return { widthCm: parseInt(cyl[1]), heightCm: parseInt(cyl[2]) };
+  // "Ø40cm" (sin alto) → cubo de Ø
   const diameter = sz.match(/Ø(\d+)/);
   if (diameter) { const d = parseInt(diameter[1]); return { widthCm: d, heightCm: d }; }
   const dims = sz.match(/(\d+)[×x](\d+)/);
@@ -416,8 +420,8 @@ const ProductConfigurator = () => {
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
     : productType === 'banco' ? parseCm(benchLength)
-    : productType === 'mesa' ? parseCm(benchLength)
-    : productType === 'puf' ? (parseCm(puffDiameter) ?? 60)
+    : productType === 'mesa' ? (benchLength === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : parseCm(benchLength))
+    : productType === 'puf' ? (puffDiameter === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : (parseCm(puffDiameter) ?? 60))
     : productType === 'cojin' ? cushionDetails?.widthCm
     : productType === 'pantalla' ? (lampSizeParsed?.widthCm ?? 30)
     : undefined;
@@ -425,13 +429,16 @@ const ProductConfigurator = () => {
   // For puf cuadrado (Patos): height = width to make it perfectly cubic
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
     : productType === 'banco' ? parseCm(benchHeight)
-    : productType === 'mesa' ? parseCm(benchHeight)
+    : productType === 'mesa' ? (benchLength === 'custom' ? (customHeight ? parseInt(customHeight) : undefined) : parseCm(benchHeight))
     : productType === 'puf' ? widthCm
     : productType === 'cojin' ? cushionDetails?.heightCm
     : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
     : undefined;
 
-  const depthCm = productType === 'mesa' ? parseCm(benchDepth) : undefined;
+  const depthCm = productType === 'mesa'
+    ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
+    : productType === 'banco' ? parseCm(benchDepth)
+    : undefined;
 
   // For cojin, derive svgForma directly from cushionShape (immediate, no wait for size)
   const cushionShapeToForma: Record<string, string> = {
