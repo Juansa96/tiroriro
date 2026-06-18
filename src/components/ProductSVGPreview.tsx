@@ -201,7 +201,7 @@ const HeadboardSVG = ({
   const lateralPatternId = useId();
   const clipId = useId();
   const scaleX = scaleRange(widthCm, 90, 200, 0.72, 1.02);
-  const heightScale = scaleRange(heightCm, 60, 130, 0.72, 1.12);
+  const heightScale = scaleRange(heightCm, 60, 200, 0.72, 1.25);
   const bottomY = 188;
   const dx = 8;
   const dy = -5;
@@ -303,9 +303,9 @@ const BenchSVG = ({
   const patternId = useId();
   const woodPatternId = useId();
   const clipId = useId();
-  const scaleX = scaleRange(widthCm, 40, 120, 0.72, 1.16);
+  const scaleX = scaleRange(widthCm, 40, 140, 0.72, 1.20);
   const scaleY = scaleRange(heightCm, 30, 50, 0.8, 1.14);
-  const depthX = scaleRange(depthCm, 30, 70, 14, 28);
+  const depthX = scaleRange(depthCm, 30, 45, 14, 24);
   const depthY = -depthX * 0.75;
 
   const seatX = 52;
@@ -602,8 +602,9 @@ const CushionSVG = ({
   const clipId = useId();
 
   if (kind === "cilindro") {
+    // Gulpiyuri: ancho 30–100, radio 13–50
     const length = scaleRange(widthCm, 30, 100, 140, 240);
-    const radius = scaleRange(heightCm, 15, 50, 22, 40);
+    const radius = scaleRange(heightCm, 13, 50, 18, 40);
     const x = (300 - length) / 2;
     const y = 72;
     return (
@@ -756,8 +757,8 @@ const MesaSVG = ({
   const patternId = useId();
   const clipId = useId();
   const baseW = scaleRange(widthCm, 50, 120, 150, 230);
-  const baseH = scaleRange(heightCm, 30, 50, 44, 82);
-  const depthX = scaleRange(depthCm, 30, 70, 16, 28);
+  const baseH = scaleRange(heightCm, 30, 60, 44, 82);
+  const depthX = scaleRange(depthCm, 30, 80, 16, 30);
   const depthY = -depthX * 0.72;
   const x = (300 - baseW) / 2;
   const y = 62;
@@ -895,10 +896,17 @@ const LampshadeSVG = ({
   const sideColor = darken(color, 18);
 
   // Scale shape based on selected size dimensions
-  const refW = shape === "rectangulo" || shape === "ovalado" ? 50 : 30;
-  const refH = shape === "rectangulo" || shape === "ovalado" ? 25 : 30;
-  const scaleW = scaleRange(widthCm ?? refW, refW * 0.55, refW * 1.45, 0.76, 1.24);
-  const scaleH = scaleRange(heightCm ?? refH, refH * 0.55, refH * 1.45, 0.78, 1.22);
+  // Rangos reales de pantalla por forma:
+  // - cilindro: Ø 15–40, alto 20–40
+  // - cuadrado/rectangulo: 20–40
+  const refW = shape === "cilindro" ? 25 : 20;
+  const refH = shape === "cilindro" ? 30 : 30;
+  const minW = shape === "cilindro" ? 15 : 20;
+  const maxW = shape === "cilindro" ? 40 : 40;
+  const minH = shape === "cilindro" ? 20 : 20;
+  const maxH = shape === "cilindro" ? 40 : 50;
+  const scaleW = scaleRange(widthCm ?? refW, minW, maxW, 0.76, 1.24);
+  const scaleH = scaleRange(heightCm ?? refH, minH, maxH, 0.78, 1.22);
 
   return (
     <svg viewBox="0 0 300 230" className="w-full max-w-[280px] mx-auto">

@@ -221,6 +221,10 @@ function parseCm(selectVal: string): number | undefined {
 }
 
 function parseLampSize(sz: string): { widthCm: number; heightCm: number } {
+  // Cilindros: "Ø15×20cm" → diámetro 15, alto 20
+  const cyl = sz.match(/Ø(\d+)[×x](\d+)/);
+  if (cyl) return { widthCm: parseInt(cyl[1]), heightCm: parseInt(cyl[2]) };
+  // "Ø40cm" (sin alto) → cubo de Ø
   const diameter = sz.match(/Ø(\d+)/);
   if (diameter) { const d = parseInt(diameter[1]); return { widthCm: d, heightCm: d }; }
   const dims = sz.match(/(\d+)[×x](\d+)/);
@@ -416,8 +420,8 @@ const ProductConfigurator = () => {
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
     : productType === 'banco' ? parseCm(benchLength)
-    : productType === 'mesa' ? parseCm(benchLength)
-    : productType === 'puf' ? (parseCm(puffDiameter) ?? 60)
+    : productType === 'mesa' ? (benchLength === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : parseCm(benchLength))
+    : productType === 'puf' ? (puffDiameter === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : (parseCm(puffDiameter) ?? 60))
     : productType === 'cojin' ? cushionDetails?.widthCm
     : productType === 'pantalla' ? (lampSizeParsed?.widthCm ?? 30)
     : undefined;
@@ -425,13 +429,16 @@ const ProductConfigurator = () => {
   // For puf cuadrado (Patos): height = width to make it perfectly cubic
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
     : productType === 'banco' ? parseCm(benchHeight)
-    : productType === 'mesa' ? parseCm(benchHeight)
+    : productType === 'mesa' ? (benchLength === 'custom' ? (customHeight ? parseInt(customHeight) : undefined) : parseCm(benchHeight))
     : productType === 'puf' ? widthCm
     : productType === 'cojin' ? cushionDetails?.heightCm
     : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
     : undefined;
 
-  const depthCm = productType === 'mesa' ? parseCm(benchDepth) : undefined;
+  const depthCm = productType === 'mesa'
+    ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
+    : productType === 'banco' ? parseCm(benchDepth)
+    : undefined;
 
   // For cojin, derive svgForma directly from cushionShape (immediate, no wait for size)
   const cushionShapeToForma: Record<string, string> = {
@@ -565,7 +572,8 @@ const ProductConfigurator = () => {
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
     (productType === 'puf' && puffDiameter === 'custom' && customWidth) ||
-    (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight))
+    (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight)) ||
+    (productType === 'mesa' && benchLength === 'custom' && (customWidth || customHeight || benchDepth))
   );
   const customNote = "El precio se ajustará según la medida elegida. Te confirmamos el importe final al recibir tu solicitud.";
 
@@ -647,7 +655,7 @@ const ProductConfigurator = () => {
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
         if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
-        if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter} / {lampHeight}</span>;
+        if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'fabric':
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
@@ -766,7 +774,7 @@ const ProductConfigurator = () => {
           {/* SVG + fabric swatches side-by-side on mobile */}
           <div className="flex w-full gap-3 items-center justify-center min-h-[110px]">
             <div className="flex-1 flex items-center justify-center">
-              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
             </div>
             {fabricId && (
               <div className="w-16 flex-shrink-0 border-l border-border/30 pl-2">
@@ -794,7 +802,7 @@ const ProductConfigurator = () => {
             <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
               <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
               <div className="flex-1 flex items-center justify-center w-full">
-                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
               </div>
               {!productType && (
                 <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
