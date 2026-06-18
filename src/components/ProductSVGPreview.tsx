@@ -451,7 +451,9 @@ const PuffSVG = ({
   if (isCircular) {
     const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = scaleRange(heightCm, 30, 60, 60, 110);
+    // Puf redondo cilíndrico: diámetro = altura siempre. La altura visual del
+    // cuerpo es el diámetro (2 * topRx), independientemente de heightCm.
+    const bodyH = topRx * 2;
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
