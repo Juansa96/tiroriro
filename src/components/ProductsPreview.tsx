@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 const PRODUCTS_DATA = [
   {
@@ -71,6 +72,9 @@ const FABRIC_STRIP = [
 const ProductsPreview = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const autoplayRef = useRef(
+    Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: false, stopOnFocusIn: false })
+  );
 
   useEffect(() => {
     if (!api) return;
@@ -78,9 +82,7 @@ const ProductsPreview = () => {
     onSelect();
     api.on("select", onSelect);
     api.on("reInit", onSelect);
-    const autoplay = window.setInterval(() => api.scrollNext(), 3500);
     return () => {
-      window.clearInterval(autoplay);
       api.off("select", onSelect);
       api.off("reInit", onSelect);
     };
@@ -100,6 +102,7 @@ const ProductsPreview = () => {
             <Carousel
               setApi={setApi}
               opts={{ align: "center", loop: true, skipSnaps: false }}
+              plugins={[autoplayRef.current]}
               className="px-10 md:px-12"
             >
               <CarouselContent className="-ml-3 md:-ml-6">
