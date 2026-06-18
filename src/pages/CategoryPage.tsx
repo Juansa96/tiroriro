@@ -530,7 +530,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
   return (
     <>
       {seo && (
-        <SEO title={seo.title} description={seo.description} canonical={seo.canonical} />
+        <SEO title={seo.title} description={seo.description} canonical={seo.canonical} ogImage={seo.ogImage} />
       )}
       {(productJsonLd || breadcrumbJsonLd) && (
         <Helmet>
