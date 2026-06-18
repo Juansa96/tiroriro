@@ -426,7 +426,7 @@ const ProductConfigurator = () => {
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
     : productType === 'banco' ? parseCm(benchHeight)
     : productType === 'mesa' ? parseCm(benchHeight)
-    : productType === 'puf' ? (shape === 'cuadrado' ? widthCm : parseCm(puffHeight))
+    : productType === 'puf' ? widthCm
     : productType === 'cojin' ? cushionDetails?.heightCm
     : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
     : undefined;
@@ -490,8 +490,9 @@ const ProductConfigurator = () => {
       o.pufShape    = shape === 'circular' ? 'circular' : 'cuadrado';
       o.pufShapeLabel = shape === 'circular' ? 'Monteferro · Redondo' : 'Patos · Cúbico';
       if (shape === 'circular') {
-        o.pufDiameter = puffDiameter === 'custom' ? `${customWidth} cm` : puffDiameter;
-        o.pufHeight   = puffHeight === 'custom' ? `${customHeight} cm` : puffHeight;
+        const dim = puffDiameter === 'custom' ? `${customWidth} cm` : puffDiameter;
+        o.pufDiameter = dim;
+        o.pufHeight   = dim;
       }
     }
 
@@ -543,7 +544,7 @@ const ProductConfigurator = () => {
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
       : productType === 'banco' ? !!benchLength
       : productType === 'mesa' ? !!benchLength
-      : productType === 'puf' ? (shape === 'circular' ? !!puffDiameter && !!puffHeight : !!puffDiameter)
+      : productType === 'puf' ? !!puffDiameter
       : productType === 'cojin' ? !!cushionShape && !!cushionSize
       : productType === 'pantalla' ? !!lampDiameter
       : false,
@@ -564,7 +565,6 @@ const ProductConfigurator = () => {
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
     (productType === 'puf' && puffDiameter === 'custom' && customWidth) ||
-    (productType === 'puf' && shape === 'circular' && puffHeight === 'custom' && customHeight) ||
     (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight))
   );
   const customNote = "El precio se ajustará según la medida elegida. Te confirmamos el importe final al recibir tu solicitud.";
@@ -581,7 +581,6 @@ const ProductConfigurator = () => {
   if (productType === 'banco') chips.push(benchLength || "—");
   if (productType === 'puf') {
     chips.push(puffDiameter || "—");
-    if (shape === 'circular') chips.push(puffHeight || "—");
   }
   if (productType === 'cojin') chips.push(cushionSize || "—");
   if (productType === 'pantalla') chips.push(lampDiameter || "—");
@@ -646,7 +645,7 @@ const ProductConfigurator = () => {
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
-        if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}{shape === 'circular' && puffHeight ? ` × ${puffHeight}` : ''}</span>;
+        if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
         if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter} / {lampHeight}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
@@ -1226,32 +1225,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 )}
               </div>
               {shape === 'circular' && (
-                <div>
-                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Altura</p>
-                  <div className="flex flex-wrap gap-2">
-                    {['40 cm', '45 cm', '50 cm'].map(sz => (
-                      <button
-                        key={sz}
-                        onClick={() => setPuffHeight(sz)}
-                        className={`border rounded-md px-4 py-2 text-xs transition-all ${puffHeight === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
-                      >
-                        {sz}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => setPuffHeight('custom')}
-                      className={`border rounded-md px-4 py-2 text-xs transition-all ${puffHeight === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
-                    >
-                      Otra medida
-                    </button>
-                  </div>
-                  {puffHeight === 'custom' && (
-                    <div className="mt-3 flex items-center gap-2">
-                      <input type="number" min={25} max={80} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                      <span className="text-xs text-muted-foreground">cm</span>
-                    </div>
-                  )}
-                </div>
+                <p className="text-[11px] text-muted-foreground font-light italic">El puf redondo Monteferro es cilíndrico: la altura es igual al diámetro.</p>
               )}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
