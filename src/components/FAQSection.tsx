@@ -25,6 +25,34 @@ const FAQS = [
     a: "Para el día a día basta con aspirar la superficie cada 2-3 semanas con la boquilla suave. Si hay una mancha puntual, retírala con un paño húmedo y jabón neutro, frotando desde fuera hacia dentro. Para una limpieza profunda recomendamos llamar a una tapicería local: la mayoría de nuestras telas no se pueden lavar a máquina porque el cabecero lleva relleno interior.",
   },
   {
+    q: "¿De qué materiales está hecho un cabecero Tiroriro por dentro?",
+    a: "La estructura interior es de tablero aglomerado con refuerzo añadido en los laterales para que el cabecero aguante perfectamente con el paso del tiempo y no se deforme. Sobre esa estructura colocamos una capa de gomaespuma de alta densidad (la buena, la que no se hunde con los años), encima una capa de guata de unos 3 cm para conseguir ese tacto mullido y volumen uniforme, y por último la tela que hayas elegido tapizada a mano. Esta combinación es la que da la sensación firme pero acogedora característica de nuestros cabeceros.",
+  },
+  {
+    q: "¿Cuánto cuesta el envío y a qué zonas llegáis?",
+    a: "Dentro de la Comunidad de Madrid el envío cuesta 40 € (se cobra aparte del precio del producto). Fuera de Madrid enviamos a toda la península ibérica y el coste se calcula según destino — te lo confirmamos por teléfono antes de cerrar el pedido. Para Baleares y Canarias también lo valoramos puntualmente. Procuramos que los transportistas vayan en pareja cuando el cabecero es grande, lo entregan en casa y se cuidan al máximo de que la pieza no sufra durante el trayecto.",
+  },
+  {
+    q: "¿Cómo es vuestro proceso artesanal paso a paso?",
+    a: "Primero pasa por carpintería: en el caso del cabecero se monta la forma según el diseño que hemos definido contigo previamente (si tú tienes una forma creativa también puedes enviárnosla y la fabricamos). Se ajustan medidas, grosor y refuerzos. Después pasa a tapizado, que va siempre en este orden: primero la gomaespuma de alta densidad, encima la guata de 3 cm y por último la tela cosida y ajustada a mano. Antes de salir del taller hacemos un control de calidad pieza a pieza y solo entonces se prepara el envío.",
+  },
+  {
+    q: "¿Puedo enviaros mi propia tela para que la tapicéis?",
+    a: "Sí, lo hacemos a menudo. El metraje exacto depende del producto y, sobre todo, del tipo de tela: hay telas de doble cara, otras que no, y algunas con rayas o estampados que tienen que casar en los bordes y eso obliga a pedir un poco más de metros. Lo más sencillo es que nos llames o nos escribas, vemos juntos la pieza y la tela y te decimos el metraje exacto antes de que la compres.",
+  },
+  {
+    q: "¿Puedo pedir un cabecero o puf en dos telas (bicolor)?",
+    a: "Sí, como quieras. Podemos combinar dos telas en el mismo cabecero, puf o cojín — por ejemplo cuerpo en una tela y ribetes o piping en otra, o mitades de distinto color. Cuéntanos la idea por teléfono y te orientamos sobre qué combinaciones quedan mejor con las telas disponibles.",
+  },
+  {
+    q: "¿Tenéis showroom para ver las piezas antes de comprar?",
+    a: "Todavía no, pero estamos trabajando en abrir un espacio físico muy pronto. Mientras tanto, podemos enviarte fotos reales adicionales de cualquier modelo y resolverte todas las dudas por WhatsApp o por teléfono antes de confirmar el pedido.",
+  },
+  {
+    q: "¿Hacéis descuentos para hoteles, restaurantes o pedidos de empresa?",
+    a: "Sí. Cuando se trata de un proyecto de empresa con volumen (hoteles, hostelería, interiorismo, promociones), aplicamos un descuento especial. Escríbenos contándonos el proyecto y te preparamos un presupuesto a medida.",
+  },
+  {
     q: "¿Dónde se fabrican los productos de Tiroriro?",
     a: "Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 20 días: nada está prefabricado.",
   },
