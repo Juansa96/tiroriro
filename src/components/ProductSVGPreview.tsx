@@ -451,29 +451,50 @@ const PuffSVG = ({
   if (isCircular) {
     const topRx = scaleRange(widthCm, 40, 100, 52, 84);
     const topRy = clamp(topRx * 0.28, 18, 28);
-    const bodyH = 84;
+    const bodyH = scaleRange(heightCm, 30, 60, 60, 110);
     const topCx = 150;
     const topCy = 72;
     const bodyTop = topCy;
     const bodyBottom = topCy + bodyH;
+    const bodyPath = `M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`;
+    const renderRound = (centerX: number, s: number, suffix: string) => {
+      const tx = centerX - topCx * s;
+      const ty = bodyBottom - bodyBottom * s;
+      return (
+        <g key={suffix} transform={`translate(${tx} ${ty}) scale(${s})`}>
+          <ellipse cx={topCx} cy={bodyBottom + 16} rx={topRx * 0.82} ry={8} fill="rgba(0,0,0,0.08)" />
+          <path d={bodyPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+          <ellipse cx={topCx} cy={bodyTop} rx={topRx} ry={topRy} fill={patternFill(patternId, color)} />
+          <ellipse cx={topCx} cy={bodyTop} rx={topRx} ry={topRy} fill="rgba(255,255,255,0.14)" />
+          <ellipse cx={topCx + 18} cy={bodyTop + bodyH * 0.5} rx={topRx * 0.18} ry={bodyH * 0.36} fill="rgba(255,255,255,0.12)" />
+          <ellipse cx={topCx} cy={bodyBottom} rx={topRx} ry={topRy} fill={darken(color, 12)} opacity="0.18" />
+          {finish === "vivo-simple" && (
+            <g clipPath={`url(#pf-${clipId}-${suffix})`}>
+              <path d={bodyPath} fill="none" stroke={vivoColor} strokeWidth="3" />
+            </g>
+          )}
+        </g>
+      );
+    };
+    const s2 = 0.58;
+    const halfW = topRx * s2;
+    const gapR = 14;
+    const leftCxR  = 150 - halfW - gapR / 2;
+    const rightCxR = 150 + halfW + gapR / 2;
     return (
       <svg viewBox="0 0 300 230" className="w-full max-w-[260px] mx-auto">
         <defs>
           <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
-          <clipPath id={`pf-${clipId}`}>
-            <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} />
-          </clipPath>
+          <clipPath id={`pf-${clipId}-a`}><path d={bodyPath} /></clipPath>
+          <clipPath id={`pf-${clipId}-b`}><path d={bodyPath} /></clipPath>
         </defs>
-        <ellipse cx={150} cy={bodyBottom + 16} rx={topRx * 0.82} ry={8} fill="rgba(0,0,0,0.08)" />
-        <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
-        <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill={patternFill(patternId, color)} />
-        <ellipse cx={150} cy={bodyTop} rx={topRx} ry={topRy} fill="rgba(255,255,255,0.14)" />
-        <ellipse cx={168} cy={bodyTop + bodyH * 0.5} rx={topRx * 0.18} ry={bodyH * 0.36} fill="rgba(255,255,255,0.12)" />
-        <ellipse cx={150} cy={bodyBottom} rx={topRx} ry={topRy} fill={darken(color, 12)} opacity="0.18" />
-        {finish === "vivo-simple" && (
-          <g clipPath={`url(#pf-${clipId})`}>
-            <path d={`M ${topCx - topRx} ${bodyTop} A ${topRx} ${topRy} 0 0 1 ${topCx + topRx} ${bodyTop} L ${topCx + topRx} ${bodyBottom} A ${topRx} ${topRy} 0 0 1 ${topCx - topRx} ${bodyBottom} Z`} fill="none" stroke={vivoColor} strokeWidth="3" />
-          </g>
+        {quantity >= 2 ? (
+          <>
+            {renderRound(leftCxR, s2, "a")}
+            {renderRound(rightCxR, s2, "b")}
+          </>
+        ) : (
+          renderRound(150, 1, "a")
         )}
       </svg>
     );
