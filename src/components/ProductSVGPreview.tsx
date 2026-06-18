@@ -602,8 +602,9 @@ const CushionSVG = ({
   const clipId = useId();
 
   if (kind === "cilindro") {
+    // Gulpiyuri: ancho 30–100, radio 13–50
     const length = scaleRange(widthCm, 30, 100, 140, 240);
-    const radius = scaleRange(heightCm, 15, 50, 22, 40);
+    const radius = scaleRange(heightCm, 13, 50, 18, 40);
     const x = (300 - length) / 2;
     const y = 72;
     return (
@@ -895,10 +896,17 @@ const LampshadeSVG = ({
   const sideColor = darken(color, 18);
 
   // Scale shape based on selected size dimensions
-  const refW = shape === "rectangulo" || shape === "ovalado" ? 50 : 30;
-  const refH = shape === "rectangulo" || shape === "ovalado" ? 25 : 30;
-  const scaleW = scaleRange(widthCm ?? refW, refW * 0.55, refW * 1.45, 0.76, 1.24);
-  const scaleH = scaleRange(heightCm ?? refH, refH * 0.55, refH * 1.45, 0.78, 1.22);
+  // Rangos reales de pantalla por forma:
+  // - cilindro: Ø 15–40, alto 20–40
+  // - cuadrado/rectangulo: 20–40
+  const refW = shape === "cilindro" ? 25 : 20;
+  const refH = shape === "cilindro" ? 30 : 30;
+  const minW = shape === "cilindro" ? 15 : 20;
+  const maxW = shape === "cilindro" ? 40 : 40;
+  const minH = shape === "cilindro" ? 20 : 20;
+  const maxH = shape === "cilindro" ? 40 : 50;
+  const scaleW = scaleRange(widthCm ?? refW, minW, maxW, 0.76, 1.24);
+  const scaleH = scaleRange(heightCm ?? refH, minH, maxH, 0.78, 1.22);
 
   return (
     <svg viewBox="0 0 300 230" className="w-full max-w-[280px] mx-auto">
