@@ -344,6 +344,14 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
   const [idx, setIdx] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
+  const buildSrcSet = (src: string) => {
+    // Asume variantes generadas: <stem>-480.webp y <stem>-800.webp en el mismo directorio
+    const m = src.match(/^(.*)\.(webp|jpe?g|png)$/i);
+    if (!m) return undefined;
+    const stem = m[1];
+    return `${stem}-480.webp 480w, ${stem}-800.webp 800w, ${src} 1600w`;
+  };
+
   if (photos.length === 0) {
     return (
       <div className="w-full aspect-[3/4] flex flex-col items-center justify-center gap-3" style={{ backgroundColor: '#F0EDE8' }}>
@@ -380,6 +388,8 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
         <img
           key={src}
           src={src}
+          srcSet={buildSrcSet(src)}
+          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 380px"
           alt={`${categoryAltLabel[category] || "Producto tapizado"} ${name}${photos.length > 1 ? ` — foto ${i + 1}` : ""} | Tiroriro`}
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
           style={{ opacity: i === idx ? 1 : 0, objectPosition: imagePosition(category) }}
