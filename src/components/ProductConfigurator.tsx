@@ -426,7 +426,7 @@ const ProductConfigurator = () => {
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
     : productType === 'banco' ? parseCm(benchHeight)
     : productType === 'mesa' ? parseCm(benchHeight)
-    : productType === 'puf' ? (shape === 'cuadrado' ? widthCm : parseCm(puffHeight))
+    : productType === 'puf' ? widthCm
     : productType === 'cojin' ? cushionDetails?.heightCm
     : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
     : undefined;
@@ -490,8 +490,9 @@ const ProductConfigurator = () => {
       o.pufShape    = shape === 'circular' ? 'circular' : 'cuadrado';
       o.pufShapeLabel = shape === 'circular' ? 'Monteferro · Redondo' : 'Patos · Cúbico';
       if (shape === 'circular') {
-        o.pufDiameter = puffDiameter === 'custom' ? `${customWidth} cm` : puffDiameter;
-        o.pufHeight   = puffHeight === 'custom' ? `${customHeight} cm` : puffHeight;
+        const dim = puffDiameter === 'custom' ? `${customWidth} cm` : puffDiameter;
+        o.pufDiameter = dim;
+        o.pufHeight   = dim;
       }
     }
 
@@ -543,7 +544,7 @@ const ProductConfigurator = () => {
     measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
       : productType === 'banco' ? !!benchLength
       : productType === 'mesa' ? !!benchLength
-      : productType === 'puf' ? (shape === 'circular' ? !!puffDiameter && !!puffHeight : !!puffDiameter)
+      : productType === 'puf' ? !!puffDiameter
       : productType === 'cojin' ? !!cushionShape && !!cushionSize
       : productType === 'pantalla' ? !!lampDiameter
       : false,
@@ -564,7 +565,6 @@ const ProductConfigurator = () => {
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
     (productType === 'puf' && puffDiameter === 'custom' && customWidth) ||
-    (productType === 'puf' && shape === 'circular' && puffHeight === 'custom' && customHeight) ||
     (productType === 'banco' && benchLength === 'custom' && (customWidth || customHeight))
   );
   const customNote = "El precio se ajustará según la medida elegida. Te confirmamos el importe final al recibir tu solicitud.";
@@ -581,7 +581,6 @@ const ProductConfigurator = () => {
   if (productType === 'banco') chips.push(benchLength || "—");
   if (productType === 'puf') {
     chips.push(puffDiameter || "—");
-    if (shape === 'circular') chips.push(puffHeight || "—");
   }
   if (productType === 'cojin') chips.push(cushionSize || "—");
   if (productType === 'pantalla') chips.push(lampDiameter || "—");
@@ -646,7 +645,7 @@ const ProductConfigurator = () => {
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
         if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
-        if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}{shape === 'circular' && puffHeight ? ` × ${puffHeight}` : ''}</span>;
+        if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
         if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter} / {lampHeight}</span>;
         return <span className="text-muted-foreground italic">Elige una opción</span>;
