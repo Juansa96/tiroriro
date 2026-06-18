@@ -1225,32 +1225,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 )}
               </div>
               {shape === 'circular' && (
-                <div>
-                  <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Altura</p>
-                  <div className="flex flex-wrap gap-2">
-                    {['40 cm', '45 cm', '50 cm'].map(sz => (
-                      <button
-                        key={sz}
-                        onClick={() => setPuffHeight(sz)}
-                        className={`border rounded-md px-4 py-2 text-xs transition-all ${puffHeight === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
-                      >
-                        {sz}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => setPuffHeight('custom')}
-                      className={`border rounded-md px-4 py-2 text-xs transition-all ${puffHeight === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
-                    >
-                      Otra medida
-                    </button>
-                  </div>
-                  {puffHeight === 'custom' && (
-                    <div className="mt-3 flex items-center gap-2">
-                      <input type="number" min={25} max={80} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                      <span className="text-xs text-muted-foreground">cm</span>
-                    </div>
-                  )}
-                </div>
+                <p className="text-[11px] text-muted-foreground font-light italic">El puf redondo Monteferro es cilíndrico: la altura es igual al diámetro.</p>
               )}
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
