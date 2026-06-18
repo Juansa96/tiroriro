@@ -109,6 +109,8 @@ const ProductsPreview = () => {
                       <div className="relative overflow-hidden rounded-xl">
                         <img
                           src={product.image}
+                          srcSet={buildSrcSet(product.image)}
+                          sizes="(max-width: 768px) 80vw, 33vw"
                           alt={product.alt}
                           className="w-full aspect-[3/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                           loading={idx === 0 ? "eager" : "lazy"}
