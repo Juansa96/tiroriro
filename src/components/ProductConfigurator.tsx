@@ -641,7 +641,16 @@ const ProductConfigurator = () => {
   const advanceTo = (next: Step) => {
     setOpenAccordion(next);
     setTimeout(() => {
-      document.getElementById('acc-' + next)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const el = document.getElementById('acc-' + next);
+      if (!el) return;
+      const isMobileView = window.innerWidth < 768;
+      let offset = 96;
+      if (isMobileView) {
+        const preview = document.getElementById('mobile-preview');
+        offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
+      }
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
     }, 60);
   };
 
