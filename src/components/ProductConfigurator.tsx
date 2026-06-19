@@ -1142,20 +1142,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
 
   return (
     <>
-      <div id="acc-type" className="border-b border-border">
-        <button
-          type="button"
-          onClick={() => openSection('type')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">1. {STEP_LABELS.type}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('type')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'type' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'type' && (
-          <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
+      <div id="acc-type" className="border-b border-border scroll-mt-32">
+        <SectionHeader step="type" num={1} isComplete={stepComplete.type} />
+        <div className="pb-6 px-1">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
               {productCard('puf', 'Pufs')}
@@ -1167,24 +1156,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
 
-      <div id="acc-measures" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('measures')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">2. {STEP_LABELS.measures}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('measures')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'measures' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'measures' && (
-          <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
+      <div id="acc-measures" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="measures" num={2} isComplete={stepComplete.measures} />
+        <div className="pb-6 space-y-6 px-1 pt-2">
           {productType === 'cabecero' && (
             <>
               <div>
