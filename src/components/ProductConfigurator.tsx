@@ -1638,24 +1638,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          </div>
-        )}
+        </div>
       </div>
 
-      <div id="acc-finish" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('finish')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">4. {STEP_LABELS.finish}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('finish')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'finish' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'finish' && (
-          <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
+      <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
+        <div className="pb-6 space-y-3 px-1 pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'vivo-simple';
