@@ -1532,24 +1532,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
-          </div>
-        )}
+        </div>
       </div>
 
-      <div id="acc-fabric" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('fabric')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">3. {STEP_LABELS.fabric}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('fabric')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'fabric' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'fabric' && (
-          <div className="pb-6 space-y-5 bg-muted/30 px-4 rounded-b-md pt-3">
+      <div id="acc-fabric" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="fabric" num={3} isComplete={stepComplete.fabric} />
+        <div className="pb-6 space-y-5 px-1 pt-3">
           {/* Filtros por estilo */}
           <div className="flex flex-wrap gap-2">
             {([
