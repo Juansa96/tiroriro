@@ -1695,25 +1695,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          </div>
-        )}
+        </div>
       </div>
 
       {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
-      <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('extras')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">5. {STEP_LABELS.extras}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('extras')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'extras' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'extras' && (
-          <div className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
+      <div id="acc-extras" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="extras" num={5} isComplete={stepComplete.extras} />
+        <div className="pb-6 space-y-4 px-1 pt-2">
           {productType === 'cabecero' && (
             <div className="flex justify-between items-center py-2">
               <div>
@@ -1776,8 +1764,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-sm text-muted-foreground font-light italic">Elige un producto para ver los extras disponibles.</p>
           )}
-          </div>
-        )}
+        </div>
       </div>
       )}
     </>
