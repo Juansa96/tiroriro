@@ -718,20 +718,29 @@ const ProductConfigurator = () => {
     <div className={className}>
       <div className="flex gap-1">
         {visibleSteps.map((s) => (
-          <div key={s} className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
+          <button
+            key={s}
+            type="button"
+            onClick={() => advanceTo(s)}
+            aria-label={`Ir al paso ${STEP_LABELS[s]}`}
+            className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted cursor-pointer group relative"
+          >
             <div
-              className="h-full rounded-full transition-all duration-300"
+              className="h-full rounded-full transition-all duration-300 group-hover:opacity-80"
               style={{
-                width: stepComplete[s] ? '100%' : '0%',
+                width: stepComplete[s] ? '100%' : (currentStep === s ? '35%' : '0%'),
                 backgroundColor: 'hsl(var(--accent-warm))',
               }}
             />
-          </div>
+          </button>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground font-light mt-2">
-        Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · {STEP_LABELS[currentStep as Step] || STEP_LABELS.type}
-      </p>
+      <div className="flex justify-between items-center mt-2 gap-2">
+        <p className="text-xs text-muted-foreground font-light">
+          Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span>
+        </p>
+        <p className="text-[10px] text-muted-foreground/70 font-light hidden sm:block">Pulsa para navegar</p>
+      </div>
     </div>
   );
 
