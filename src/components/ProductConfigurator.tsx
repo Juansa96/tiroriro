@@ -598,6 +598,42 @@ const ProductConfigurator = () => {
   const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
   const activeStepIndex = STEPS.indexOf(currentStep as Step);
 
+  // Auto-advance on step completion (scroll guiado)
+  const prevCompleteRef = useRef<Record<Step, boolean>>({ type: false, measures: false, fabric: false, finish: false, extras: false });
+  useEffect(() => {
+    const order: Step[] = ['type', 'measures', 'fabric', 'finish', 'extras'];
+    for (const s of order) {
+      const wasComplete = prevCompleteRef.current[s];
+      const isComplete = stepComplete[s];
+      if (!wasComplete && isComplete && s === openAccordion) {
+        const idx = order.indexOf(s);
+        const next = order.slice(idx + 1).find(n => (n !== 'extras' || ['cabecero','banco','mesa'].includes(productType || '')));
+        if (next) {
+          setTimeout(() => advanceTo(next), 400);
+        }
+        break;
+      }
+    }
+    prevCompleteRef.current = { ...stepComplete };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepComplete.type, stepComplete.measures, stepComplete.fabric, stepComplete.finish]);
+
+  // Scroll-spy: sync stepper with the section currently in view
+  useEffect(() => {
+    const ids = ['acc-type','acc-measures','acc-fabric','acc-finish','acc-extras'];
+    const elements = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    if (elements.length === 0) return;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) {
+        const step = visible[0].target.id.replace('acc-', '') as Step;
+        setOpenAccordion(step);
+      }
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.1, 0.5] });
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, [productType]);
+
   // El precio es "en progreso" cuando no hay precio calculado aún (medidas no elegidas)
   const priceIsKnown = price > 0;
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
@@ -641,7 +677,16 @@ const ProductConfigurator = () => {
   const advanceTo = (next: Step) => {
     setOpenAccordion(next);
     setTimeout(() => {
-      document.getElementById('acc-' + next)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const el = document.getElementById('acc-' + next);
+      if (!el) return;
+      const isMobileView = window.innerWidth < 768;
+      let offset = 96;
+      if (isMobileView) {
+        const preview = document.getElementById('mobile-preview');
+        offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
+      }
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
     }, 60);
   };
 
@@ -718,20 +763,29 @@ const ProductConfigurator = () => {
     <div className={className}>
       <div className="flex gap-1">
         {visibleSteps.map((s) => (
-          <div key={s} className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
+          <button
+            key={s}
+            type="button"
+            onClick={() => advanceTo(s)}
+            aria-label={`Ir al paso ${STEP_LABELS[s]}`}
+            className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted cursor-pointer group relative"
+          >
             <div
-              className="h-full rounded-full transition-all duration-300"
+              className="h-full rounded-full transition-all duration-300 group-hover:opacity-80"
               style={{
-                width: stepComplete[s] ? '100%' : '0%',
+                width: stepComplete[s] ? '100%' : (currentStep === s ? '35%' : '0%'),
                 backgroundColor: 'hsl(var(--accent-warm))',
               }}
             />
-          </div>
+          </button>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground font-light mt-2">
-        Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · {STEP_LABELS[currentStep as Step] || STEP_LABELS.type}
-      </p>
+      <div className="flex justify-between items-center mt-2 gap-2">
+        <p className="text-xs text-muted-foreground font-light">
+          Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span>
+        </p>
+        <p className="text-[10px] text-muted-foreground/70 font-light hidden sm:block">Pulsa para navegar</p>
+      </div>
     </div>
   );
 
@@ -771,6 +825,7 @@ const ProductConfigurator = () => {
     openAccordion: accordionValue,
     setOpenAccordion: handleAccordionChange,
     selectionLabel,
+    stepComplete,
     productType, productCard,
     fabricFilter, setFabricFilter,
     shape, setShape,
@@ -910,7 +965,9 @@ const ProductConfigurator = () => {
           <div className="mb-6">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
           </div>
-          <ProgressBar className="mb-6" />
+          <div className="sticky top-20 z-20 bg-background/95 backdrop-blur-sm pb-3 pt-1 -mx-2 px-2 mb-4">
+            <ProgressBar />
+          </div>
           <ConfigAccordionsSingle
             openAccordion={accordionValue}
             setOpenAccordion={handleAccordionChange}
@@ -1004,6 +1061,7 @@ interface AccordionContentSharedProps {
   extraTapetes: boolean; setExtraTapetes: (v: boolean) => void;
   advanceTo: (step: Step) => void;
   needsVivo: boolean;
+  stepComplete: Record<Step, boolean>;
 }
 
 const AccordionItems = (props: AccordionContentSharedProps) => {
@@ -1011,6 +1069,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     openAccordion,
     setOpenAccordion,
     selectionLabel,
+    stepComplete,
     productType, productCard,
     fabricFilter, setFabricFilter,
     shape, setShape,
@@ -1036,42 +1095,58 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
   const productSelected = !!productType;
   const disabledClass = productSelected ? '' : 'opacity-40 pointer-events-none';
 
+  // Scroll to section (no toggle — sections are always open)
   const openSection = (section: string) => {
-    const isOpening = openAccordion !== section;
-    setOpenAccordion(isOpening ? section : '');
-    if (isOpening) {
-      setTimeout(() => {
-        const el = document.getElementById('acc-' + section);
-      if (el) {
-        const isMobileView = window.innerWidth < 768;
-        let offset = 96;
-        if (isMobileView) {
-          const preview = document.getElementById('mobile-preview');
-          offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
-        }
-        const top = el.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
+    setOpenAccordion(section);
+    setTimeout(() => {
+      const el = document.getElementById('acc-' + section);
+      if (!el) return;
+      const isMobileView = window.innerWidth < 768;
+      let offset = 96;
+      if (isMobileView) {
+        const preview = document.getElementById('mobile-preview');
+        offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
       }
-      }, 60);
-    }
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 60);
+  };
+
+  // Section header — numbered badge with checkmark when complete
+  const SectionHeader = ({ step, num, isComplete }: { step: Step; num: number; isComplete: boolean }) => {
+    const isCurrent = openAccordion === step;
+    return (
+      <button
+        type="button"
+        onClick={() => openSection(step)}
+        className="flex w-full items-center gap-3 py-5 text-left group"
+      >
+        <span
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-all ${
+            isComplete
+              ? 'bg-[hsl(var(--accent-warm))] text-background'
+              : isCurrent
+                ? 'bg-foreground text-background'
+                : 'bg-muted text-muted-foreground border border-border'
+          }`}
+        >
+          {isComplete ? '✓' : num}
+        </span>
+        <div className="flex flex-col items-start text-left">
+          <span className={`font-serif text-base font-medium ${isCurrent ? 'text-foreground' : 'text-foreground/80'}`}>
+            {STEP_LABELS[step]}
+          </span>
+          <span className="text-xs mt-0.5">{selectionLabel(step)}</span>
+        </div>
+      </button>
+    );
   };
 
   return (
     <>
-      <div id="acc-type" className="border-b border-border">
-        <button
-          type="button"
-          onClick={() => openSection('type')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">1. {STEP_LABELS.type}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('type')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'type' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'type' && (
-          <div className="pb-6 bg-muted/30 px-4 rounded-b-md">
+      <div id="acc-type" className="border-b border-border scroll-mt-32">
+        <SectionHeader step="type" num={1} isComplete={stepComplete.type} />
+        <div className="pb-6 px-1">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
               {productCard('puf', 'Pufs')}
@@ -1083,24 +1158,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
 
-      <div id="acc-measures" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('measures')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">2. {STEP_LABELS.measures}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('measures')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'measures' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'measures' && (
-          <div className="pb-6 space-y-6 bg-muted/30 px-4 rounded-b-md pt-2">
+      <div id="acc-measures" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="measures" num={2} isComplete={stepComplete.measures} />
+        <div className="pb-6 space-y-6 px-1 pt-2">
           {productType === 'cabecero' && (
             <>
               <div>
@@ -1471,24 +1534,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-base text-muted-foreground font-light italic">Primero elige un tipo de producto</p>
           )}
-          </div>
-        )}
+        </div>
       </div>
 
-      <div id="acc-fabric" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('fabric')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">3. {STEP_LABELS.fabric}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('fabric')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'fabric' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'fabric' && (
-          <div className="pb-6 space-y-5 bg-muted/30 px-4 rounded-b-md pt-3">
+      <div id="acc-fabric" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="fabric" num={3} isComplete={stepComplete.fabric} />
+        <div className="pb-6 space-y-5 px-1 pt-3">
           {/* Filtros por estilo */}
           <div className="flex flex-wrap gap-2">
             {([
@@ -1589,24 +1640,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          </div>
-        )}
+        </div>
       </div>
 
-      <div id="acc-finish" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('finish')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">4. {STEP_LABELS.finish}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('finish')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'finish' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'finish' && (
-          <div className="pb-6 space-y-3 bg-muted/30 px-4 rounded-b-md pt-2">
+      <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
+        <div className="pb-6 space-y-3 px-1 pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'vivo-simple';
@@ -1658,25 +1697,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
             </div>
           )}
-          </div>
-        )}
+        </div>
       </div>
 
       {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
-      <div id="acc-extras" className={`border-b border-border ${disabledClass}`}>
-        <button
-          type="button"
-          onClick={() => openSection('extras')}
-          className="flex w-full items-center justify-between py-5 text-left"
-        >
-          <div className="flex flex-col items-start text-left">
-            <span className="font-serif text-base font-medium text-foreground">5. {STEP_LABELS.extras}</span>
-            <span className="text-xs mt-0.5">{selectionLabel('extras')}</span>
-          </div>
-          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${openAccordion === 'extras' ? 'rotate-180' : ''}`} />
-        </button>
-        {openAccordion === 'extras' && (
-          <div className="pb-6 space-y-4 bg-muted/30 px-4 rounded-b-md">
+      <div id="acc-extras" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
+        <SectionHeader step="extras" num={5} isComplete={stepComplete.extras} />
+        <div className="pb-6 space-y-4 px-1 pt-2">
           {productType === 'cabecero' && (
             <div className="flex justify-between items-center py-2">
               <div>
@@ -1739,8 +1766,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {!productType && (
             <p className="text-sm text-muted-foreground font-light italic">Elige un producto para ver los extras disponibles.</p>
           )}
-          </div>
-        )}
+        </div>
       </div>
       )}
     </>
