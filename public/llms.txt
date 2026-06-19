@@ -13,6 +13,55 @@ Tiroriro es una marca de mobiliario tapizado a medida con sede en Boadilla del M
 - Origen: hecho a mano en Boadilla del Monte (Madrid, España)
 - Garantía: defectos de fabricación cubiertos; no se admiten devoluciones por cambio de opinión (productos personalizados)
 
+## Catálogo de cabeceros (modelos y precios desde)
+- Calobra — forma recta, líneas limpias. Desde 225 €.
+- Pregonda — remate en arco suave. Desde 245 €.
+- Macarella — corona simple con ondulación central. Desde 265 €.
+- Conta — corona doble escalonada. Desde 285 €.
+- Barbaria — corona quíntuple con cinco arcos. Desde 305 €.
+
+## Medidas de cabeceros recomendadas
+- Cama 90 cm → cabecero 100–110 cm de ancho, 100–120 cm de alto.
+- Cama 135 cm → cabecero 145–155 cm de ancho, 110–130 cm de alto.
+- Cama 150 cm → cabecero 160–170 cm de ancho, 110–140 cm de alto.
+- Cama 160 cm → cabecero 170–180 cm de ancho, 120–140 cm de alto.
+- Cama 180 cm → cabecero 190–200 cm de ancho, 120–150 cm de alto.
+- Cama 200 cm → cabecero 210–220 cm de ancho, 130–160 cm de alto.
+Regla general: el cabecero sobresale 5–10 cm a cada lado del colchón.
+
+## Composición interior (todos los productos)
+- Estructura: tablero aglomerado reforzado en laterales.
+- Acolchado: gomaespuma de alta densidad + capa de guata de 3 cm.
+- Tapizado: cosido y ajustado a mano con la tela elegida por el cliente.
+- Acabado opcional: ribetes, piping, combinación bicolor.
+
+## Envíos
+- Comunidad de Madrid: 40 € (tarifa fija). Entrega habitual por dos transportistas para piezas grandes.
+- Resto de península ibérica: presupuesto según destino (se confirma por teléfono antes de cerrar el pedido).
+- Baleares y Canarias: bajo consulta.
+- Servicio de instalación en domicilio disponible en Comunidad de Madrid.
+
+## Métodos de pago
+- Bizum
+- Stripe (tarjeta)
+- Transferencia bancaria
+No se cobra ningún anticipo hasta que el cliente confirma el pedido.
+
+## Telas (categorías principales)
+- Básicas: lino lavado, algodón, panas finas, mezclas naturales (incluidas en precio base).
+- Premium: bouclé, velvet, terciopelos italianos, telas de diseñador (suplemento de 40–80 € sobre la básica).
+- Posibilidad de enviar tela propia (el cliente compra el metraje según indicaciones del taller).
+
+## Personalización
+- Cualquier medida bajo encargo (cabeceros de 90 a 220 cm de ancho, 80 a 200 cm de alto).
+- Combinaciones bicolor (cuerpo + ribete o mitades).
+- Diseños propios del cliente: enviar boceto y se valora viabilidad.
+- Descuento especial para hoteles, restaurantes, hostelería y proyectos de interiorismo.
+
+## Devoluciones y garantía
+- Productos personalizados: no se admite devolución por cambio de opinión.
+- Garantía completa sobre defectos de fabricación: el taller los repara o sustituye sin coste.
+
 ## Páginas
 - [Inicio](/): presentación de marca, productos destacados y formulario de contacto
 - [Productos](/productos): catálogo completo por categorías
@@ -23,6 +72,7 @@ Tiroriro es una marca de mobiliario tapizado a medida con sede en Boadilla del M
 - [Pantallas de lámpara](/productos/pantallas-lampara): 6 formas tapizadas a mano desde 25 €
 - [Telas](/telas): catálogo de telas básicas y premium con foto y descripción
 - [Configurador](/configurador): herramienta interactiva para diseñar tu pieza (forma + medidas + tela + precio en tiempo real)
+- [Guía de medidas de cabeceros](/guia-medidas-cabeceros): tabla de medidas recomendadas por tamaño de cama (90, 135, 150, 180) y guía de alturas
 - [Nosotros](/nosotros): equipo y proceso artesanal
 
 ## Optional
