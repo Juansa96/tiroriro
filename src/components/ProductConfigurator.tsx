@@ -598,6 +598,42 @@ const ProductConfigurator = () => {
   const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
   const activeStepIndex = STEPS.indexOf(currentStep as Step);
 
+  // Auto-advance on step completion (scroll guiado)
+  const prevCompleteRef = useRef<Record<Step, boolean>>({ type: false, measures: false, fabric: false, finish: false, extras: false });
+  useEffect(() => {
+    const order: Step[] = ['type', 'measures', 'fabric', 'finish', 'extras'];
+    for (const s of order) {
+      const wasComplete = prevCompleteRef.current[s];
+      const isComplete = stepComplete[s];
+      if (!wasComplete && isComplete && s === openAccordion) {
+        const idx = order.indexOf(s);
+        const next = order.slice(idx + 1).find(n => (n !== 'extras' || ['cabecero','banco','mesa'].includes(productType || '')));
+        if (next) {
+          setTimeout(() => advanceTo(next), 400);
+        }
+        break;
+      }
+    }
+    prevCompleteRef.current = { ...stepComplete };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepComplete.type, stepComplete.measures, stepComplete.fabric, stepComplete.finish]);
+
+  // Scroll-spy: sync stepper with the section currently in view
+  useEffect(() => {
+    const ids = ['acc-type','acc-measures','acc-fabric','acc-finish','acc-extras'];
+    const elements = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    if (elements.length === 0) return;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) {
+        const step = visible[0].target.id.replace('acc-', '') as Step;
+        setOpenAccordion(step);
+      }
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.1, 0.5] });
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, [productType]);
+
   // El precio es "en progreso" cuando no hay precio calculado aún (medidas no elegidas)
   const priceIsKnown = price > 0;
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
