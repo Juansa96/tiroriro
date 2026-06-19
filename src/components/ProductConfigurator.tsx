@@ -1136,9 +1136,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </button>
                 </div>
                 {bedWidth === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={60} max={300} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2">
+                      <input type="number" min={60} max={300} placeholder="Entre 60 y 300 cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} aria-invalid={!!rangeError(customWidth, MEASURE_RANGES.cabeceroAncho)} className={`w-40 ${inputBaseCls} ${inputErrCls(rangeError(customWidth, MEASURE_RANGES.cabeceroAncho))}`} />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.cabeceroAncho)} />
                   </div>
                 )}
               </div>
@@ -1153,9 +1156,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </select>
                 </SelectWrapper>
                 {bedHeight === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={40} max={200} placeholder="Introduce los cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2">
+                      <input type="number" min={40} max={200} placeholder="Entre 40 y 200 cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} aria-invalid={!!rangeError(customHeight, MEASURE_RANGES.cabeceroAlto)} className={`w-40 ${inputBaseCls} ${inputErrCls(rangeError(customHeight, MEASURE_RANGES.cabeceroAlto))}`} />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    <ErrorMsg msg={rangeError(customHeight, MEASURE_RANGES.cabeceroAlto)} />
                   </div>
                 )}
               </div>
@@ -1261,9 +1267,12 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </button>
                 </div>
                 {puffDiameter === 'custom' && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <input type="number" min={30} max={120} placeholder="Introduce los cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-40 bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-1" />
-                    <span className="text-xs text-muted-foreground">cm</span>
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2">
+                      <input type="number" min={30} max={120} placeholder="Entre 30 y 120 cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} aria-invalid={!!rangeError(customWidth, MEASURE_RANGES.pufDiametro)} className={`w-40 ${inputBaseCls} ${inputErrCls(rangeError(customWidth, MEASURE_RANGES.pufDiametro))}`} />
+                      <span className="text-xs text-muted-foreground">cm</span>
+                    </div>
+                    <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.pufDiametro)} />
                   </div>
                 )}
               </div>
@@ -1336,16 +1345,19 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 {benchLength === 'custom' && (
                   <div className="mt-3 grid grid-cols-3 gap-3">
                     <div>
-                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Largo (cm)</p>
-                      <input type="number" min={40} max={300} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Largo (40–300 cm)</p>
+                      <input type="number" min={40} max={300} placeholder="cm" value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} aria-invalid={!!rangeError(customWidth, MEASURE_RANGES.mesaLargo)} className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(customWidth, MEASURE_RANGES.mesaLargo))}`} />
+                      <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.mesaLargo)} />
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Alto (cm)</p>
-                      <input type="number" min={20} max={100} placeholder="cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Alto (20–100 cm)</p>
+                      <input type="number" min={20} max={100} placeholder="cm" value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} aria-invalid={!!rangeError(customHeight, MEASURE_RANGES.mesaAlto)} className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(customHeight, MEASURE_RANGES.mesaAlto))}`} />
+                      <ErrorMsg msg={rangeError(customHeight, MEASURE_RANGES.mesaAlto)} />
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Fondo (cm)</p>
-                      <input type="number" min={20} max={150} placeholder="cm" value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className="w-full bg-transparent border-b border-border text-sm font-light focus:outline-none focus:border-foreground py-1" />
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Fondo (20–150 cm)</p>
+                      <input type="number" min={20} max={150} placeholder="cm" value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} aria-invalid={!!rangeError(benchDepth, MEASURE_RANGES.mesaFondo)} className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(benchDepth, MEASURE_RANGES.mesaFondo))}`} />
+                      <ErrorMsg msg={rangeError(benchDepth, MEASURE_RANGES.mesaFondo)} />
                     </div>
                   </div>
                 )}
