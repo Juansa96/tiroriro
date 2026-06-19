@@ -220,6 +220,35 @@ function parseCm(selectVal: string): number | undefined {
   return isNaN(n) ? undefined : n;
 }
 
+// Rangos válidos para medidas personalizadas (cm)
+const MEASURE_RANGES = {
+  cabeceroAncho: { min: 60, max: 300, label: 'ancho del cabecero' },
+  cabeceroAlto: { min: 40, max: 200, label: 'alto del cabecero' },
+  pufDiametro: { min: 30, max: 120, label: 'diámetro del puf' },
+  mesaLargo: { min: 40, max: 300, label: 'largo de la mesa' },
+  mesaAlto: { min: 20, max: 100, label: 'alto de la mesa' },
+  mesaFondo: { min: 20, max: 150, label: 'fondo de la mesa' },
+} as const;
+
+function rangeError(value: string, range: { min: number; max: number; label: string }): string | null {
+  if (!value) return null;
+  const n = parseInt(value);
+  if (isNaN(n)) return `Introduce un número válido para el ${range.label}.`;
+  if (n < range.min) return `El ${range.label} mínimo es ${range.min} cm.`;
+  if (n > range.max) return `El ${range.label} máximo es ${range.max} cm.`;
+  return null;
+}
+
+function isValidInRange(value: string, range: { min: number; max: number }): boolean {
+  if (!value) return false;
+  const n = parseInt(value);
+  return !isNaN(n) && n >= range.min && n <= range.max;
+}
+
+const inputBaseCls = "bg-transparent border-b text-sm font-light text-foreground focus:outline-none py-1";
+const inputErrCls = (err: string | null) => err ? "border-red-500 focus:border-red-600" : "border-border focus:border-foreground";
+const ErrorMsg = ({ msg }: { msg: string | null }) => msg ? <p className="text-[11px] text-red-600 mt-1 font-light">{msg}</p> : null;
+
 function parseLampSize(sz: string): { widthCm: number; heightCm: number } {
   // Cilindros: "Ø15×20cm" → diámetro 15, alto 20
   const cyl = sz.match(/Ø(\d+)[×x](\d+)/);
