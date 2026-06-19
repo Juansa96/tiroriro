@@ -825,6 +825,7 @@ const ProductConfigurator = () => {
     openAccordion: accordionValue,
     setOpenAccordion: handleAccordionChange,
     selectionLabel,
+    stepComplete,
     productType, productCard,
     fabricFilter, setFabricFilter,
     shape, setShape,
@@ -1058,6 +1059,7 @@ interface AccordionContentSharedProps {
   extraTapetes: boolean; setExtraTapetes: (v: boolean) => void;
   advanceTo: (step: Step) => void;
   needsVivo: boolean;
+  stepComplete: Record<Step, boolean>;
 }
 
 const AccordionItems = (props: AccordionContentSharedProps) => {
@@ -1065,6 +1067,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     openAccordion,
     setOpenAccordion,
     selectionLabel,
+    stepComplete,
     productType, productCard,
     fabricFilter, setFabricFilter,
     shape, setShape,
