@@ -577,10 +577,16 @@ const ProductConfigurator = () => {
 
   const stepComplete: Record<Step, boolean> = {
     type: !!productType,
-    measures: productType === 'cabecero' ? !!(bedWidth || customWidth) && !!(bedHeight || customHeight)
+    measures: productType === 'cabecero'
+        ? (bedWidth === 'custom' ? isValidInRange(customWidth, MEASURE_RANGES.cabeceroAncho) : !!bedWidth)
+          && (bedHeight === 'custom' ? isValidInRange(customHeight, MEASURE_RANGES.cabeceroAlto) : !!bedHeight)
       : productType === 'banco' ? !!benchLength
-      : productType === 'mesa' ? !!benchLength
-      : productType === 'puf' ? !!puffDiameter
+      : productType === 'mesa' ? (benchLength === 'custom'
+          ? isValidInRange(customWidth, MEASURE_RANGES.mesaLargo)
+            && isValidInRange(customHeight, MEASURE_RANGES.mesaAlto)
+            && isValidInRange(benchDepth, MEASURE_RANGES.mesaFondo)
+          : !!benchLength)
+      : productType === 'puf' ? (puffDiameter === 'custom' ? isValidInRange(customWidth, MEASURE_RANGES.pufDiametro) : !!puffDiameter)
       : productType === 'cojin' ? !!cushionShape && !!cushionSize
       : productType === 'pantalla' ? !!lampDiameter
       : false,
