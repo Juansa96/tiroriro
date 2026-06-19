@@ -1090,24 +1090,51 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
   const productSelected = !!productType;
   const disabledClass = productSelected ? '' : 'opacity-40 pointer-events-none';
 
+  // Scroll to section (no toggle — sections are always open)
   const openSection = (section: string) => {
-    const isOpening = openAccordion !== section;
-    setOpenAccordion(isOpening ? section : '');
-    if (isOpening) {
-      setTimeout(() => {
-        const el = document.getElementById('acc-' + section);
-      if (el) {
-        const isMobileView = window.innerWidth < 768;
-        let offset = 96;
-        if (isMobileView) {
-          const preview = document.getElementById('mobile-preview');
-          offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
-        }
-        const top = el.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
+    setOpenAccordion(section);
+    setTimeout(() => {
+      const el = document.getElementById('acc-' + section);
+      if (!el) return;
+      const isMobileView = window.innerWidth < 768;
+      let offset = 96;
+      if (isMobileView) {
+        const preview = document.getElementById('mobile-preview');
+        offset = preview ? preview.getBoundingClientRect().bottom + 12 : 280;
       }
-      }, 60);
-    }
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 60);
+  };
+
+  // Section header — numbered badge with checkmark when complete
+  const SectionHeader = ({ step, num, isComplete }: { step: Step; num: number; isComplete: boolean }) => {
+    const isCurrent = openAccordion === step;
+    return (
+      <button
+        type="button"
+        onClick={() => openSection(step)}
+        className="flex w-full items-center gap-3 py-5 text-left group"
+      >
+        <span
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-all ${
+            isComplete
+              ? 'bg-[hsl(var(--accent-warm))] text-background'
+              : isCurrent
+                ? 'bg-foreground text-background'
+                : 'bg-muted text-muted-foreground border border-border'
+          }`}
+        >
+          {isComplete ? '✓' : num}
+        </span>
+        <div className="flex flex-col items-start text-left">
+          <span className={`font-serif text-base font-medium ${isCurrent ? 'text-foreground' : 'text-foreground/80'}`}>
+            {STEP_LABELS[step]}
+          </span>
+          <span className="text-xs mt-0.5">{selectionLabel(step)}</span>
+        </div>
+      </button>
+    );
   };
 
   return (
