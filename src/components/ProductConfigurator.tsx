@@ -965,7 +965,9 @@ const ProductConfigurator = () => {
           <div className="mb-6">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
           </div>
-          <ProgressBar className="mb-6" />
+          <div className="sticky top-20 z-20 bg-background/95 backdrop-blur-sm pb-3 pt-1 -mx-2 px-2 mb-4">
+            <ProgressBar />
+          </div>
           <ConfigAccordionsSingle
             openAccordion={accordionValue}
             setOpenAccordion={handleAccordionChange}
