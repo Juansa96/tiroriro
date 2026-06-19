@@ -51,6 +51,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://tirorirohome.com/guia-medidas-cabeceros</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://tirorirohome.com/probador</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
