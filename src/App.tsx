@@ -58,7 +58,7 @@ const App = () => (
           <Route path="/telas" element={<TelasPage />} />
           <Route path="/guia-medidas-cabeceros" element={<GuiaMedidasCabecerosPage />} />
           <Route path="/nosotros" element={<TeamPage />} />
-          <Route path="/equipo" element={<TeamPage />} />
+          <Route path="/equipo" element={<Navigate to="/nosotros" replace />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
           <Route path="/quienes-somos" element={<Navigate to="/nosotros" replace />} />
           <Route path="/gracias" element={<GraciasPage />} />
