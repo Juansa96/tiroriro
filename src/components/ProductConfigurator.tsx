@@ -1610,7 +1610,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'vivo-simple';
-            if (productType === 'banco' || productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
           })).map(f => (
