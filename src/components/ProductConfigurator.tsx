@@ -1603,6 +1603,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </div>
       </div>
 
+      {productType !== 'banco' && (
       <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
         <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
         <div className="pb-6 space-y-3 px-1 pt-2">
@@ -1659,6 +1660,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
         </div>
       </div>
+      )}
 
       {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
       <div id="acc-extras" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
