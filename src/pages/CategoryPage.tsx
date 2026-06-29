@@ -35,6 +35,7 @@ const getShapePath = (configParam: string | undefined, category: string): React.
     }
   }
   if (category === 'pufs') return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+  if (category === 'bancos') return <path d="M 4 9 H 28 V 24 H 24 V 14 H 8 V 24 H 4 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />;
   if (category === 'mesas-centro') {
     if (configParam === 'tipo-banco') return <><rect x="3" y="7" width="26" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="6" y1="17" x2="6" y2="25" stroke="currentColor" strokeWidth="1.5" /><line x1="26" y1="17" x2="26" y2="25" stroke="currentColor" strokeWidth="1.5" /></>;
     return <rect x="3" y="10" width="26" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
