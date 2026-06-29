@@ -1210,47 +1210,25 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           {productType === 'banco' && (
             <>
               <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tipo de banco</p>
+                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo · Banco Oyambre</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {BENCH_VARIANTS.map(v => (
-                    <button key={v.id} onClick={() => setShape(v.id)} className={`border rounded-md p-3 text-center cursor-pointer transition-all ${shape === v.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}>
-                      <span className="text-xs font-light">{v.name}</span>
-                    </button>
-                  ))}
+                  {BENCH_LENGTHS.map(l => {
+                    const price = l.startsWith('150') ? 300 : l.startsWith('120') ? 240 : 180;
+                    return (
+                      <button
+                        key={l}
+                        onClick={() => setBenchLength(l)}
+                        className={`border rounded-md p-3 text-center cursor-pointer transition-all ${benchLength === l ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                      >
+                        <span className="block text-sm font-medium text-foreground">{l}</span>
+                        <span className="block text-[10px] text-muted-foreground mt-0.5">{price}€</span>
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo</p>
-                <SelectWrapper>
-                  <select value={benchLength} onChange={(e) => setBenchLength(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar largo...</option>
-                    <option value="80 cm">80 cm</option>
-                    <option value="100 cm">100 cm</option>
-                    <option value="120 cm">120 cm</option>
-                    <option value="140 cm">140 cm</option>
-                  </select>
-                </SelectWrapper>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Fondo</p>
-                <SelectWrapper>
-                  <select value={benchDepth} onChange={(e) => setBenchDepth(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar fondo...</option>
-                    <option value="35 cm">35 cm</option>
-                    <option value="40 cm">40 cm</option>
-                    <option value="45 cm">45 cm</option>
-                  </select>
-                </SelectWrapper>
-              </div>
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto</p>
-                <SelectWrapper>
-                  <select value={benchHeight} onChange={(e) => setBenchHeight(e.target.value)} className={selectClass}>
-                    <option value="">Seleccionar alto...</option>
-                    <option value="40 cm">40 cm</option>
-                    <option value="45 cm">45 cm</option>
-                  </select>
-                </SelectWrapper>
+                <p className="text-[11px] text-muted-foreground font-light mt-3 leading-snug">
+                  Alto <span className="text-foreground">45 cm</span> y fondo <span className="text-foreground">33 cm</span> — fijos en las 3 medidas.
+                </p>
               </div>
             </>
           )}
