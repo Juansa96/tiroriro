@@ -185,7 +185,7 @@ const ProductIcon = ({ type }: { type: string }) => {
     case 'cabecero':
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="2" y="4" width="36" height="22" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'banco':
-      return <svg viewBox="0 0 40 24" className="w-8 h-5"><rect x="2" y="4" width="36" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="6" y1="16" x2="6" y2="22" stroke="currentColor" strokeWidth="2" /><line x1="34" y1="16" x2="34" y2="22" stroke="currentColor" strokeWidth="2" /></svg>;
+      return <svg viewBox="0 0 40 24" className="w-8 h-5"><path d="M 4 6 H 36 V 22 H 30 V 12 H 10 V 22 H 4 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>;
     case 'puf':
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="8" y="5" width="24" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
@@ -199,11 +199,7 @@ const ProductIcon = ({ type }: { type: string }) => {
   }
 };
 
-const BENCH_VARIANTS = [
-  { id: "madera", name: "Patas de madera" },
-  { id: "enteladas", name: "Patas enteladas" },
-  { id: "baul", name: "Estilo baúl" },
-];
+const BENCH_LENGTHS = ["150 cm", "120 cm", "90 cm"];
 
 const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
 
@@ -395,7 +391,7 @@ const ProductConfigurator = () => {
 
   const resetConfiguracion = (newType?: ProductType) => {
     const defaultShape = newType === 'puf' ? 'cuadrado'
-      : newType === 'banco' ? 'madera'
+      : newType === 'banco' ? 'cascada'
       : newType === 'mesa' ? 'tipo-puf'
       : newType === 'pantalla' ? 'cilindro'
       : 'recto';
@@ -403,8 +399,8 @@ const ProductConfigurator = () => {
     setBedWidth('');
     setBedHeight('');
     setBenchLength('');
-    setBenchDepth('');
-    setBenchHeight('');
+    setBenchDepth(newType === 'banco' ? '33 cm' : '');
+    setBenchHeight(newType === 'banco' ? '45 cm' : '');
     setPuffDiameter('');
     setPuffHeight('');
     setCushionShape('');
@@ -592,7 +588,7 @@ const ProductConfigurator = () => {
       : false,
     fabric: !!fabricId,
     finish: productType === 'pantalla' ? !!lampDiameter : !!finish,
-    extras: !productType || !['cabecero', 'banco'].includes(productType),
+    extras: !productType || !['cabecero'].includes(productType),
   };
 
   const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
@@ -607,7 +603,7 @@ const ProductConfigurator = () => {
       const isComplete = stepComplete[s];
       if (!wasComplete && isComplete && s === openAccordion) {
         const idx = order.indexOf(s);
-        const next = order.slice(idx + 1).find(n => (n !== 'extras' || ['cabecero','banco','mesa'].includes(productType || '')));
+        const next = order.slice(idx + 1).find(n => (n !== 'extras' || ['cabecero','mesa'].includes(productType || '')));
         if (next) {
           setTimeout(() => advanceTo(next), 400);
         }
@@ -755,7 +751,7 @@ const ProductConfigurator = () => {
   };
 
   // Solo mostramos el paso "Extras" si el producto tiene opciones extra reales.
-  const showExtrasStep = !productType || ['cabecero', 'banco', 'mesa'].includes(productType);
+  const showExtrasStep = !productType || ['cabecero', 'mesa'].includes(productType);
   const visibleSteps = showExtrasStep ? STEPS : STEPS.filter(s => s !== 'extras');
   const visibleStepIndex = visibleSteps.indexOf(currentStep as Step);
 
@@ -897,12 +893,6 @@ const ProductConfigurator = () => {
               {!productType && (
                 <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
               )}
-              {productType === 'banco' && (
-                <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground border border-border/50 rounded-full px-3 py-1.5">
-                  <Clock size={12} />
-                  <span>Producto próximamente disponible — puedes explorar el configurador</span>
-                </div>
-              )}
               <RenderNotice />
             </div>
 
@@ -944,20 +934,13 @@ const ProductConfigurator = () => {
           </div>
 
           <div className="flex flex-col gap-3 mt-4">
-            {productType === 'banco' ? (
-              <div className="w-full px-6 py-3.5 bg-muted text-muted-foreground text-sm tracking-wide uppercase text-center font-medium rounded-sm cursor-not-allowed flex items-center justify-center gap-2">
-                <Clock size={14} />
-                Próximamente — no disponible aún
-              </div>
-            ) : (
-              <button
+            <button
                 onClick={handleOrder}
                 disabled={!productType}
                 className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
               >
                 Solicitar presupuesto
               </button>
-            )}
           </div>
         </div>
 
@@ -1007,20 +990,13 @@ const ProductConfigurator = () => {
               <p className="text-xs text-muted-foreground font-light">Elige un producto</p>
             )}
           </div>
-          {productType === 'banco' ? (
-            <div className="bg-muted text-muted-foreground px-4 py-3 text-xs tracking-wide font-medium text-center flex items-center gap-1.5 cursor-not-allowed">
-              <Clock size={12} />
-              Próximamente
-            </div>
-          ) : (
-            <button
+          <button
               onClick={handleOrder}
               disabled={!productType}
               className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
             >
               Lo quiero →
             </button>
-          )}
         </div>
       </div>
     </div>
