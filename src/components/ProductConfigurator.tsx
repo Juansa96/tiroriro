@@ -604,7 +604,11 @@ const ProductConfigurator = () => {
       const isComplete = stepComplete[s];
       if (!wasComplete && isComplete && s === openAccordion) {
         const idx = order.indexOf(s);
-        const next = order.slice(idx + 1).find(n => (n !== 'extras' || ['cabecero','mesa'].includes(productType || '')));
+        const next = order.slice(idx + 1).find(n => {
+          if (n === 'finish' && productType === 'banco') return false;
+          if (n === 'extras' && !['cabecero','mesa','banco'].includes(productType || '')) return false;
+          return true;
+        });
         if (next) {
           setTimeout(() => advanceTo(next), 400);
         }
