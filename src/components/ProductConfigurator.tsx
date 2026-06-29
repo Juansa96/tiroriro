@@ -185,7 +185,7 @@ const ProductIcon = ({ type }: { type: string }) => {
     case 'cabecero':
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="2" y="4" width="36" height="22" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'banco':
-      return <svg viewBox="0 0 40 24" className="w-8 h-5"><path d="M 4 6 H 36 V 22 H 30 V 12 H 10 V 22 H 4 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>;
+      return <svg viewBox="0 0 40 24" className="w-8 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M 4 8 H 36" /><path d="M 6 8 V 22" /><path d="M 34 8 V 22" /></svg>;
     case 'puf':
       return <svg viewBox="0 0 40 30" className="w-8 h-6"><rect x="8" y="5" width="24" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /></svg>;
     case 'cojin':
@@ -1126,6 +1126,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         <div className="pb-6 px-1">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
+              {productCard('banco', 'Banco Oyambre')}
               {productCard('puf', 'Pufs')}
               {productCard('mesa', 'Mesa de centro')}
               {productCard('pantalla', 'Pantalla lámpara')}
