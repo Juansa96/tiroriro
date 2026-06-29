@@ -1126,7 +1126,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         <div className="pb-6 px-1">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
               {productCard('cabecero', 'Cabecero')}
-              {productCard('banco', 'Banco Oyambre')}
+              {productCard('banco', 'Banco')}
               {productCard('puf', 'Pufs')}
               {productCard('mesa', 'Mesa de centro')}
               {productCard('pantalla', 'Pantalla lámpara')}
