@@ -122,7 +122,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   bancos: {
     title: "Bancos entelados",
     subtitle: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista.",
-    comingSoon: true,
     models: [
       {
         name: "Oyambre",
@@ -131,9 +130,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/bancos/oyambre-02.webp",
           "/productos-fotos/bancos/oyambre-03.webp",
         ],
-        desc: "Banco entelado de pie de cama. De 80 a 160 cm.",
-        priceLabel: "",
-        comingSoon: true,
+        desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Tres medidas: 150, 120 y 90 cm de largo (alto 45 · fondo 33).",
+        priceLabel: "Desde 180€",
+        configParam: "cascada",
       },
       {
         name: "Gerra",

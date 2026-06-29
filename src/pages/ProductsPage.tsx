@@ -50,10 +50,10 @@ const CATEGORIES = [
   {
     id: "bancos",
     name: "Bancos entelados",
-    tagline: "Pie de cama · Entrada · Próximamente",
-    image: "",
-    priceLabel: "",
-    comingSoon: true,
+    tagline: "Oyambre · 3 medidas · Pie de cama",
+    image: "/productos-fotos/bancos/oyambre-01.webp",
+    priceLabel: "Desde 180€",
+    comingSoon: false,
   },
   {
     id: "percheros",
