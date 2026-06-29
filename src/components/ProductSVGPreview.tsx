@@ -301,81 +301,96 @@ const BenchSVG = ({
 }) => {
   const patternId = useId();
   const clipId = useId();
-  // Solo el largo varía visualmente. Alto y fondo son fijos (45 / 33 cm).
-  const scaleX = scaleRange(widthCm, 90, 150, 0.78, 1.16);
-  const depthX = 20;
-  const depthY = -16;
+  // Banco "cascada" sin respaldo ni brazos.
+  // Solo el largo varía. ViewBox fijo y banco centrado con márgenes amplios
+  // para que ni el 150 toque el borde ni el 90 quede diminuto.
+  const lenCm = widthCm ?? 120;
+  // Largo del banco en píxeles: 90 → 200, 120 → 256, 150 → 312.
+  const benchW = clamp(200 + (lenCm - 90) * (112 / 60), 180, 320);
 
-  // Geometría base (banco "cascada" sin respaldo ni brazos)
-  const seatLeft = 36;
-  const seatRight = 284;
-  const seatTopY = 76;       // borde superior del asiento
-  const seatBottomY = 112;   // borde inferior del asiento (espesor ~36)
-  const floorY = 196;        // suelo
-  const panelW = 36;         // ancho del panel lateral que baja al suelo
-  const r = 10;              // radio cascada (esquina redondeada)
+  // viewBox y centrado
+  const VB_W = 400;
+  const VB_H = 260;
+  const cx = VB_W / 2;
+  const seatTopY = 90;
+  const seatBottomY = 122;          // asiento ~32 px (~45 cm visualmente)
+  const floorY = 226;               // suelo
+  const panelW = 30;                // ancho de los paneles laterales
+  const r = 14;                     // radio esquina superior (cascada)
+  const left = cx - benchW / 2;
+  const right = cx + benchW / 2;
 
-  // Cara frontal con forma de "puerta": asiento arriba + dos patas-panel a los lados,
-  // hueco en el centro por debajo. Esquinas superiores redondeadas (efecto cascada).
+  // Perspectiva 3/4 ligera
+  const depthX = 22;
+  const depthY = -14;
+
+  // Cara frontal: rectángulo superior (asiento) + dos paneles que bajan al
+  // suelo a cada extremo (cascada limpia), con hueco central por debajo.
   const frontPath =
-    `M ${seatLeft + r} ${seatTopY} ` +
-    `H ${seatRight - r} ` +
-    `Q ${seatRight} ${seatTopY} ${seatRight} ${seatTopY + r} ` +
+    `M ${left + r} ${seatTopY} ` +
+    `H ${right - r} ` +
+    `Q ${right} ${seatTopY} ${right} ${seatTopY + r} ` +
     `V ${floorY} ` +
-    `H ${seatRight - panelW} ` +
+    `H ${right - panelW} ` +
     `V ${seatBottomY} ` +
-    `H ${seatLeft + panelW} ` +
+    `H ${left + panelW} ` +
     `V ${floorY} ` +
-    `H ${seatLeft} ` +
+    `H ${left} ` +
     `V ${seatTopY + r} ` +
-    `Q ${seatLeft} ${seatTopY} ${seatLeft + r} ${seatTopY} Z`;
+    `Q ${left} ${seatTopY} ${left + r} ${seatTopY} Z`;
 
-  // Cara superior del asiento (paralelogramo 3/4)
+  // Cara superior del asiento (paralelogramo 3/4 con esquinas redondeadas)
   const topPath =
-    `M ${seatLeft + r} ${seatTopY} ` +
-    `H ${seatRight - r} ` +
-    `Q ${seatRight} ${seatTopY} ${seatRight} ${seatTopY + r} ` +
-    `L ${seatRight + depthX} ${seatTopY + r + depthY} ` +
-    `Q ${seatRight + depthX} ${seatTopY + depthY} ${seatRight + depthX - r} ${seatTopY + depthY} ` +
-    `H ${seatLeft + r + depthX} ` +
-    `Q ${seatLeft + depthX} ${seatTopY + depthY} ${seatLeft + depthX} ${seatTopY + r + depthY} ` +
-    `L ${seatLeft} ${seatTopY + r} ` +
-    `Q ${seatLeft} ${seatTopY} ${seatLeft + r} ${seatTopY} Z`;
+    `M ${left + r} ${seatTopY} ` +
+    `H ${right - r} ` +
+    `Q ${right} ${seatTopY} ${right} ${seatTopY + r} ` +
+    `L ${right + depthX} ${seatTopY + r + depthY} ` +
+    `Q ${right + depthX} ${seatTopY + depthY} ${right + depthX - r} ${seatTopY + depthY} ` +
+    `H ${left + r + depthX} ` +
+    `Q ${left + depthX} ${seatTopY + depthY} ${left + depthX} ${seatTopY + r + depthY} ` +
+    `L ${left} ${seatTopY + r} ` +
+    `Q ${left} ${seatTopY} ${left + r} ${seatTopY} Z`;
 
-  // Panel derecho — cara lateral 3/4 desde arriba del asiento hasta el suelo
+  // Cara lateral derecha completa (asiento + panel hasta el suelo)
   const rightSidePath =
-    `M ${seatRight} ${seatTopY + r} ` +
-    `L ${seatRight + depthX} ${seatTopY + r + depthY} ` +
-    `L ${seatRight + depthX} ${floorY + depthY} ` +
-    `L ${seatRight} ${floorY} Z`;
+    `M ${right} ${seatTopY + r} ` +
+    `L ${right + depthX} ${seatTopY + r + depthY} ` +
+    `L ${right + depthX} ${floorY + depthY} ` +
+    `L ${right + depthX - panelW * 0.05} ${floorY + depthY} ` +
+    `L ${right} ${floorY} ` +
+    `L ${right} ${seatBottomY} ` +
+    `L ${right - panelW} ${seatBottomY} ` +
+    `L ${right - panelW + depthX} ${seatBottomY + depthY} ` +
+    `L ${right + depthX} ${seatBottomY + depthY} ` +
+    `L ${right + depthX} ${seatTopY + r + depthY} Z`;
+
+  // Línea de costura horizontal sutil bajo el asiento (detalle tapicero)
+  const stitchY = seatBottomY - 2;
 
   return (
-    <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
+    <svg viewBox={`0 0 ${VB_W} ${VB_H}`} className="w-full max-w-[360px] mx-auto" preserveAspectRatio="xMidYMid meet">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
         <clipPath id={`bn-${clipId}`}><path d={frontPath} /></clipPath>
       </defs>
 
-      <g
-        style={{
-          transform: `scale(${scaleX}, 1)`,
-          transformOrigin: "160px 196px",
-          transition: "transform 0.4s ease",
-        }}
-      >
+      <g style={{ transition: "transform 0.4s ease" }}>
         {/* Sombra suelo */}
-        <ellipse cx={160} cy={206} rx={130} ry={6} fill="rgba(0,0,0,0.10)" />
+        <ellipse cx={cx} cy={floorY + 8} rx={benchW * 0.5 + 10} ry={6} fill="rgba(0,0,0,0.10)" />
 
-        {/* Cara superior (asiento) */}
-        <path d={topPath} fill={patternFill(patternId, lighten(color, 14))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        {/* Cara lateral derecha (debajo, primero) */}
+        <path d={rightSidePath} fill={patternFill(patternId, darken(color, 20))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" strokeLinejoin="round" />
+        <path d={rightSidePath} fill="rgba(0,0,0,0.08)" />
+
+        {/* Cara superior del asiento */}
+        <path d={topPath} fill={patternFill(patternId, lighten(color, 12))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" strokeLinejoin="round" />
         <path d={topPath} fill="rgba(255,255,255,0.10)" />
 
-        {/* Cara lateral derecha (panel + asiento) */}
-        <path d={rightSidePath} fill={patternFill(patternId, darken(color, 22))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-        <path d={rightSidePath} fill="rgba(0,0,0,0.10)" />
+        {/* Cara frontal (cascada con hueco central) */}
+        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" strokeLinejoin="round" />
 
-        {/* Cara frontal en forma de puerta (cascada, hueco centro) */}
-        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        {/* Costura horizontal sutil entre asiento y paneles */}
+        <line x1={left + 6} y1={stitchY} x2={right - 6} y2={stitchY} stroke="rgba(0,0,0,0.15)" strokeWidth="0.6" strokeDasharray="2 2" />
 
         {/* Vivo del borde si aplica */}
         {finish === "vivo-simple" && (

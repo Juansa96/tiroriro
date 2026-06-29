@@ -588,7 +588,7 @@ const ProductConfigurator = () => {
       : productType === 'pantalla' ? !!lampDiameter
       : false,
     fabric: !!fabricId,
-    finish: productType === 'pantalla' ? !!lampDiameter : !!finish,
+    finish: (productType === 'pantalla' || productType === 'banco') ? true : !!finish,
     extras: !productType || !['cabecero'].includes(productType),
   };
 
@@ -604,7 +604,11 @@ const ProductConfigurator = () => {
       const isComplete = stepComplete[s];
       if (!wasComplete && isComplete && s === openAccordion) {
         const idx = order.indexOf(s);
-        const next = order.slice(idx + 1).find(n => (n !== 'extras' || ['cabecero','mesa'].includes(productType || '')));
+        const next = order.slice(idx + 1).find(n => {
+          if (n === 'finish' && productType === 'banco') return false;
+          if (n === 'extras' && !['cabecero','mesa','banco'].includes(productType || '')) return false;
+          return true;
+        });
         if (next) {
           setTimeout(() => advanceTo(next), 400);
         }
@@ -634,7 +638,7 @@ const ProductConfigurator = () => {
   // El precio es "en progreso" cuando no hay precio calculado aún (medidas no elegidas)
   const priceIsKnown = price > 0;
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
-  const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && !finish);
+  const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && productType !== 'banco' && !finish);
 
   // Detecta si el usuario ha introducido una medida personalizada (no preset)
   const hasCustomMeasure = !!(
@@ -1599,13 +1603,14 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </div>
       </div>
 
+      {productType !== 'banco' && (
       <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
         <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
         <div className="pb-6 space-y-3 px-1 pt-2">
           {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'vivo-simple';
-            if (productType === 'banco' || productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
           })).map(f => (
@@ -1655,6 +1660,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
         </div>
       </div>
+      )}
 
       {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
       <div id="acc-extras" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
