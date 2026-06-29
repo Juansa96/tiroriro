@@ -381,7 +381,8 @@ const ProductConfigurator = () => {
     if (tipo && ['cabecero', 'banco', 'cojin', 'puf', 'mesa', 'pantalla'].includes(tipo)) {
       setProductType(tipo as ProductType);
       if (tipo === 'puf' && !forma) setShape('cuadrado');
-      if (tipo === 'banco' && !forma) setShape('madera');
+      if (tipo === 'banco' && !forma) setShape('cascada');
+      if (tipo === 'banco') { setBenchHeight('45 cm'); setBenchDepth('33 cm'); }
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
       if (tipo === 'pantalla' || tipo === 'mesa') setFinish('vivo-simple');
