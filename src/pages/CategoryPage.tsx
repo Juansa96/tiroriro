@@ -127,8 +127,8 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
       {
         name: "Oyambre",
         photos: [
-          "/productos-fotos/bancos/oyambre-01.webp",
           "/productos-fotos/bancos/IMG_2760.webp",
+          "/productos-fotos/bancos/oyambre-01.webp",
           "/productos-fotos/bancos/oyambre-03.webp",
         ],
         desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Tres medidas: 150, 120 y 90 cm de largo (alto 45 · fondo 33).",
