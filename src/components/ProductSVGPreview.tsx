@@ -299,120 +299,96 @@ const BenchSVG = ({
   heightCm?: number;
   depthCm?: number;
 }) => {
-  const mode = variant || "madera";
   const patternId = useId();
-  const woodPatternId = useId();
   const clipId = useId();
-  const scaleX = scaleRange(widthCm, 40, 140, 0.72, 1.20);
-  const scaleY = scaleRange(heightCm, 30, 50, 0.8, 1.14);
-  const depthX = scaleRange(depthCm, 30, 45, 14, 24);
-  const depthY = -depthX * 0.75;
+  // Solo el largo varía visualmente. Alto y fondo son fijos (45 / 33 cm).
+  const scaleX = scaleRange(widthCm, 90, 150, 0.78, 1.16);
+  const depthX = 20;
+  const depthY = -16;
 
-  const seatX = 52;
-  const seatY = mode === "baul" ? 66 : 60;
-  const seatW = 190;
-  const seatH = mode === "baul" ? 92 : 48;
-  const seatTop = `M ${seatX} ${seatY} L ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + depthX} ${seatY + depthY} Z`;
-  const seatSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + seatH + depthY} L ${seatX + seatW} ${seatY + seatH} Z`;
-  // Straight corners (no Q bezier)
-  const seatFrontRect = `M ${seatX} ${seatY} H ${seatX + seatW} V ${seatY + seatH} H ${seatX} Z`;
+  // Geometría base (banco "cascada" sin respaldo ni brazos)
+  const seatLeft = 36;
+  const seatRight = 284;
+  const seatTopY = 76;       // borde superior del asiento
+  const seatBottomY = 112;   // borde inferior del asiento (espesor ~36)
+  const floorY = 196;        // suelo
+  const panelW = 36;         // ancho del panel lateral que baja al suelo
+  const r = 10;              // radio cascada (esquina redondeada)
 
-  const openLegW = 38;
-  const cutTop = seatY + 52;
-  // Straight corners (no Q bezier)
-  const uFrontPath =
-    `M ${seatX} ${seatY} H ${seatX + seatW} ` +
-    `V ${seatY + 112} H ${seatX + seatW - openLegW} V ${cutTop} H ${seatX + openLegW} V ${seatY + 112} H ${seatX} Z`;
-  const seatFrontOnly = `M ${seatX} ${seatY} H ${seatX + seatW} V ${cutTop} H ${seatX} Z`;
-  const rightOuterSide = `M ${seatX + seatW} ${seatY} L ${seatX + seatW + depthX} ${seatY + depthY} L ${seatX + seatW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW} ${seatY + 112} Z`;
-  const innerLeftSide = `M ${seatX + openLegW} ${cutTop} L ${seatX + openLegW + depthX} ${cutTop + depthY} L ${seatX + openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + openLegW} ${seatY + 112} Z`;
-  const innerRightSide = `M ${seatX + seatW - openLegW} ${cutTop} L ${seatX + seatW - openLegW + depthX} ${cutTop + depthY} L ${seatX + seatW - openLegW + depthX} ${seatY + 112 + depthY} L ${seatX + seatW - openLegW} ${seatY + 112} Z`;
+  // Cara frontal con forma de "puerta": asiento arriba + dos patas-panel a los lados,
+  // hueco en el centro por debajo. Esquinas superiores redondeadas (efecto cascada).
+  const frontPath =
+    `M ${seatLeft + r} ${seatTopY} ` +
+    `H ${seatRight - r} ` +
+    `Q ${seatRight} ${seatTopY} ${seatRight} ${seatTopY + r} ` +
+    `V ${floorY} ` +
+    `H ${seatRight - panelW} ` +
+    `V ${seatBottomY} ` +
+    `H ${seatLeft + panelW} ` +
+    `V ${floorY} ` +
+    `H ${seatLeft} ` +
+    `V ${seatTopY + r} ` +
+    `Q ${seatLeft} ${seatTopY} ${seatLeft + r} ${seatTopY} Z`;
 
-  const seatTopColor = lighten(color, 14);
-  const seatSideColor = darken(color, 18);
-  const woodColor = "#C8B89A";
+  // Cara superior del asiento (paralelogramo 3/4)
+  const topPath =
+    `M ${seatLeft + r} ${seatTopY} ` +
+    `H ${seatRight - r} ` +
+    `Q ${seatRight} ${seatTopY} ${seatRight} ${seatTopY + r} ` +
+    `L ${seatRight + depthX} ${seatTopY + r + depthY} ` +
+    `Q ${seatRight + depthX} ${seatTopY + depthY} ${seatRight + depthX - r} ${seatTopY + depthY} ` +
+    `H ${seatLeft + r + depthX} ` +
+    `Q ${seatLeft + depthX} ${seatTopY + depthY} ${seatLeft + depthX} ${seatTopY + r + depthY} ` +
+    `L ${seatLeft} ${seatTopY + r} ` +
+    `Q ${seatLeft} ${seatTopY} ${seatLeft + r} ${seatTopY} Z`;
+
+  // Panel derecho — cara lateral 3/4 desde arriba del asiento hasta el suelo
+  const rightSidePath =
+    `M ${seatRight} ${seatTopY + r} ` +
+    `L ${seatRight + depthX} ${seatTopY + r + depthY} ` +
+    `L ${seatRight + depthX} ${floorY + depthY} ` +
+    `L ${seatRight} ${floorY} Z`;
 
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[300px] mx-auto">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
-        <TexturePattern id={woodPatternId} color={woodColor} tile={18} />
-        <clipPath id={`bn-${clipId}`}>
-          <path d={mode === "baul" ? seatFrontRect : (mode === "madera" ? seatFrontOnly : uFrontPath)} />
-        </clipPath>
+        <clipPath id={`bn-${clipId}`}><path d={frontPath} /></clipPath>
       </defs>
 
       <g
         style={{
-          transform: `scale(${scaleX}, ${scaleY})`,
-          transformOrigin: "150px 190px",
+          transform: `scale(${scaleX}, 1)`,
+          transformOrigin: "160px 196px",
           transition: "transform 0.4s ease",
         }}
       >
-        <ellipse cx={157} cy={204} rx={110} ry={8} fill="rgba(0,0,0,0.08)" />
+        {/* Sombra suelo */}
+        <ellipse cx={160} cy={206} rx={130} ry={6} fill="rgba(0,0,0,0.10)" />
 
-        {mode === "madera" && (
-          <>
-            {/* Top face — fabric */}
-            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
-            {/* Right outer side — wood for full height */}
-            <path d={rightOuterSide} fill={patternFill(woodPatternId, darken(woodColor, 10))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={rightOuterSide} fill="rgba(0,0,0,0.10)" />
-            {/* Leg inner sides — wood */}
-            <path d={innerLeftSide} fill={patternFill(woodPatternId, darken(woodColor, 14))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerLeftSide} fill="rgba(0,0,0,0.08)" />
-            <path d={innerRightSide} fill={patternFill(woodPatternId, darken(woodColor, 16))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerRightSide} fill="rgba(0,0,0,0.10)" />
-            {/* Full front — wood base */}
-            <path d={uFrontPath} fill={patternFill(woodPatternId, woodColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            {/* Seat front area — fabric overlay */}
-            <path d={seatFrontOnly} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-          </>
-        )}
+        {/* Cara superior (asiento) */}
+        <path d={topPath} fill={patternFill(patternId, lighten(color, 14))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={topPath} fill="rgba(255,255,255,0.10)" />
 
-        {mode === "enteladas" && (
-          <>
-            <path d={seatTop} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
-            <path d={rightOuterSide} fill={patternFill(patternId, seatSideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={rightOuterSide} fill="rgba(0,0,0,0.10)" />
-            <path d={innerLeftSide} fill={patternFill(patternId, darken(color, 14))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerLeftSide} fill="rgba(0,0,0,0.08)" />
-            <path d={innerRightSide} fill={patternFill(patternId, darken(color, 16))} stroke="rgba(0,0,0,0.14)" strokeWidth="1" />
-            <path d={innerRightSide} fill="rgba(0,0,0,0.10)" />
-            <path d={uFrontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-          </>
-        )}
+        {/* Cara lateral derecha (panel + asiento) */}
+        <path d={rightSidePath} fill={patternFill(patternId, darken(color, 22))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        <path d={rightSidePath} fill="rgba(0,0,0,0.10)" />
 
-        {mode === "baul" && (
-          <>
-            <path d={seatTop} fill={patternFill(patternId, seatTopColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatTop} fill="rgba(255,255,255,0.12)" />
-            <path d={seatSide} fill={patternFill(patternId, seatSideColor)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={seatSide} fill="rgba(0,0,0,0.10)" />
-            <path d={seatFrontRect} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
-            <path d={`M ${seatX + seatW / 2 - 16} ${seatY + 42} Q ${seatX + seatW / 2} ${seatY + 54} ${seatX + seatW / 2 + 16} ${seatY + 42}`} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="2.2" strokeLinecap="round" />
-          </>
-        )}
+        {/* Cara frontal en forma de puerta (cascada, hueco centro) */}
+        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
 
+        {/* Vivo del borde si aplica */}
         {finish === "vivo-simple" && (
+          <g clipPath={`url(#bn-${clipId})`}>
+            <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+          </g>
+        )}
+        {finish === "vivo-doble" && (
           <>
-            {(mode === "madera" || mode === "enteladas") && (
-              <>
-                <path d={seatTop} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-                <path d={rightOuterSide} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-              </>
-            )}
-            {mode === "baul" && (
-              <>
-                <path d={seatTop} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-                <path d={seatSide} fill="none" stroke={vivoColor} strokeWidth="2.6" strokeLinejoin="round" />
-              </>
-            )}
             <g clipPath={`url(#bn-${clipId})`}>
-              <path d={mode === "baul" ? seatFrontRect : (mode === "madera" ? seatFrontOnly : uFrontPath)} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
+              <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
             </g>
+            <path d={topPath} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
           </>
         )}
       </g>

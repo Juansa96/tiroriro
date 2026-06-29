@@ -35,6 +35,7 @@ const getShapePath = (configParam: string | undefined, category: string): React.
     }
   }
   if (category === 'pufs') return <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
+  if (category === 'bancos') return <path d="M 4 9 H 28 V 24 H 24 V 14 H 8 V 24 H 4 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />;
   if (category === 'mesas-centro') {
     if (configParam === 'tipo-banco') return <><rect x="3" y="7" width="26" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" /><line x1="6" y1="17" x2="6" y2="25" stroke="currentColor" strokeWidth="1.5" /><line x1="26" y1="17" x2="26" y2="25" stroke="currentColor" strokeWidth="1.5" /></>;
     return <rect x="3" y="10" width="26" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />;
@@ -122,7 +123,6 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   bancos: {
     title: "Bancos entelados",
     subtitle: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista.",
-    comingSoon: true,
     models: [
       {
         name: "Oyambre",
@@ -131,9 +131,9 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
           "/productos-fotos/bancos/oyambre-02.webp",
           "/productos-fotos/bancos/oyambre-03.webp",
         ],
-        desc: "Banco entelado de pie de cama. De 80 a 160 cm.",
-        priceLabel: "",
-        comingSoon: true,
+        desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Tres medidas: 150, 120 y 90 cm de largo (alto 45 · fondo 33).",
+        priceLabel: "Desde 180€",
+        configParam: "cascada",
       },
       {
         name: "Gerra",
@@ -291,7 +291,7 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
   },
   bancos: {
     title: "Bancos entelados a medida | Tiroriro",
-    description: "Bancos tapizados a medida, próximamente disponibles. Hecho a mano en España con más de 60 telas.",
+    description: "Banco Oyambre tapizado a medida en 3 largos: 150, 120 y 90 cm. Alto 45 · fondo 33. Desde 180 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/bancos",
     ogImage: "https://tirorirohome.com/productos-fotos/bancos/IMG_2491.webp",
   },
@@ -324,6 +324,7 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
 // Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
 const CATEGORY_PRICE_FROM: Record<string, number> = {
   cabeceros: 225,
+  bancos: 180,
   pufs: 125,
   "mesas-centro": 280,
   "pantallas-lampara": 25,
