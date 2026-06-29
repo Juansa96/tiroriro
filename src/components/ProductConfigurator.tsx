@@ -606,7 +606,7 @@ const ProductConfigurator = () => {
         const idx = order.indexOf(s);
         const next = order.slice(idx + 1).find(n => {
           if (n === 'finish' && productType === 'banco') return false;
-          if (n === 'extras' && !['cabecero','mesa','banco'].includes(productType || '')) return false;
+          if (n === 'extras' && !['cabecero','mesa'].includes(productType || '')) return false;
           return true;
         });
         if (next) {
@@ -1662,7 +1662,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
       </div>
       )}
 
-      {(!productType || ['cabecero', 'banco', 'mesa'].includes(productType)) && (
+      {(!productType || ['cabecero', 'mesa'].includes(productType)) && (
       <div id="acc-extras" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
         <SectionHeader step="extras" num={5} isComplete={stepComplete.extras} />
         <div className="pb-6 space-y-4 px-1 pt-2">
@@ -1674,24 +1674,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
               <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
             </div>
-          )}
-          {productType === 'banco' && (
-            <>
-              <div className="flex justify-between items-center py-2">
-                <div>
-                  <p className="text-base text-foreground font-light">Patas de madera</p>
-                  <p className="text-xs text-muted-foreground">Consultar precio</p>
-                </div>
-                <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <div>
-                  <p className="text-base text-foreground font-light">Relleno extra firmeza</p>
-                  <p className="text-xs text-muted-foreground">Consultar precio</p>
-                </div>
-                <Switch checked={extraRelleno} onCheckedChange={setExtraRelleno} />
-              </div>
-            </>
           )}
           {productType === 'mesa' && (
             <div className="py-2">
