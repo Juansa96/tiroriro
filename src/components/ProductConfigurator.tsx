@@ -588,7 +588,7 @@ const ProductConfigurator = () => {
       : productType === 'pantalla' ? !!lampDiameter
       : false,
     fabric: !!fabricId,
-    finish: productType === 'pantalla' ? !!lampDiameter : !!finish,
+    finish: (productType === 'pantalla' || productType === 'banco') ? true : !!finish,
     extras: !productType || !['cabecero'].includes(productType),
   };
 
