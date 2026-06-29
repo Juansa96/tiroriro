@@ -290,7 +290,7 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
   },
   bancos: {
     title: "Bancos entelados a medida | Tiroriro",
-    description: "Bancos tapizados a medida, próximamente disponibles. Hecho a mano en España con más de 60 telas.",
+    description: "Banco Oyambre tapizado a medida en 3 largos: 150, 120 y 90 cm. Alto 45 · fondo 33. Desde 180 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/bancos",
     ogImage: "https://tirorirohome.com/productos-fotos/bancos/IMG_2491.webp",
   },
@@ -323,6 +323,7 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
 // Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
 const CATEGORY_PRICE_FROM: Record<string, number> = {
   cabeceros: 225,
+  bancos: 180,
   pufs: 125,
   "mesas-centro": 280,
   "pantallas-lampara": 25,
