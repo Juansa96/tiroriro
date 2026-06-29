@@ -634,7 +634,7 @@ const ProductConfigurator = () => {
   // El precio es "en progreso" cuando no hay precio calculado aún (medidas no elegidas)
   const priceIsKnown = price > 0;
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
-  const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && !finish);
+  const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && productType !== 'banco' && !finish);
 
   // Detecta si el usuario ha introducido una medida personalizada (no preset)
   const hasCustomMeasure = !!(
