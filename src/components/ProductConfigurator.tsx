@@ -224,6 +224,9 @@ const MEASURE_RANGES = {
   mesaLargo: { min: 40, max: 300, label: 'largo de la mesa' },
   mesaAlto: { min: 20, max: 100, label: 'alto de la mesa' },
   mesaFondo: { min: 20, max: 150, label: 'fondo de la mesa' },
+  bancoLargo: { min: 60, max: 300, label: 'largo del banco' },
+  bancoAlto: { min: 30, max: 80, label: 'alto del banco' },
+  bancoFondo: { min: 25, max: 60, label: 'fondo del banco' },
 } as const;
 
 function rangeError(value: string, range: { min: number; max: number; label: string }): string | null {
@@ -445,7 +448,7 @@ const ProductConfigurator = () => {
   const lampSizeParsed = productType === 'pantalla' && lampDiameter ? parseLampSize(lampDiameter) : null;
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
-    : productType === 'banco' ? parseCm(benchLength)
+    : productType === 'banco' ? (benchLength === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : parseCm(benchLength))
     : productType === 'mesa' ? (benchLength === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : parseCm(benchLength))
     : productType === 'puf' ? (puffDiameter === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : (parseCm(puffDiameter) ?? 60))
     : productType === 'cojin' ? cushionDetails?.widthCm
@@ -454,7 +457,7 @@ const ProductConfigurator = () => {
 
   // For puf cuadrado (Patos): height = width to make it perfectly cubic
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
-    : productType === 'banco' ? parseCm(benchHeight)
+    : productType === 'banco' ? (benchLength === 'custom' ? (benchHeight ? parseInt(benchHeight) : undefined) : parseCm(benchHeight))
     : productType === 'mesa' ? (benchLength === 'custom' ? (customHeight ? parseInt(customHeight) : undefined) : parseCm(benchHeight))
     : productType === 'puf' ? widthCm
     : productType === 'cojin' ? cushionDetails?.heightCm
@@ -463,7 +466,7 @@ const ProductConfigurator = () => {
 
   const depthCm = productType === 'mesa'
     ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
-    : productType === 'banco' ? parseCm(benchDepth)
+    : productType === 'banco' ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
     : undefined;
 
   // For cojin, derive svgForma directly from cushionShape (immediate, no wait for size)
@@ -545,7 +548,15 @@ const ProductConfigurator = () => {
       o.pantallaSizeKey = lampDiameter ? `${shape}-${lampDiameter}` : '';
     }
 
-    if (productType === 'banco') o.benchLength = benchLength;
+    if (productType === 'banco') {
+      o.benchLength = benchLength;
+      if (benchLength === 'custom') {
+        o.bancoCustomLargo = customWidth;
+        o.bancoCustomAlto = benchHeight;
+        o.bancoCustomFondo = benchDepth;
+        o.priceOnRequest = 'true';
+      }
+    }
 
     if (extraRelleno) o.relleno = 'true';
     if (extraTapetes && productType === 'cabecero') o.tapetes = 'true';
@@ -577,7 +588,11 @@ const ProductConfigurator = () => {
     measures: productType === 'cabecero'
         ? (bedWidth === 'custom' ? isValidInRange(customWidth, MEASURE_RANGES.cabeceroAncho) : !!bedWidth)
           && (bedHeight === 'custom' ? isValidInRange(customHeight, MEASURE_RANGES.cabeceroAlto) : !!bedHeight)
-      : productType === 'banco' ? !!benchLength
+      : productType === 'banco' ? (benchLength === 'custom'
+          ? isValidInRange(customWidth, MEASURE_RANGES.bancoLargo)
+            && isValidInRange(benchHeight, MEASURE_RANGES.bancoAlto)
+            && isValidInRange(benchDepth, MEASURE_RANGES.bancoFondo)
+          : !!benchLength)
       : productType === 'mesa' ? (benchLength === 'custom'
           ? isValidInRange(customWidth, MEASURE_RANGES.mesaLargo)
             && isValidInRange(customHeight, MEASURE_RANGES.mesaAlto)
@@ -640,6 +655,9 @@ const ProductConfigurator = () => {
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
   const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && productType !== 'banco' && !finish);
 
+  // Banco con medidas personalizadas: precio a consultar
+  const isPriceOnRequest = productType === 'banco' && benchLength === 'custom';
+
   // Detecta si el usuario ha introducido una medida personalizada (no preset)
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
@@ -658,7 +676,7 @@ const ProductConfigurator = () => {
     chips.push(bedWidth || customWidth ? (bedWidth || `${customWidth} cm`) : "—");
     chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
   }
-  if (productType === 'banco') chips.push(benchLength || "—");
+  if (productType === 'banco') chips.push(benchLength === 'custom' ? `${customWidth || '?'}×${benchHeight || '?'}×${benchDepth || '?'} cm` : (benchLength || "—"));
   if (productType === 'puf') {
     chips.push(puffDiameter || "—");
   }
@@ -733,7 +751,7 @@ const ProductConfigurator = () => {
       case 'measures':
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
-        if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
+        if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength === 'custom' ? `${customWidth}×${benchHeight}×${benchDepth} cm` : benchLength}</span>;
         if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
         if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter}</span>;
@@ -919,14 +937,20 @@ const ProductConfigurator = () => {
               <div>
                 <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
                 <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
-                  {priceIsKnown ? `${price} €` : `desde ${basePrice} €`}
-                  {hasCustomMeasure && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price} €` : `desde ${basePrice} €`)}
+                  {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
                 </p>
               </div>
-              <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>
+              {!isPriceOnRequest && <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>}
             </div>
           )}
-          {hasCustomMeasure && (
+          {isPriceOnRequest ? (
+            <div className="mt-2 px-1">
+              <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
+                Precio a consultar — nos pondremos en contacto contigo.
+              </p>
+            </div>
+          ) : hasCustomMeasure && (
             <div className="mt-2 px-1">
               <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
                 <span className="text-accent-warm not-italic">*</span> {customNote}
@@ -982,10 +1006,14 @@ const ProductConfigurator = () => {
               <>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
                 <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none">
-                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
-                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price}€` : `desde ${basePrice}€`)}
+                  {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
                 </p>
-                {hasCustomMeasure && (
+                {isPriceOnRequest ? (
+                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
+                    Te contactamos
+                  </p>
+                ) : hasCustomMeasure && (
                   <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
                     *Orientativo
                   </p>
@@ -1217,13 +1245,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo · Banco Oyambre</p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {BENCH_LENGTHS.map(l => {
                     const price = l.startsWith('150') ? 300 : l.startsWith('120') ? 240 : 180;
                     return (
                       <button
                         key={l}
-                        onClick={() => setBenchLength(l)}
+                        onClick={() => { setBenchLength(l); setBenchHeight('45 cm'); setBenchDepth('33 cm'); }}
                         className={`border rounded-md p-3 text-center cursor-pointer transition-all ${benchLength === l ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                       >
                         <span className="block text-sm font-medium text-foreground">{l}</span>
@@ -1231,10 +1259,56 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       </button>
                     );
                   })}
+                  <button
+                    onClick={() => { setBenchLength('custom'); setBenchHeight(''); setBenchDepth(''); setCustomWidth(''); }}
+                    className={`border rounded-md p-3 text-center cursor-pointer transition-all ${benchLength === 'custom' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                  >
+                    <span className="block text-sm font-medium text-foreground">Mis medidas</span>
+                    <span className="block text-[10px] text-muted-foreground mt-0.5">A consultar</span>
+                  </button>
                 </div>
-                <p className="text-[11px] text-muted-foreground font-light mt-3 leading-snug">
-                  Alto <span className="text-foreground">45 cm</span> y fondo <span className="text-foreground">33 cm</span> — fijos en las 3 medidas.
-                </p>
+                {benchLength !== 'custom' && (
+                  <p className="text-[11px] text-muted-foreground font-light mt-3 leading-snug">
+                    Alto <span className="text-foreground">45 cm</span> y fondo <span className="text-foreground">33 cm</span> — fijos en las 3 medidas.
+                  </p>
+                )}
+                {benchLength === 'custom' && (
+                  <div className="mt-4 grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[11px] tracking-wide uppercase text-muted-foreground font-light block mb-1">Largo (cm)</label>
+                      <input
+                        type="number" min={MEASURE_RANGES.bancoLargo.min} max={MEASURE_RANGES.bancoLargo.max}
+                        placeholder="cm" value={customWidth}
+                        onChange={(e) => setCustomWidth(e.target.value)}
+                        aria-invalid={!!rangeError(customWidth, MEASURE_RANGES.bancoLargo)}
+                        className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(customWidth, MEASURE_RANGES.bancoLargo))}`}
+                      />
+                      <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.bancoLargo)} />
+                    </div>
+                    <div>
+                      <label className="text-[11px] tracking-wide uppercase text-muted-foreground font-light block mb-1">Alto (cm)</label>
+                      <input
+                        type="number" min={MEASURE_RANGES.bancoAlto.min} max={MEASURE_RANGES.bancoAlto.max}
+                        placeholder="cm" value={benchHeight}
+                        onChange={(e) => setBenchHeight(e.target.value)}
+                        aria-invalid={!!rangeError(benchHeight, MEASURE_RANGES.bancoAlto)}
+                        className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(benchHeight, MEASURE_RANGES.bancoAlto))}`}
+                      />
+                      <ErrorMsg msg={rangeError(benchHeight, MEASURE_RANGES.bancoAlto)} />
+                    </div>
+                    <div>
+                      <label className="text-[11px] tracking-wide uppercase text-muted-foreground font-light block mb-1">Fondo (cm)</label>
+                      <input
+                        type="number" min={MEASURE_RANGES.bancoFondo.min} max={MEASURE_RANGES.bancoFondo.max}
+                        placeholder="cm" value={benchDepth}
+                        onChange={(e) => setBenchDepth(e.target.value)}
+                        aria-invalid={!!rangeError(benchDepth, MEASURE_RANGES.bancoFondo)}
+                        className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(benchDepth, MEASURE_RANGES.bancoFondo))}`}
+                      />
+                      <ErrorMsg msg={rangeError(benchDepth, MEASURE_RANGES.bancoFondo)} />
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}
