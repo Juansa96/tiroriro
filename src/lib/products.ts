@@ -190,6 +190,7 @@ function _getBasePrice(type: ProductType, options: Record<string, string>): numb
 
   // ── Banco (sin precios definitivos) ───────────────────────────────────────
   if (type === "banco") {
+    if (options.benchLength === 'custom') return 0;
     const lenCm = parseInt(options.benchLength || "0");
     let base = 0;
     if (lenCm >= 150) base = 300;
@@ -233,9 +234,16 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
 
   if (type === "banco") {
     parts[0] = "Banco Oyambre";
-    if (options.benchLength) parts.push(`Largo ${options.benchLength}`);
-    parts.push("Alto 45 cm");
-    parts.push("Fondo 33 cm");
+    if (options.benchLength === 'custom') {
+      parts.push(`Largo ${options.bancoCustomLargo || '?'} cm`);
+      parts.push(`Alto ${options.bancoCustomAlto || '?'} cm`);
+      parts.push(`Fondo ${options.bancoCustomFondo || '?'} cm`);
+      parts.push('Precio a consultar — nos pondremos en contacto contigo');
+    } else {
+      if (options.benchLength) parts.push(`Largo ${options.benchLength}`);
+      parts.push("Alto 45 cm");
+      parts.push("Fondo 33 cm");
+    }
   }
 
   if (type === "puf") {
