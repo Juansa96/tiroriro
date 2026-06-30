@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
@@ -21,6 +22,7 @@ const UnsubscribePage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const [state, setState] = useState<State>({ kind: "loading" });
+  // Helmet rendered below
 
   useEffect(() => {
     if (!token) {
