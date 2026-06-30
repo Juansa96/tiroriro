@@ -7,7 +7,7 @@ import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
-interface Model {
+export interface Model {
   name: string;
   photos: string[];
   desc: string;
@@ -63,7 +63,7 @@ const ShapeCircle = ({ configParam, category }: { configParam?: string; category
   );
 };
 
-const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[]; comingSoon?: boolean }> = {
+export const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[]; comingSoon?: boolean }> = {
   cabeceros: {
     title: "Cabeceros tapizados",
     subtitle: "El punto de partida de cualquier dormitorio que merece la pena.",
@@ -261,7 +261,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   },
 };
 
-const productTypeMap: Record<string, string> = {
+export const productTypeMap: Record<string, string> = {
   cabeceros: "cabecero",
   bancos: "banco",
   cojines: "cojin",
@@ -272,7 +272,7 @@ const productTypeMap: Record<string, string> = {
 };
 
 // Texto descriptivo corto para alt de imágenes ("Cabecero tapizado Pregonda — foto 2 | Tiroriro")
-const categoryAltLabel: Record<string, string> = {
+export const categoryAltLabel: Record<string, string> = {
   cabeceros:           "Cabecero tapizado",
   bancos:              "Banco entelado",
   cojines:             "Almohadón tapizado",
@@ -283,7 +283,7 @@ const categoryAltLabel: Record<string, string> = {
 };
 
 // SEO por categoría: title + description + canonical únicos
-const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
+export const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
   cabeceros: {
     title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
     description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 225 €. Hecho a mano en España en 20 días.",
@@ -323,7 +323,7 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
 };
 
 // Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
-const CATEGORY_PRICE_FROM: Record<string, number> = {
+export const CATEGORY_PRICE_FROM: Record<string, number> = {
   cabeceros: 225,
   bancos: 180,
   pufs: 125,
