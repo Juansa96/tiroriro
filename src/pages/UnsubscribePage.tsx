@@ -78,6 +78,7 @@ const UnsubscribePage = () => {
 
   return (
     <>
+      <Helmet><meta name="robots" content="noindex,follow" /></Helmet>
       <Navbar />
       <main className="pt-20 min-h-screen bg-background flex flex-col">
         <section className="flex-1 flex items-center justify-center py-24 px-6">
