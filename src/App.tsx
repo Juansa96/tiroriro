@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import FloatingButtons from "@/components/FloatingButtons";
+import MobileStickyCTA from "@/components/MobileStickyCTA";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollToTop from "@/components/ScrollToTop";
 import { lazy, Suspense } from "react";
@@ -70,6 +71,7 @@ const App = () => (
         </Routes>
         </Suspense>
         <FloatingButtons />
+        <MobileStickyCTA />
         <CookieBanner />
       </BrowserRouter>
     </TooltipProvider>
