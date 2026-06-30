@@ -311,25 +311,38 @@ const BenchSVG = ({
   const L = (x: number) => x - S; // mitad izquierda
   const R = (x: number) => x + S; // mitad derecha
 
+  // Escalado vertical: alto (45cm base) afecta a la parte baja (patas);
+  // fondo (33cm base) afecta a la perspectiva de la cara superior.
+  const H = heightCm ?? 45;
+  const D = depthCm ?? 33;
+  const dH = (H - 45) * 2.78; // ~2.78u/cm
+  const dD = (D - 33) * 0.91; // ~0.91u/cm
+  // Y param: base + delta para los puntos bajos / altos
+  const yBottom = 235 + dH;       // base de pata
+  const yLegBend = 223 + dH;      // curvatura interior pata
+  const yTopFace = 80 - dD;       // borde superior de la tapa
+  const yTopCorner = 96 - dD;     // control de esquina superior
+
   // Cara superior (asiento) — tono claro
   const topPath =
     `M ${L(170)} 136 Q ${L(170)} 110 ${L(196)} 110 ` +
     `L ${R(484)} 110 Q ${R(510)} 110 ${R(510)} 136 ` +
-    `L ${R(500)} 96 Q ${R(492)} 80 ${R(480)} 80 ` +
-    `L ${L(200)} 80 Q ${L(188)} 80 ${L(180)} 96 Z`;
+    `L ${R(500)} ${yTopCorner} Q ${R(492)} ${yTopFace} ${R(480)} ${yTopFace} ` +
+    `L ${L(200)} ${yTopFace} Q ${L(188)} ${yTopFace} ${L(180)} ${yTopCorner} Z`;
 
   // Cara frontal (cuerpo: asiento + dos patas + hueco central) — tono base
   const frontPath =
     `M ${L(170)} 136 Q ${L(170)} 110 ${L(196)} 110 ` +
     `L ${R(484)} 110 Q ${R(510)} 110 ${R(510)} 136 ` +
-    `L ${R(510)} 223 Q ${R(510)} 235 ${R(498)} 235 ` +
-    `L ${R(484)} 235 Q ${R(472)} 235 ${R(472)} 223 ` +
+    `L ${R(510)} ${yLegBend} Q ${R(510)} ${yBottom} ${R(498)} ${yBottom} ` +
+    `L ${R(484)} ${yBottom} Q ${R(472)} ${yBottom} ${R(472)} ${yLegBend} ` +
     `L ${R(472)} 158 Q ${R(472)} 138 ${R(452)} 138 ` +
     `L ${L(228)} 138 Q ${L(208)} 138 ${L(208)} 158 ` +
-    `L ${L(208)} 223 Q ${L(208)} 235 ${L(196)} 235 ` +
-    `L ${L(182)} 235 Q ${L(170)} 235 ${L(170)} 223 Z`;
+    `L ${L(208)} ${yLegBend} Q ${L(208)} ${yBottom} ${L(196)} ${yBottom} ` +
+    `L ${L(182)} ${yBottom} Q ${L(170)} ${yBottom} ${L(170)} ${yLegBend} Z`;
 
   const shadowRx = 198 + Math.abs(S) * 0.9;
+  const shadowCy = Math.min(270, yBottom + 13);
 
   return (
     <svg viewBox="0 0 680 280" width="100%" className="mx-auto max-w-full" preserveAspectRatio="xMidYMid meet">
@@ -338,7 +351,7 @@ const BenchSVG = ({
       </defs>
 
       {/* Sombra centrada bajo la pieza */}
-      <ellipse cx="340" cy="248" rx={shadowRx} ry="11" fill="rgba(0,0,0,0.07)" />
+      <ellipse cx="340" cy={shadowCy} rx={shadowRx} ry="11" fill="rgba(0,0,0,0.07)" />
 
       {/* Cara frontal — relleno con la tela elegida (tono base) */}
       <path
