@@ -51,7 +51,7 @@ const CATEGORIES = [
     id: "bancos",
     name: "Bancos entelados",
     tagline: "Oyambre · 3 medidas · Pie de cama",
-    image: "/productos-fotos/bancos/oyambre-01.webp",
+    image: "/productos-fotos/bancos/oyambre-nuevo.webp",
     priceLabel: "Desde 180€",
     comingSoon: false,
   },
