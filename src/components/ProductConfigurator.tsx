@@ -548,7 +548,15 @@ const ProductConfigurator = () => {
       o.pantallaSizeKey = lampDiameter ? `${shape}-${lampDiameter}` : '';
     }
 
-    if (productType === 'banco') o.benchLength = benchLength;
+    if (productType === 'banco') {
+      o.benchLength = benchLength;
+      if (benchLength === 'custom') {
+        o.bancoCustomLargo = customWidth;
+        o.bancoCustomAlto = benchHeight;
+        o.bancoCustomFondo = benchDepth;
+        o.priceOnRequest = 'true';
+      }
+    }
 
     if (extraRelleno) o.relleno = 'true';
     if (extraTapetes && productType === 'cabecero') o.tapetes = 'true';
@@ -580,7 +588,11 @@ const ProductConfigurator = () => {
     measures: productType === 'cabecero'
         ? (bedWidth === 'custom' ? isValidInRange(customWidth, MEASURE_RANGES.cabeceroAncho) : !!bedWidth)
           && (bedHeight === 'custom' ? isValidInRange(customHeight, MEASURE_RANGES.cabeceroAlto) : !!bedHeight)
-      : productType === 'banco' ? !!benchLength
+      : productType === 'banco' ? (benchLength === 'custom'
+          ? isValidInRange(customWidth, MEASURE_RANGES.bancoLargo)
+            && isValidInRange(benchHeight, MEASURE_RANGES.bancoAlto)
+            && isValidInRange(benchDepth, MEASURE_RANGES.bancoFondo)
+          : !!benchLength)
       : productType === 'mesa' ? (benchLength === 'custom'
           ? isValidInRange(customWidth, MEASURE_RANGES.mesaLargo)
             && isValidInRange(customHeight, MEASURE_RANGES.mesaAlto)
