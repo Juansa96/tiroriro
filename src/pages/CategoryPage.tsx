@@ -538,19 +538,57 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
         ],
       }
     : null;
+  const itemListJsonLd = seo && activeModels.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: cat.title,
+        itemListElement: activeModels.map((m, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "Product",
+            name: `${cat.title.replace(/s$/, "")} ${m.name}`,
+            sku: `tiroriro-${category}-${m.name.toLowerCase().replace(/\s+/g, "-")}`,
+            description: m.desc,
+            image: m.photos[0] ? `https://tirorirohome.com${m.photos[0]}` : undefined,
+            brand: { "@type": "Brand", name: "Tiroriro" },
+            category: cat.title,
+            url: m.configParam
+              ? `${seo.canonical}#${m.configParam}`
+              : seo.canonical,
+            ...(priceFrom
+              ? {
+                  offers: {
+                    "@type": "Offer",
+                    priceCurrency: "EUR",
+                    price: priceFrom,
+                    availability: "https://schema.org/InStock",
+                    areaServed: "ES",
+                    seller: { "@type": "Organization", name: "Tiroriro" },
+                  },
+                }
+              : {}),
+          },
+        })),
+      }
+    : null;
 
   return (
     <>
       {seo && (
         <SEO title={seo.title} description={seo.description} canonical={seo.canonical} ogImage={seo.ogImage} />
       )}
-      {(productJsonLd || breadcrumbJsonLd) && (
+      {(productJsonLd || breadcrumbJsonLd || itemListJsonLd) && (
         <Helmet>
           {productJsonLd && (
             <script type="application/ld+json">{JSON.stringify(productJsonLd)}</script>
           )}
           {breadcrumbJsonLd && (
             <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
+          )}
+          {itemListJsonLd && (
+            <script type="application/ld+json">{JSON.stringify(itemListJsonLd)}</script>
           )}
         </Helmet>
       )}
