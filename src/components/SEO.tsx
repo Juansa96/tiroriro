@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 const BASE_URL = "https://tirorirohome.com";
-export const DEFAULT_OG_IMAGE = `${BASE_URL}/hero-poster.webp`;
+export const DEFAULT_OG_IMAGE = `${BASE_URL}/og-image.jpg`;
 
 interface SEOProps {
   title: string;

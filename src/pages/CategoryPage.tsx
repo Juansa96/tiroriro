@@ -7,7 +7,7 @@ import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
-interface Model {
+export interface Model {
   name: string;
   photos: string[];
   desc: string;
@@ -63,7 +63,7 @@ const ShapeCircle = ({ configParam, category }: { configParam?: string; category
   );
 };
 
-const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[]; comingSoon?: boolean }> = {
+export const CATEGORIES: Record<string, { title: string; subtitle: string; models: Model[]; comingSoon?: boolean }> = {
   cabeceros: {
     title: "Cabeceros tapizados",
     subtitle: "El punto de partida de cualquier dormitorio que merece la pena.",
@@ -261,7 +261,7 @@ const CATEGORIES: Record<string, { title: string; subtitle: string; models: Mode
   },
 };
 
-const productTypeMap: Record<string, string> = {
+export const productTypeMap: Record<string, string> = {
   cabeceros: "cabecero",
   bancos: "banco",
   cojines: "cojin",
@@ -272,7 +272,7 @@ const productTypeMap: Record<string, string> = {
 };
 
 // Texto descriptivo corto para alt de imágenes ("Cabecero tapizado Pregonda — foto 2 | Tiroriro")
-const categoryAltLabel: Record<string, string> = {
+export const categoryAltLabel: Record<string, string> = {
   cabeceros:           "Cabecero tapizado",
   bancos:              "Banco entelado",
   cojines:             "Almohadón tapizado",
@@ -283,7 +283,7 @@ const categoryAltLabel: Record<string, string> = {
 };
 
 // SEO por categoría: title + description + canonical únicos
-const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
+export const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
   cabeceros: {
     title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
     description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 225 €. Hecho a mano en España en 20 días.",
@@ -323,7 +323,7 @@ const CATEGORY_SEO: Record<string, { title: string; description: string; canonic
 };
 
 // Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
-const CATEGORY_PRICE_FROM: Record<string, number> = {
+export const CATEGORY_PRICE_FROM: Record<string, number> = {
   cabeceros: 225,
   bancos: 180,
   pufs: 125,
@@ -434,6 +434,14 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
 
 const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ""}`;
+  const slug = model.name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/—/g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  const detailHref = `/productos/${category}/${slug}`;
 
   if (model.comingSoon) {
     return (
@@ -460,21 +468,29 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
 
   return (
     <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden">
-      <div className="relative overflow-hidden">
+      <Link to={detailHref} className="relative overflow-hidden block" aria-label={`Ver detalles de ${model.name}`}>
         <PhotoSlider photos={model.photos} category={category} name={model.name} />
         {category !== 'pantallas-lampara' && (
           <ShapeCircle configParam={model.configParam} category={category} />
         )}
-      </div>
+      </Link>
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
+        <h3 className="font-serif text-lg font-medium text-foreground">
+          <Link to={detailHref} className="hover:text-accent-warm transition-colors">{model.name}</Link>
+        </h3>
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
-        <div className="mt-4">
+        <div className="mt-4 space-y-2">
           <Link
             to={configHref}
             className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center w-full px-6 py-3 text-xs uppercase tracking-[0.20em]"
           >
             <span className="relative z-10">Diseña el tuyo →</span>
+          </Link>
+          <Link
+            to={detailHref}
+            className="block text-center text-[11px] tracking-[0.20em] uppercase text-muted-foreground hover:text-foreground transition-colors py-1"
+          >
+            Más info
           </Link>
         </div>
       </div>
