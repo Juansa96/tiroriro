@@ -1245,13 +1245,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo · Banco Oyambre</p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {BENCH_LENGTHS.map(l => {
                     const price = l.startsWith('150') ? 300 : l.startsWith('120') ? 240 : 180;
                     return (
                       <button
                         key={l}
-                        onClick={() => setBenchLength(l)}
+                        onClick={() => { setBenchLength(l); setBenchHeight('45 cm'); setBenchDepth('33 cm'); }}
                         className={`border rounded-md p-3 text-center cursor-pointer transition-all ${benchLength === l ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                       >
                         <span className="block text-sm font-medium text-foreground">{l}</span>
@@ -1259,10 +1259,56 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       </button>
                     );
                   })}
+                  <button
+                    onClick={() => { setBenchLength('custom'); setBenchHeight(''); setBenchDepth(''); setCustomWidth(''); }}
+                    className={`border rounded-md p-3 text-center cursor-pointer transition-all ${benchLength === 'custom' ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
+                  >
+                    <span className="block text-sm font-medium text-foreground">Mis medidas</span>
+                    <span className="block text-[10px] text-muted-foreground mt-0.5">A consultar</span>
+                  </button>
                 </div>
-                <p className="text-[11px] text-muted-foreground font-light mt-3 leading-snug">
-                  Alto <span className="text-foreground">45 cm</span> y fondo <span className="text-foreground">33 cm</span> — fijos en las 3 medidas.
-                </p>
+                {benchLength !== 'custom' && (
+                  <p className="text-[11px] text-muted-foreground font-light mt-3 leading-snug">
+                    Alto <span className="text-foreground">45 cm</span> y fondo <span className="text-foreground">33 cm</span> — fijos en las 3 medidas.
+                  </p>
+                )}
+                {benchLength === 'custom' && (
+                  <div className="mt-4 grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[11px] tracking-wide uppercase text-muted-foreground font-light block mb-1">Largo (cm)</label>
+                      <input
+                        type="number" min={MEASURE_RANGES.bancoLargo.min} max={MEASURE_RANGES.bancoLargo.max}
+                        placeholder="cm" value={customWidth}
+                        onChange={(e) => setCustomWidth(e.target.value)}
+                        aria-invalid={!!rangeError(customWidth, MEASURE_RANGES.bancoLargo)}
+                        className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(customWidth, MEASURE_RANGES.bancoLargo))}`}
+                      />
+                      <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.bancoLargo)} />
+                    </div>
+                    <div>
+                      <label className="text-[11px] tracking-wide uppercase text-muted-foreground font-light block mb-1">Alto (cm)</label>
+                      <input
+                        type="number" min={MEASURE_RANGES.bancoAlto.min} max={MEASURE_RANGES.bancoAlto.max}
+                        placeholder="cm" value={benchHeight}
+                        onChange={(e) => setBenchHeight(e.target.value)}
+                        aria-invalid={!!rangeError(benchHeight, MEASURE_RANGES.bancoAlto)}
+                        className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(benchHeight, MEASURE_RANGES.bancoAlto))}`}
+                      />
+                      <ErrorMsg msg={rangeError(benchHeight, MEASURE_RANGES.bancoAlto)} />
+                    </div>
+                    <div>
+                      <label className="text-[11px] tracking-wide uppercase text-muted-foreground font-light block mb-1">Fondo (cm)</label>
+                      <input
+                        type="number" min={MEASURE_RANGES.bancoFondo.min} max={MEASURE_RANGES.bancoFondo.max}
+                        placeholder="cm" value={benchDepth}
+                        onChange={(e) => setBenchDepth(e.target.value)}
+                        aria-invalid={!!rangeError(benchDepth, MEASURE_RANGES.bancoFondo)}
+                        className={`w-full ${inputBaseCls} ${inputErrCls(rangeError(benchDepth, MEASURE_RANGES.bancoFondo))}`}
+                      />
+                      <ErrorMsg msg={rangeError(benchDepth, MEASURE_RANGES.bancoFondo)} />
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}
