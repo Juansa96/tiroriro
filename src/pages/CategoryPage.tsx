@@ -434,6 +434,14 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
 
 const ModelCard = ({ model, category }: { model: Model; category: string }) => {
   const configHref = `/configurador?tipo=${productTypeMap[category] || category}${model.configParam ? `&forma=${model.configParam}` : ""}`;
+  const slug = model.name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/—/g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  const detailHref = `/productos/${category}/${slug}`;
 
   if (model.comingSoon) {
     return (
@@ -460,21 +468,29 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
 
   return (
     <div className="flex flex-col h-full border border-border/40 rounded-lg overflow-hidden">
-      <div className="relative overflow-hidden">
+      <Link to={detailHref} className="relative overflow-hidden block" aria-label={`Ver detalles de ${model.name}`}>
         <PhotoSlider photos={model.photos} category={category} name={model.name} />
         {category !== 'pantallas-lampara' && (
           <ShapeCircle configParam={model.configParam} category={category} />
         )}
-      </div>
+      </Link>
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-serif text-lg font-medium text-foreground">{model.name}</h3>
+        <h3 className="font-serif text-lg font-medium text-foreground">
+          <Link to={detailHref} className="hover:text-accent-warm transition-colors">{model.name}</Link>
+        </h3>
         <p className="mt-1 text-sm text-muted-foreground font-light flex-1">{model.desc}</p>
-        <div className="mt-4">
+        <div className="mt-4 space-y-2">
           <Link
             to={configHref}
             className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center w-full px-6 py-3 text-xs uppercase tracking-[0.20em]"
           >
             <span className="relative z-10">Diseña el tuyo →</span>
+          </Link>
+          <Link
+            to={detailHref}
+            className="block text-center text-[11px] tracking-[0.20em] uppercase text-muted-foreground hover:text-foreground transition-colors py-1"
+          >
+            Más info
           </Link>
         </div>
       </div>
