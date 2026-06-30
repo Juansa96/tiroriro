@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useSearchParams, Link } from "react-router-dom";
 import { Check, MessageCircle, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -22,6 +23,7 @@ const GraciasPage = () => {
 
   return (
     <>
+      <Helmet><meta name="robots" content="noindex,follow" /></Helmet>
       <Navbar />
       <main className="pt-20 min-h-screen bg-background flex flex-col">
         <section className="flex-1 flex items-center justify-center py-28 md:py-36 px-6">
