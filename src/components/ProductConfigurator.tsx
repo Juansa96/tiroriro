@@ -937,14 +937,20 @@ const ProductConfigurator = () => {
               <div>
                 <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
                 <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
-                  {priceIsKnown ? `${price} €` : `desde ${basePrice} €`}
-                  {hasCustomMeasure && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price} €` : `desde ${basePrice} €`)}
+                  {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
                 </p>
               </div>
-              <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>
+              {!isPriceOnRequest && <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>}
             </div>
           )}
-          {hasCustomMeasure && (
+          {isPriceOnRequest ? (
+            <div className="mt-2 px-1">
+              <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
+                Precio a consultar — nos pondremos en contacto contigo.
+              </p>
+            </div>
+          ) : hasCustomMeasure && (
             <div className="mt-2 px-1">
               <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
                 <span className="text-accent-warm not-italic">*</span> {customNote}
@@ -1000,10 +1006,14 @@ const ProductConfigurator = () => {
               <>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
                 <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none">
-                  {priceIsKnown ? `${price}€` : `desde ${basePrice}€`}
-                  {hasCustomMeasure && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price}€` : `desde ${basePrice}€`)}
+                  {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
                 </p>
-                {hasCustomMeasure && (
+                {isPriceOnRequest ? (
+                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
+                    Te contactamos
+                  </p>
+                ) : hasCustomMeasure && (
                   <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
                     *Orientativo
                   </p>
