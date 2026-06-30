@@ -11,18 +11,14 @@ const TESTIMONIALS = [
   { name: "Almu Alonso", location: "Tres Cantos - Madrid", photo: almuPhoto, text: "Tenía dudas porque es una compra importante sin verlo en persona. Rocío resolvió todas mis dudas por teléfono y me ayudó a elegir la tela perfecta. El resultado es espectacular. Mi dormitorio ha cambiado por completo." },
 ];
 
+// Removed aggregateRating: Google requires ≥10 verified reviews for rich-result eligibility.
+// Reseñas individuales se mantienen como Review schema.
 const reviewJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": "https://tirorirohome.com/#organization",
   "name": "Tiroriro",
   "url": "https://tirorirohome.com",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "5",
-    "reviewCount": TESTIMONIALS.length,
-    "bestRating": "5",
-  },
   "review": TESTIMONIALS.map((t) => ({
     "@type": "Review",
     "author": { "@type": "Person", "name": t.name },
