@@ -1,0 +1,12 @@
+{
+  "name": "Tiroriro",
+  "short_name": "Tiroriro",
+  "description": "Cabeceros, pufs, mesas y pantallas tapizados a medida en Madrid.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a4b5b",
+  "icons": [
+    { "src": "/hero-poster.webp", "sizes": "512x512", "type": "image/webp" }
+  ]
+}
