@@ -224,6 +224,9 @@ const MEASURE_RANGES = {
   mesaLargo: { min: 40, max: 300, label: 'largo de la mesa' },
   mesaAlto: { min: 20, max: 100, label: 'alto de la mesa' },
   mesaFondo: { min: 20, max: 150, label: 'fondo de la mesa' },
+  bancoLargo: { min: 60, max: 300, label: 'largo del banco' },
+  bancoAlto: { min: 30, max: 80, label: 'alto del banco' },
+  bancoFondo: { min: 25, max: 60, label: 'fondo del banco' },
 } as const;
 
 function rangeError(value: string, range: { min: number; max: number; label: string }): string | null {
