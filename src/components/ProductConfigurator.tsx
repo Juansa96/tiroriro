@@ -448,7 +448,7 @@ const ProductConfigurator = () => {
   const lampSizeParsed = productType === 'pantalla' && lampDiameter ? parseLampSize(lampDiameter) : null;
 
   const widthCm = productType === 'cabecero' ? parseCm(bedWidth) ?? (customWidth ? parseInt(customWidth) : undefined)
-    : productType === 'banco' ? parseCm(benchLength)
+    : productType === 'banco' ? (benchLength === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : parseCm(benchLength))
     : productType === 'mesa' ? (benchLength === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : parseCm(benchLength))
     : productType === 'puf' ? (puffDiameter === 'custom' ? (customWidth ? parseInt(customWidth) : undefined) : (parseCm(puffDiameter) ?? 60))
     : productType === 'cojin' ? cushionDetails?.widthCm
@@ -457,7 +457,7 @@ const ProductConfigurator = () => {
 
   // For puf cuadrado (Patos): height = width to make it perfectly cubic
   const heightCm = productType === 'cabecero' ? parseCm(bedHeight) ?? (customHeight ? parseInt(customHeight) : undefined)
-    : productType === 'banco' ? parseCm(benchHeight)
+    : productType === 'banco' ? (benchLength === 'custom' ? (benchHeight ? parseInt(benchHeight) : undefined) : parseCm(benchHeight))
     : productType === 'mesa' ? (benchLength === 'custom' ? (customHeight ? parseInt(customHeight) : undefined) : parseCm(benchHeight))
     : productType === 'puf' ? widthCm
     : productType === 'cojin' ? cushionDetails?.heightCm
@@ -466,7 +466,7 @@ const ProductConfigurator = () => {
 
   const depthCm = productType === 'mesa'
     ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
-    : productType === 'banco' ? parseCm(benchDepth)
+    : productType === 'banco' ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
     : undefined;
 
   // For cojin, derive svgForma directly from cushionShape (immediate, no wait for size)
