@@ -673,7 +673,7 @@ const ProductConfigurator = () => {
     chips.push(bedWidth || customWidth ? (bedWidth || `${customWidth} cm`) : "—");
     chips.push(bedHeight || customHeight ? (bedHeight || `${customHeight} cm`) : "—");
   }
-  if (productType === 'banco') chips.push(benchLength || "—");
+  if (productType === 'banco') chips.push(benchLength === 'custom' ? `${customWidth || '?'}×${benchHeight || '?'}×${benchDepth || '?'} cm` : (benchLength || "—"));
   if (productType === 'puf') {
     chips.push(puffDiameter || "—");
   }
@@ -748,7 +748,7 @@ const ProductConfigurator = () => {
       case 'measures':
         if (!stepComplete.measures) return <span className="text-muted-foreground italic">Elige una opción</span>;
         if (productType === 'cabecero') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {bedWidth || `${customWidth} cm`} × {bedHeight || `${customHeight} cm`}</span>;
-        if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength}</span>;
+        if (productType === 'banco') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {benchLength === 'custom' ? `${customWidth}×${benchHeight}×${benchDepth} cm` : benchLength}</span>;
         if (productType === 'puf') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {puffDiameter}</span>;
         if (productType === 'cojin') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {CUSHION_SHAPES.find(s => s.id === cushionShape)?.name || ''} {cushionSize}</span>;
         if (productType === 'pantalla') return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {lampDiameter}</span>;
