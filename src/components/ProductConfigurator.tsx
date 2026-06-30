@@ -655,6 +655,9 @@ const ProductConfigurator = () => {
   const basePrice = productType ? (PRODUCTS.find(p => p.type === productType)?.basePrice || 0) : 0;
   const isIncomplete = !productType || !fabricId || (productType !== 'pantalla' && productType !== 'banco' && !finish);
 
+  // Banco con medidas personalizadas: precio a consultar
+  const isPriceOnRequest = productType === 'banco' && benchLength === 'custom';
+
   // Detecta si el usuario ha introducido una medida personalizada (no preset)
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
