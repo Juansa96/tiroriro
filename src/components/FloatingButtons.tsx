@@ -11,8 +11,8 @@ const FloatingButtons = () => {
   const location = useLocation();
 
   const isConfigurador = location.pathname === '/configurador';
-  // On configurador mobile, the fixed bottom bar sits at ~72px — push buttons above it
-  const bottomClass = isConfigurador ? "bottom-24 md:bottom-6" : "bottom-6";
+  // Mobile sticky CTA bar sits at bottom-0; push floating buttons above it on mobile
+  const bottomClass = "bottom-24 md:bottom-6";
   const whatsappUrl = isConfigurador ? WHATSAPP_CONFIGURADOR_URL : WHATSAPP_URL;
   const whatsappLabel = isConfigurador ? "¿Dudas? Escríbenos" : "Escríbenos por WhatsApp";
 
