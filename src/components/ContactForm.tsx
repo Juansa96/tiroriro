@@ -5,10 +5,6 @@ import { Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 
-// API key del CRM (sólo da permiso para enviar leads desde el formulario web)
-const CRM_API_URL = "https://tirorirocrm.lovable.app/api/public/lead-form";
-const CRM_API_KEY = "IwNBaElm-MaxyWxTaA-7ofhsrwsnUMHSEJL5qGZxLgo";
-
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
@@ -86,7 +82,7 @@ const ContactForm = () => {
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = "El nombre es obligatorio";
     if (!form.phone.trim()) errs.phone = "El teléfono es obligatorio";
-    else if (!/^[6-9]\d{8}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = "Introduce un teléfono español válido (9 dígitos)";
+    else if (!/^\+?[0-9\s]{7,16}$/.test(form.phone.trim())) errs.phone = "Introduce un teléfono válido (7-15 dígitos)";
     if (!form.email.trim()) { errs.email = "El email es obligatorio"; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Introduce un email válido";
     if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
@@ -170,6 +166,10 @@ const ContactForm = () => {
           form.details ? `Detalles: ${form.details}` : null,
         ].filter(Boolean).join('\n');
 
+        const presupuestoFlag = previewType === 'banco' && fromConfig?.includes('Mis medidas')
+          ? 'a_consultar'
+          : (previewPrice && Number(previewPrice) > 0 ? 'cerrado' : 'a_consultar');
+
         // Build structured configurator data if coming from configurator
         const configuradorData = hasConfigParams ? {
           tipo: previewType ?? undefined,
@@ -183,13 +183,8 @@ const ContactForm = () => {
           precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
         } : undefined;
 
-        await fetch(CRM_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Api-Key': CRM_API_KEY,
-          },
-          body: JSON.stringify({
+        await supabase.functions.invoke('submit-lead', {
+          body: {
             nombre: fullName,
             email: form.email,
             telefono: form.phone,
@@ -197,7 +192,8 @@ const ContactForm = () => {
             mensaje: mensajeCRM,
             origen: hasConfigParams ? 'Configurador' : 'Formulario web',
             configurador: configuradorData,
-          }),
+            presupuesto: presupuestoFlag,
+          },
         });
       } catch (crmErr) {
         console.warn('CRM no disponible:', crmErr);

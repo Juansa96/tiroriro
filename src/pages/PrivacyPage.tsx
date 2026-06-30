@@ -1,8 +1,10 @@
+import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const PrivacyPage = () => (
   <>
+    <Helmet><meta name="robots" content="noindex,follow" /></Helmet>
     <Navbar />
     <main className="pt-20">
       <section className="py-20 md:py-32 px-6">
