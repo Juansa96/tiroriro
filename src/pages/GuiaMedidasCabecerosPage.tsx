@@ -138,6 +138,9 @@ const GuiaMedidasCabecerosPage = () => (
             <p className="text-xs text-muted-foreground/70 mt-3 italic">
               La regla general: el cabecero debe sobresalir 5–10 cm a cada lado del colchón.
             </p>
+            <p className="text-xs text-muted-foreground/70 mt-2 italic">
+              * Medidas no disponibles en la web. Escríbenos por WhatsApp o email para consultarlas y te las fabricamos.
+            </p>
           </section>
         </AnimatedSection>
 
