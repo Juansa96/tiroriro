@@ -262,9 +262,6 @@ const TeamSection = () => {
             </div>
           )}
 
-          <p className="mt-12 text-sm text-muted-foreground font-light italic text-center">
-            Que gane el mejor matrimonio. O el que tenga más contactos con dedo rápido. Putos modernos.
-          </p>
         </div>
       </div>
     </section>
