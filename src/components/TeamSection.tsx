@@ -107,7 +107,6 @@ const TeamSection = () => {
       setVoted(storedVote);
     }
 
-    // Cargar conteos reales del servidor
     let cancelled = false;
     (async () => {
       try {
@@ -119,6 +118,27 @@ const TeamSection = () => {
         }
       } catch (err) {
         console.error("No se pudieron cargar los votos", err);
+      }
+
+      try {
+        const prevMonth = getPreviousMonth();
+        const { data: rows, error } = await supabase
+          .from("team_poll_votes")
+          .select("option_id")
+          .eq("vote_month", prevMonth);
+        if (!cancelled && !error && rows) {
+          const counts: Record<string, number> = { "inaki-rocio": 0, "juan-bea": 0 };
+          for (const r of rows) {
+            const id = r.option_id as string;
+            if (id in counts) counts[id]++;
+          }
+          const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+          if (winner && winner[1] > 0) {
+            setPrevWinner({ option: winner[0], votes: winner[1] });
+          }
+        }
+      } catch (err) {
+        console.error("No se pudo cargar el ganador anterior", err);
       }
     })();
     return () => {
