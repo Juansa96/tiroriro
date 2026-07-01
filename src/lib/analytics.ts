@@ -42,7 +42,8 @@ export function grantAnalyticsConsent() {
   loadGtagScript();
   if (!configured) {
     configured = true;
-    window.gtag("config", GA_ID, { send_page_view: true });
+    // send_page_view:false → los pageviews los dispara AnalyticsTracker en cada ruta SPA (evita duplicados).
+    window.gtag("config", GA_ID, { send_page_view: false });
   }
 }
 
