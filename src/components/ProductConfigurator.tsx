@@ -802,9 +802,21 @@ const ProductConfigurator = () => {
       <div className="flex justify-between items-center mt-2 gap-2">
         <p className="text-xs text-muted-foreground font-light">
           Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span> · <span className="text-accent-warm font-medium">{
-            Math.round(
-              (visibleSteps.filter(s => stepComplete[s]).length / visibleSteps.length) * 100
-            )
+            (() => {
+              // Peso fijo del primer paso: siempre 1 / STEPS.length (independiente
+              // de cuántos pasos tenga el producto). El resto del 100% se reparte
+              // por igual entre los pasos restantes, así el % del paso 1 no varía
+              // según el número total de pasos.
+              const firstWeight = 100 / STEPS.length;
+              const restCount = Math.max(1, visibleSteps.length - 1);
+              const restWeight = (100 - firstWeight) / restCount;
+              let total = 0;
+              visibleSteps.forEach((s, i) => {
+                if (!stepComplete[s]) return;
+                total += i === 0 ? firstWeight : restWeight;
+              });
+              return Math.round(total);
+            })()
           }%</span>
         </p>
         <p className="text-[10px] text-muted-foreground/70 font-light hidden sm:block">Pulsa para navegar</p>
