@@ -45,6 +45,15 @@ export function grantAnalyticsConsent() {
     // send_page_view:false → los pageviews los dispara AnalyticsTracker en cada ruta SPA (evita duplicados).
     window.gtag("config", GA_ID, { send_page_view: false });
   }
+  // Dispara el page_view de la ruta actual (justo tras aceptar cookies).
+  if (typeof window !== "undefined") {
+    const path = window.location.pathname + window.location.search;
+    window.gtag("event", "page_view", {
+      page_path: path,
+      page_location: window.location.origin + path,
+      page_title: document.title,
+    });
+  }
 }
 
 export function denyAnalyticsConsent() {
