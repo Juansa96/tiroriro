@@ -1254,6 +1254,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </div>
                 )}
               </div>
+              <p className="text-xs text-muted-foreground font-light mt-1">
+                <Link to="/guia-medidas-cabeceros" className="underline underline-offset-4 hover:text-accent-warm transition-colors">
+                  ¿Dudas con la medida? Mira nuestra guía →
+                </Link>
+              </p>
             </>
           )}
 
