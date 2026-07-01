@@ -171,6 +171,23 @@ const GuiaMedidasCabecerosPage = () => (
           </section>
         </AnimatedSection>
 
+        <AnimatedSection delay={0.18}>
+          <section className="mb-16">
+            <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-6">Huecos para enchufes, apliques e interruptores</h2>
+            <p className="text-muted-foreground font-light leading-relaxed mb-4">
+              Si quieres que el cabecero ocupe todo el ancho de la pared y hay enchufes, interruptores o apliques de lectura a la altura del cabecero, podemos fabricar la pieza con las aperturas exactas para que encaje a la perfección.
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-muted-foreground font-light leading-relaxed mb-4">
+              <li><strong className="text-foreground font-medium">Hueco para enchufes:</strong> ideal si tienes una regleta o tomas justo detrás del cabecero.</li>
+              <li><strong className="text-foreground font-medium">Hueco para apliques:</strong> si tienes lámparas de pared a los lados o encima de la cama, dejamos el hueco para que el aplique quede integrado.</li>
+              <li><strong className="text-foreground font-medium">Hueco para interruptores:</strong> útil en dormitorios donde el interruptor principal queda a la altura del cabecero.</li>
+            </ul>
+            <p className="text-muted-foreground font-light leading-relaxed">
+              Es una opción muy práctica cuando buscas que el cabecero ocupe mucho de ancho. Tiene un pequeño suplemento que te detallamos en la llamada antes de cerrar el pedido, porque depende de la cantidad y ubicación de los huecos. Si te interesa, mándanos una foto de tu pared y te decimos exactamente cómo quedaría.
+            </p>
+          </section>
+        </AnimatedSection>
+
         <AnimatedSection delay={0.2}>
           <section className="mb-16">
             <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-6">Preguntas frecuentes</h2>
