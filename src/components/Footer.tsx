@@ -55,7 +55,7 @@ const Footer = () => (
             </span>
           </div>
           <a
-            href="https://www.instagram.com/tirorirohome/"
+            href="https://www.instagram.com/tirorirohome/?utm_source=web&utm_medium=footer&utm_campaign=to_instagram"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram de Tiroriro"

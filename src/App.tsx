@@ -24,6 +24,7 @@ const GraciasPage = lazy(() => import("./pages/GraciasPage"));
 const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage"));
 const GuiaMedidasCabecerosPage = lazy(() => import("./pages/GuiaMedidasCabecerosPage"));
 const ModelPage = lazy(() => import("./pages/ModelPage"));
+const IgPage = lazy(() => import("./pages/IgPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/probador" element={<TryOnPage />} />
           <Route path="/telas" element={<TelasPage />} />
           <Route path="/guia-medidas-cabeceros" element={<GuiaMedidasCabecerosPage />} />
+          <Route path="/ig" element={<IgPage />} />
           <Route path="/nosotros" element={<TeamPage />} />
           <Route path="/equipo" element={<Navigate to="/nosotros" replace />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
