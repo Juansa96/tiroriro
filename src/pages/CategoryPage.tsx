@@ -6,6 +6,8 @@ import AnimatedSection from "@/components/AnimatedSection";
 import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
+import { Instagram, Maximize2 } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export interface Model {
   name: string;
