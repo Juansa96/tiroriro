@@ -122,20 +122,11 @@ const TeamSection = () => {
 
       try {
         const prevMonth = getPreviousMonth();
-        const { data: rows, error } = await supabase
-          .from("team_poll_votes")
-          .select("option_id")
-          .eq("vote_month", prevMonth);
-        if (!cancelled && !error && rows) {
-          const counts: Record<string, number> = { "inaki-rocio": 0, "juan-bea": 0 };
-          for (const r of rows) {
-            const id = r.option_id as string;
-            if (id in counts) counts[id]++;
-          }
-          const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-          if (winner && winner[1] > 0) {
-            setPrevWinner({ option: winner[0], votes: winner[1] });
-          }
+        const { data, error } = await supabase.functions.invoke("team-poll-vote", {
+          body: { action: "winner", month: prevMonth },
+        });
+        if (!cancelled && !error && data?.winner) {
+          setPrevWinner({ option: data.winner, votes: data.votes });
         }
       } catch (err) {
         console.error("No se pudo cargar el ganador anterior", err);
