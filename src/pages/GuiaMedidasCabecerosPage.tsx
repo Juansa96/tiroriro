@@ -194,7 +194,7 @@ const GuiaMedidasCabecerosPage = () => (
             <div className="space-y-6">
               {FAQS.map((f) => (
                 <div key={f.q}>
-                  <h3 className="font-medium text-foreground mb-2">{f.q}</h3>
+                  <h3 className="text-base font-medium text-foreground mb-2">{f.q}</h3>
                   <p className="text-muted-foreground font-light leading-relaxed">{f.a}</p>
                 </div>
               ))}
