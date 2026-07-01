@@ -69,6 +69,45 @@ const ContactForm = () => {
     }
   }, [prefilledProduct, fromConfig, expressParam]);
 
+  // #10 — Restaurar borrador guardado (si el usuario cerró la web a medias).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as {
+        form?: typeof form;
+        selectedProducts?: string[];
+        otherProductDetail?: string;
+      };
+      if (draft.form) setForm(f => ({ ...f, ...draft.form, details: f.details || draft.form?.details || "" }));
+      if (draft.selectedProducts?.length) {
+        setSelectedProducts(prev => Array.from(new Set([...prev, ...draft.selectedProducts!])));
+      }
+      if (draft.otherProductDetail) setOtherProductDetail(draft.otherProductDetail);
+    } catch {
+      /* ignore */
+    }
+    // solo al montar
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Guardar borrador con debounce ligero cada vez que cambia algo relevante.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        const hasAnything = form.name || form.email || form.phone || form.details || selectedProducts.length;
+        if (!hasAnything) return;
+        localStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({ form, selectedProducts, otherProductDetail }),
+        );
+      } catch {
+        /* ignore */
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [form, selectedProducts, otherProductDetail]);
+
   const toggleProduct = (p: string) => {
     setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
     setTouched(t => ({ ...t, product: true }));
