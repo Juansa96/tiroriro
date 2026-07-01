@@ -37,6 +37,9 @@ const ContactForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+  // Draft autosave key. Include configurator params so distintas configs no se pisan.
+  const DRAFT_KEY = "tiro_contact_draft_v1";
+
   const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puf" | "mesa" | "pantalla" | null;
   const previewForma = searchParams.get("previewForma") || undefined;
   const previewColor = searchParams.get("previewColor") || "#D4C5A9";
@@ -65,6 +68,45 @@ const ContactForm = () => {
       setForm(f => ({ ...f, details: details || f.details }));
     }
   }, [prefilledProduct, fromConfig, expressParam]);
+
+  // #10 — Restaurar borrador guardado (si el usuario cerró la web a medias).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as {
+        form?: typeof form;
+        selectedProducts?: string[];
+        otherProductDetail?: string;
+      };
+      if (draft.form) setForm(f => ({ ...f, ...draft.form, details: f.details || draft.form?.details || "" }));
+      if (draft.selectedProducts?.length) {
+        setSelectedProducts(prev => Array.from(new Set([...prev, ...draft.selectedProducts!])));
+      }
+      if (draft.otherProductDetail) setOtherProductDetail(draft.otherProductDetail);
+    } catch {
+      /* ignore */
+    }
+    // solo al montar
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Guardar borrador con debounce ligero cada vez que cambia algo relevante.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        const hasAnything = form.name || form.email || form.phone || form.details || selectedProducts.length;
+        if (!hasAnything) return;
+        localStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({ form, selectedProducts, otherProductDetail }),
+        );
+      } catch {
+        /* ignore */
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [form, selectedProducts, otherProductDetail]);
 
   const toggleProduct = (p: string) => {
     setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
@@ -151,7 +193,7 @@ const ContactForm = () => {
             templateName: 'contact-confirmation',
             recipientEmail: form.email,
             idempotencyKey: `contact-confirmation-${idempotencyBase}`,
-            templateData: { firstName, productList },
+            templateData: { firstName, productList, previewLink },
           },
         });
       } catch (confirmErr) {
@@ -208,6 +250,8 @@ const ContactForm = () => {
         products: selectedProducts.join(','),
       };
       trackEvent('generate_lead', leadParams);
+      // Limpia el borrador tras envío correcto
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       console.error('Error enviando email:', err);

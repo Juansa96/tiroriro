@@ -9,11 +9,13 @@ const SITE_NAME = 'TiroRiro Home'
 interface ContactConfirmationProps {
   firstName?: string
   productList?: string
+  previewLink?: string
 }
 
 const ContactConfirmationEmail = ({
   firstName = '',
   productList = 'tu solicitud',
+  previewLink,
 }: ContactConfirmationProps) => (
   <Html lang="es" dir="ltr">
     <Head />
@@ -30,6 +32,21 @@ const ContactConfirmationEmail = ({
             Tu petición sobre <strong style={{ color: '#1a4b5b' }}>{productList}</strong> está en nuestras manos.<br />
             Te respondemos en <strong>menos de 24 horas laborables</strong>.
           </Text>
+
+          {previewLink && (
+            <Section style={previewBox}>
+              <Text style={previewLabel}>Tu diseño</Text>
+              <Text style={previewText}>
+                Guardamos la configuración exacta que elegiste. Si quieres cambiar algo,
+                puedes seguir editándola desde aquí:
+              </Text>
+              <Section style={{ textAlign: 'center' }}>
+                <Button href={previewLink} style={editButton}>
+                  Ver o editar tu diseño
+                </Button>
+              </Section>
+            </Section>
+          )}
 
           <Section style={stepsBox}>
             <Text style={stepsLabel}>Próximos pasos</Text>
@@ -71,6 +88,7 @@ export const template = {
   previewData: {
     firstName: 'María',
     productList: 'Cabeceros',
+    previewLink: 'https://tirorirohome.com/?previewType=cabecero&previewForma=recto#contacto',
   },
 } satisfies TemplateEntry
 
@@ -90,3 +108,7 @@ const waButton = { backgroundColor: '#25D366', color: '#ffffff', textDecoration:
 const hr = { borderColor: '#f0ede8', margin: '32px 0 20px' }
 const footerNote = { fontSize: '12px', color: '#bbb', margin: 0, fontFamily: 'Arial, sans-serif', lineHeight: '1.6' }
 const linkStyle = { color: '#1a4b5b', textDecoration: 'none' }
+const previewBox = { backgroundColor: '#fdf9f2', border: '1px solid #ead9bd', borderRadius: '8px', padding: '18px 22px', margin: '0 0 24px', textAlign: 'left' as const }
+const previewLabel = { margin: '0 0 8px', fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: '#a8824a', fontFamily: 'Arial, sans-serif', fontWeight: 600 }
+const previewText = { margin: '0 0 14px', fontSize: '13px', color: '#555', lineHeight: '1.55' }
+const editButton = { backgroundColor: '#C4956A', color: '#ffffff', textDecoration: 'none', padding: '10px 22px', borderRadius: '6px', fontSize: '13px', fontFamily: 'Arial, sans-serif', fontWeight: 500 }

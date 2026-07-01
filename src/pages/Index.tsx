@@ -7,6 +7,7 @@ import WhyTiroRiro from "@/components/WhyTiroRiro";
 import Testimonials from "@/components/Testimonials";
 import ContactForm from "@/components/ContactForm";
 import FAQSection from "@/components/FAQSection";
+import InstagramFeedTeaser from "@/components/InstagramFeedTeaser";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 
@@ -25,6 +26,7 @@ const Index = () => (
       <HowItWorks />
       <WhyTiroRiro />
       <Testimonials />
+      <InstagramFeedTeaser />
       <ContactForm />
       <FAQSection />
     </main>
