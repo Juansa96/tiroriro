@@ -29,8 +29,8 @@ const BED_SIZES = [
 const HEIGHT_GUIDE = [
   { style: "Cabecero bajo (100 cm)", desc: "Nuestra medida estándar. Estilo minimalista, visualmente ligero, ideal en habitaciones pequeñas o con techo bajo." },
   { style: "Cabecero medio (120 cm)", desc: "La segunda medida de serie. El más equilibrado: funciona en cualquier dormitorio y se ve bien tanto sentado como de pie." },
-  { style: "Cabecero alto (a medida, 130–160 cm)", desc: "Cálido, envolvente, con mucha presencia. Recomendado para camas 150+ y dormitorios principales. Se pide como “Otra medida” en el configurador." },
-  { style: "Cabecero extra alto (a medida, >160 cm)", desc: "Pieza protagonista. Solo en habitaciones con techo de 2,60 m o más, para que no agobie. Fabricamos hasta 200 cm de alto." },
+  { style: "Cabecero alto* (a medida, 130–160 cm)", desc: "Cálido, envolvente, con mucha presencia. Recomendado para camas 150+ y dormitorios principales. No disponible en la web; consúltanos para pedirlo." },
+  { style: "Cabecero extra alto* (a medida, >160 cm)", desc: "Pieza protagonista. Solo en habitaciones con techo de 2,60 m o más, para que no agobie. No disponible en la web; consúltanos para pedirlo." },
 ];
 
 const FAQS = [
