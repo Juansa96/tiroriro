@@ -274,13 +274,13 @@ export const productTypeMap: Record<string, string> = {
 
 // Texto descriptivo corto para alt de imágenes ("Cabecero tapizado Pregonda — foto 2 | Tiroriro")
 export const categoryAltLabel: Record<string, string> = {
-  cabeceros:           "Cabecero tapizado",
-  bancos:              "Banco entelado",
-  cojines:             "Almohadón tapizado",
-  pufs:                "Puf tapizado",
-  "mesas-centro":      "Mesa de centro tapizada",
-  "pantallas-lampara": "Pantalla de lámpara tapizada",
-  percheros:           "Perchero tapizado",
+  cabeceros:           "Cabecero tapizado a medida hecho a mano en España",
+  bancos:              "Banco entelado a medida hecho a mano en España",
+  cojines:             "Almohadón tapizado a medida hecho a mano en España",
+  pufs:                "Puf tapizado a medida hecho a mano en España",
+  "mesas-centro":      "Mesa de centro tapizada a medida hecha a mano en España",
+  "pantallas-lampara": "Pantalla de lámpara tapizada a mano en España",
+  percheros:           "Perchero tapizado a medida hecho a mano en España",
 };
 
 // SEO por categoría: title + description + canonical únicos
@@ -345,6 +345,7 @@ interface CategoryPageProps {
 
 const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: string; name: string }) => {
   const [idx, setIdx] = useState(0);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   const buildSrcSet = (src: string) => {
@@ -429,6 +430,26 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
           </div>
         </>
       )}
+      {/* Lightbox: ampliar la foto sin salir de la página */}
+      <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setZoomOpen(true); }}
+            aria-label="Ampliar foto"
+            className="absolute bottom-2 right-2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
+          >
+            <Maximize2 size={14} />
+          </button>
+        </DialogTrigger>
+        <DialogContent className="max-w-[95vw] md:max-w-4xl p-0 bg-transparent border-0 shadow-none">
+          <img
+            src={photos[idx]}
+            alt={`${categoryAltLabel[category] || "Producto tapizado"} ${name} — vista ampliada`}
+            className="w-full h-auto max-h-[90vh] object-contain rounded"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -674,6 +695,31 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
               </div>
             </AnimatedSection>
           )}
+
+          {/* CTA: Ver más en Instagram */}
+          <AnimatedSection delay={0.4} className="mt-16">
+            <div className="max-w-2xl mx-auto text-center border-t border-border/40 pt-10">
+              <div className="inline-flex items-center gap-2 mb-3 text-muted-foreground">
+                <Instagram size={16} strokeWidth={1.5} />
+                <span className="text-[10px] tracking-[0.24em] uppercase font-medium">Instagram</span>
+              </div>
+              <p className="font-serif text-xl md:text-2xl font-light text-foreground">
+                Mira más piezas en nuestro Instagram
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground font-light italic">
+                Novedades, procesos y proyectos reales de clientes.
+              </p>
+              <a
+                href="https://www.instagram.com/tirorirohome/?utm_source=web&utm_medium=category_cta&utm_campaign=to_instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 px-6 py-3 border border-foreground text-xs uppercase tracking-[0.20em] text-foreground hover:bg-foreground hover:text-background transition-colors"
+              >
+                <Instagram size={14} />
+                Ver más en @tirorirohome
+              </a>
+            </div>
+          </AnimatedSection>
         </div>
       </main>
       <Footer />
