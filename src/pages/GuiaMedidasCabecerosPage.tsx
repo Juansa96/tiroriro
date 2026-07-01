@@ -41,6 +41,7 @@ const FAQS = [
   { q: "¿A qué altura se coloca un cabecero tapizado?", a: "El borde inferior del cabecero debe quedar entre 10 y 15 cm por debajo del nivel del colchón, para que al apoyar las almohadas no se vea la pared. Si va anclado a pared, normalmente queda a unos 50–60 cm del suelo." },
   { q: "¿Puedo pedir un cabecero más alto del estándar?", a: "Sí. En Tiroriro las medidas de serie son 100 y 120 cm de alto, pero puedes pedir cualquier medida entre 40 y 200 cm desde la opción “Otra medida” del configurador. Por cada 10 cm por encima de 100 cm se aplica un pequeño suplemento (+15 €)." },
   { q: "¿Qué anchos de cabecero fabricáis?", a: "Nuestras medidas de serie son 90, 105, 135, 150, 160, 180 y 200 cm. Además puedes pedir cualquier medida entre 60 y 300 cm desde la opción “Otra medida” del configurador, sin coste extra por el ancho." },
+  { q: "¿Podéis hacer un hueco en el cabecero para enchufes o apliques?", a: "Sí. Si quieres que el cabecero ocupe todo el ancho de la pared y hay enchufes, interruptores o apliques de lectura, podemos fabricar el cabecero con las aperturas exactas para que encaje a la perfección. Es un pequeño suplemento que te detallamos en la llamada antes de cerrar el pedido." },
 ];
 
 const articleJsonLd = {
