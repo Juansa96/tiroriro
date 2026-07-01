@@ -34,8 +34,8 @@ Deno.serve(async (req: Request) => {
 
     const month = currentMonth()
 
-    // GET-style action via POST body { action: 'counts' | 'vote' }
-    let body: { action?: string; option_id?: string; voter_cookie?: string } = {}
+    // GET-style action via POST body { action: 'counts' | 'winner' | 'vote', month?: string }
+    let body: { action?: string; option_id?: string; voter_cookie?: string; month?: string } = {}
     try {
       body = await req.json()
     } catch {
@@ -45,10 +45,11 @@ Deno.serve(async (req: Request) => {
     const action = body.action || 'counts'
 
     if (action === 'counts') {
+      const targetMonth = body.month || month
       const { data, error } = await supabase
         .from('team_poll_votes')
         .select('option_id')
-        .eq('vote_month', month)
+        .eq('vote_month', targetMonth)
 
       if (error) throw error
 
@@ -59,7 +60,33 @@ Deno.serve(async (req: Request) => {
       }
 
       return new Response(
-        JSON.stringify({ month, counts }),
+        JSON.stringify({ month: targetMonth, counts }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    if (action === 'winner') {
+      const targetMonth = body.month || month
+      const { data, error } = await supabase
+        .from('team_poll_votes')
+        .select('option_id')
+        .eq('vote_month', targetMonth)
+
+      if (error) throw error
+
+      const counts: Record<OptionId, number> = { 'inaki-rocio': 0, 'juan-bea': 0 }
+      for (const row of data || []) {
+        const opt = row.option_id as OptionId
+        if (opt in counts) counts[opt]++
+      }
+
+      const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]
+      const result = winner && winner[1] > 0
+        ? { month: targetMonth, winner: winner[0], votes: winner[1] }
+        : { month: targetMonth, winner: null, votes: 0 }
+
+      return new Response(
+        JSON.stringify(result),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }

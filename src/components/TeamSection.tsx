@@ -81,10 +81,22 @@ const readStoredVote = (month: string): string | null => {
   return null;
 };
 
+const getPreviousMonth = () => {
+  const now = new Date();
+  const prev = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0));
+  return `${prev.getUTCFullYear()}-${String(prev.getUTCMonth() + 1).padStart(2, "0")}`;
+};
+
+const LABEL_MAP: Record<string, string> = {
+  "inaki-rocio": "Iñaki y Rocío",
+  "juan-bea": "Juan y Bea",
+};
+
 const TeamSection = () => {
   const [voted, setVoted] = useState<string | null>(null);
   const [votes, setVotes] = useState({ "inaki-rocio": 0, "juan-bea": 0 });
   const [submitting, setSubmitting] = useState(false);
+  const [prevWinner, setPrevWinner] = useState<{ option: string; votes: number } | null>(null);
 
   useEffect(() => {
     const currentMonth = getCurrentMonth();
@@ -95,7 +107,6 @@ const TeamSection = () => {
       setVoted(storedVote);
     }
 
-    // Cargar conteos reales del servidor
     let cancelled = false;
     (async () => {
       try {
@@ -107,6 +118,18 @@ const TeamSection = () => {
         }
       } catch (err) {
         console.error("No se pudieron cargar los votos", err);
+      }
+
+      try {
+        const prevMonth = getPreviousMonth();
+        const { data, error } = await supabase.functions.invoke("team-poll-vote", {
+          body: { action: "winner", month: prevMonth },
+        });
+        if (!cancelled && !error && data?.winner) {
+          setPrevWinner({ option: data.winner, votes: data.votes });
+        }
+      } catch (err) {
+        console.error("No se pudo cargar el ganador anterior", err);
       }
     })();
     return () => {
@@ -227,6 +250,21 @@ const TeamSection = () => {
               {voted === "juan-bea" && "Bea ya tiene el excel de la comanda. Juan ya ha calculado la propina exacta."}
             </p>
           )}
+
+          {prevWinner && (
+            <div className="mt-10 text-center">
+              <p className="text-sm tracking-[0.14em] uppercase text-muted-foreground font-medium">
+                Ganadores del mes pasado
+              </p>
+              <p className="mt-2 font-serif text-xl font-medium text-foreground">
+                {LABEL_MAP[prevWinner.option]} — {prevWinner.votes} {prevWinner.votes === 1 ? "voto" : "votos"}
+              </p>
+            </div>
+          )}
+
+          <p className="mt-12 text-sm text-muted-foreground font-light italic text-center">
+            Que gane el mejor matrimonio. O el que tenga más contactos con dedo rápido. Putos modernos.
+          </p>
         </div>
       </div>
     </section>
