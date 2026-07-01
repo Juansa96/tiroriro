@@ -37,6 +37,9 @@ const ContactForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+  // Draft autosave key. Include configurator params so distintas configs no se pisan.
+  const DRAFT_KEY = "tiro_contact_draft_v1";
+
   const previewType = searchParams.get("previewType") as "cabecero" | "banco" | "cojin" | "puf" | "mesa" | "pantalla" | null;
   const previewForma = searchParams.get("previewForma") || undefined;
   const previewColor = searchParams.get("previewColor") || "#D4C5A9";
