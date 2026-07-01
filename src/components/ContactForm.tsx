@@ -200,13 +200,17 @@ const ContactForm = () => {
         console.warn('CRM no disponible:', crmErr);
       }
 
-      // Redirigir a página de gracias con el nombre para personalizarla
-      trackEvent('generate_lead', {
+      // Analytics: disparamos DOS eventos.
+      // 1) `generate_lead`: nombre recomendado de GA4 → se marca como conversión con 1 clic.
+      // 2) `formulario_enviado`: nombre custom legible en informes en español.
+      const leadParams = {
         currency: 'EUR',
         value: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : 0,
         method: hasConfigParams ? 'configurador' : 'formulario_directo',
         products: selectedProducts.join(','),
-      });
+      };
+      trackEvent('generate_lead', leadParams);
+      trackEvent('formulario_enviado', leadParams);
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       console.error('Error enviando email:', err);
