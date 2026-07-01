@@ -81,10 +81,22 @@ const readStoredVote = (month: string): string | null => {
   return null;
 };
 
+const getPreviousMonth = () => {
+  const now = new Date();
+  const prev = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0));
+  return `${prev.getUTCFullYear()}-${String(prev.getUTCMonth() + 1).padStart(2, "0")}`;
+};
+
+const LABEL_MAP: Record<string, string> = {
+  "inaki-rocio": "Iñaki y Rocío",
+  "juan-bea": "Juan y Bea",
+};
+
 const TeamSection = () => {
   const [voted, setVoted] = useState<string | null>(null);
   const [votes, setVotes] = useState({ "inaki-rocio": 0, "juan-bea": 0 });
   const [submitting, setSubmitting] = useState(false);
+  const [prevWinner, setPrevWinner] = useState<{ option: string; votes: number } | null>(null);
 
   useEffect(() => {
     const currentMonth = getCurrentMonth();
