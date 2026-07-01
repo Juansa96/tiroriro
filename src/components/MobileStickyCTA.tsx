@@ -14,10 +14,33 @@ const MobileStickyCTA = () => {
       setVisible(false);
       return;
     }
-    const onScroll = () => setVisible(window.scrollY > 600);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    let contactVisible = false;
+    const update = () => {
+      const scrolled = window.scrollY > 600;
+      setVisible(scrolled && !contactVisible);
+    };
+
+    // Observe #contacto (contact form section) to auto-hide the CTA when it's on screen.
+    const target = document.getElementById("contacto");
+    let observer: IntersectionObserver | null = null;
+    if (target && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          contactVisible = entries[0]?.isIntersecting ?? false;
+          update();
+        },
+        { rootMargin: "0px 0px -20% 0px", threshold: 0.05 }
+      );
+      observer.observe(target);
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener("scroll", update);
+      observer?.disconnect();
+    };
   }, [isHidden, location.pathname]);
 
   if (isHidden) return null;

@@ -22,13 +22,15 @@ const CookiesPage = () => (
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">¿Qué cookies utilizamos?</h2>
               <p>En Tiroriro Home solo utilizamos cookies técnicas estrictamente necesarias para el correcto funcionamiento de la web. Estas cookies no recogen información personal ni se utilizan con fines publicitarios.</p>
               <ul className="mt-3 list-disc list-inside space-y-1">
-                <li><strong>cookies_accepted</strong> — Recuerda si has aceptado el aviso de cookies (localStorage)</li>
+                <li><strong>cookies_accepted</strong> — Recuerda si has interactuado con el aviso de cookies (localStorage).</li>
+                <li><strong>cookies_consent</strong> — Guarda tu decisión ("granted" o "denied") sobre las cookies analíticas (localStorage).</li>
               </ul>
             </div>
 
             <div>
               <h2 className="font-serif text-xl font-medium text-foreground mb-3">Cookies de terceros</h2>
-              <p>Actualmente no utilizamos cookies de terceros ni herramientas de analítica. Si en el futuro incorporamos Google Analytics u otra herramienta similar, actualizaremos esta política, te lo informaremos mediante el banner de cookies y solo se cargarán previa aceptación expresa por tu parte (Consent Mode v2).</p>
+              <p>Utilizamos <strong>Google Analytics 4</strong> (Google Ireland Ltd.) para medir de forma agregada cómo se usa la web (páginas vistas, dispositivo, país). Se carga <strong>únicamente si aceptas</strong> las cookies analíticas en el banner, aplicando <strong>Google Consent Mode v2</strong> (por defecto todo está denegado). Cookies que puede instalar: <code>_ga</code>, <code>_ga_&lt;ID&gt;</code>. Puedes cambiar tu decisión borrando las cookies del sitio en tu navegador.</p>
+              <p className="mt-2 text-xs">Más info: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline">política de privacidad de Google</a>.</p>
             </div>
 
             <div>
@@ -41,7 +43,7 @@ const CookiesPage = () => (
               <p>Juan Sangrador Torres (Tiroriro Home) · DNI 45577829V · Calle Cristóbal Colón, 11 · 28660 Boadilla del Monte, Madrid · info@tirorirohome.com</p>
             </div>
 
-            <p className="text-xs text-muted-foreground/70">Última actualización: 30 de junio de 2026.</p>
+            <p className="text-xs text-muted-foreground/70">Última actualización: 1 de julio de 2026.</p>
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
@@ -200,6 +201,12 @@ const ContactForm = () => {
       }
 
       // Redirigir a página de gracias con el nombre para personalizarla
+      trackEvent('generate_lead', {
+        currency: 'EUR',
+        value: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : 0,
+        method: hasConfigParams ? 'configurador' : 'formulario_directo',
+        products: selectedProducts.join(','),
+      });
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       console.error('Error enviando email:', err);

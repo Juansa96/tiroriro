@@ -8,6 +8,7 @@ import FloatingButtons from "@/components/FloatingButtons";
 import MobileStickyCTA from "@/components/MobileStickyCTA";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollToTop from "@/components/ScrollToTop";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index"; // home se mantiene eager (LCP)
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
@@ -44,6 +45,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
+        <AnalyticsTracker />
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Index />} />
