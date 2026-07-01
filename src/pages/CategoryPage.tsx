@@ -643,6 +643,13 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
           <AnimatedSection className="text-center mb-12">
             <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground">{cat.title}</h1>
             <p className="mt-3 text-muted-foreground font-light italic">{cat.subtitle}</p>
+            {category === 'cabeceros' && (
+              <p className="mt-3 text-sm text-muted-foreground font-light">
+                <Link to="/guia-medidas-cabeceros" className="underline underline-offset-4 hover:text-accent-warm transition-colors">
+                  ¿No sabes qué medida elegir? Consulta nuestra guía
+                </Link>
+              </p>
+            )}
             {cat.comingSoon && (
               <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 border border-border rounded-full">
                 <Clock size={14} className="text-muted-foreground" />
