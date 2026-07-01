@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
 
