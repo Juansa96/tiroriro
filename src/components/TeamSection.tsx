@@ -259,6 +259,21 @@ const TeamSection = () => {
               {voted === "juan-bea" && "Bea ya tiene el excel de la comanda. Juan ya ha calculado la propina exacta."}
             </p>
           )}
+
+          {prevWinner && (
+            <div className="mt-10 text-center">
+              <p className="text-sm tracking-[0.14em] uppercase text-muted-foreground font-medium">
+                Ganadores del mes pasado
+              </p>
+              <p className="mt-2 font-serif text-xl font-medium text-foreground">
+                {LABEL_MAP[prevWinner.option]} — {prevWinner.votes} {prevWinner.votes === 1 ? "voto" : "votos"}
+              </p>
+            </div>
+          )}
+
+          <p className="mt-12 text-sm text-muted-foreground font-light italic text-center">
+            Que gane el mejor matrimonio. O el que tenga más contactos con dedo rápido. Putos modernos.
+          </p>
         </div>
       </div>
     </section>
