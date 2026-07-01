@@ -8,17 +8,19 @@ interface SEOProps {
   description: string;
   canonical: string;
   ogImage?: string;
+  noIndex?: boolean;
 }
 
 /**
  * SEO component — gestiona title, description, canonical y Open Graph por ruta.
  * Usar en cada página justo dentro del fragment raíz, antes del <Navbar />.
  */
-const SEO = ({ title, description, canonical, ogImage = DEFAULT_OG_IMAGE }: SEOProps) => (
+const SEO = ({ title, description, canonical, ogImage = DEFAULT_OG_IMAGE, noIndex = false }: SEOProps) => (
   <Helmet>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noIndex && <meta name="robots" content="noindex, follow" />}
 
     {/* Open Graph */}
     <meta property="og:type"        content="website" />
