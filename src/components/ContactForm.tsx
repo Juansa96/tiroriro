@@ -193,7 +193,7 @@ const ContactForm = () => {
             templateName: 'contact-confirmation',
             recipientEmail: form.email,
             idempotencyKey: `contact-confirmation-${idempotencyBase}`,
-            templateData: { firstName, productList },
+            templateData: { firstName, productList, previewLink },
           },
         });
       } catch (confirmErr) {
