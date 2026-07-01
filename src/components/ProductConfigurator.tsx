@@ -801,7 +801,11 @@ const ProductConfigurator = () => {
       </div>
       <div className="flex justify-between items-center mt-2 gap-2">
         <p className="text-xs text-muted-foreground font-light">
-          Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span>
+          Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span> · <span className="text-accent-warm font-medium">{
+            Math.round(
+              (visibleSteps.filter(s => stepComplete[s]).length / visibleSteps.length) * 100
+            )
+          }%</span>
         </p>
         <p className="text-[10px] text-muted-foreground/70 font-light hidden sm:block">Pulsa para navegar</p>
       </div>
