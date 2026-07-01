@@ -41,6 +41,7 @@ const FAQS = [
   { q: "¿A qué altura se coloca un cabecero tapizado?", a: "El borde inferior del cabecero debe quedar entre 10 y 15 cm por debajo del nivel del colchón, para que al apoyar las almohadas no se vea la pared. Si va anclado a pared, normalmente queda a unos 50–60 cm del suelo." },
   { q: "¿Puedo pedir un cabecero más alto del estándar?", a: "Sí. En Tiroriro las medidas de serie son 100 y 120 cm de alto, pero puedes pedir cualquier medida entre 40 y 200 cm desde la opción “Otra medida” del configurador. Por cada 10 cm por encima de 100 cm se aplica un pequeño suplemento (+15 €)." },
   { q: "¿Qué anchos de cabecero fabricáis?", a: "Nuestras medidas de serie son 90, 105, 135, 150, 160, 180 y 200 cm. Además puedes pedir cualquier medida entre 60 y 300 cm desde la opción “Otra medida” del configurador, sin coste extra por el ancho." },
+  { q: "¿Podéis hacer un hueco en el cabecero para enchufes o apliques?", a: "Sí. Si quieres que el cabecero ocupe todo el ancho de la pared y hay enchufes, interruptores o apliques de lectura, podemos fabricar el cabecero con las aperturas exactas para que encaje a la perfección. Es un pequeño suplemento que te detallamos en la llamada antes de cerrar el pedido." },
 ];
 
 const articleJsonLd = {
@@ -167,6 +168,23 @@ const GuiaMedidasCabecerosPage = () => (
               <li><strong className="text-foreground font-medium">Decide la altura</strong> en función del techo: nunca debe quedar a menos de 60 cm del techo para que la habitación respire.</li>
               <li><strong className="text-foreground font-medium">Elige el sistema de sujeción:</strong> apoyado en el somier (más sencillo), con patas al suelo, o anclado a pared. En Tiroriro lo explicamos por teléfono antes de cerrar el pedido.</li>
             </ol>
+          </section>
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.18}>
+          <section className="mb-16">
+            <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-6">Huecos para enchufes, apliques e interruptores</h2>
+            <p className="text-muted-foreground font-light leading-relaxed mb-4">
+              Si quieres que el cabecero ocupe todo el ancho de la pared y hay enchufes, interruptores o apliques de lectura a la altura del cabecero, podemos fabricar la pieza con las aperturas exactas para que encaje a la perfección.
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-muted-foreground font-light leading-relaxed mb-4">
+              <li><strong className="text-foreground font-medium">Hueco para enchufes:</strong> ideal si tienes una regleta o tomas justo detrás del cabecero.</li>
+              <li><strong className="text-foreground font-medium">Hueco para apliques:</strong> si tienes lámparas de pared a los lados o encima de la cama, dejamos el hueco para que el aplique quede integrado.</li>
+              <li><strong className="text-foreground font-medium">Hueco para interruptores:</strong> útil en dormitorios donde el interruptor principal queda a la altura del cabecero.</li>
+            </ul>
+            <p className="text-muted-foreground font-light leading-relaxed">
+              Es una opción muy práctica cuando buscas que el cabecero ocupe mucho de ancho. Tiene un pequeño suplemento que te detallamos en la llamada antes de cerrar el pedido, porque depende de la cantidad y ubicación de los huecos. Si te interesa, mándanos una foto de tu pared y te decimos exactamente cómo quedaría.
+            </p>
           </section>
         </AnimatedSection>
 
