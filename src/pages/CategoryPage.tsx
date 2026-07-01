@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import { ChevronRight, ChevronLeft, Clock } from "lucide-react";
+import { ChevronRight, ChevronLeft, Clock, Instagram, Maximize2 } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
-import { Instagram, Maximize2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export interface Model {
