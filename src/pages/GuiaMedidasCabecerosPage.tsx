@@ -21,9 +21,9 @@ const BED_SIZES = [
   { bed: "Cama 105 cm",                       width: "105 o 135 cm",         height: "100 o 120 cm",              note: "Habitual en habitaciones juveniles y de invitados." },
   { bed: "Cama 135 cm (matrimonio pequeño)",  width: "150 cm",               height: "100 o 120 cm",              note: "La más común en pisos urbanos. 150 cm es el ancho perfecto." },
   { bed: "Cama 150 cm (matrimonio)",          width: "160 cm",               height: "100 o 120 cm",              note: "El tamaño estrella. También puedes pedir cualquier medida a mayores." },
-  { bed: "Cama 160 cm (queen)",               width: "180 cm",               height: "120 cm o más (a medida)",   note: "Para dormitorios principales con buen ancho de pared." },
-  { bed: "Cama 180 cm (king)",                width: "200 cm",               height: "120 cm o más (a medida)",   note: "Pide presencia: altura mínima 120 cm para que la cama no se 'coma' el cabecero." },
-  { bed: "Cama 200 cm (super king)",          width: "A medida (210–220 cm)", height: "A medida (130–160 cm)",    note: "Se fabrica a medida — la opción “Otra medida” del configurador llega hasta 300 cm." },
+  { bed: "Cama 160 cm (queen)",               width: "180 cm",               height: "120 cm*",                    note: "Para dormitorios principales con buen ancho de pared." },
+  { bed: "Cama 180 cm (king)",                width: "200 cm",               height: "120 cm*",                    note: "Pide presencia: altura mínima 120 cm para que la cama no se 'coma' el cabecero." },
+  { bed: "Cama 200 cm (super king)",          width: "A medida (210–220 cm)", height: "A medida (130–160 cm)",     note: "Se fabrica a medida — consúltanos para crear tu pieza." },
 ];
 
 const HEIGHT_GUIDE = [
