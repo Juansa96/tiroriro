@@ -199,7 +199,14 @@ const ProductIcon = ({ type }: { type: string }) => {
   }
 };
 
-const BENCH_LENGTHS = ["150 cm", "120 cm", "90 cm"];
+const BENCH_LENGTHS = ["60 cm", "60 cm doble", "90 cm", "120 cm", "150 cm"];
+const BENCH_PRICE_MAP: Record<string, number> = {
+  "60 cm": 200,
+  "60 cm doble": 370,
+  "90 cm": 250,
+  "120 cm": 300,
+  "150 cm": 350,
+};
 
 const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
 
@@ -1268,7 +1275,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo · Banco Oyambre</p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {BENCH_LENGTHS.map(l => {
-                    const price = l.startsWith('150') ? 300 : l.startsWith('120') ? 240 : 180;
+                    const price = BENCH_PRICE_MAP[l] ?? 0;
                     return (
                       <button
                         key={l}

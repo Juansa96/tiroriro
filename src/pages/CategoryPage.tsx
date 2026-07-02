@@ -133,8 +133,8 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
           "/productos-fotos/bancos/oyambre-01.webp",
           "/productos-fotos/bancos/oyambre-03.webp",
         ],
-        desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Tres medidas: 150, 120 y 90 cm de largo (alto 45 · fondo 33).",
-        priceLabel: "Desde 180€",
+        desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Cuatro medidas: 150, 120, 90 y 60 cm de largo (alto 45 · fondo 33).",
+        priceLabel: "Desde 200€",
         configParam: "cascada",
       },
       {
@@ -293,7 +293,7 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
   },
   bancos: {
     title: "Bancos entelados a medida | Tiroriro",
-    description: "Banco Oyambre tapizado a medida en 3 largos: 150, 120 y 90 cm. Alto 45 · fondo 33. Desde 180 €. Hecho a mano en España.",
+    description: "Banco Oyambre tapizado a medida en 4 largos: 150, 120, 90 y 60 cm. Alto 45 · fondo 33. Desde 200 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/bancos",
     ogImage: "https://tirorirohome.com/productos-fotos/bancos/IMG_2491.webp",
   },
@@ -326,7 +326,7 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
 // Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
 export const CATEGORY_PRICE_FROM: Record<string, number> = {
   cabeceros: 225,
-  bancos: 180,
+  bancos: 200,
   pufs: 125,
   "mesas-centro": 280,
   "pantallas-lampara": 25,
