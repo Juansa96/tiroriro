@@ -964,6 +964,7 @@ const ProductSVGPreview = ({
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
+          quantity={quantity}
         />
       )}
       {type === "puf" && (
