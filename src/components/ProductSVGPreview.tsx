@@ -374,11 +374,13 @@ const BenchSVG = ({
   };
 
   if (quantity >= 2) {
-    const scale2 = 0.40;
-    const gap = 28;
-    const benchHalfW = 340 * scale2;
-    const leftCx = 340 - benchHalfW - gap / 2;
-    const rightCx = 340 + benchHalfW + gap / 2;
+    const scale2 = 0.70;
+    const gap = 20;
+    // Para 60 cm, el banco ocupa aproximadamente 172 u de ancho en el SVG original.
+    // A escala 0.70 cada uno mide ~120 u; con gap=20 caben cómodamente en el viewBox.
+    const unitW = 172 * scale2;
+    const leftCx = 340 - unitW / 2 - gap / 2;
+    const rightCx = 340 + unitW / 2 + gap / 2;
     return (
       <svg viewBox="0 0 680 280" width="100%" className="mx-auto max-w-full" preserveAspectRatio="xMidYMid meet">
         <defs>
