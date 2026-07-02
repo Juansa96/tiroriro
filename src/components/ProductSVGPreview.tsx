@@ -298,6 +298,7 @@ const BenchSVG = ({
   widthCm?: number;
   heightCm?: number;
   depthCm?: number;
+  quantity?: number;
 }) => {
   const patternId = useId();
   // Banco "cascada" — geometría exacta especificada en viewBox 0 0 680 280.
