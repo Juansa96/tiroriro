@@ -289,6 +289,7 @@ const BenchSVG = ({
   widthCm,
   heightCm,
   depthCm,
+  quantity = 1,
 }: {
   color: string;
   fabricImage?: string;
