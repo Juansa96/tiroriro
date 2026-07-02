@@ -1275,7 +1275,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Largo · Banco Oyambre</p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {BENCH_LENGTHS.map(l => {
-                    const price = l.startsWith('150') ? 300 : l.startsWith('120') ? 240 : 180;
+                    const price = BENCH_PRICE_MAP[l] ?? 0;
                     return (
                       <button
                         key={l}
