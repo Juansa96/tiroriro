@@ -199,7 +199,14 @@ const ProductIcon = ({ type }: { type: string }) => {
   }
 };
 
-const BENCH_LENGTHS = ["150 cm", "120 cm", "90 cm"];
+const BENCH_LENGTHS = ["60 cm", "60 cm doble", "90 cm", "120 cm", "150 cm"];
+const BENCH_PRICE_MAP: Record<string, number> = {
+  "60 cm": 200,
+  "60 cm doble": 370,
+  "90 cm": 250,
+  "120 cm": 300,
+  "150 cm": 350,
+};
 
 const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
 
