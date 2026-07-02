@@ -40,7 +40,7 @@ export const PRODUCTS: Product[] = [
     type: "banco",
     name: "Bancos entelados",
     tagline: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista",
-    basePrice: 120,
+    basePrice: 200,
     image: "/productos-fotos/bancos/oyambre-01.webp",
   },
   {
@@ -191,11 +191,16 @@ function _getBasePrice(type: ProductType, options: Record<string, string>): numb
   // ── Banco (sin precios definitivos) ───────────────────────────────────────
   if (type === "banco") {
     if (options.benchLength === 'custom') return 0;
-    const lenCm = parseInt(options.benchLength || "0");
-    let base = 0;
-    if (lenCm >= 150) base = 300;
-    else if (lenCm >= 120) base = 240;
-    else if (lenCm >= 90) base = 180;
+    const key = (options.benchLength || "").trim();
+    const BENCH_PRICES: Record<string, number> = {
+      "60 cm": 200,
+      "60 cm doble": 370,
+      "90 cm": 250,
+      "120 cm": 300,
+      "150 cm": 350,
+    };
+    let base = BENCH_PRICES[key] ?? 0;
+    if (!base) return 0;
     if (isPremium) base += 25;
     return base;
   }
