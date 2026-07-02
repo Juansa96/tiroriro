@@ -906,7 +906,7 @@ const ProductConfigurator = () => {
           {/* SVG + fabric swatches side-by-side on mobile */}
           <div className="flex w-full gap-3 items-center justify-center min-h-[110px]">
             <div className="flex-1 flex items-center justify-center">
-              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : productType === 'banco' && benchLength === '60 cm doble' ? 2 : 1} />
             </div>
             {fabricId && (
               <div className="w-16 flex-shrink-0 border-l border-border/30 pl-2">
@@ -934,7 +934,7 @@ const ProductConfigurator = () => {
             <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
               <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
               <div className="flex-1 flex items-center justify-center w-full">
-                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : 1} />
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : productType === 'banco' && benchLength === '60 cm doble' ? 2 : 1} />
               </div>
               {!productType && (
                 <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>

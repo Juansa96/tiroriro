@@ -289,6 +289,7 @@ const BenchSVG = ({
   widthCm,
   heightCm,
   depthCm,
+  quantity = 1,
 }: {
   color: string;
   fabricImage?: string;
@@ -298,6 +299,7 @@ const BenchSVG = ({
   widthCm?: number;
   heightCm?: number;
   depthCm?: number;
+  quantity?: number;
 }) => {
   const patternId = useId();
   // Banco "cascada" — geometría exacta especificada en viewBox 0 0 680 280.
@@ -344,35 +346,58 @@ const BenchSVG = ({
   const shadowRx = 198 + Math.abs(S) * 0.9;
   const shadowCy = Math.min(270, yBottom + 13);
 
+  const renderBench = (centerX: number, s: number) => {
+    const cx = 340;
+    const pivotY = yBottom;
+    const tx = centerX - cx * s;
+    const ty = pivotY - pivotY * s;
+    return (
+      <g key={centerX} transform={`translate(${tx} ${ty}) scale(${s})`}>
+        <ellipse cx="340" cy={shadowCy} rx={shadowRx} ry="11" fill="rgba(0,0,0,0.07)" />
+        <path
+          d={frontPath}
+          fill={patternFill(patternId, color)}
+          stroke="rgba(0,0,0,0.18)"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+        <path
+          d={topPath}
+          fill={patternFill(patternId, lighten(color, 14))}
+          stroke="rgba(0,0,0,0.18)"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+        <path d={topPath} fill="rgba(255,255,255,0.08)" pointerEvents="none" />
+      </g>
+    );
+  };
+
+  if (quantity >= 2) {
+    const scale2 = 0.70;
+    const gap = 20;
+    // Para 60 cm, el banco ocupa aproximadamente 172 u de ancho en el SVG original.
+    // A escala 0.70 cada uno mide ~120 u; con gap=20 caben cómodamente en el viewBox.
+    const unitW = 172 * scale2;
+    const leftCx = 340 - unitW / 2 - gap / 2;
+    const rightCx = 340 + unitW / 2 + gap / 2;
+    return (
+      <svg viewBox="0 0 680 280" width="100%" className="mx-auto max-w-full" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <TexturePattern id={patternId} image={fabricImage} color={color} tile={24} />
+        </defs>
+        {renderBench(leftCx, scale2)}
+        {renderBench(rightCx, scale2)}
+      </svg>
+    );
+  }
+
   return (
     <svg viewBox="0 0 680 280" width="100%" className="mx-auto max-w-full" preserveAspectRatio="xMidYMid meet">
       <defs>
         <TexturePattern id={patternId} image={fabricImage} color={color} tile={24} />
       </defs>
-
-      {/* Sombra centrada bajo la pieza */}
-      <ellipse cx="340" cy={shadowCy} rx={shadowRx} ry="11" fill="rgba(0,0,0,0.07)" />
-
-      {/* Cara frontal — relleno con la tela elegida (tono base) */}
-      <path
-        d={frontPath}
-        fill={patternFill(patternId, color)}
-        stroke="rgba(0,0,0,0.18)"
-        strokeWidth="1.2"
-        strokeLinejoin="round"
-      />
-
-      {/* Cara superior del asiento — misma tela, variante +12% de luz */}
-      <path
-        d={topPath}
-        fill={patternFill(patternId, lighten(color, 14))}
-        stroke="rgba(0,0,0,0.18)"
-        strokeWidth="1.2"
-        strokeLinejoin="round"
-      />
-      <path d={topPath} fill="rgba(255,255,255,0.08)" pointerEvents="none" />
-
-      {/* Sin vivo: el banco no lleva ribete */}
+      {renderBench(340, 1)}
     </svg>
   );
 };
@@ -941,6 +966,7 @@ const ProductSVGPreview = ({
           widthCm={widthCm}
           heightCm={heightCm}
           depthCm={depthCm}
+          quantity={quantity}
         />
       )}
       {type === "puf" && (
