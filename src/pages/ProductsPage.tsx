@@ -34,7 +34,7 @@ const CATEGORIES = [
   {
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
-    tagline: "6 formas · Colección Ávila",
+    tagline: "3 formas · Colección Ávila",
     image: "/productos-fotos/pantallas/lampara-horizontal.webp",
     priceLabel: "Desde 25€",
     comingSoon: false,
