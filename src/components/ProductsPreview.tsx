@@ -19,7 +19,7 @@ const PRODUCTS_DATA = [
   {
     id: "bancos",
     name: "Bancos entelados",
-    badge: "Pie de cama",
+    badge: "Nuevo",
     price: "desde 200€",
     image: "/productos-fotos/bancos/banco-entelado.png",
     alt: "Banco entelado a medida de Tiroriro",
@@ -49,7 +49,7 @@ const PRODUCTS_DATA = [
   {
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
-    badge: "Nuevo",
+    badge: "Más vendido",
     price: "desde 25€",
     image: "/productos-fotos/pantallas/almanzor-01.webp",
     alt: "Pantallas de lámpara tapizadas de Tiroriro",
