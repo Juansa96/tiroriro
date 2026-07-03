@@ -125,7 +125,7 @@ const ProductsPreview = () => {
                           srcSet={buildSrcSet(product.image)}
                           sizes="(max-width: 768px) 80vw, 33vw"
                           alt={product.alt}
-                          className={`w-full aspect-[3/5] object-cover transition-transform duration-700 ease-out ${product.id === 'bancos' ? 'origin-bottom scale-[1.4] group-hover:scale-[1.43]' : 'group-hover:scale-[1.03]'}`}
+                          className={`w-full aspect-[3/5] object-cover transition-transform duration-700 ease-out ${product.id === 'bancos' ? 'origin-bottom scale-[1.25] group-hover:scale-[1.28]' : 'group-hover:scale-[1.03]'}`}
                           loading={idx === 0 ? "eager" : "lazy"}
                           decoding="async"
                           fetchPriority={idx === 0 ? "high" : "low"}
