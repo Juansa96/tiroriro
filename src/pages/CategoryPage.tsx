@@ -128,7 +128,7 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
       {
         name: "Oyambre",
         photos: [
-          "/productos-fotos/bancos/oyambre-nuevo.webp",
+          "/productos-fotos/bancos/banco-entelado.png",
           "/productos-fotos/bancos/IMG_2760.webp",
           "/productos-fotos/bancos/oyambre-01.webp",
           "/productos-fotos/bancos/oyambre-03.webp",

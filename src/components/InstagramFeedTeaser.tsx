@@ -6,7 +6,7 @@ import AnimatedSection from "./AnimatedSection";
 //  reutilizamos fotos reales del catálogo y mandamos el clic a @tirorirohome.)
 const PHOTOS = [
   "/productos-fotos/cabeceros/calobra-02.webp",
-  "/productos-fotos/bancos/oyambre-nuevo.webp",
+  "/productos-fotos/bancos/banco-entelado.png",
   "/productos-fotos/pantallas/almanzor-01.webp",
   "/productos-fotos/puff/puff-nuevo.webp",
   "/productos-fotos/cabeceros/pregonda-01.webp",
