@@ -1,13 +1,12 @@
 import { Instagram } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
-import bancoImage from "@/assets/banco-entelado.png.asset.json";
 
 // Static curated grid of real product photos that links out to Instagram.
 // (Sin API: la mayoría de embeds oficiales requieren aprobación del user, aquí
 //  reutilizamos fotos reales del catálogo y mandamos el clic a @tirorirohome.)
 const PHOTOS = [
   "/productos-fotos/cabeceros/calobra-02.webp",
-  bancoImage.url,
+  "/productos-fotos/bancos/banco-entelado.png",
   "/productos-fotos/pantallas/almanzor-01.webp",
   "/productos-fotos/puff/puff-nuevo.webp",
   "/productos-fotos/cabeceros/pregonda-01.webp",
