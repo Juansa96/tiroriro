@@ -25,7 +25,7 @@ const Index = () => (
       <ProductsPreview />
       <HowItWorks />
       <WhyTiroRiro />
-      <Testimonials />
+      
       <InstagramFeedTeaser />
       <ContactForm />
       <FAQSection />
