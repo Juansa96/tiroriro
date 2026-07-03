@@ -60,7 +60,7 @@ const PRODUCTS_DATA = [
 
 // Genera srcSet responsive si existen variantes <stem>-480.webp y <stem>-800.webp
 const buildSrcSet = (src: string) => {
-  const m = src.match(/^(.*)\.(webp|jpe?g|png)$/i);
+  const m = src.match(/^(.*)\.webp$/i);
   if (!m) return undefined;
   const stem = m[1];
   return `${stem}-480.webp 480w, ${stem}-800.webp 800w, ${src} 1600w`;
