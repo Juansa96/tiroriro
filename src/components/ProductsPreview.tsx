@@ -17,6 +17,16 @@ const PRODUCTS_DATA = [
     comingSoon: false,
   },
   {
+    id: "bancos",
+    name: "Bancos entelados",
+    badge: "Pie de cama",
+    price: "desde 200€",
+    image: "/productos-fotos/bancos/oyambre-nuevo.webp",
+    alt: "Banco entelado a medida de Tiroriro",
+    link: "/productos/bancos",
+    comingSoon: false,
+  },
+  {
     id: "pufs",
     name: "Pufs",
     badge: "A tu medida",
