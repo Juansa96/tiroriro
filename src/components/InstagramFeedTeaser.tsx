@@ -1,5 +1,6 @@
 import { Instagram } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
+import bancoImage from "@/assets/banco-entelado.png.asset.json";
 
 // Static curated grid of real product photos that links out to Instagram.
 // (Sin API: la mayoría de embeds oficiales requieren aprobación del user, aquí

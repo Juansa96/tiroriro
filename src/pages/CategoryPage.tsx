@@ -6,6 +6,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import { ChevronRight, ChevronLeft, Clock, Instagram, Maximize2 } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
+import bancoImage from "@/assets/banco-entelado.png.asset.json";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export interface Model {
