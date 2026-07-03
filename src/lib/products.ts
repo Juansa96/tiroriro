@@ -41,7 +41,7 @@ export const PRODUCTS: Product[] = [
     name: "Bancos entelados",
     tagline: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista",
     basePrice: 200,
-    image: "/productos-fotos/bancos/oyambre-01.webp",
+    image: "/productos-fotos/bancos/banco-entelado.png",
   },
   {
     id: "cojin-almohadon",
