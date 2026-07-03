@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import bancoImage from "@/assets/banco-entelado.png.asset.json";
 
 const PRODUCTS_DATA = [
   {
@@ -22,7 +21,7 @@ const PRODUCTS_DATA = [
     name: "Bancos entelados",
     badge: "Pie de cama",
     price: "desde 200€",
-    image: bancoImage.url,
+    image: "/productos-fotos/bancos/banco-entelado.png",
     alt: "Banco entelado a medida de Tiroriro",
     link: "/productos/bancos",
     comingSoon: false,

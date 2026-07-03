@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Clock } from "lucide-react";
 import SEO from "@/components/SEO";
-import bancoImage from "@/assets/banco-entelado.png.asset.json";
 
 const CATEGORIES = [
   {
