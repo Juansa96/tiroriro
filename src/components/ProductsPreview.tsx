@@ -49,7 +49,7 @@ const PRODUCTS_DATA = [
   {
     id: "pantallas-lampara",
     name: "Pantallas de lámpara",
-    badge: "Última pieza",
+    badge: "Más vendido",
     price: "desde 25€",
     image: "/productos-fotos/pantallas/almanzor-01.webp",
     alt: "Pantallas de lámpara tapizadas de Tiroriro",
