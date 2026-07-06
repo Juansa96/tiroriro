@@ -27,6 +27,16 @@ const PRODUCTS_DATA = [
     comingSoon: false,
   },
   {
+    id: "cojines",
+    name: "Almohadones",
+    badge: "A medida",
+    price: "desde 50€",
+    image: "/productos-fotos/almohadones/covadonga-01.webp",
+    alt: "Almohadones tapizados a medida de Tiroriro",
+    link: "/productos/cojines",
+    comingSoon: false,
+  },
+  {
     id: "pufs",
     name: "Pufs",
     badge: "A tu medida",

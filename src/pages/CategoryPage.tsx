@@ -156,31 +156,44 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
   cojines: {
     title: "Almohadones",
     subtitle: "Tapizados a medida para camas, bancos o sofás.",
-    comingSoon: true,
     models: [
       {
         name: "Rodiles — Cuadrado",
-        photos: [],
+        photos: [
+          "/productos-fotos/almohadones/rodiles-01.webp",
+          "/productos-fotos/almohadones/rodiles-02.webp",
+          "/productos-fotos/almohadones/IMG_2486.webp",
+          "/productos-fotos/almohadones/IMG_2514.webp",
+          "/productos-fotos/almohadones/IMG_2525.webp",
+        ],
         desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones.",
-        priceLabel: "",
+        priceLabel: "Desde 50€",
         configParam: "rodiles",
-        comingSoon: true,
       },
       {
         name: "Covadonga — Rectangular",
-        photos: [],
+        photos: [
+          "/productos-fotos/almohadones/covadonga-01.webp",
+          "/productos-fotos/almohadones/covadonga-02.webp",
+          "/productos-fotos/almohadones/covadonga-03.webp",
+          "/productos-fotos/almohadones/IMG_2523.webp",
+          "/productos-fotos/almohadones/IMG_2524.webp",
+          "/productos-fotos/almohadones/IMG_2545.webp",
+        ],
         desc: "La forma alargada que siempre queda bien. Ideal para el cabecero de la cama o el respaldo del sofá.",
-        priceLabel: "",
+        priceLabel: "Desde 60€",
         configParam: "covadonga",
-        comingSoon: true,
       },
       {
         name: "Gulpiyuri — Rulo",
-        photos: [],
+        photos: [
+          "/productos-fotos/almohadones/gulpiyuri-01.webp",
+          "/productos-fotos/almohadones/gulpiyuri-02.webp",
+          "/productos-fotos/almohadones/IMG_2539.webp",
+        ],
         desc: "Un toque diferente y muy nórdico. Combina a la perfección con cabeceros tapizados.",
-        priceLabel: "",
+        priceLabel: "Desde 55€",
         configParam: "gulpiyuri",
-        comingSoon: true,
       },
       {
         name: "Torimbia — Redondo",
@@ -704,6 +717,41 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
           )}
 
           {/* CTA: Ver más en Instagram */}
+          {category === 'cojines' && (
+            <AnimatedSection delay={0.35} className="mt-16">
+              <div className="max-w-3xl mx-auto border-t border-border/40 pt-10">
+                <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground text-center">Preguntas frecuentes</h2>
+                <span className="section-line" />
+                <dl className="mt-8 space-y-6">
+                  <div>
+                    <dt className="font-serif text-lg text-foreground">¿Qué medidas hay disponibles?</dt>
+                    <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
+                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 50×30 y 60×40 cm. Gulpiyuri (rulo) en 13×90 cm.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-serif text-lg text-foreground">¿Qué telas puedo elegir?</dt>
+                    <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
+                      Más de 60 telas entre básicas y premium (linos, algodones, terciopelos y estampados). Las premium suman +10 € por almohadón.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-serif text-lg text-foreground">¿Cuánto tarda en llegar?</dt>
+                    <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
+                      Se fabrican a mano en unos 15–20 días desde que confirmas el pedido. Envío a toda la península.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-serif text-lg text-foreground">¿Cómo los cuido?</dt>
+                    <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
+                      Funda con cremallera oculta y desenfundable. Recomendamos limpieza en seco para conservar la caída y el color de la tela.
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </AnimatedSection>
+          )}
+
           <AnimatedSection delay={0.4} className="mt-16">
             <div className="max-w-2xl mx-auto text-center border-t border-border/40 pt-10">
               <div className="inline-flex items-center gap-2 mb-3 text-muted-foreground">
