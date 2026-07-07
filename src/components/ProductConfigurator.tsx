@@ -1504,7 +1504,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     ) : (
                       <button
                         key={s.id}
-                        onClick={() => { setCushionShape(s.id); setCushionSize(''); }}
+                        onClick={() => { setCushionShape(s.id); setCushionSize(s.sizes.length === 1 ? s.sizes[0] : ''); }}
                         className={`border rounded p-3 text-center cursor-pointer transition-all flex flex-col items-center gap-2 ${cushionShape === s.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
                       >
                         <svg viewBox="0 0 60 60" className="w-10 h-10">{s.svgPath}</svg>

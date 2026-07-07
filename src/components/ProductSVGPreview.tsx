@@ -645,14 +645,14 @@ const CushionSVG = ({
   }
 
   if (kind === "rectangular") {
-    const scaleX = scaleRange(widthCm, 30, 80, 1.05, 1.8);
-    const scaleY = scaleRange(heightCm, 20, 60, 0.55, 1.05);
+    const scaleX = scaleRange(widthCm, 50, 90, 1.0, 1.35);
+    const scaleY = scaleRange(heightCm, 30, 70, 0.55, 1.0);
     const outerPath =
       "M 42 54 Q 100 40 158 54 Q 170 54 170 66 Q 178 100 170 134 Q 170 146 158 146 Q 100 160 42 146 Q 30 146 30 134 Q 22 100 30 66 Q 30 54 42 54 Z";
     const innerPath =
       "M 48 60 Q 100 50 152 60 Q 162 60 162 70 Q 168 100 162 130 Q 162 140 152 140 Q 100 150 48 140 Q 38 140 38 130 Q 32 100 38 70 Q 38 60 48 60 Z";
     return (
-      <svg viewBox="0 0 200 200" className="w-full max-w-[230px] mx-auto">
+      <svg viewBox="0 0 200 200" className="w-full max-w-[240px] mx-auto">
         <defs>
           <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`cu-${clipId}`}>
@@ -666,7 +666,7 @@ const CushionSVG = ({
             transition: "transform 0.4s ease",
           }}
         >
-          <ellipse cx="102" cy="108" rx="70" ry="42" fill="rgba(0,0,0,0.07)" />
+          <ellipse cx="100" cy="108" rx="70" ry="42" fill="rgba(0,0,0,0.07)" />
           <path d={outerPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />
           <path d={innerPath} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
           {finish === "vivo-simple" && (
@@ -679,8 +679,9 @@ const CushionSVG = ({
     );
   }
 
-  const scaleX = scaleRange(widthCm, 30, 80, 0.9, 1.45);
-  const scaleY = scaleRange(heightCm, 20, 80, 0.7, 1.35);
+  // Rodiles cuadrado (40–50 cm)
+  const scaleX = scaleRange(widthCm, 40, 50, 1.0, 1.2);
+  const scaleY = scaleRange(heightCm, 40, 50, 1.0, 1.2);
   const outerPath =
     "M 52 40 Q 100 28 148 40 Q 164 40 164 56 Q 174 100 164 144 Q 164 160 148 160 Q 100 172 52 160 Q 36 160 36 144 Q 26 100 36 56 Q 36 40 52 40 Z";
   const innerPath =
