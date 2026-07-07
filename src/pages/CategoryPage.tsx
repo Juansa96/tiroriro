@@ -719,7 +719,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                   <div>
                     <dt className="font-serif text-lg text-foreground">¿Qué medidas hay disponibles?</dt>
                     <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
-                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 50×30 y 60×40 cm. Gulpiyuri (rulo) en 13×90 cm.
+                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 30×50, 40×60 y 70×90 cm. Gulpiyuri (rulo) en 40×15 cm.
                     </dd>
                   </div>
                   <div>
