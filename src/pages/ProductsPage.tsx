@@ -42,10 +42,10 @@ const CATEGORIES = [
   {
     id: "cojines",
     name: "Almohadones",
-    tagline: "Colección Asturias · Próximamente",
-    image: "",
-    priceLabel: "",
-    comingSoon: true,
+    tagline: "3 formas · Colección Asturias",
+    image: "/productos-fotos/almohadones/distribuidor.webp",
+    priceLabel: "Desde 40€",
+    comingSoon: false,
   },
   {
     id: "bancos",

@@ -108,8 +108,9 @@ const CUSHION_SHAPES = [
   {
     id: "covadonga", name: "Covadonga", subtitle: "Rectangular",
     svgPath: <rect x="4" y="14" width="52" height="32" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
-    sizes: ["50×30 cm", "60×40 cm"],
+    sizes: ["30×50 cm", "40×60 cm", "70×90 cm"],
     getDetails: (sz: string) => {
+      if (sz.includes("90")) return { shape: "rectangular", widthCm: 90, heightCm: 70 };
       if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
       return { shape: "rectangular", widthCm: 50, heightCm: 30 };
     },
@@ -117,8 +118,8 @@ const CUSHION_SHAPES = [
   {
     id: "gulpiyuri", name: "Gulpiyuri", subtitle: "Rulo",
     svgPath: <><rect x="4" y="20" width="52" height="20" rx="10" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="4" cy="30" rx="5" ry="10" fill="none" stroke="currentColor" strokeWidth="1.5" /></>,
-    sizes: ["13×90 cm"],
-    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 90, heightCm: 13 }),
+    sizes: ["40×15 cm"],
+    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 40, heightCm: 15 }),
   },
 ];
 

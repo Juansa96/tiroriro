@@ -160,39 +160,32 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
       {
         name: "Rodiles — Cuadrado",
         photos: [
-          "/productos-fotos/almohadones/rodiles-01.webp",
-          "/productos-fotos/almohadones/rodiles-02.webp",
-          "/productos-fotos/almohadones/IMG_2486.webp",
-          "/productos-fotos/almohadones/IMG_2514.webp",
-          "/productos-fotos/almohadones/IMG_2525.webp",
+          "/productos-fotos/almohadones/rodiles-03.webp",
+          "/productos-fotos/almohadones/rodiles-04.webp",
         ],
         desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones.",
-        priceLabel: "Desde 50€",
+        priceLabel: "Desde 40€",
         configParam: "rodiles",
       },
       {
         name: "Covadonga — Rectangular",
         photos: [
-          "/productos-fotos/almohadones/covadonga-01.webp",
-          "/productos-fotos/almohadones/covadonga-02.webp",
-          "/productos-fotos/almohadones/covadonga-03.webp",
-          "/productos-fotos/almohadones/IMG_2523.webp",
-          "/productos-fotos/almohadones/IMG_2524.webp",
-          "/productos-fotos/almohadones/IMG_2545.webp",
+          "/productos-fotos/almohadones/covadonga-04.webp",
+          "/productos-fotos/almohadones/covadonga-05.webp",
+          "/productos-fotos/almohadones/covadonga-06.webp",
         ],
         desc: "La forma alargada que siempre queda bien. Ideal para el cabecero de la cama o el respaldo del sofá.",
-        priceLabel: "Desde 60€",
+        priceLabel: "Desde 40€",
         configParam: "covadonga",
       },
       {
         name: "Gulpiyuri — Rulo",
         photos: [
-          "/productos-fotos/almohadones/gulpiyuri-01.webp",
-          "/productos-fotos/almohadones/gulpiyuri-02.webp",
-          "/productos-fotos/almohadones/IMG_2539.webp",
+          "/productos-fotos/almohadones/gulpiyuri-03.webp",
+          "/productos-fotos/almohadones/gulpiyuri-04.webp",
         ],
         desc: "Un toque diferente y muy nórdico. Combina a la perfección con cabeceros tapizados.",
-        priceLabel: "Desde 55€",
+        priceLabel: "Desde 60€",
         configParam: "gulpiyuri",
       },
       {
@@ -312,9 +305,9 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
   },
   cojines: {
     title: "Almohadones tapizados a medida | Tiroriro",
-    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 50 €. Hecho a mano en España.",
+    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 40 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/cojines",
-    ogImage: "https://tirorirohome.com/productos-fotos/almohadones/IMG_2486.webp",
+    ogImage: "https://tirorirohome.com/productos-fotos/almohadones/distribuidor.webp",
   },
   pufs: {
     title: "Pufs tapizados a medida | Solos o en pareja | Tiroriro",
@@ -343,7 +336,7 @@ export const CATEGORY_PRICE_FROM: Record<string, number> = {
   pufs: 125,
   "mesas-centro": 280,
   "pantallas-lampara": 25,
-  cojines: 50,
+  cojines: 40,
 };
 
 const imagePosition = (category: string) => {
@@ -726,7 +719,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                   <div>
                     <dt className="font-serif text-lg text-foreground">¿Qué medidas hay disponibles?</dt>
                     <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
-                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 50×30 y 60×40 cm. Gulpiyuri (rulo) en 13×90 cm.
+                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 30×50, 40×60 y 70×90 cm. Gulpiyuri (rulo) en 40×15 cm.
                     </dd>
                   </div>
                   <div>

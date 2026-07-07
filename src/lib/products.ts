@@ -48,8 +48,8 @@ export const PRODUCTS: Product[] = [
     type: "cojin",
     name: "Almohadones",
     tagline: "Detalles suaves y a medida para camas, bancos o sofás",
-    basePrice: 50,
-    image: "/productos-fotos/almohadones/covadonga-01.webp",
+    basePrice: 40,
+    image: "/productos-fotos/almohadones/card-home.webp",
   },
   {
     id: "pufs",
@@ -94,12 +94,13 @@ const CABECERO_PRICES: Record<string, number> = {
 // cushionKey = "<shape>-<medida>" (sin espacios, × → x)
 // Tela premium: +10 €. Vivo simple: incluido.
 export const CUSHION_PRICES: Record<string, number> = {
-  "rodiles-40x40":     50,
-  "rodiles-45x45":     55,
-  "rodiles-50x50":     60,
-  "covadonga-50x30":   60,
-  "covadonga-60x40":   70,
-  "gulpiyuri-13x90":   55,
+  "rodiles-40x40":     40,
+  "rodiles-45x45":     45,
+  "rodiles-50x50":     50,
+  "covadonga-30x50":   40,
+  "covadonga-40x60":   50,
+  "covadonga-70x90":   70,
+  "gulpiyuri-40x15":   60,
 };
 
 // ─── Mesas de centro ─────────────────────────────────────────────────────────
