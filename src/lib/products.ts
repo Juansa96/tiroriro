@@ -48,8 +48,8 @@ export const PRODUCTS: Product[] = [
     type: "cojin",
     name: "Almohadones",
     tagline: "Detalles suaves y a medida para camas, bancos o sofás",
-    basePrice: 50,
-    image: "/productos-fotos/almohadones/covadonga-01.webp",
+    basePrice: 40,
+    image: "/productos-fotos/almohadones/card-home.webp",
   },
   {
     id: "pufs",
