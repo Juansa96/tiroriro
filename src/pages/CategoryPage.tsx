@@ -305,7 +305,7 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
   },
   cojines: {
     title: "Almohadones tapizados a medida | Tiroriro",
-    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 50 €. Hecho a mano en España.",
+    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 40 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/cojines",
     ogImage: "https://tirorirohome.com/productos-fotos/almohadones/distribuidor.webp",
   },
