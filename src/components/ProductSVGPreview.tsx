@@ -652,7 +652,7 @@ const CushionSVG = ({
     const innerPath =
       "M 48 60 Q 100 50 152 60 Q 162 60 162 70 Q 168 100 162 130 Q 162 140 152 140 Q 100 150 48 140 Q 38 140 38 130 Q 32 100 38 70 Q 38 60 48 60 Z";
     return (
-      <svg viewBox="0 0 220 200" className="w-full max-w-[260px] mx-auto" preserveAspectRatio="xMidYMid meet">
+      <svg viewBox="0 0 200 200" className="w-full max-w-[240px] mx-auto">
         <defs>
           <TexturePattern id={patternId} image={fabricImage} color={color} tile={16} />
           <clipPath id={`cu-${clipId}`}>
@@ -662,18 +662,16 @@ const CushionSVG = ({
         <g
           style={{
             transform: `scale(${scaleX}, ${scaleY})`,
-            transformOrigin: "110px 100px",
+            transformOrigin: "100px 100px",
             transition: "transform 0.4s ease",
           }}
         >
-          <g transform="translate(10 0)">
-            <ellipse cx="102" cy="108" rx="70" ry="42" fill="rgba(0,0,0,0.07)" />
-            <path d={outerPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />
-            <path d={innerPath} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
-          </g>
+          <ellipse cx="100" cy="108" rx="70" ry="42" fill="rgba(0,0,0,0.07)" />
+          <path d={outerPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.12)" strokeWidth="1" />
+          <path d={innerPath} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
           {finish === "vivo-simple" && (
             <g clipPath={`url(#cu-${clipId})`}>
-              <path d={outerPath} fill="none" stroke={vivoColor} strokeWidth="3" transform="translate(10 0)" />
+              <path d={outerPath} fill="none" stroke={vivoColor} strokeWidth="3" />
             </g>
           )}
         </g>
