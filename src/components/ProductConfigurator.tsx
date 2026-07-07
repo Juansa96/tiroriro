@@ -1186,11 +1186,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               {productCard('puf', 'Pufs')}
               {productCard('mesa', 'Mesa de centro')}
               {productCard('pantalla', 'Pantalla lámpara')}
-              <div className="border border-border rounded-md p-4 text-center flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <ProductIcon type="cojin" />
-                <span className="text-sm font-light text-foreground">Almohadones</span>
-                <span className="text-[9px] tracking-wide uppercase text-muted-foreground">Próximamente</span>
-              </div>
+              {productCard('cojin', 'Almohadones')}
             </div>
         </div>
       </div>
