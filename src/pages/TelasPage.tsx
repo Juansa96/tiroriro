@@ -132,10 +132,9 @@ const TelasPage = () => (
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center gap-2 px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+                className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
               >
-                <MessageCircle size={14} className="relative z-10" />
-                <span className="relative z-10">Escríbenos por WhatsApp</span>
+                <span className="relative z-10">Escríbenos por WhatsApp →</span>
               </a>
               <Link
                 to="/configurador"

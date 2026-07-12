@@ -410,14 +410,14 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
       {photos.length > 1 && (
         <>
           <button
-            onClick={prev}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); prev(); }}
             aria-label="Foto anterior"
             className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
           >
             <ChevronLeft size={16} />
           </button>
           <button
-            onClick={next}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); next(); }}
             aria-label="Foto siguiente"
             className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
           >
@@ -427,7 +427,7 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
             {photos.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setIdx(i)}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i); }}
                 aria-label={`Ir a la foto ${i + 1}`}
                 aria-current={i === idx ? "true" : undefined}
                 className={`w-1.5 h-1.5 rounded-full transition-all ${i === idx ? "bg-white" : "bg-white/40"}`}
@@ -761,10 +761,9 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                 href="https://www.instagram.com/tirorirohome/?utm_source=web&utm_medium=category_cta&utm_campaign=to_instagram"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center gap-2 px-6 py-3 border border-foreground text-xs uppercase tracking-[0.20em] text-foreground hover:bg-foreground hover:text-background transition-colors"
+                className="btn-sweep btn-unir btn-unir-outline mt-5 inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
               >
-                <Instagram size={14} />
-                Ver más en @tirorirohome
+                <span className="relative z-10">Ver más en Instagram →</span>
               </a>
             </div>
           </AnimatedSection>
