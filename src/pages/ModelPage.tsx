@@ -170,13 +170,13 @@ const ModelPage = () => {
               <div className="mt-10 flex flex-col sm:flex-row gap-3">
                 <Link
                   to={configHref}
-                  className="btn-sweep btn-unir inline-flex items-center justify-center px-8 py-4 text-xs uppercase tracking-[0.20em]"
+                  className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
                 >
                   <span className="relative z-10">Diseña el tuyo →</span>
                 </Link>
                 <Link
                   to={seoCat.canonical.replace("https://tirorirohome.com", "")}
-                  className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-4 text-xs uppercase tracking-[0.20em]"
+                  className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
                 >
                   <span className="relative z-10">Ver otros modelos</span>
                 </Link>
