@@ -180,9 +180,9 @@
     --btn-bg: rgba(255, 255, 255, 0.04);
     --btn-fg: #ffffff;
     --btn-border: rgba(255, 255, 255, 0.82);
-    --btn-hover-bg: hsl(var(--primary));
-    --btn-hover-fg: #ffffff;
-    --btn-hover-border: hsl(var(--primary));
+    --btn-hover-bg: #ffffff;
+    --btn-hover-fg: hsl(var(--primary));
+    --btn-hover-border: #ffffff;
   }
 
   .btn-unir-home:hover {
