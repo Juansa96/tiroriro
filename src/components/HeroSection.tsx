@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Award, Heart, Truck, ChevronDown } from "lucide-react";
+import { Award, Heart, Truck } from "lucide-react";
 
 // Module-level flag: survives SPA navigation but resets on page reload
 let animationHasPlayed = false;
