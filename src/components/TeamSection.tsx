@@ -203,7 +203,7 @@ const TeamSection = () => {
             to="/productos"
             className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
           >
-            <span>Ver productos</span>
+            <span className="relative z-10">Ver productos →</span>
           </Link>
         </div>
 

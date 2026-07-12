@@ -69,10 +69,9 @@ const InstagramFeedTeaser = () => (
           href={IG_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-xs tracking-[0.20em] uppercase text-foreground hover:text-accent-warm transition-colors"
+          className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
         >
-          <Instagram size={14} />
-          Ver más en Instagram
+          <span className="relative z-10">Ver más en Instagram →</span>
         </a>
       </div>
     </div>

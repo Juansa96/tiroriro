@@ -213,9 +213,9 @@ const GuiaMedidasCabecerosPage = () => (
             </p>
             <Link
               to="/configurador?producto=cabecero"
-              className="inline-block bg-foreground text-background px-8 py-3 font-body text-sm tracking-wider uppercase hover:bg-foreground/90 transition-colors"
+              className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
             >
-              Ir al configurador
+              <span className="relative z-10">Ir al configurador →</span>
             </Link>
           </section>
         </AnimatedSection>

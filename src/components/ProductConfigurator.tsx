@@ -990,9 +990,9 @@ const ProductConfigurator = () => {
             <button
                 onClick={handleOrder}
                 disabled={!productType}
-                className="w-full px-6 py-3.5 bg-foreground text-background text-sm tracking-wide uppercase text-center font-medium hover:bg-foreground/90 transition-colors disabled:opacity-40"
+                className="btn-sweep btn-unir btn-unir-outline w-full inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
               >
-                Solicitar presupuesto
+                <span className="relative z-10">Solicitar presupuesto →</span>
               </button>
           </div>
         </div>
@@ -1050,9 +1050,9 @@ const ProductConfigurator = () => {
           <button
               onClick={handleOrder}
               disabled={!productType}
-              className="bg-foreground text-background px-6 py-3 text-sm tracking-wide font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+              className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
             >
-              Lo quiero →
+              <span className="relative z-10">Lo quiero →</span>
             </button>
         </div>
       </div>

@@ -101,9 +101,9 @@ const UnsubscribePage = () => {
                 </p>
                 <button
                   onClick={handleConfirm}
-                  className="btn-sweep btn-unir btn-unir-outline mt-10 inline-flex items-center gap-2 px-8 py-3.5 text-xs tracking-[0.18em] uppercase font-light"
+                  className="btn-sweep btn-unir btn-unir-outline mt-10 inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
                 >
-                  <span className="relative z-10">Confirmar baja</span>
+                  <span className="relative z-10">Confirmar baja →</span>
                 </button>
               </>
             )}

@@ -214,7 +214,7 @@ const ProductsPage = () => (
             to="/configurador"
             className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
           >
-            <span className="relative z-10">Diseña el tuyo</span>
+            <span className="relative z-10">Diseña el tuyo →</span>
           </Link>
         </AnimatedSection>
       </div>

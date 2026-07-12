@@ -87,10 +87,10 @@ const VirtualTryOn = () => {
               <button
                 onClick={handleTry}
                 disabled={!image || loading}
-                className="btn-sweep btn-unir btn-unir-outline px-10 py-3.5 text-sm font-medium disabled:opacity-40"
+                className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
               >
                 <span className="relative z-10 inline-flex items-center gap-2">
-                  {loading ? (<><Loader2 size={16} className="animate-spin" />Imaginando tu estancia...</>) : "Ver cómo queda"}
+                  {loading ? (<><Loader2 size={16} className="animate-spin" />Imaginando tu estancia...</>) : "Ver cómo queda →"}
                 </span>
               </button>
               {loading && (
@@ -113,9 +113,9 @@ const VirtualTryOn = () => {
                   <div className="text-center mt-6">
                     <button
                       onClick={handleOrder}
-                      className="btn-sweep btn-unir btn-unir-outline px-8 py-3 text-sm font-medium"
+                      className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
                     >
-                      <span className="relative z-10">Quiero este — solicitar pedido</span>
+                      <span className="relative z-10">Quiero este — solicitar pedido →</span>
                     </button>
                   </div>
                 </div>

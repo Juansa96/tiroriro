@@ -177,15 +177,15 @@ const HeroSection = () => {
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               to="/configurador"
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light rounded-sm"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
             >
-              <span className="relative z-10">Personaliza el tuyo</span>
+              <span className="relative z-10">Personaliza el tuyo →</span>
             </Link>
             <Link
               to="/productos"
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light rounded-sm"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
             >
-              <span className="relative z-10">Ver productos</span>
+              <span className="relative z-10">Ver productos →</span>
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/85">
@@ -196,11 +196,10 @@ const HeroSection = () => {
           <div className="hidden md:flex justify-center mt-10">
             <button
               onClick={() => document.getElementById("productos-home")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-8 py-3 text-xs tracking-[0.18em] uppercase font-light rounded-sm"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
               aria-label="Sigue bajando"
             >
-              <span className="relative z-10">Sigue bajando</span>
-              <ChevronDown size={14} className="relative z-10" />
+              <span className="relative z-10">Sigue bajando →</span>
             </button>
           </div>
         </div>
