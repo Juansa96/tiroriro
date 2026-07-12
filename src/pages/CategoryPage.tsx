@@ -510,7 +510,7 @@ const ModelCard = ({ model, category }: { model: Model; category: string }) => {
         <div className="mt-4 space-y-2">
           <Link
             to={configHref}
-            className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center w-full px-6 py-3 text-xs uppercase tracking-[0.20em]"
+            className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center w-full px-6 py-3 text-xs tracking-[0.18em] uppercase font-light"
           >
             <span className="relative z-10">Diseña el tuyo →</span>
           </Link>

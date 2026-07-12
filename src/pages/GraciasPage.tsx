@@ -64,7 +64,7 @@ const GraciasPage = () => {
             <div className="mt-12 flex flex-col items-center gap-5">
               <Link
                 to="/"
-                className="btn-sweep btn-unir btn-unir-outline inline-flex items-center gap-2.5 px-10 py-4 text-[11px] tracking-[0.20em] uppercase font-medium"
+                className="btn-sweep btn-unir btn-unir-outline inline-flex items-center gap-2.5 px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
               >
                 <span className="relative z-10 inline-flex items-center gap-2.5">
                   Volver al inicio <ArrowRight size={12} />
