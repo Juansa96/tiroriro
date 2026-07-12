@@ -261,15 +261,7 @@ const ProductsPreview = () => {
           <p className="text-sm text-white/55 font-light mb-6">Más de 60 telas entre básicas y premium</p>
           <Link
             to="/telas"
-            className="btn-sweep btn-unir inline-flex items-center px-7 py-3 text-xs font-light"
-            style={{
-              "--btn-bg": "transparent",
-              "--btn-fg": "#ffffff",
-              "--btn-border": "rgba(255,255,255,0.65)",
-              "--btn-hover-bg": "rgba(255,255,255,0.12)",
-              "--btn-hover-fg": "#ffffff",
-              "--btn-hover-border": "rgba(255,255,255,0.65)",
-            } as React.CSSProperties}
+            className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
           >
             <span className="relative z-10">Ver todas las telas →</span>
           </Link>
