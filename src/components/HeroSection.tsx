@@ -177,13 +177,13 @@ const HeroSection = () => {
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               to="/configurador"
-              className="btn-sweep inline-flex px-6 py-3 md:px-8 md:py-4 bg-[hsl(var(--accent-warm))] text-white text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg rounded-sm"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light rounded-sm"
             >
               <span className="relative z-10">Personaliza el tuyo</span>
             </Link>
             <Link
               to="/productos"
-              className="btn-sweep inline-flex px-6 py-3 md:px-8 md:py-4 bg-white/15 backdrop-blur-sm border border-white/40 text-white md:bg-white md:text-foreground md:border-transparent text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg rounded-sm"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light rounded-sm"
             >
               <span className="relative z-10">Ver productos</span>
             </Link>
@@ -196,7 +196,7 @@ const HeroSection = () => {
           <div className="hidden md:flex justify-center mt-10">
             <button
               onClick={() => document.getElementById("productos-home")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-6 py-2.5 text-xs font-light rounded-sm"
+              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-8 py-3 text-xs tracking-[0.18em] uppercase font-light rounded-sm"
               aria-label="Sigue bajando"
             >
               <span className="relative z-10">Sigue bajando</span>
