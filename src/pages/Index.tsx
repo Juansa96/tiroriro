@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import TrustBanner from "@/components/TrustBanner";
 import ProductsPreview from "@/components/ProductsPreview";
+import ReviewsCarousel from "@/components/ReviewsCarousel";
 import HowItWorks from "@/components/HowItWorks";
 import WhyTiroRiro from "@/components/WhyTiroRiro";
 
@@ -23,6 +24,7 @@ const Index = () => (
       <HeroSection />
       <TrustBanner />
       <ProductsPreview />
+      <ReviewsCarousel />
       <HowItWorks />
       <WhyTiroRiro />
       
