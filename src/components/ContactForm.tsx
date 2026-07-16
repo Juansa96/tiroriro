@@ -172,6 +172,9 @@ const ContactForm = () => {
         : undefined;
 
       // 1. Email interno a TiroRiro (obligatorio)
+      const shippingLine = isMadridCP
+        ? `Envío Madrid: 40 € — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
+        : `Envío fuera de Madrid: a consultar según destino${cp ? ` (CP ${cp})` : ''}`;
       const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'contact-internal',
@@ -185,7 +188,7 @@ const ContactForm = () => {
             productList,
             otherDetail: otherProductDetail || undefined,
             configSummary: fromConfig || undefined,
-            details: form.details || undefined,
+            details: [form.details, shippingLine].filter(Boolean).join('\n') || undefined,
             submittedAt,
             previewLink,
             formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
