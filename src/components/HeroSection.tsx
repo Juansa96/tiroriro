@@ -158,11 +158,16 @@ const HeroSection = () => {
           </p>
         </div>
 
-        <h1 className="font-serif text-3xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
-          <span>{part1 || " "}</span>
+        <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-white leading-tight">
+          Cabeceros tapizados a medida,
           <br />
-          <em className="italic font-light">{part2 || " "}</em>
+          hechos a mano en España
         </h1>
+
+        <p className="mt-4 md:mt-5 font-serif text-lg md:text-2xl lg:text-3xl italic font-light text-white/90 leading-snug min-h-[1.6em]">
+          <span>{part1 || " "}</span>{" "}
+          <span>{part2 || " "}</span>
+        </p>
 
         <div
           className="transition-all duration-700 ease-out"
