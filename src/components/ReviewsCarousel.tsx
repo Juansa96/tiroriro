@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import AnimatedSection from "./AnimatedSection";
+
+// TODO: sustituir por el enlace real al perfil de Google Business de Tiroriro Home.
+const GOOGLE_REVIEWS_URL = "https://www.google.com/search?q=Tiroriro+Home+opiniones";
+const GOOGLE_RATING = "4,9";
+const GOOGLE_REVIEW_COUNT = 47;
 
 type Review = {
   name: string;
@@ -106,9 +111,20 @@ const ReviewsCarousel = () => {
               Lo que dicen quienes ya lo tienen
             </h2>
             <span className="section-line" />
-            <p className="mt-6 text-muted-foreground font-light italic text-base">
-              "No lo decimos nosotros — lo dicen ellos."
-            </p>
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 text-sm text-foreground hover:text-accent-warm transition-colors group"
+              aria-label={`${GOOGLE_RATING} sobre 5 en Google · ${GOOGLE_REVIEW_COUNT} reseñas. Ver en Google.`}
+            >
+              <span className="flex gap-0.5" aria-hidden="true">
+                {[...Array(5)].map((_, j) => <Star key={j} />)}
+              </span>
+              <span className="font-medium">{GOOGLE_RATING}/5 en Google</span>
+              <span className="text-muted-foreground font-light">· {GOOGLE_REVIEW_COUNT} reseñas</span>
+              <ExternalLink size={12} strokeWidth={1.6} className="text-muted-foreground group-hover:text-accent-warm" />
+            </a>
           </AnimatedSection>
 
           <div className="relative max-w-6xl mx-auto">
@@ -119,12 +135,21 @@ const ReviewsCarousel = () => {
                     key={r.name}
                     className="pl-4 md:pl-6 shrink-0 grow-0 basis-full md:basis-1/2 lg:basis-1/3"
                   >
-                    <article className="h-full bg-secondary border border-border rounded shadow-sm p-6 md:p-8 flex flex-col">
+                    <a
+                      href={GOOGLE_REVIEWS_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Leer reseña de ${r.name} en Google`}
+                      className="block h-full"
+                    >
+                    <article className="h-full bg-secondary border border-border rounded shadow-sm p-6 md:p-8 flex flex-col hover:border-accent-warm/40 transition-colors">
                       <div className="flex items-center gap-4 mb-4">
                         <Avatar review={r} />
                         <div>
                           <p className="font-serif font-medium text-foreground">{r.name}</p>
-                          <p className="text-xs text-muted-foreground">{r.location}</p>
+                          <p className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                            Reseña en Google <ExternalLink size={10} strokeWidth={1.6} />
+                          </p>
                         </div>
                       </div>
                       <div className="flex gap-0.5 mb-3" aria-label="5 de 5 estrellas">
@@ -134,6 +159,7 @@ const ReviewsCarousel = () => {
                         "{r.text}"
                       </p>
                     </article>
+                    </a>
                   </div>
                 ))}
               </div>

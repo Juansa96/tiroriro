@@ -529,7 +529,11 @@ const ContactForm = () => {
               className="btn-sweep btn-unir btn-unir-outline w-full inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-50"
             >
               <span className="relative z-10 inline-flex items-center gap-2">
-                {sending ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>) : "Enviar solicitud →"}
+                {sending
+                  ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>)
+                  : hasConfigParams && productPrice !== null
+                    ? `Lo quiero — reserva por ${productPrice} € →`
+                    : "Enviar solicitud →"}
               </span>
             </button>
           </div>
