@@ -29,13 +29,20 @@ const ContactForm = () => {
   const hasConfigParams = !!(prefilledProduct || fromConfig);
   const previewPrice = searchParams.get('previewPrice');
 
-  const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", details: "" });
+  const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", postalCode: "", details: "" });
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [rgpd, setRgpd] = useState(false);
   const [otherProductDetail, setOtherProductDetail] = useState("");
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
+  const cp = form.postalCode.trim();
+  const isMadridCP = /^28\d{3}$/.test(cp);
+  const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
+  const shippingCost = isMadridCP ? 40 : null;
+  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
 
   // Draft autosave key. Include configurator params so distintas configs no se pisan.
   const DRAFT_KEY = "tiro_contact_draft_v1";
@@ -128,7 +135,8 @@ const ContactForm = () => {
     else if (!/^\+?[0-9\s]{7,16}$/.test(form.phone.trim())) errs.phone = "Introduce un teléfono válido (7-15 dígitos)";
     if (!form.email.trim()) { errs.email = "El email es obligatorio"; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Introduce un email válido";
-    if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
+    // Cuando la solicitud viene del configurador ya sabemos qué producto quieren, no pedimos el campo.
+    if (!hasConfigParams && selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
     if (selectedProducts.includes("Otro") && !otherProductDetail.trim()) errs.other = "Cuéntanos qué quieres exactamente";
     if (!rgpd) errs.rgpd = "Debes aceptar la política de privacidad";
     return errs;
