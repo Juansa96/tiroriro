@@ -166,7 +166,7 @@ const ProductsPreview = () => {
                             <h3 className="font-serif text-[22px] font-light text-white leading-tight">{product.name}</h3>
                             <div className="flex items-center justify-between mt-2">
                               <span className="text-[10px] text-white/70 tracking-[0.15em] uppercase border-b border-white/30 pb-0.5">
-                                Personaliza el tuyo →
+                                Diseña el tuyo →
                               </span>
                             </div>
                           </div>
