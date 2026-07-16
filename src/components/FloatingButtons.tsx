@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Instagram } from "lucide-react";
 
 const WHATSAPP_URL = "https://wa.me/34660786453?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
 const WHATSAPP_CONFIGURADOR_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, estoy usando el configurador y me gustaría orientación para elegir.");
 
 const FloatingButtons = () => {
   const [whatsappHovered, setWhatsappHovered] = useState(false);
-  const [igHovered, setIgHovered] = useState(false);
   const location = useLocation();
 
   const isConfigurador = location.pathname === '/configurador';
@@ -18,28 +16,6 @@ const FloatingButtons = () => {
 
   return (
     <div className={`fixed ${bottomClass} right-6 z-50 flex flex-col items-end gap-3`}>
-
-      {/* Instagram — solo fuera del configurador */}
-      {!isConfigurador && <div className="relative">
-        {igHovered && (
-          <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-foreground text-background text-xs rounded px-2 py-1 whitespace-nowrap">
-            Síguenos en Instagram
-          </div>
-        )}
-        <a
-          href="https://www.instagram.com/tirorirohome/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Síguenos en Instagram"
-          className="flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-transform duration-200 hover:scale-110 text-white"
-          style={{ background: 'linear-gradient(135deg, #E1306C, #833AB4)' }}
-          onMouseEnter={() => setIgHovered(true)}
-          onMouseLeave={() => setIgHovered(false)}
-        >
-          <Instagram size={24} />
-        </a>
-      </div>}
-
       {/* WhatsApp — siempre visible, incluso en el configurador */}
       <div className="relative">
         {whatsappHovered && (

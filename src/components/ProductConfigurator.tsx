@@ -959,7 +959,6 @@ const ProductConfigurator = () => {
           {productType && (
             <div className="mt-5 flex items-baseline justify-between px-1">
               <div>
-                <p className="text-[10px] text-foreground/50 uppercase tracking-[0.18em] font-medium">Precio estimado</p>
                 <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
                   {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price} €` : `desde ${basePrice} €`)}
                   {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
@@ -982,9 +981,17 @@ const ProductConfigurator = () => {
             </div>
           )}
           <div className="mt-2 px-1">
-            <p className="text-xs text-muted-foreground font-light text-center">Envío Madrid <span className="font-medium text-foreground">40 €</span> · Fuera de Madrid, a consultar</p>
+            <p className="text-xs text-muted-foreground font-light text-center">Envío a la península · Madrid <span className="font-medium text-foreground">40 €</span> · resto a consultar en la llamada</p>
             <p className="text-[11px] text-muted-foreground/60 font-light text-center italic mt-0.5">Telas sujetas a disponibilidad de stock.</p>
           </div>
+
+          {productType && (
+            <div className="mt-3 mx-1 p-3 bg-accent-warm/5 border border-accent-warm/20 rounded-md text-center">
+              <p className="text-[11px] text-foreground font-medium tracking-wide leading-snug">
+                Reserva con el 50% · El resto al recibir · Garantía de fabricación
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-3 mt-4">
             <button
@@ -992,7 +999,11 @@ const ProductConfigurator = () => {
                 disabled={!productType}
                 className="btn-sweep btn-unir btn-unir-outline w-full inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
               >
-                <span className="relative z-10">Solicitar presupuesto →</span>
+                <span className="relative z-10">
+                  {priceIsKnown && !isPriceOnRequest
+                    ? `Lo quiero — reserva por ${price} €`
+                    : 'Lo quiero — reserva la mía'} →
+                </span>
               </button>
           </div>
         </div>
@@ -1052,7 +1063,11 @@ const ProductConfigurator = () => {
               disabled={!productType}
               className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
             >
-              <span className="relative z-10">Lo quiero →</span>
+              <span className="relative z-10">
+                {priceIsKnown && !isPriceOnRequest
+                  ? `Reserva por ${price} €`
+                  : 'Lo quiero'} →
+              </span>
             </button>
         </div>
       </div>

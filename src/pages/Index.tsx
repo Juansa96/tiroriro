@@ -1,16 +1,18 @@
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import TrustBanner from "@/components/TrustBanner";
 import ProductsPreview from "@/components/ProductsPreview";
-import ReviewsCarousel from "@/components/ReviewsCarousel";
-import HowItWorks from "@/components/HowItWorks";
-import WhyTiroRiro from "@/components/WhyTiroRiro";
-
-import ContactForm from "@/components/ContactForm";
-import FAQSection from "@/components/FAQSection";
-import InstagramFeedTeaser from "@/components/InstagramFeedTeaser";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+
+// Lazy load de secciones bajo el fold para reducir el bundle inicial.
+const ReviewsCarousel = lazy(() => import("@/components/ReviewsCarousel"));
+const HowItWorks = lazy(() => import("@/components/HowItWorks"));
+const WhyTiroRiro = lazy(() => import("@/components/WhyTiroRiro"));
+const ContactForm = lazy(() => import("@/components/ContactForm"));
+const FAQSection = lazy(() => import("@/components/FAQSection"));
+const InstagramFeedTeaser = lazy(() => import("@/components/InstagramFeedTeaser"));
 
 const Index = () => (
   <>
@@ -24,13 +26,14 @@ const Index = () => (
       <HeroSection />
       <TrustBanner />
       <ProductsPreview />
-      <ReviewsCarousel />
-      <HowItWorks />
-      <WhyTiroRiro />
-      
-      <InstagramFeedTeaser />
-      <ContactForm />
-      <FAQSection />
+      <Suspense fallback={<div className="min-h-[200px]" />}>
+        <ReviewsCarousel />
+        <HowItWorks />
+        <WhyTiroRiro />
+        <InstagramFeedTeaser />
+        <ContactForm />
+        <FAQSection />
+      </Suspense>
     </main>
     <Footer />
   </>

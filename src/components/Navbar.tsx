@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 import Logo from "./Logo";
+
+const WHATSAPP_HREF = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, tengo una duda sobre vuestros productos.");
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
@@ -89,17 +91,30 @@ const Navbar = () => {
           {NAV_LINKS.map((link) => {
             if (link.highlight) {
               return (
-                <Link key={link.to} to={link.to}
-                  onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
-                  className={`btn-sweep btn-unir text-sm font-body font-light px-4 py-2 ${
-                    scrolled
-                      ? "btn-unir-outline"
-                      : "btn-unir-light"
-                  }`}
-                  style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
-                >
-                  <span className="relative z-10">{link.label}</span>
-                </Link>
+                <div key={link.to} className="flex items-center gap-4">
+                  <a
+                    href={WHATSAPP_HREF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`hidden lg:inline-flex items-center gap-1.5 text-sm font-body font-light hover:opacity-80 transition-opacity ${
+                      onHero ? "text-white" : "text-foreground"
+                    }`}
+                    style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
+                    aria-label="¿Dudas? Escríbenos por WhatsApp al 660 786 453"
+                  >
+                    <MessageCircle size={14} strokeWidth={1.6} />
+                    ¿Dudas? 660 786 453
+                  </a>
+                  <Link to={link.to}
+                    onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
+                    className={`btn-sweep btn-unir text-sm font-body font-light px-4 py-2 ${
+                      scrolled ? "btn-unir-outline" : "btn-unir-light"
+                    }`}
+                    style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
+                  >
+                    <span className="relative z-10">{link.label}</span>
+                  </Link>
+                </div>
               );
             }
             return (
@@ -131,6 +146,14 @@ const Navbar = () => {
                   className="text-sm tracking-extra-wide uppercase text-foreground hover:text-primary transition-colors font-body"
                 >{link.label}</Link>
               ))}
+              <a
+                href={WHATSAPP_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-2 text-sm text-accent-warm font-medium"
+              >
+                <MessageCircle size={16} /> ¿Dudas? 660 786 453
+              </a>
             </div>
           </div>
         </>

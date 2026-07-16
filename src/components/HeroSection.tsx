@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Award, ChevronDown, Heart, Truck } from "lucide-react";
+import { Award, Heart, Truck } from "lucide-react";
 
 // Module-level flag: survives SPA navigation but resets on page reload
 let animationHasPlayed = false;
@@ -158,11 +158,16 @@ const HeroSection = () => {
           </p>
         </div>
 
-        <h1 className="font-serif text-3xl md:text-6xl lg:text-7xl font-light text-white leading-tight">
-          <span>{part1 || " "}</span>
+        <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-white leading-tight">
+          Cabeceros tapizados a medida,
           <br />
-          <em className="italic font-light">{part2 || " "}</em>
+          hechos a mano en España
         </h1>
+
+        <p className="mt-4 md:mt-5 font-serif text-lg md:text-2xl lg:text-3xl italic font-light text-white/90 leading-snug min-h-[1.6em]">
+          <span>{part1 || " "}</span>{" "}
+          <span>{part2 || " "}</span>
+        </p>
 
         <div
           className="transition-all duration-700 ease-out"
@@ -179,30 +184,19 @@ const HeroSection = () => {
               to="/configurador"
               className="btn-sweep inline-flex px-6 py-3 md:px-8 md:py-4 bg-[hsl(var(--accent-warm))] text-white text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg rounded-sm"
             >
-              <span className="relative z-10">Personaliza el tuyo</span>
+              <span className="relative z-10">Diseña el tuyo</span>
             </Link>
             <Link
               to="/productos"
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+              className="inline-flex items-center justify-center px-4 py-2 text-xs tracking-[0.18em] uppercase font-light text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
             >
-              <span className="relative z-10">Ver productos →</span>
+              Ver productos →
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/85">
             <span className="text-[12px] md:text-[11px] font-normal tracking-widest">Cabeceros desde 225€ · Mesas de centro desde 280€ · Pufs desde 125€ · Pantallas de lámpara desde 25€</span>
           </div>
 
-          {/* Sigue bajando — desktop only */}
-          <div className="hidden md:flex justify-center mt-10">
-            <button
-              onClick={() => document.getElementById("productos-home")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center gap-2 px-6 py-2.5 text-xs font-light rounded-sm"
-              aria-label="Sigue bajando"
-            >
-              <span className="relative z-10">Sigue bajando</span>
-              <ChevronDown size={14} className="relative z-10" />
-            </button>
-          </div>
         </div>
       </div>
 

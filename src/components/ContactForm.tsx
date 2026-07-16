@@ -29,13 +29,20 @@ const ContactForm = () => {
   const hasConfigParams = !!(prefilledProduct || fromConfig);
   const previewPrice = searchParams.get('previewPrice');
 
-  const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", details: "" });
+  const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", postalCode: "", details: "" });
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [rgpd, setRgpd] = useState(false);
   const [otherProductDetail, setOtherProductDetail] = useState("");
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
+  const cp = form.postalCode.trim();
+  const isMadridCP = /^28\d{3}$/.test(cp);
+  const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
+  const shippingCost = isMadridCP ? 40 : null;
+  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
 
   // Draft autosave key. Include configurator params so distintas configs no se pisan.
   const DRAFT_KEY = "tiro_contact_draft_v1";
@@ -128,7 +135,8 @@ const ContactForm = () => {
     else if (!/^\+?[0-9\s]{7,16}$/.test(form.phone.trim())) errs.phone = "Introduce un teléfono válido (7-15 dígitos)";
     if (!form.email.trim()) { errs.email = "El email es obligatorio"; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Introduce un email válido";
-    if (selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
+    // Cuando la solicitud viene del configurador ya sabemos qué producto quieren, no pedimos el campo.
+    if (!hasConfigParams && selectedProducts.length === 0) errs.product = "Selecciona al menos un producto";
     if (selectedProducts.includes("Otro") && !otherProductDetail.trim()) errs.other = "Cuéntanos qué quieres exactamente";
     if (!rgpd) errs.rgpd = "Debes aceptar la política de privacidad";
     return errs;
@@ -164,6 +172,9 @@ const ContactForm = () => {
         : undefined;
 
       // 1. Email interno a TiroRiro (obligatorio)
+      const shippingLine = isMadridCP
+        ? `Envío Madrid: 40 € — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
+        : `Envío fuera de Madrid: a consultar según destino${cp ? ` (CP ${cp})` : ''}`;
       const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'contact-internal',
@@ -177,7 +188,7 @@ const ContactForm = () => {
             productList,
             otherDetail: otherProductDetail || undefined,
             configSummary: fromConfig || undefined,
-            details: form.details || undefined,
+            details: [form.details, shippingLine].filter(Boolean).join('\n') || undefined,
             submittedAt,
             previewLink,
             formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
@@ -287,7 +298,7 @@ const ContactForm = () => {
           <div className="mb-8 p-5 bg-accent-warm/10 border border-accent-warm/30">
             <p className="text-sm font-medium text-foreground flex items-start gap-2">
               <span className="text-accent-warm">✦</span>
-              <span>Hemos recuperado tu selección del configurador — los campos ya están rellenados. Puedes modificarlos.</span>
+              <span>Hemos recuperado tu selección del configurador. Te llamamos en menos de 24 h laborables para confirmar detalles.</span>
             </p>
             {previewType && (
               <div className="mt-5 rounded-2xl border border-border bg-background px-4 py-5">
@@ -349,6 +360,45 @@ const ContactForm = () => {
                     </div>
                   )}
                 </div>
+                {/* Desglose de precio y envío */}
+                {productPrice !== null && (
+                  <div className="mt-5 pt-4 border-t border-border/40 space-y-1.5">
+                    <div className="flex items-baseline justify-between text-sm">
+                      <span className="text-muted-foreground font-light">Producto</span>
+                      <span className="font-medium text-foreground">{productPrice} €</span>
+                    </div>
+                    {isMadridCP ? (
+                      <>
+                        <div className="flex items-baseline justify-between text-sm">
+                          <span className="text-muted-foreground font-light">Envío Madrid</span>
+                          <span className="font-medium text-foreground">40 €</span>
+                        </div>
+                        <div className="flex items-baseline justify-between text-base pt-2 border-t border-border/30">
+                          <span className="font-serif text-foreground">Total</span>
+                          <span className="font-serif text-xl text-foreground">{totalIfKnown} € <span className="text-[10px] text-muted-foreground font-sans">IVA incl.</span></span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-baseline justify-between text-sm">
+                          <span className="text-muted-foreground font-light">Envío</span>
+                          <span className="text-foreground font-light italic">a consultar según destino</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground font-light italic mt-2">
+                          {cp ? 'Confirmaremos el importe exacto de envío en la llamada de menos de 24 h.' : 'Añade tu código postal abajo para calcular el envío. Si no es Madrid, lo confirmamos en la llamada.'}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+                <div className="mt-4 p-3 bg-accent-warm/10 border border-accent-warm/30 rounded text-center">
+                  <p className="text-[11px] text-foreground font-medium tracking-wide">
+                    Reserva con el 50% · El resto al recibir · Garantía de fabricación
+                  </p>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground font-light text-center">
+                  Te llamamos en menos de 24 h laborables.
+                </p>
               </div>
             )}
           </div>
@@ -380,6 +430,30 @@ const ContactForm = () => {
             </div>
           </div>
 
+          <div>
+            <label htmlFor="contact-cp" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+              Código postal <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(para calcular el envío)</span>
+            </label>
+            <input
+              id="contact-cp"
+              type="text"
+              inputMode="numeric"
+              maxLength={5}
+              value={form.postalCode}
+              onChange={(e) => update("postalCode", e.target.value.replace(/\D/g, ''))}
+              placeholder="28001"
+              className={`${inputBase} max-w-[180px]`}
+            />
+            {cp.length === 5 && (
+              <p className="mt-2 text-xs text-muted-foreground font-light">
+                {isMadridCP
+                  ? <>Envío Madrid: <span className="font-medium text-foreground">40 €</span></>
+                  : <>Fuera de Madrid — envío a consultar en la llamada.</>}
+              </p>
+            )}
+          </div>
+
+          {!hasConfigParams && (
           <div>
             <span className="block text-xs tracking-wide uppercase text-muted-foreground mb-3 font-medium">
               Tipo de producto * <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(puedes elegir varios)</span>
@@ -419,13 +493,16 @@ const ContactForm = () => {
             {hasError('product') && <p className="text-xs mt-2 text-destructive">{errors.product}</p>}
             {hasError('other') && <p className="text-xs mt-2 text-destructive">{errors.other}</p>}
           </div>
+          )}
 
           <div>
-            <label htmlFor="contact-details" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Detalles del proyecto</label>
+            <label htmlFor="contact-details" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+              Detalles del proyecto <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(opcional)</span>
+            </label>
             <textarea id="contact-details" value={form.details} onChange={(e) => update("details", e.target.value)} rows={5}
-              placeholder="Cuéntanos: medidas aproximadas, material o tela que te gusta, estilo de tu espacio, colores, plazo... Cuanto más nos cuentes, más ajustado será el presupuesto."
+              placeholder={hasConfigParams ? 'Cualquier detalle extra que quieras añadir (opcional).' : 'Cuéntanos: medidas aproximadas, material o tela que te gusta, estilo de tu espacio, colores, plazo...'}
               className={`${inputBase} resize-none`} />
-            <p className="mt-2 text-xs text-muted-foreground italic font-light">Medidas, tela, color, forma — todo va aquí. Si no lo sabes aún, sin problema.</p>
+            <p className="mt-2 text-xs text-muted-foreground italic font-light">Sin problema si lo dejas en blanco: lo repasamos contigo en la llamada.</p>
           </div>
 
           <div className="flex items-start gap-3 pt-2">
@@ -440,7 +517,7 @@ const ContactForm = () => {
 
           <div className="pt-2 p-3 bg-muted/40 border border-border/40 rounded-md">
             <p className="text-xs text-muted-foreground font-light leading-relaxed">
-              <span className="font-medium text-foreground">Gastos de envío:</span> dentro de Madrid <span className="font-medium">40 €</span> · fuera de Madrid, a consultar según destino.
+              <span className="font-medium text-foreground">Envío a la península.</span> Dentro de Madrid <span className="font-medium">40 €</span>; en el resto lo confirmamos en la llamada de menos de 24 h.
             </p>
             <p className="text-[11px] text-muted-foreground/70 font-light mt-1 italic">Telas sujetas a disponibilidad de stock.</p>
           </div>
@@ -452,7 +529,11 @@ const ContactForm = () => {
               className="btn-sweep btn-unir btn-unir-outline w-full inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-50"
             >
               <span className="relative z-10 inline-flex items-center gap-2">
-                {sending ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>) : "Enviar solicitud →"}
+                {sending
+                  ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>)
+                  : hasConfigParams && productPrice !== null
+                    ? `Lo quiero — reserva por ${productPrice} € →`
+                    : "Enviar solicitud →"}
               </span>
             </button>
           </div>
