@@ -92,19 +92,6 @@ const Navbar = () => {
             if (link.highlight) {
               return (
                 <div key={link.to} className="flex items-center gap-4">
-                  <a
-                    href={WHATSAPP_HREF}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`hidden lg:inline-flex items-center gap-1.5 text-sm font-body font-light hover:opacity-80 transition-opacity ${
-                      onHero ? "text-white" : "text-foreground"
-                    }`}
-                    style={onHero ? { textShadow: "0 1px 3px rgba(0,0,0,0.4)" } : {}}
-                    aria-label="¿Dudas? Escríbenos por WhatsApp al 660 786 453"
-                  >
-                    <MessageCircle size={14} strokeWidth={1.6} />
-                    ¿Dudas? 660 786 453
-                  </a>
                   <Link to={link.to}
                     onClick={(e) => { if (handleClick(link.to)) e.preventDefault(); }}
                     className={`btn-sweep btn-unir text-sm font-body font-light px-4 py-2 ${
