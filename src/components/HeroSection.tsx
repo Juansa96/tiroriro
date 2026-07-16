@@ -114,13 +114,13 @@ const HeroSection = () => {
     };
   }, []);
 
-  const part1 = useTypewriter("Algunas cosas", isMobile ? 200 : 300, 40, skipAnimation);
-  const part2 = useTypewriter("merecen hacerse a mano", isMobile ? 800 : 900, 40, skipAnimation);
+  const headlineLine1 = useTypewriter("Cabeceros tapizados a medida,", isMobile ? 200 : 300, 45, skipAnimation);
+  const headlineLine2 = useTypewriter("hechos a mano en España", isMobile ? 1600 : 1700, 45, skipAnimation);
   const [showRest, setShowRest] = useState(skipAnimation);
 
   useEffect(() => {
     if (skipAnimation) return;
-    const t = setTimeout(() => setShowRest(true), isMobile ? 1800 : 2200);
+    const t = setTimeout(() => setShowRest(true), isMobile ? 2900 : 3000);
     return () => clearTimeout(t);
   }, [isMobile, skipAnimation]);
 
@@ -158,16 +158,11 @@ const HeroSection = () => {
           </p>
         </div>
 
-        <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-white leading-tight">
-          Cabeceros tapizados a medida,
+        <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-white leading-tight min-h-[2.4em]">
+          <span>{headlineLine1 || " "}</span>
           <br />
-          hechos a mano en España
+          <span>{headlineLine2 || " "}</span>
         </h1>
-
-        <p className="mt-4 md:mt-5 font-serif text-lg md:text-2xl lg:text-3xl italic font-light text-white/90 leading-snug min-h-[1.6em]">
-          <span>{part1 || " "}</span>{" "}
-          <span>{part2 || " "}</span>
-        </p>
 
         <div
           className="transition-all duration-700 ease-out"
