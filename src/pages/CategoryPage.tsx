@@ -731,7 +731,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                   <div>
                     <dt className="font-serif text-lg text-foreground">¿Cuánto tarda en llegar?</dt>
                     <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
-                      Se fabrican a mano en unos 15–20 días desde que confirmas el pedido. Envío a toda la península.
+                      Se fabrican a mano en unos 15–20 días desde que confirmas el pedido. Envío a la península.
                     </dd>
                   </div>
                   <div>

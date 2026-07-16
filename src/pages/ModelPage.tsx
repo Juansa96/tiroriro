@@ -164,8 +164,14 @@ const ModelPage = () => {
                 <li>· Hecho a mano en España en 20 días</li>
                 <li>· Más de 60 telas básicas y premium</li>
                 <li>· Tapizado y medidas a tu gusto</li>
-                <li>· Envío a toda la península</li>
+                <li>· Envío a la península</li>
               </ul>
+
+              <div className="mt-6 p-4 bg-accent-warm/5 border border-accent-warm/20 rounded-md">
+                <p className="text-xs text-foreground font-medium tracking-wide">
+                  Reserva con el 50% · El resto al recibir · Garantía de fabricación
+                </p>
+              </div>
 
               <div className="mt-10 flex flex-col sm:flex-row gap-3">
                 <Link
