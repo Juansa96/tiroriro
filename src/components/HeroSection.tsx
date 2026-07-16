@@ -177,15 +177,15 @@ const HeroSection = () => {
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               to="/configurador"
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+              className="btn-sweep inline-flex px-6 py-3 md:px-8 md:py-4 bg-[hsl(var(--accent-warm))] text-white text-xs font-medium tracking-[0.1em] uppercase hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 hover:shadow-lg rounded-sm"
             >
               <span className="relative z-10">Diseña el tuyo →</span>
             </Link>
             <Link
               to="/productos"
-              className="btn-sweep btn-unir btn-unir-light inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+              className="inline-flex items-center justify-center px-4 py-2 text-xs tracking-[0.18em] uppercase font-light text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
             >
-              <span className="relative z-10">Ver productos →</span>
+              Ver productos →
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/85">
