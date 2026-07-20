@@ -21,10 +21,13 @@ const MobileStickyCTA = () => {
       setVisible(scrolled && !contactVisible);
     };
 
-    // Observe #contacto (contact form section) to auto-hide the CTA when it's on screen.
-    const target = document.getElementById("contacto");
+    // Observe #contacto to auto-hide the CTA when it's on screen. The
+    // contact form is lazy-loaded, so retry finding it until it appears.
     let observer: IntersectionObserver | null = null;
-    if (target && "IntersectionObserver" in window) {
+    let mutationObserver: MutationObserver | null = null;
+    const attach = () => {
+      const target = document.getElementById("contacto");
+      if (!target || !("IntersectionObserver" in window)) return false;
       observer = new IntersectionObserver(
         (entries) => {
           contactVisible = entries[0]?.isIntersecting ?? false;
@@ -33,6 +36,14 @@ const MobileStickyCTA = () => {
         { rootMargin: "0px 0px -20% 0px", threshold: 0.05 }
       );
       observer.observe(target);
+      return true;
+    };
+
+    if (!attach() && "MutationObserver" in window) {
+      mutationObserver = new MutationObserver(() => {
+        if (attach()) mutationObserver?.disconnect();
+      });
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
     }
 
     window.addEventListener("scroll", update, { passive: true });
@@ -40,6 +51,7 @@ const MobileStickyCTA = () => {
     return () => {
       window.removeEventListener("scroll", update);
       observer?.disconnect();
+      mutationObserver?.disconnect();
     };
   }, [isHidden, location.pathname]);
 
