@@ -40,10 +40,25 @@ const Navbar = () => {
   useEffect(() => setOpen(false), [location]);
 
   useEffect(() => {
-    if (location.hash) {
-      const el = document.getElementById(location.hash.slice(1));
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
-    }
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    let cancelled = false;
+    // Retry: the target section may be inside a lazy-loaded chunk that
+    // isn't in the DOM yet when the route changes.
+    const start = Date.now();
+    const tryScroll = () => {
+      if (cancelled) return;
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+      if (Date.now() - start < 5000) {
+        setTimeout(tryScroll, 120);
+      }
+    };
+    setTimeout(tryScroll, 100);
+    return () => { cancelled = true; };
   }, [location]);
 
   const handleClick = (to: string) => {

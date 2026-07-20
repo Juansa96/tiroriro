@@ -25,12 +25,12 @@ const CookieBanner = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-foreground/95 text-primary-foreground backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-2 flex flex-row items-center justify-between gap-3">
-        <p className="text-xs font-light leading-snug flex-1 min-w-0 truncate">
+      <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
+        <p className="text-xs font-light leading-snug flex-1 min-w-0">
           Cookies técnicas y analíticas (GA4).{" "}
           <Link to="/cookies" className="underline hover:opacity-80">Más info</Link>
         </p>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2 shrink-0 self-end sm:self-auto">
           <button
             onClick={rejectAll}
             className="px-3 py-1 text-xs font-light hover:opacity-80 transition-opacity"
