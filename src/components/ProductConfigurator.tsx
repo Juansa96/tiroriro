@@ -1465,8 +1465,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño (largo × alto × fondo)</p>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { label: '120 × 45 × 60 cm', w: '120', h: '45', d: '60' },
-                    { label: '80 × 45 × 80 cm', w: '80', h: '45', d: '80' },
+                    { label: '60 × 40 × 60 cm',    w: '60',  h: '40', d: '60' },
+                    { label: '80 × 40 × 80 cm',    w: '80',  h: '40', d: '80' },
+                    { label: '100 × 40 × 100 cm',  w: '100', h: '40', d: '100' },
+                    { label: '120 × 40 × 120 cm',  w: '120', h: '40', d: '120' },
                   ].map(opt => (
                     <button
                       key={opt.label}
@@ -1483,6 +1485,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     Otra medida
                   </button>
                 </div>
+                <p className="text-[11px] text-muted-foreground italic mt-3 leading-snug">
+                  Altura fija <span className="text-foreground">40 cm</span> en las 4 medidas. ¿Necesitas otra? <a href="#contacto" className="underline hover:text-foreground">Consúltanos</a>.
+                </p>
                 {benchLength === 'custom' && (
                   <div className="mt-3 grid grid-cols-3 gap-3">
                     <div>
