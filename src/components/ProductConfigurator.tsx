@@ -1726,27 +1726,37 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </div>
       </div>
 
-      {productType !== 'banco' && (
+      {productType !== 'cojin' && productType !== 'pantalla' && (
       <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
         <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
         <div className="pb-6 space-y-3 px-1 pt-2">
-          {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
+          {(FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'vivo-simple';
-            if (productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'banco') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
-          })).map(f => (
+          })).map(f => {
+            // Etiqueta del recargo específica por producto
+            const perProductExtra =
+              productType === 'banco' && f.id === 'vivo-simple' ? BANCO_VIVO
+              : productType === 'puf'   && f.id === 'vivo-simple' ? PUF_VIVO
+              : productType === 'mesa'  && f.id === 'vivo-simple' ? MESA_VIVO
+              : productType === 'cabecero' && f.id === 'vivo-doble' ? CABECERO_VIVO_DOBLE
+              : 0;
+            const label = perProductExtra > 0 ? `+${perProductExtra} €` : (f as { extraLabel?: string }).extraLabel;
+            return (
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
               className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
               <span className="text-sm font-medium text-foreground">{f.name}</span>
-              {((f as { extra?: number }).extra ?? 0) > 0 && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${(f as { extra?: number }).extra}€`}</span>}
+              {label && <span className="text-xs text-accent-warm ml-2">{label}</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
-          ))}
+            );
+          })}
           {needsVivo && (
             <div className="pt-3">
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Básicas</p>
