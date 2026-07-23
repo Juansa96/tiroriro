@@ -535,7 +535,9 @@ const ProductConfigurator = () => {
     }
 
     if (productType === 'puf') {
-      o.pufSizeCm   = puffDiameter.includes('40') ? '40' : puffDiameter.includes('50') ? '50' : '';
+      o.pufSizeCm   = puffDiameter.includes('40') ? '40'
+                    : puffDiameter.includes('50') ? '50'
+                    : puffDiameter.includes('60') ? '60' : '';
       o.pufQuantity = puffQuantity;
       o.pufShape    = shape === 'circular' ? 'circular' : 'cuadrado';
       o.pufShapeLabel = shape === 'circular' ? 'Monteferro · Redondo' : 'Patos · Cúbico';
@@ -547,8 +549,10 @@ const ProductConfigurator = () => {
     }
 
     if (productType === 'mesa') {
-      o.mesaPreset = benchLength.includes('120') ? '120x45x60'
-        : benchLength.includes('80') ? '80x45x80' : '';
+      const mp: Record<string, string> = {
+        '60 cm': '60x60', '80 cm': '80x80', '100 cm': '100x100', '120 cm': '120x120',
+      };
+      o.mesaPreset = mp[benchLength] || '';
       o.surface = extraTopMaterial !== 'nada' ? extraTopMaterial : '';
     }
 
