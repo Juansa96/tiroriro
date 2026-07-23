@@ -1,3 +1,14 @@
+// Wrapper delgado sobre src/data/pricing.ts (única fuente de verdad de precios).
+// Este archivo NO debe contener ningún número de precio.
+
+import {
+  calculatePrice as _calculatePrice,
+  getCategoryPriceFrom,
+  normalizeCojinKey,
+  type Category,
+  type PriceOptions,
+} from "@/data/pricing";
+
 export type ProductType = "cabecero" | "banco" | "cojin" | "puf" | "mesa" | "pantalla";
 
 export interface Product {
@@ -28,254 +39,137 @@ export const FABRIC_COLORS: ColorOption[] = [
 
 export const PRODUCTS: Product[] = [
   {
-    id: "cabecero-tapizado",
-    type: "cabecero",
+    id: "cabecero-tapizado", type: "cabecero",
     name: "Cabeceros tapizados",
     tagline: "El punto de partida de cualquier dormitorio que merece la pena",
-    basePrice: 225,
+    basePrice: getCategoryPriceFrom("cabecero"),
     image: "/productos-fotos/cabeceros/pregonda-01.webp",
   },
   {
-    id: "banco-entelado",
-    type: "banco",
+    id: "banco-entelado", type: "banco",
     name: "Bancos entelados",
     tagline: "Para el pie de la cama, la entrada o donde quieras que aterrice la vista",
-    basePrice: 200,
+    basePrice: getCategoryPriceFrom("banco"),
     image: "/productos-fotos/bancos/banco-entelado.png",
   },
   {
-    id: "cojin-almohadon",
-    type: "cojin",
+    id: "cojin-almohadon", type: "cojin",
     name: "Almohadones",
     tagline: "Detalles suaves y a medida para camas, bancos o sofás",
-    basePrice: 40,
+    basePrice: getCategoryPriceFrom("cojin"),
     image: "/productos-fotos/almohadones/card-home.webp",
   },
   {
-    id: "pufs",
-    type: "puf",
+    id: "pufs", type: "puf",
     name: "Pufs",
     tagline: "Tapizados a medida, fáciles de mover y pensados para vivir con ellos",
-    basePrice: 125,
+    basePrice: getCategoryPriceFrom("puf"),
     image: "/productos-fotos/puff/patos-card.webp",
   },
   {
-    id: "mesa-centro",
-    type: "mesa",
+    id: "mesa-centro", type: "mesa",
     name: "Mesas de centro",
     tagline: "Tapizadas a medida, con una presencia suave y mucho más original",
-    basePrice: 280,
+    basePrice: getCategoryPriceFrom("mesa"),
     image: "/productos-fotos/mesas/calblanque-01.webp",
   },
   {
-    id: "pantalla-lampara",
-    type: "pantalla",
+    id: "pantalla-lampara", type: "pantalla",
     name: "Pantallas de lámpara",
     tagline: "Pantallas tapizadas a mano para transformar cualquier lámpara en una pieza única",
-    basePrice: 25,
+    basePrice: getCategoryPriceFrom("pantalla"),
     image: "/productos-fotos/pantallas/almanzor-01.webp",
   },
 ];
 
-// ─── Cabeceros ───────────────────────────────────────────────────────────────
-// Precio base a 100 cm de altura. Por cada 10 cm extra sobre 100 cm: +15 €.
-// Tela premium: +25 €. Vivo doble: +10 €. Colgador: +5 €.
-const CABECERO_PRICES: Record<string, number> = {
-  "90":  225,
-  "105": 250,
-  "135": 295,
-  "150": 345,
-  "160": 360,
-  "180": 390,
-  "200": 425,
-};
+// Traduce el `options: Record<string,string>` que emite el configurador a un
+// PriceOptions estructurado para pricing.ts.
+function toPriceOptions(type: ProductType, o: Record<string, string>): PriceOptions {
+  const finish = o.finish || "";
+  const vivo: PriceOptions["vivo"] =
+    finish === "vivo-doble" ? "doble"
+    : finish === "vivo-simple" ? "simple"
+    : finish === "liso" ? "sin"
+    : "sin";
 
-// ─── Almohadones ─────────────────────────────────────────────────────────────
-// cushionKey = "<shape>-<medida>" (sin espacios, × → x)
-// Tela premium: +10 €. Vivo simple: incluido.
-export const CUSHION_PRICES: Record<string, number> = {
-  "rodiles-40x40":     40,
-  "rodiles-45x45":     45,
-  "rodiles-50x50":     50,
-  "covadonga-30x50":   40,
-  "covadonga-40x60":   50,
-  "covadonga-70x90":   70,
-  "gulpiyuri-40x15":   60,
-};
+  const heightCm = o.bedHeightCm ? parseInt(o.bedHeightCm) : undefined;
 
-// ─── Mesas de centro ─────────────────────────────────────────────────────────
-// Vivo simple: incluido. Metacrilato +50 €, cristal +100 €. Premium: +25 €.
-export const MESA_PRICES: Record<string, number> = {
-  "120x45x60": 280,
-  "80x45x80":  300,
-};
+  let sizeId = "";
+  if (type === "cabecero") sizeId = o.bedWidthCm || "";
+  else if (type === "banco") sizeId = (o.benchLength || "").replace(/[^0-9]/g, "");
+  else if (type === "puf") {
+    const shape = o.pufShape === "circular" ? "redondo" : "cuadrado";
+    const cm = o.pufSizeCm || "";
+    sizeId = cm ? `${shape}-${cm}` : "";
+  } else if (type === "mesa") sizeId = o.mesaPreset || "";
+  else if (type === "cojin") sizeId = normalizeCojinKey(o.cushionKey || "");
+  else if (type === "pantalla") sizeId = o.pantallaSizeKey || "";
 
-// ─── Pantallas de lámpara ────────────────────────────────────────────────────
-// pantallaSizeKey = "<shape>-<medida>". Ribete: incluido.
-export const PANTALLA_PRICES: Record<string, number> = {
-  "cilindro-Ø40×40cm": 75,
-  "cilindro-Ø15×20cm": 25,
-  "cilindro-Ø25×25cm": 45,
-  "cuadrado-20×20cm":  35,
-  "rectangulo-20×40cm": 65,
-};
-
-function _getBasePrice(type: ProductType, options: Record<string, string>): number {
-  const isPremium = options.fabricGroup === "Premium";
-
-  // ── Cabecero ──────────────────────────────────────────────────────────────
-  if (type === "cabecero") {
-    const widthKey = options.bedWidthCm || "";
-    let base = CABECERO_PRICES[widthKey] ?? 0;
-    if (!base) return 0;
-
-    // Altura extra: +15 € por cada 10 cm sobre 100 cm
-    const heightCm = parseInt(options.bedHeightCm || "100");
-    if (heightCm > 100) {
-      base += Math.ceil((heightCm - 100) / 10) * 15;
-    }
-
-    if (isPremium)                       base += 25;
-    if (options.finish === "vivo-doble") base += 10;
-    if (options.colgador === "true")     base += 5;
-
-    return base;
-  }
-
-  // ── Puf ───────────────────────────────────────────────────────────────────
-  if (type === "puf") {
-    const sizeCm = options.pufSizeCm || "40";
-    const qty    = parseInt(options.pufQuantity || "1");
-
-    let base: number;
-    if (sizeCm === "40") {
-      base = qty >= 2 ? 220 : 125;
-    } else {
-      base = qty >= 2 ? 325 : 165;
-    }
-
-    if (isPremium) base += 25 * qty;
-
-    return base;
-  }
-
-  // ── Mesa de centro ────────────────────────────────────────────────────────
-  if (type === "mesa") {
-    const key  = options.mesaPreset || "";
-    let base   = MESA_PRICES[key] ?? 0;
-    if (!base) return 0;
-
-    if (isPremium)                         base += 25;
-    if (options.surface === "metacrilato") base += 50;
-    if (options.surface === "cristal")     base += 100;
-
-    return base;
-  }
-
-  // ── Almohadón ─────────────────────────────────────────────────────────────
-  if (type === "cojin") {
-    const key  = options.cushionKey || "";
-    let base   = CUSHION_PRICES[key] ?? 0;
-    if (!base) return 0;
-
-    if (isPremium) base += 25;
-
-    return base;
-  }
-
-  // ── Pantalla ──────────────────────────────────────────────────────────────
-  if (type === "pantalla") {
-    const key  = options.pantallaSizeKey || "";
-    return PANTALLA_PRICES[key] ?? 0;
-  }
-
-  // ── Banco (sin precios definitivos) ───────────────────────────────────────
-  if (type === "banco") {
-    if (options.benchLength === 'custom') return 0;
-    const key = (options.benchLength || "").trim();
-    const BENCH_PRICES: Record<string, number> = {
-      "60 cm": 200,
-      "60 cm doble": 370,
-      "90 cm": 250,
-      "120 cm": 300,
-      "150 cm": 350,
-    };
-    let base = BENCH_PRICES[key] ?? 0;
-    if (!base) return 0;
-    if (isPremium) base += 25;
-    return base;
-  }
-
-  return 0;
+  return {
+    sizeId,
+    fabricGroup: o.fabricGroup,
+    heightCm,
+    vivo,
+    colgador: o.colgador === "true",
+    tapetes: o.tapetes === "true",
+    vivoDiferente: o.hasCustomVivo === "true",
+    lateralDiferente: o.hasCustomLateral === "true",
+    surface: (o.surface as PriceOptions["surface"]) || "",
+  };
 }
 
 export function calculatePrice(type: ProductType, options: Record<string, string>): number {
-  let total = _getBasePrice(type, options);
-  if (total === 0) return 0;
-
-  // Tela del vivo distinta a la principal: +5 €
-  if (options.hasCustomVivo === "true") total += 5;
-  // Tela de laterales distinta a la principal: +15 €
-  if (options.hasCustomLateral === "true") total += 15;
-  // Tapetes protectores: +5 €
-  if (options.tapetes === "true") total += 5;
-
-  return total;
+  if (options.priceOnRequest === "true") return 0;
+  return _calculatePrice(type as Category, toPriceOptions(type, options));
 }
 
 export function buildConfigSummary(type: ProductType, options: Record<string, string>): string {
   const product = PRODUCTS.find((item) => item.type === type);
   if (!product) return "";
-
   const parts: string[] = [product.name];
 
   if (type === "cabecero") {
     if (options.shapeLabel)  parts.push(options.shapeLabel);
     if (options.bedWidthCm)  parts.push(`Ancho ${options.bedWidthCm} cm`);
     if (options.bedHeightCm) parts.push(`Alto ${options.bedHeightCm} cm`);
-    if (options.finish === "vivo-doble") parts.push("Vivo doble");
-    else parts.push("Vivo simple");
+    parts.push(options.finish === "vivo-doble" ? "Vivo doble" : "Vivo simple");
     if (options.colgador === "true") parts.push("Con colgador");
   }
-
   if (type === "banco") {
     parts[0] = "Banco Oyambre";
-    if (options.benchLength === 'custom') {
-      parts.push(`Largo ${options.bancoCustomLargo || '?'} cm`);
-      parts.push(`Alto ${options.bancoCustomAlto || '?'} cm`);
-      parts.push(`Fondo ${options.bancoCustomFondo || '?'} cm`);
-      parts.push('Precio a consultar — nos pondremos en contacto contigo');
+    if (options.benchLength === "custom") {
+      parts.push(`Largo ${options.bancoCustomLargo || "?"} cm`);
+      parts.push(`Alto ${options.bancoCustomAlto || "?"} cm`);
+      parts.push(`Fondo ${options.bancoCustomFondo || "?"} cm`);
+      parts.push("Precio a consultar — nos pondremos en contacto contigo");
     } else {
       if (options.benchLength) parts.push(`Largo ${options.benchLength}`);
       parts.push("Alto 45 cm");
       parts.push("Fondo 33 cm");
+      if (options.finish === "vivo-simple") parts.push("Con vivo");
     }
   }
-
   if (type === "puf") {
-    const qty = parseInt(options.pufQuantity || "1");
     if (options.pufShapeLabel) parts.push(options.pufShapeLabel);
     if (options.pufShape === "circular") {
       if (options.pufDiameter) parts.push(`Ø ${options.pufDiameter}`);
       if (options.pufHeight)   parts.push(`Alto ${options.pufHeight}`);
-    } else {
-      parts.push(`${options.pufSizeCm ?? "40"} cm`);
+    } else if (options.pufSizeCm) {
+      parts.push(`${options.pufSizeCm}×${options.pufSizeCm} cm`);
     }
-    if (qty >= 2) parts.push("Pareja (×2)");
+    if (options.finish === "vivo-simple") parts.push("Con vivo");
   }
-
   if (type === "mesa") {
-    if (options.mesaPreset) parts.push(options.mesaPreset.replace(/x/g, " × ") + " cm");
+    if (options.mesaPreset) parts.push(options.mesaPreset.replace(/x/g, " × ") + " × 40 cm");
     if (options.surface === "metacrilato") parts.push("Metacrilato 5 mm");
     if (options.surface === "cristal")     parts.push("Cristal 6 mm");
+    if (options.finish === "vivo-simple") parts.push("Con vivo");
   }
-
-  if (type === "cojin") {
-    if (options.cushionKey) parts.push(options.cushionKey.replace(/-/, " ").replace(/x/g, "×") + " cm");
+  if (type === "cojin" && options.cushionKey) {
+    parts.push(normalizeCojinKey(options.cushionKey).replace(/^[^-]+-/, "").replace(/x/g, "×") + " cm");
   }
-
-  if (type === "pantalla") {
-    if (options.pantallaSizeKey) parts.push(options.pantallaSizeKey.replace(/^[^-]+-/, ""));
+  if (type === "pantalla" && options.pantallaSizeKey) {
+    parts.push(options.pantallaSizeKey.replace(/^[^-]+-/, ""));
   }
 
   if (options.fabricLabel) parts.push(`Tela: ${options.fabricLabel}`);
