@@ -300,7 +300,7 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
   },
   bancos: {
     title: "Bancos entelados a medida | Tiroriro",
-    description: "Banco Oyambre tapizado a medida en 4 largos: 150, 120, 90 y 60 cm. Alto 45 · fondo 33. Desde 295 €. Hecho a mano en España.",
+    description: "Banco Oyambre tapizado a medida en 5 largos: 150, 120, 90 y 60 cm. Alto 45 · fondo 33. Desde 295 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/bancos",
     ogImage: "https://tirorirohome.com/productos-fotos/bancos/IMG_2491.webp",
   },
@@ -311,8 +311,8 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
     ogImage: "https://tirorirohome.com/productos-fotos/almohadones/distribuidor.webp",
   },
   pufs: {
-    title: "Pufs tapizados a medida | Solos o en pareja | Tiroriro",
-    description: "Pufs cúbicos tapizados a medida, solos o en pareja. Más de 60 telas disponibles. Desde 150 €. Hecho a mano en España.",
+    title: "Pufs tapizados a medida | Cuadrados o redondos | Tiroriro",
+    description: "Pufs cúbicos o redondos tapizados a medida. Más de 60 telas disponibles. Desde 150 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/pufs",
     ogImage: "https://tirorirohome.com/productos-fotos/puff/monteferro-01.webp",
   },
