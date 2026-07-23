@@ -14,12 +14,12 @@ import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
 import { ChevronDown, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Cabecero: vivo-simple incluido (0€), vivo-doble +10€
-// Resto: vivo-simple incluido (0€) cuando aplica
+// Cabecero: vivo-simple incluido (0€), vivo-doble +15 €
+// Bancos/pufs/mesas: vivo-simple con recargo (definido en pricing.ts)
 const FINISHES = [
-  { id: "liso", name: "Sin vivo", desc: "Sin ribete decorativo en el borde", extra: 0 },
-  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el borde — incluido", extra: 0, extraLabel: "Incluido" },
-  { id: "vivo-doble", name: "Vivo doble", desc: "Doble ribete, más elaborado", extra: 10, extraLabel: "+10€" },
+  { id: "liso", name: "Sin vivo", desc: "Sin ribete decorativo en el borde", extra: 0, extraLabel: "Incluido" },
+  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el borde", extra: 0, extraLabel: "" },
+  { id: "vivo-doble", name: "Vivo doble", desc: "Doble ribete, más elaborado", extra: CABECERO_VIVO_DOBLE, extraLabel: `+${CABECERO_VIVO_DOBLE} €` },
 ];
 
 const HEADBOARD_SHAPES = [
@@ -108,7 +108,7 @@ const CUSHION_SHAPES = [
   {
     id: "covadonga", name: "Covadonga", subtitle: "Rectangular",
     svgPath: <rect x="4" y="14" width="52" height="32" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
-    sizes: ["30×50 cm", "40×60 cm", "70×90 cm"],
+    sizes: ["50×30 cm", "60×40 cm", "70×90 cm"],
     getDetails: (sz: string) => {
       if (sz.includes("90")) return { shape: "rectangular", widthCm: 90, heightCm: 70 };
       if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
@@ -118,8 +118,8 @@ const CUSHION_SHAPES = [
   {
     id: "gulpiyuri", name: "Gulpiyuri", subtitle: "Rulo",
     svgPath: <><rect x="4" y="20" width="52" height="20" rx="10" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="4" cy="30" rx="5" ry="10" fill="none" stroke="currentColor" strokeWidth="1.5" /></>,
-    sizes: ["40×15 cm"],
-    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 40, heightCm: 15 }),
+    sizes: ["13×90 cm"],
+    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 90, heightCm: 13 }),
   },
 ];
 
@@ -200,13 +200,13 @@ const ProductIcon = ({ type }: { type: string }) => {
   }
 };
 
-const BENCH_LENGTHS = ["60 cm", "60 cm doble", "90 cm", "120 cm", "150 cm"];
+const BENCH_LENGTHS = ["60 cm", "90 cm", "120 cm", "150 cm", "180 cm"];
 const BENCH_PRICE_MAP: Record<string, number> = {
-  "60 cm": 200,
-  "60 cm doble": 370,
-  "90 cm": 250,
-  "120 cm": 300,
-  "150 cm": 350,
+  "60 cm":  BANCO_BASE["60"],
+  "90 cm":  BANCO_BASE["90"],
+  "120 cm": BANCO_BASE["120"],
+  "150 cm": BANCO_BASE["150"],
+  "180 cm": BANCO_BASE["180"],
 };
 
 const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
