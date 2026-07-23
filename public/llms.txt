@@ -5,8 +5,8 @@
 Tiroriro es una marca de mobiliario tapizado a medida con sede en Boadilla del Monte (Comunidad de Madrid, España). Dirección del taller: Calle Cristóbal Colón, 11, 28660 Boadilla del Monte. Cada pieza se fabrica a mano bajo pedido. El cliente elige forma, tamaño y tela desde el configurador online; el precio se calcula en tiempo real. Entrega habitual: 20 días naturales. Envíos a toda la península ibérica (Baleares y Canarias bajo consulta). Pagos: Bizum, Stripe, transferencia. Contacto: info@tirorirohome.com · +34 660 786 453 · Instagram @tirorirohome.
 
 ## Datos clave
-- Producto principal: cabeceros tapizados a medida (5 formas, desde 225 €)
-- Otros productos: pufs cuadrados y puf redondo Monteferro (desde 125 €), mesas de centro (desde 280 €), pantallas de lámpara (desde 25 €), almohadones tapizados a medida
+- Producto principal: cabeceros tapizados a medida (5 formas, desde 285 €)
+- Otros productos: pufs cuadrados y puf redondo Monteferro (desde 150 €), mesas de centro (desde 220 €), pantallas de lámpara (desde 25 €), almohadones tapizados a medida
 - Próximamente: bancos entelados, percheros
 - Telas: más de 60 referencias entre básicas y premium
 - Plazo de entrega: 20 días naturales
@@ -14,11 +14,11 @@ Tiroriro es una marca de mobiliario tapizado a medida con sede en Boadilla del M
 - Garantía: defectos de fabricación cubiertos; no se admiten devoluciones por cambio de opinión (productos personalizados)
 
 ## Catálogo de cabeceros (modelos y precios desde)
-- Calobra — forma recta, líneas limpias. Desde 225 €.
-- Pregonda — remate en arco suave. Desde 245 €.
-- Macarella — corona simple con ondulación central. Desde 265 €.
+- Calobra — forma recta, líneas limpias. Desde 285 €.
+- Pregonda — remate en arco suave. Desde 285 €.
+- Macarella — corona simple con ondulación central. Desde 285 €.
 - Conta — corona doble escalonada. Desde 285 €.
-- Barbaria — corona quíntuple con cinco arcos. Desde 305 €.
+- Barbaria — corona quíntuple con cinco arcos. Desde 285 €.
 
 ## Medidas de cabeceros recomendadas
 - Cama 90 cm → cabecero 100–110 cm de ancho, 100–120 cm de alto.
@@ -31,7 +31,7 @@ Regla general: el cabecero sobresale 5–10 cm a cada lado del colchón.
 
 ## Composición interior (todos los productos)
 - Estructura: tablero aglomerado reforzado en laterales.
-- Acolchado: gomaespuma de alta densidad + capa de guata de 3 cm.
+- Acolchado: gomaespuma de alta densidad + capa de guata de 8 cm.
 - Tapizado: cosido y ajustado a mano con la tela elegida por el cliente.
 - Acabado opcional: ribetes, piping, combinación bicolor.
 
@@ -49,7 +49,7 @@ No se cobra ningún anticipo hasta que el cliente confirma el pedido.
 
 ## Telas (categorías principales)
 - Básicas: lino lavado, algodón, panas finas, mezclas naturales (incluidas en precio base).
-- Premium: bouclé, velvet, terciopelos italianos, telas de diseñador (suplemento de 40–80 € sobre la básica).
+- Premium: bouclé, velvet, terciopelos italianos, telas de diseñador (recargo variable según medida — se ve en el configurador).
 - Posibilidad de enviar tela propia (el cliente compra el metraje según indicaciones del taller).
 
 ## Personalización
@@ -65,10 +65,10 @@ No se cobra ningún anticipo hasta que el cliente confirma el pedido.
 ## Páginas
 - [Inicio](/): presentación de marca, productos destacados y formulario de contacto
 - [Productos](/productos): catálogo completo por categorías
-- [Cabeceros tapizados](/productos/cabeceros): 5 modelos (Calobra, Pregonda, Macarella, Conta, Barbaria) desde 225 €
-- [Pufs](/productos/pufs): puf cuadrado Patos y puf redondo Monteferro tapizados a medida desde 125 €
+- [Cabeceros tapizados](/productos/cabeceros): 5 modelos (Calobra, Pregonda, Macarella, Conta, Barbaria) desde 285 €
+- [Pufs](/productos/pufs): puf cuadrado Patos y puf redondo Monteferro tapizados a medida desde 150 €
 - [Cojines y almohadones](/productos/cojines): cojines y almohadones tapizados a medida en más de 60 telas
-- [Mesas de centro](/productos/mesas-centro): mesa Cabo de Palos desde 280 €
+- [Mesas de centro](/productos/mesas-centro): mesas cuadradas desde 220 €
 - [Pantallas de lámpara](/productos/pantallas-lampara): 6 formas tapizadas a mano desde 25 €
 - [Telas](/telas): catálogo de telas básicas y premium con foto y descripción
 - [Configurador](/configurador): herramienta interactiva para diseñar tu pieza (forma + medidas + tela + precio en tiempo real)

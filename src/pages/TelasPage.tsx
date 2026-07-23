@@ -8,7 +8,7 @@ import SEO from "@/components/SEO";
 
 const COLECCIONES = [
   { name: "Básicas", priceBadge: "Sin coste adicional", badgeClass: "bg-green-50 text-green-700 border-green-200" },
-  { name: "Premium", priceBadge: "+25€ sobre el precio base", badgeClass: "bg-amber-50 text-amber-700 border-amber-200" },
+  { name: "Premium", priceBadge: "Recargo variable según medida", badgeClass: "bg-amber-50 text-amber-700 border-amber-200" },
 ];
 
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, tengo dudas sobre las telas y me gustaría orientación.");
