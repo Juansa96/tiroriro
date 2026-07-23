@@ -134,8 +134,8 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
           "/productos-fotos/bancos/oyambre-01.webp",
           "/productos-fotos/bancos/oyambre-03.webp",
         ],
-        desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Cuatro medidas: 150, 120, 90 y 60 cm de largo (alto 45 · fondo 33).",
-        priceLabel: "Desde 200€",
+        desc: "Banco entelado de pie de cama estilo cascada, sin respaldo ni reposabrazos. Cinco medidas: 180, 150, 120, 90 y 60 cm de largo (alto 45 · fondo 33).",
+        priceLabel: "Desde 295 €",
         configParam: "cascada",
       },
       {
@@ -165,7 +165,7 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
           "/productos-fotos/almohadones/rodiles-04.webp",
         ],
         desc: "Clásico y versátil. Queda perfecto en camas, sofás o sillones.",
-        priceLabel: "Desde 40€",
+        priceLabel: "Desde 60 €",
         configParam: "rodiles",
       },
       {
@@ -176,7 +176,7 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
           "/productos-fotos/almohadones/covadonga-06.webp",
         ],
         desc: "La forma alargada que siempre queda bien. Ideal para el cabecero de la cama o el respaldo del sofá.",
-        priceLabel: "Desde 40€",
+        priceLabel: "Desde 60 €",
         configParam: "covadonga",
       },
       {
@@ -186,7 +186,7 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
           "/productos-fotos/almohadones/gulpiyuri-04.webp",
         ],
         desc: "Un toque diferente y muy nórdico. Combina a la perfección con cabeceros tapizados.",
-        priceLabel: "Desde 60€",
+        priceLabel: "Desde 70 €",
         configParam: "gulpiyuri",
       },
       {
@@ -294,31 +294,31 @@ export const categoryAltLabel: Record<string, string> = {
 export const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
   cabeceros: {
     title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
-    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 225 €. Hecho a mano en España en 20 días.",
+    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 285 €. Hecho a mano en España en 20 días.",
     canonical: "https://tirorirohome.com/productos/cabeceros",
     ogImage: "https://tirorirohome.com/productos-fotos/cabeceros/IMG_2218.webp",
   },
   bancos: {
     title: "Bancos entelados a medida | Tiroriro",
-    description: "Banco Oyambre tapizado a medida en 4 largos: 150, 120, 90 y 60 cm. Alto 45 · fondo 33. Desde 200 €. Hecho a mano en España.",
+    description: "Banco Oyambre tapizado a medida en 4 largos: 150, 120, 90 y 60 cm. Alto 45 · fondo 33. Desde 295 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/bancos",
     ogImage: "https://tirorirohome.com/productos-fotos/bancos/IMG_2491.webp",
   },
   cojines: {
     title: "Almohadones tapizados a medida | Tiroriro",
-    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 40 €. Hecho a mano en España.",
+    description: "Almohadones tapizados a medida en distintas formas: cuadrado, rectangular y rulo. Más de 60 telas. Desde 60 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/cojines",
     ogImage: "https://tirorirohome.com/productos-fotos/almohadones/distribuidor.webp",
   },
   pufs: {
     title: "Pufs tapizados a medida | Solos o en pareja | Tiroriro",
-    description: "Pufs cúbicos tapizados a medida, solos o en pareja. Más de 60 telas disponibles. Desde 125 €. Hecho a mano en España.",
+    description: "Pufs cúbicos tapizados a medida, solos o en pareja. Más de 60 telas disponibles. Desde 150 €. Hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/pufs",
     ogImage: "https://tirorirohome.com/productos-fotos/puff/monteferro-01.webp",
   },
   "mesas-centro": {
     title: "Mesas de centro tapizadas a medida | Tiroriro",
-    description: "Mesas de centro tapizadas, sin patas y con opción de superficie de cristal o metacrilato. Desde 280 €. Diseño único, hecho a mano en España.",
+    description: "Mesas de centro tapizadas, sin patas y con opción de superficie de cristal o metacrilato. Desde 220 €. Diseño único, hecho a mano en España.",
     canonical: "https://tirorirohome.com/productos/mesas-centro",
     ogImage: "https://tirorirohome.com/productos-fotos/mesas-centro/cabo-de-palos.webp",
   },
@@ -723,13 +723,13 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                   <div>
                     <dt className="font-serif text-lg text-foreground">¿Qué medidas hay disponibles?</dt>
                     <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
-                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 30×50, 40×60 y 70×90 cm. Gulpiyuri (rulo) en 40×15 cm.
+                      Rodiles (cuadrado) en 40×40, 45×45 y 50×50 cm. Covadonga (rectangular) en 50×30, 60×40 y 70×90 cm. Gulpiyuri (rulo) en 13×90 cm.
                     </dd>
                   </div>
                   <div>
                     <dt className="font-serif text-lg text-foreground">¿Qué telas puedo elegir?</dt>
                     <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
-                      Más de 60 telas entre básicas y premium (linos, algodones, terciopelos y estampados). Las premium suman +10 € por almohadón.
+                      Más de 60 telas entre básicas y premium (linos, algodones, terciopelos y estampados). El recargo por tela premium depende de la medida — lo ves en el configurador.
                     </dd>
                   </div>
                   <div>
