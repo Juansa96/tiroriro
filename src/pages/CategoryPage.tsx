@@ -7,6 +7,7 @@ import { ChevronRight, ChevronLeft, Clock, Instagram, Maximize2 } from "lucide-r
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { getCategoryPriceFrom, formatPrice, type Category } from "@/data/pricing";
 
 export interface Model {
   name: string;
@@ -329,15 +330,18 @@ export const CATEGORY_SEO: Record<string, { title: string; description: string; 
   },
 };
 
-// Precio "desde" por categoría — usado para JSON-LD Product y AggregateOffer (GEO)
-export const CATEGORY_PRICE_FROM: Record<string, number> = {
-  cabeceros: 225,
-  bancos: 200,
-  pufs: 125,
-  "mesas-centro": 280,
-  "pantallas-lampara": 25,
-  cojines: 40,
+// Precio "desde" por categoría — derivado de la fuente única (pricing.ts).
+const SLUG_TO_CAT: Record<string, Category> = {
+  cabeceros: "cabecero",
+  bancos: "banco",
+  pufs: "puf",
+  "mesas-centro": "mesa",
+  "pantallas-lampara": "pantalla",
+  cojines: "cojin",
 };
+export const CATEGORY_PRICE_FROM: Record<string, number> = Object.fromEntries(
+  Object.entries(SLUG_TO_CAT).map(([slug, cat]) => [slug, getCategoryPriceFrom(cat)])
+);
 
 const imagePosition = (category: string) => {
   if (category === "pufs" || category === "mesas-centro") return "center center";
