@@ -12,7 +12,7 @@ const CATEGORIES = [
     name: "Cabeceros tapizados",
     tagline: "5 formas · Colección Baleares",
     image: "/productos-fotos/cabeceros/pregonda-01.webp",
-    priceLabel: "Desde 225€",
+    priceLabel: "Desde 285 €",
     comingSoon: false,
   },
   {
@@ -20,7 +20,7 @@ const CATEGORIES = [
     name: "Pufs",
     tagline: "Tapizados a medida · Colección Galicia",
     image: "/productos-fotos/puff/puff-horizontal.webp",
-    priceLabel: "Desde 125€",
+    priceLabel: "Desde 150 €",
     comingSoon: false,
   },
   {
@@ -28,7 +28,7 @@ const CATEGORIES = [
     name: "Mesas de centro",
     tagline: "Cabo de Palos · Colección Murcia",
     image: "/productos-fotos/mesas-centro/mesa-centro-horizontal.webp",
-    priceLabel: "Desde 280€",
+    priceLabel: "Desde 220 €",
     comingSoon: false,
   },
   {
@@ -36,7 +36,7 @@ const CATEGORIES = [
     name: "Pantallas de lámpara",
     tagline: "3 formas · Colección Ávila",
     image: "/productos-fotos/pantallas/lampara-horizontal.webp",
-    priceLabel: "Desde 25€",
+    priceLabel: "Desde 25 €",
     comingSoon: false,
   },
   {
@@ -44,15 +44,15 @@ const CATEGORIES = [
     name: "Almohadones",
     tagline: "3 formas · Colección Asturias",
     image: "/productos-fotos/almohadones/distribuidor.webp",
-    priceLabel: "Desde 40€",
+    priceLabel: "Desde 60 €",
     comingSoon: false,
   },
   {
     id: "bancos",
     name: "Bancos entelados",
-    tagline: "Oyambre · 4 medidas · Pie de cama",
+    tagline: "Oyambre · 5 medidas · Pie de cama",
     image: "/productos-fotos/bancos/banco-entelado.png",
-    priceLabel: "Desde 200€",
+    priceLabel: "Desde 295 €",
     comingSoon: false,
   },
   {
