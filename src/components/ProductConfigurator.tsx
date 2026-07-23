@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
+import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO } from "@/data/pricing";
 import { ChevronDown, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
