@@ -1397,13 +1397,24 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{shape === 'circular' ? 'Diámetro' : 'Tamaño'}</p>
                 <div className="flex flex-wrap gap-2">
-                  {['40 cm', '50 cm'].map(sz => (
+                  {(shape === 'circular'
+                    ? [
+                        { sz: '40 cm', label: 'Ø 40 · alto 40' },
+                        { sz: '50 cm', label: 'Ø 50 · alto 45' },
+                        { sz: '60 cm', label: 'Ø 60 · alto 45' },
+                      ]
+                    : [
+                        { sz: '40 cm', label: '40×40 · alto 40' },
+                        { sz: '50 cm', label: '50×50 · alto 45' },
+                        { sz: '60 cm', label: '60×40 · alto 45' },
+                      ]
+                  ).map(({ sz, label }) => (
                     <button
                       key={sz}
                       onClick={() => setPuffDiameter(sz)}
                       className={`border rounded-md px-4 py-2 text-xs transition-all ${puffDiameter === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
                     >
-                      {sz}
+                      {label}
                     </button>
                   ))}
                   <button
@@ -1420,27 +1431,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <span className="text-xs text-muted-foreground">cm</span>
                     </div>
                     <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.pufDiametro)} />
+                    <p className="text-[11px] text-muted-foreground italic mt-2 leading-snug">
+                      ¿Necesitas otra medida? <a href="#contacto" className="underline hover:text-foreground">Consúltanos</a> — la fabricamos a tu medida.
+                    </p>
                   </div>
-                )}
-              </div>
-              {shape === 'circular' && (
-                <p className="text-[11px] text-muted-foreground font-light italic">El puf redondo Monteferro es cilíndrico: la altura es igual al diámetro.</p>
-              )}
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
-                <div className="flex gap-2">
-                  {['1', '2'].map(qty => (
-                    <button
-                      key={qty}
-                      onClick={() => setPuffQuantity(qty)}
-                      className={`border rounded-md px-5 py-2 text-xs transition-all ${puffQuantity === qty ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
-                    >
-                      {qty === '1' ? '1 puf' : '2 pufs (pareja)'}
-                    </button>
-                  ))}
-                </div>
-                {puffQuantity === '2' && (
-                  <p className="text-xs text-muted-foreground font-light mt-2 italic">Precio pareja: 220 € (40 cm) · 325 € (50 cm)</p>
                 )}
               </div>
             </>
