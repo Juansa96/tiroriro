@@ -397,7 +397,8 @@ const ProductConfigurator = () => {
       if (tipo === 'banco') { setBenchHeight('45 cm'); setBenchDepth('33 cm'); }
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
-      if (tipo === 'pantalla' || tipo === 'mesa') setFinish('vivo-simple');
+    if (tipo === 'pantalla') setFinish('vivo-simple');
+    if (tipo === 'mesa' || tipo === 'cojin' || tipo === 'banco' || tipo === 'puf') setFinish('liso');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
@@ -422,7 +423,11 @@ const ProductConfigurator = () => {
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
-    setFinish(newType === 'pantalla' || newType === 'mesa' ? 'vivo-simple' : '');
+    setFinish(
+      newType === 'pantalla' ? 'vivo-simple'
+      : (newType === 'mesa' || newType === 'cojin' || newType === 'banco' || newType === 'puf') ? 'liso'
+      : ''
+    );
     setVivoColorId('');
     setCustomWidth('');
     setCustomHeight('');
