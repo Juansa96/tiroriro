@@ -11,15 +11,16 @@ import {
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
+import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO } from "@/data/pricing";
 import { ChevronDown, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Cabecero: vivo-simple incluido (0€), vivo-doble +10€
-// Resto: vivo-simple incluido (0€) cuando aplica
+// Cabecero: vivo-simple incluido (0€), vivo-doble +15 €
+// Bancos/pufs/mesas: vivo-simple con recargo (definido en pricing.ts)
 const FINISHES = [
-  { id: "liso", name: "Sin vivo", desc: "Sin ribete decorativo en el borde", extra: 0 },
-  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el borde — incluido", extra: 0, extraLabel: "Incluido" },
-  { id: "vivo-doble", name: "Vivo doble", desc: "Doble ribete, más elaborado", extra: 10, extraLabel: "+10€" },
+  { id: "liso", name: "Sin vivo", desc: "Sin ribete decorativo en el borde", extra: 0, extraLabel: "Incluido" },
+  { id: "vivo-simple", name: "Vivo simple", desc: "Un ribete en el borde", extra: 0, extraLabel: "" },
+  { id: "vivo-doble", name: "Vivo doble", desc: "Doble ribete, más elaborado", extra: CABECERO_VIVO_DOBLE, extraLabel: `+${CABECERO_VIVO_DOBLE} €` },
 ];
 
 const HEADBOARD_SHAPES = [
@@ -108,7 +109,7 @@ const CUSHION_SHAPES = [
   {
     id: "covadonga", name: "Covadonga", subtitle: "Rectangular",
     svgPath: <rect x="4" y="14" width="52" height="32" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />,
-    sizes: ["30×50 cm", "40×60 cm", "70×90 cm"],
+    sizes: ["50×30 cm", "60×40 cm", "70×90 cm"],
     getDetails: (sz: string) => {
       if (sz.includes("90")) return { shape: "rectangular", widthCm: 90, heightCm: 70 };
       if (sz.includes("60")) return { shape: "rectangular", widthCm: 60, heightCm: 40 };
@@ -118,8 +119,8 @@ const CUSHION_SHAPES = [
   {
     id: "gulpiyuri", name: "Gulpiyuri", subtitle: "Rulo",
     svgPath: <><rect x="4" y="20" width="52" height="20" rx="10" fill="none" stroke="currentColor" strokeWidth="1.5" /><ellipse cx="4" cy="30" rx="5" ry="10" fill="none" stroke="currentColor" strokeWidth="1.5" /></>,
-    sizes: ["40×15 cm"],
-    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 40, heightCm: 15 }),
+    sizes: ["13×90 cm"],
+    getDetails: (_sz: string) => ({ shape: "cilindro", widthCm: 90, heightCm: 13 }),
   },
 ];
 
@@ -200,13 +201,13 @@ const ProductIcon = ({ type }: { type: string }) => {
   }
 };
 
-const BENCH_LENGTHS = ["60 cm", "60 cm doble", "90 cm", "120 cm", "150 cm"];
+const BENCH_LENGTHS = ["60 cm", "90 cm", "120 cm", "150 cm", "180 cm"];
 const BENCH_PRICE_MAP: Record<string, number> = {
-  "60 cm": 200,
-  "60 cm doble": 370,
-  "90 cm": 250,
-  "120 cm": 300,
-  "150 cm": 350,
+  "60 cm":  BANCO_BASE["60"],
+  "90 cm":  BANCO_BASE["90"],
+  "120 cm": BANCO_BASE["120"],
+  "150 cm": BANCO_BASE["150"],
+  "180 cm": BANCO_BASE["180"],
 };
 
 const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
@@ -396,7 +397,8 @@ const ProductConfigurator = () => {
       if (tipo === 'banco') { setBenchHeight('45 cm'); setBenchDepth('33 cm'); }
       if (tipo === 'mesa' && !forma) setShape('tipo-puf');
       if (tipo === 'pantalla' && !forma) setShape('cilindro');
-      if (tipo === 'pantalla' || tipo === 'mesa') setFinish('vivo-simple');
+    if (tipo === 'pantalla') setFinish('vivo-simple');
+    if (tipo === 'mesa' || tipo === 'cojin' || tipo === 'banco' || tipo === 'puf') setFinish('liso');
     }
     if (forma) setShape(forma);
   }, [searchParams, isMobile]);
@@ -421,7 +423,11 @@ const ProductConfigurator = () => {
     setLampHeight('');
     setFabricId('');
     setLateralFabricId('');
-    setFinish(newType === 'pantalla' || newType === 'mesa' ? 'vivo-simple' : '');
+    setFinish(
+      newType === 'pantalla' ? 'vivo-simple'
+      : (newType === 'mesa' || newType === 'cojin' || newType === 'banco' || newType === 'puf') ? 'liso'
+      : ''
+    );
     setVivoColorId('');
     setCustomWidth('');
     setCustomHeight('');
@@ -529,7 +535,9 @@ const ProductConfigurator = () => {
     }
 
     if (productType === 'puf') {
-      o.pufSizeCm   = puffDiameter.includes('40') ? '40' : puffDiameter.includes('50') ? '50' : '';
+      o.pufSizeCm   = puffDiameter.includes('40') ? '40'
+                    : puffDiameter.includes('50') ? '50'
+                    : puffDiameter.includes('60') ? '60' : '';
       o.pufQuantity = puffQuantity;
       o.pufShape    = shape === 'circular' ? 'circular' : 'cuadrado';
       o.pufShapeLabel = shape === 'circular' ? 'Monteferro · Redondo' : 'Patos · Cúbico';
@@ -541,8 +549,10 @@ const ProductConfigurator = () => {
     }
 
     if (productType === 'mesa') {
-      o.mesaPreset = benchLength.includes('120') ? '120x45x60'
-        : benchLength.includes('80') ? '80x45x80' : '';
+      const mp: Record<string, string> = {
+        '60 cm': '60x60', '80 cm': '80x80', '100 cm': '100x100', '120 cm': '120x120',
+      };
+      o.mesaPreset = mp[benchLength] || '';
       o.surface = extraTopMaterial !== 'nada' ? extraTopMaterial : '';
     }
 
@@ -611,7 +621,7 @@ const ProductConfigurator = () => {
       : productType === 'pantalla' ? !!lampDiameter
       : false,
     fabric: !!fabricId,
-    finish: (productType === 'pantalla' || productType === 'banco') ? true : !!finish,
+    finish: (productType === 'pantalla' || productType === 'cojin') ? true : !!finish,
     extras: !productType || !['cabecero'].includes(productType),
   };
 
@@ -907,7 +917,7 @@ const ProductConfigurator = () => {
           {/* SVG + fabric swatches side-by-side on mobile */}
           <div className="flex w-full gap-3 items-center justify-center min-h-[110px]">
             <div className="flex-1 flex items-center justify-center">
-              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : productType === 'banco' && benchLength === '60 cm doble' ? 2 : 1} />
+              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={1} />
             </div>
             {fabricId && (
               <div className="w-16 flex-shrink-0 border-l border-border/30 pl-2">
@@ -935,7 +945,7 @@ const ProductConfigurator = () => {
             <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
               <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
               <div className="flex-1 flex items-center justify-center w-full">
-                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={productType === 'puf' ? parseInt(puffQuantity) : productType === 'banco' && benchLength === '60 cm doble' ? 2 : 1} />
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={1} />
               </div>
               {!productType && (
                 <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
@@ -1387,13 +1397,24 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{shape === 'circular' ? 'Diámetro' : 'Tamaño'}</p>
                 <div className="flex flex-wrap gap-2">
-                  {['40 cm', '50 cm'].map(sz => (
+                  {(shape === 'circular'
+                    ? [
+                        { sz: '40 cm', label: 'Ø 40 · alto 40' },
+                        { sz: '50 cm', label: 'Ø 50 · alto 45' },
+                        { sz: '60 cm', label: 'Ø 60 · alto 45' },
+                      ]
+                    : [
+                        { sz: '40 cm', label: '40×40 · alto 40' },
+                        { sz: '50 cm', label: '50×50 · alto 45' },
+                        { sz: '60 cm', label: '60×40 · alto 45' },
+                      ]
+                  ).map(({ sz, label }) => (
                     <button
                       key={sz}
                       onClick={() => setPuffDiameter(sz)}
                       className={`border rounded-md px-4 py-2 text-xs transition-all ${puffDiameter === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
                     >
-                      {sz}
+                      {label}
                     </button>
                   ))}
                   <button
@@ -1410,27 +1431,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <span className="text-xs text-muted-foreground">cm</span>
                     </div>
                     <ErrorMsg msg={rangeError(customWidth, MEASURE_RANGES.pufDiametro)} />
+                    <p className="text-[11px] text-muted-foreground italic mt-2 leading-snug">
+                      ¿Necesitas otra medida? <a href="#contacto" className="underline hover:text-foreground">Consúltanos</a> — la fabricamos a tu medida.
+                    </p>
                   </div>
-                )}
-              </div>
-              {shape === 'circular' && (
-                <p className="text-[11px] text-muted-foreground font-light italic">El puf redondo Monteferro es cilíndrico: la altura es igual al diámetro.</p>
-              )}
-              <div>
-                <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Cantidad</p>
-                <div className="flex gap-2">
-                  {['1', '2'].map(qty => (
-                    <button
-                      key={qty}
-                      onClick={() => setPuffQuantity(qty)}
-                      className={`border rounded-md px-5 py-2 text-xs transition-all ${puffQuantity === qty ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
-                    >
-                      {qty === '1' ? '1 puf' : '2 pufs (pareja)'}
-                    </button>
-                  ))}
-                </div>
-                {puffQuantity === '2' && (
-                  <p className="text-xs text-muted-foreground font-light mt-2 italic">Precio pareja: 220 € (40 cm) · 325 € (50 cm)</p>
                 )}
               </div>
             </>
@@ -1461,8 +1465,10 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Tamaño (largo × alto × fondo)</p>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { label: '120 × 45 × 60 cm', w: '120', h: '45', d: '60' },
-                    { label: '80 × 45 × 80 cm', w: '80', h: '45', d: '80' },
+                    { label: '60 × 40 × 60 cm',    w: '60',  h: '40', d: '60' },
+                    { label: '80 × 40 × 80 cm',    w: '80',  h: '40', d: '80' },
+                    { label: '100 × 40 × 100 cm',  w: '100', h: '40', d: '100' },
+                    { label: '120 × 40 × 120 cm',  w: '120', h: '40', d: '120' },
                   ].map(opt => (
                     <button
                       key={opt.label}
@@ -1479,6 +1485,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                     Otra medida
                   </button>
                 </div>
+                <p className="text-[11px] text-muted-foreground italic mt-3 leading-snug">
+                  Altura fija <span className="text-foreground">40 cm</span> en las 4 medidas. ¿Necesitas otra? <a href="#contacto" className="underline hover:text-foreground">Consúltanos</a>.
+                </p>
                 {benchLength === 'custom' && (
                   <div className="mt-3 grid grid-cols-3 gap-3">
                     <div>
@@ -1717,27 +1726,37 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </div>
       </div>
 
-      {productType !== 'banco' && (
+      {productType !== 'cojin' && productType !== 'pantalla' && (
       <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
         <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
         <div className="pb-6 space-y-3 px-1 pt-2">
-          {(productType === 'pantalla' ? PANTALLA_FINISHES : FINISHES.filter(f => {
+          {(FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'vivo-simple';
-            if (productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
+            if (productType === 'banco') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
-          })).map(f => (
+          })).map(f => {
+            // Etiqueta del recargo específica por producto
+            const perProductExtra =
+              productType === 'banco' && f.id === 'vivo-simple' ? BANCO_VIVO
+              : productType === 'puf'   && f.id === 'vivo-simple' ? PUF_VIVO
+              : productType === 'mesa'  && f.id === 'vivo-simple' ? MESA_VIVO
+              : productType === 'cabecero' && f.id === 'vivo-doble' ? CABECERO_VIVO_DOBLE
+              : 0;
+            const label = perProductExtra > 0 ? `+${perProductExtra} €` : (f as { extraLabel?: string }).extraLabel;
+            return (
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
               className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
               <span className="text-sm font-medium text-foreground">{f.name}</span>
-              {((f as { extra?: number }).extra ?? 0) > 0 && <span className="text-xs text-accent-warm ml-2">{(f as { extraLabel?: string }).extraLabel || `+${(f as { extra?: number }).extra}€`}</span>}
+              {label && <span className="text-xs text-accent-warm ml-2">{label}</span>}
               <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
             </button>
-          ))}
+            );
+          })}
           {needsVivo && (
             <div className="pt-3">
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Básicas</p>

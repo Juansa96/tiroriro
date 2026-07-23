@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     q: "¿Cuánto cuesta un cabecero tapizado a medida?",
-    a: "Nuestros cabeceros tapizados a medida parten de 225 € e incluyen la tela básica que elijas, el tamaño que necesites y el acabado a mano. El precio final depende de la forma (recto, arco, corona o ondas), del ancho y de la tela: las telas premium suben unos 40-80 € sobre la básica. En el configurador puedes ver el precio exacto en tiempo real antes de pedirlo.",
+    a: "Nuestros cabeceros tapizados a medida parten de 285 € e incluyen la tela básica que elijas, el tamaño que necesites y el acabado a mano. El precio final depende de la forma (recto, arco, corona o ondas), del ancho y de la tela: las telas premium tienen un recargo variable (lo ves en el configurador antes de confirmar). En el configurador puedes ver el precio exacto en tiempo real antes de pedirlo.",
   },
   {
     q: "¿Qué tela es mejor para un cabecero?",
@@ -22,7 +22,7 @@ const FAQS = [
   },
   {
     q: "¿Merece la pena un cabecero hecho a medida frente a uno estándar?",
-    a: "Sí, por tres motivos: encaja al milímetro con tu cama y pared (los estándar suelen quedar cortos o desproporcionados), eliges la tela y el color exactos para tu dormitorio, y al estar tapizado a mano la calidad y durabilidad es muy superior a la de un cabecero industrial. Y el precio (desde 225 €) suele ser competitivo frente a tiendas de gama media.",
+    a: "Sí, por tres motivos: encaja al milímetro con tu cama y pared (los estándar suelen quedar cortos o desproporcionados), eliges la tela y el color exactos para tu dormitorio, y al estar tapizado a mano la calidad y durabilidad es muy superior a la de un cabecero industrial. Y el precio (desde 285 €) suele ser competitivo frente a tiendas de gama media.",
   },
   {
     q: "¿Cómo se limpia un cabecero tapizado?",
@@ -30,7 +30,7 @@ const FAQS = [
   },
   {
     q: "¿De qué materiales está hecho un cabecero Tiroriro por dentro?",
-    a: "La estructura interior es de tablero aglomerado con refuerzo añadido en los laterales para que el cabecero aguante perfectamente con el paso del tiempo y no se deforme. Sobre esa estructura colocamos una capa de gomaespuma de alta densidad (la buena, la que no se hunde con los años), encima una capa de guata de unos 3 cm para conseguir ese tacto mullido y volumen uniforme, y por último la tela que hayas elegido tapizada a mano. Esta combinación es la que da la sensación firme pero acogedora característica de nuestros cabeceros.",
+    a: "La estructura interior es de tablero aglomerado con refuerzo añadido en los laterales para que el cabecero aguante perfectamente con el paso del tiempo y no se deforme. Sobre esa estructura colocamos una capa de gomaespuma de alta densidad (la buena, la que no se hunde con los años), encima una capa de guata de 8 cm para conseguir ese tacto mullido y volumen uniforme, y por último la tela que hayas elegido tapizada a mano. Esta combinación es la que da la sensación firme pero acogedora característica de nuestros cabeceros.",
   },
   {
     q: "¿Cuánto cuesta el envío y a qué zonas llegáis?",
@@ -38,7 +38,7 @@ const FAQS = [
   },
   {
     q: "¿Cómo es vuestro proceso artesanal paso a paso?",
-    a: "Primero pasa por carpintería: en el caso del cabecero se monta la forma según el diseño que hemos definido contigo previamente (si tú tienes una forma creativa también puedes enviárnosla y la fabricamos). Se ajustan medidas, grosor y refuerzos. Después pasa a tapizado, que va siempre en este orden: primero la gomaespuma de alta densidad, encima la guata de 3 cm y por último la tela cosida y ajustada a mano. Antes de salir del taller hacemos un control de calidad pieza a pieza y solo entonces se prepara el envío.",
+    a: "Primero pasa por carpintería: en el caso del cabecero se monta la forma según el diseño que hemos definido contigo previamente (si tú tienes una forma creativa también puedes enviárnosla y la fabricamos). Se ajustan medidas, grosor y refuerzos. Después pasa a tapizado, que va siempre en este orden: primero la gomaespuma de alta densidad, encima la guata de 8 cm y por último la tela cosida y ajustada a mano. Antes de salir del taller hacemos un control de calidad pieza a pieza y solo entonces se prepara el envío.",
   },
   {
     q: "¿Puedo enviaros mi propia tela para que la tapicéis?",
