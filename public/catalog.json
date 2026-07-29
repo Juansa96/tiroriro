@@ -1,0 +1,133 @@
+{
+  "version": "2026-07-29",
+  "moneda": "EUR",
+  "ivaIncluido": true,
+  "cabecero": {
+    "base": {
+      "90": 285,
+      "105": 315,
+      "135": 360,
+      "150": 400,
+      "160": 435,
+      "180": 455,
+      "200": 485
+    },
+    "premium": {
+      "90": 60,
+      "105": 65,
+      "135": 80,
+      "150": 90,
+      "160": 100,
+      "180": 110,
+      "200": 115
+    },
+    "alturas": [
+      100,
+      120,
+      130
+    ],
+    "heightStepEur": 15,
+    "vivoDoble": 15,
+    "colgador": 5
+  },
+  "banco": {
+    "base": {
+      "60": 295,
+      "90": 335,
+      "120": 380,
+      "150": 430,
+      "180": 485
+    },
+    "premium": {
+      "60": 60,
+      "90": 75,
+      "120": 90,
+      "150": 100,
+      "180": 135
+    },
+    "vivo": 30
+  },
+  "puf": {
+    "base": {
+      "cuadrado-40": 150,
+      "cuadrado-50": 175,
+      "cuadrado-60": 225,
+      "redondo-40": 160,
+      "redondo-50": 185,
+      "redondo-60": 240
+    },
+    "premium": {
+      "cuadrado-40": 45,
+      "cuadrado-50": 55,
+      "cuadrado-60": 70,
+      "redondo-40": 45,
+      "redondo-50": 55,
+      "redondo-60": 70
+    },
+    "vivo": 15,
+    "alturaCm": 40,
+    "alturas": {
+      "cuadrado-40": 40,
+      "cuadrado-50": 40,
+      "cuadrado-60": 40,
+      "redondo-40": 40,
+      "redondo-50": 40,
+      "redondo-60": 40
+    }
+  },
+  "mesa": {
+    "base": {
+      "60x60": 220,
+      "80x80": 320,
+      "100x100": 360,
+      "120x120": 405
+    },
+    "premium": {
+      "60x60": 65,
+      "80x80": 100,
+      "100x100": 125,
+      "120x120": 155
+    },
+    "vivo": 30,
+    "alturaCm": 40,
+    "metacrilato": 50,
+    "cristal": 100
+  },
+  "cojin": {
+    "base": {
+      "rodiles-40x40": 60,
+      "rodiles-45x45": 65,
+      "rodiles-50x50": 70,
+      "covadonga-50x30": 60,
+      "covadonga-60x40": 75,
+      "covadonga-70x90": 100,
+      "gulpiyuri-13x90": 70
+    },
+    "premium": {
+      "rodiles-40x40": 35,
+      "rodiles-45x45": 40,
+      "rodiles-50x50": 40,
+      "covadonga-50x30": 35,
+      "covadonga-60x40": 40,
+      "covadonga-70x90": 20,
+      "gulpiyuri-13x90": 20
+    }
+  },
+  "pantalla": {
+    "base": {
+      "cilindro-Ø40×40cm": 75,
+      "cilindro-Ø15×20cm": 25,
+      "cilindro-Ø25×25cm": 45,
+      "cuadrado-20×20cm": 35,
+      "rectangulo-20×40cm": 65
+    },
+    "premium": {
+      "cilindro-Ø40×40cm": 30,
+      "cilindro-Ø15×20cm": 15,
+      "cilindro-Ø25×25cm": 20,
+      "cuadrado-20×20cm": 20,
+      "rectangulo-20×40cm": 20
+    }
+  },
+  "envioMadrid": 40
+}
