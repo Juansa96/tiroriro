@@ -38,8 +38,8 @@ export const PUF_PREMIUM: Record<string, number> = {
 };
 export const PUF_VIVO = 15;
 export const PUF_HEIGHT_CM: Record<string, number> = {
-  "cuadrado-40": 40, "cuadrado-50": 45, "cuadrado-60": 45,
-  "redondo-40":  40, "redondo-50":  45, "redondo-60":  45,
+  "cuadrado-40": 40, "cuadrado-50": 40, "cuadrado-60": 40,
+  "redondo-40":  40, "redondo-50":  40, "redondo-60":  40,
 };
 
 // ── Mesas (altura fija 40 cm) ────────────────────────────────────────────────

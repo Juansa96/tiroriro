@@ -20,26 +20,26 @@ const BED_SIZES = [
   { bed: "Cama 90 cm (individual)",           width: "90 o 105 cm",          height: "100 o 120 cm",              note: "Recomendamos 105 cm para que sobresalga unos 7 cm a cada lado." },
   { bed: "Cama 105 cm",                       width: "105 o 135 cm",         height: "100 o 120 cm",              note: "Habitual en habitaciones juveniles y de invitados." },
   { bed: "Cama 135 cm (matrimonio pequeño)",  width: "150 cm",               height: "100 o 120 cm",              note: "La más común en pisos urbanos. 150 cm es el ancho perfecto." },
-  { bed: "Cama 150 cm (matrimonio)",          width: "160 cm",               height: "100 o 120 cm",              note: "El tamaño estrella. También puedes pedir cualquier medida a mayores." },
-  { bed: "Cama 160 cm (queen)",               width: "180 cm",               height: "120 cm",                    note: "Para dormitorios principales con buen ancho de pared." },
-  { bed: "Cama 180 cm (king)",                width: "200 cm",               height: "120 cm",                    note: "Pide presencia: altura mínima 120 cm para que la cama no se 'coma' el cabecero." },
+  { bed: "Cama 150 cm (matrimonio)",          width: "160 cm",               height: "120 o 130 cm",              note: "El tamaño estrella. 130 cm si quieres que el cabecero gane presencia. También puedes pedir cualquier medida a mayores." },
+  { bed: "Cama 160 cm (queen)",               width: "180 cm",               height: "120 o 130 cm",              note: "Para dormitorios principales con buen ancho de pared. 130 cm si buscas más presencia." },
+  { bed: "Cama 180 cm (king)",                width: "200 cm",               height: "130 cm",                    note: "Pide presencia: recomendamos 130 cm para que la cama no se 'coma' el cabecero." },
   { bed: "Cama 200 cm (super king)",          width: "A medida (210–220 cm)", height: "A medida (130–160 cm)",     note: "Se fabrica a medida — consúltanos para crear tu pieza." },
 ];
 
 const HEIGHT_GUIDE = [
   { style: "Cabecero bajo (100 cm)", desc: "Nuestra medida estándar. Estilo minimalista, visualmente ligero, ideal en habitaciones pequeñas o con techo bajo." },
   { style: "Cabecero medio (120 cm)", desc: "La segunda medida de serie. El más equilibrado: funciona en cualquier dormitorio y se ve bien tanto sentado como de pie." },
-  { style: "Cabecero alto* (a medida, 130–160 cm)", desc: "Cálido, envolvente, con mucha presencia. Recomendado para camas 150+ y dormitorios principales. No disponible en la web; consúltanos para pedirlo." },
-  { style: "Cabecero extra alto* (a medida, >160 cm)", desc: "Pieza protagonista. Solo en habitaciones con techo de 2,60 m o más, para que no agobie. No disponible en la web; consúltanos para pedirlo." },
+  { style: "Cabecero alto (130 cm)", desc: "La altura que más recomendamos cuando quieres que el cabecero tenga presencia: sobresale bien por encima del colchón y deja que la forma del modelo (ondas, corona, curvas…) se aprecie por completo. Ideal para camas de 150 cm en adelante y dormitorios principales." },
+  { style: "Cabecero extra alto* (a medida, >130 cm)", desc: "Pieza protagonista. Solo en habitaciones con techo de 2,60 m o más, para que no agobie. No disponible en la web; consúltanos para pedirlo." },
 ];
 
 const FAQS = [
-  { q: "¿Qué medida de cabecero necesito para una cama de 150?", a: "Para una cama de 150 cm el cabecero ideal mide 160 cm de ancho y 100 o 120 cm de alto. En Tiroriro esa es una de nuestras medidas de serie; también puedes elegir cualquier otra medida a mayores desde el configurador." },
+  { q: "¿Qué medida de cabecero necesito para una cama de 150?", a: "Para una cama de 150 cm el cabecero ideal mide 160 cm de ancho y 120 o 130 cm de alto (130 cm si quieres que gane presencia). En Tiroriro esas son medidas de serie; también puedes elegir cualquier otra medida a mayores desde el configurador." },
   { q: "¿Qué medida de cabecero necesito para una cama de 135?", a: "Para una cama de 135 cm el cabecero ideal mide 150 cm de ancho y 100 o 120 cm de alto. Es la medida estándar en pisos urbanos españoles y una de nuestras medidas de serie." },
   { q: "¿Qué medida de cabecero para una cama individual de 90?", a: "Para una cama de 90 cm te recomendamos 105 cm de ancho (para que sobresalga unos 7 cm a cada lado) y 100 cm de alto. También ofrecemos la medida exacta de 90 cm." },
   { q: "¿Cuánto debe sobresalir el cabecero respecto a la cama?", a: "La regla general son 5–10 cm a cada lado del colchón. Eso evita que se vea el somier y aporta una proporción visual más agradable. En camas grandes (180+) se puede ir a 10–15 cm para reforzar la presencia. Aunque lo habitual es dejar esos centímetros extra, también podemos fabricarlo al ras del colchón si prefieres un look más compacto." },
   { q: "¿A qué altura se coloca un cabecero tapizado?", a: "El borde inferior del cabecero debe quedar entre 10 y 15 cm por debajo del nivel del colchón, para que al apoyar las almohadas no se vea la pared. Si va anclado a pared, normalmente queda a unos 50–60 cm del suelo." },
-  { q: "¿Puedo pedir un cabecero más alto del estándar?", a: "Sí. En Tiroriro las medidas de serie son 100 y 120 cm de alto, pero puedes pedir cualquier medida entre 40 y 200 cm desde la opción “Otra medida” del configurador. Por cada 10 cm por encima de 100 cm se aplica un pequeño suplemento; el importe exacto lo ves en el configurador." },
+  { q: "¿Puedo pedir un cabecero más alto del estándar?", a: "Sí. En Tiroriro las medidas de serie son 100, 120 y 130 cm de alto, pero puedes pedir cualquier medida entre 40 y 200 cm desde la opción “Otra medida” del configurador. Por cada 10 cm por encima de 100 cm se aplica un pequeño suplemento; el importe exacto lo ves en el configurador." },
   { q: "¿Qué anchos de cabecero fabricáis?", a: "Nuestras medidas de serie son 90, 105, 135, 150, 160, 180 y 200 cm. Además puedes pedir cualquier medida entre 60 y 300 cm desde la opción “Otra medida” del configurador. Hasta 200 cm de ancho no hay suplemento; a partir de 200 cm aplicamos un pequeño extra porque lleva más madera, más tela y más horas de trabajo." },
   { q: "¿Podéis hacer un hueco en el cabecero para enchufes o apliques?", a: "Sí. Si quieres que el cabecero ocupe todo el ancho de la pared y hay enchufes, interruptores o apliques de lectura, podemos fabricar el cabecero con las aperturas exactas para que encaje a la perfección. Es un pequeño suplemento que te detallamos en la llamada antes de cerrar el pedido." },
 ];
@@ -140,7 +140,7 @@ const GuiaMedidasCabecerosPage = () => (
               La regla general: el cabecero debe sobresalir 5–10 cm a cada lado del colchón.
             </p>
             <p className="text-xs text-muted-foreground/70 mt-2 italic">
-              * Alturas superiores a 120 cm no están disponibles en la web. Escríbenos por WhatsApp o email para consultarlas y te las fabricamos.
+              * Alturas superiores a 130 cm no están disponibles en la web. Escríbenos por WhatsApp o email para consultarlas y te las fabricamos.
             </p>
           </section>
         </AnimatedSection>

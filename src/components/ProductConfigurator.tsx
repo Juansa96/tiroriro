@@ -12,7 +12,7 @@ import {
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
 import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO } from "@/data/pricing";
-import { ChevronDown, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Cabecero: vivo-simple incluido (0€), vivo-doble +15 €
@@ -209,15 +209,6 @@ const BENCH_PRICE_MAP: Record<string, number> = {
   "150 cm": BANCO_BASE["150"],
   "180 cm": BANCO_BASE["180"],
 };
-
-const selectClass = "w-full bg-transparent border-b border-border text-sm font-light text-foreground focus:outline-none focus:border-foreground py-2 appearance-none cursor-pointer pr-8";
-
-const SelectWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="relative">
-    {children}
-    <ChevronDown size={14} className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-  </div>
-);
 
 function parseCm(selectVal: string): number | undefined {
   if (!selectVal) return undefined;
@@ -1265,14 +1256,23 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </div>
               <div>
                 <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">Alto del cabecero</p>
-                <SelectWrapper>
-                  <select value={bedHeight} onChange={(e) => { setBedHeight(e.target.value); if (e.target.value !== 'custom') setCustomHeight(''); }} className={selectClass}>
-                    <option value="">Seleccionar alto...</option>
-                    <option value="100 cm">100 cm — Medida estándar</option>
-                    <option value="120 cm">120 cm</option>
-                    <option value="custom">Otra medida</option>
-                  </select>
-                </SelectWrapper>
+                <div className="flex flex-wrap gap-2">
+                  {['100 cm', '120 cm', '130 cm'].map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => { setBedHeight(sz); setCustomHeight(''); }}
+                      className={`border rounded-md px-3 py-2 text-xs transition-all ${bedHeight === sz ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setBedHeight('custom'); }}
+                    className={`border rounded-md px-3 py-2 text-xs transition-all ${bedHeight === 'custom' ? "border-foreground bg-foreground/5 font-medium" : "border-border hover:border-foreground/60 font-light"}`}
+                  >
+                    Otra medida
+                  </button>
+                </div>
                 {bedHeight === 'custom' && (
                   <div className="mt-3">
                     <div className="flex items-center gap-2">
@@ -1400,13 +1400,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   {(shape === 'circular'
                     ? [
                         { sz: '40 cm', label: 'Ø 40 · alto 40' },
-                        { sz: '50 cm', label: 'Ø 50 · alto 45' },
-                        { sz: '60 cm', label: 'Ø 60 · alto 45' },
+                        { sz: '50 cm', label: 'Ø 50 · alto 40' },
+                        { sz: '60 cm', label: 'Ø 60 · alto 40' },
                       ]
                     : [
                         { sz: '40 cm', label: '40×40 · alto 40' },
-                        { sz: '50 cm', label: '50×50 · alto 45' },
-                        { sz: '60 cm', label: '60×40 · alto 45' },
+                        { sz: '50 cm', label: '50×50 · alto 40' },
+                        { sz: '60 cm', label: '60×40 · alto 40' },
                       ]
                   ).map(({ sz, label }) => (
                     <button

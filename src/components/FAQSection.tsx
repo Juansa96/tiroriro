@@ -10,7 +10,7 @@ import {
 const FAQS = [
   {
     q: "¿Qué medida de cabecero necesito para mi cama?",
-    a: "Depende del ancho del colchón. La regla general es que el cabecero sobresalga 5-10 cm a cada lado. Para una cama de 150 cm, lo ideal es un cabecero de 160 cm de ancho y 100 o 120 cm de alto. Tenemos una guía completa con medidas para camas de 90, 105, 135, 150, 160, 180 y 200 cm.",
+    a: "Depende del ancho del colchón. La regla general es que el cabecero sobresalga 5-10 cm a cada lado. Para una cama de 150 cm, lo ideal es un cabecero de 160 cm de ancho y 120 o 130 cm de alto. Tenemos una guía completa con medidas para camas de 90, 105, 135, 150, 160, 180 y 200 cm.",
   },
   {
     q: "¿Cuánto cuesta un cabecero tapizado a medida?",
