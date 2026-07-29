@@ -1400,13 +1400,13 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   {(shape === 'circular'
                     ? [
                         { sz: '40 cm', label: 'Ø 40 · alto 40' },
-                        { sz: '50 cm', label: 'Ø 50 · alto 45' },
-                        { sz: '60 cm', label: 'Ø 60 · alto 45' },
+                        { sz: '50 cm', label: 'Ø 50 · alto 40' },
+                        { sz: '60 cm', label: 'Ø 60 · alto 40' },
                       ]
                     : [
                         { sz: '40 cm', label: '40×40 · alto 40' },
-                        { sz: '50 cm', label: '50×50 · alto 45' },
-                        { sz: '60 cm', label: '60×40 · alto 45' },
+                        { sz: '50 cm', label: '50×50 · alto 40' },
+                        { sz: '60 cm', label: '60×40 · alto 40' },
                       ]
                   ).map(({ sz, label }) => (
                     <button
