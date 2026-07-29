@@ -1732,7 +1732,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         <div className="pb-6 space-y-3 px-1 pt-2">
           {(FINISHES.filter(f => {
             if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
-            if (productType === 'mesa') return f.id === 'vivo-simple';
+            if (productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'banco') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
