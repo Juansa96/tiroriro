@@ -49,39 +49,60 @@ const HeroSection = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    // iOS Safari requires these attributes
+    // iOS Safari requires these attributes for inline autoplay
     video.setAttribute("x-webkit-airplay", "deny");
     video.setAttribute("webkit-playsinline", "");
     video.setAttribute("playsinline", "");
+    // Forzar muted por propiedad: React no siempre refleja el atributo `muted`
+    // en la propiedad del DOM, y sin muted los navegadores bloquean el autoplay.
+    video.muted = true;
+    video.defaultMuted = true;
 
     const isMobileViewport = () => window.innerWidth < 768;
 
-    const attemptPlay = () => {
-      // On mobile, skip first 3 seconds
-      if (isMobileViewport() && video.currentTime < 3) {
-        video.currentTime = 3;
-      }
-      const p = video.play();
-      if (p !== undefined) p.catch(() => {});
+    // Salta los primeros 3 s en móvil, pero SOLO si ese punto ya está en buffer,
+    // para no provocar un seek que atasque la reproducción en conexiones lentas.
+    const skipIntroIfSafe = () => {
+      if (!isMobileViewport() || video.currentTime >= 3) return;
+      try {
+        const s = video.seekable;
+        if (s.length && s.end(s.length - 1) >= 3) video.currentTime = 3;
+      } catch { /* seekable aún no disponible */ }
     };
 
-    // On mobile: when video loops back to near 0, jump back to second 3
-    const handleTimeUpdate = () => {
-      if (isMobileViewport() && video.currentTime < 1) {
-        video.currentTime = 3;
+    const attemptPlay = () => {
+      video.muted = true; // re-asegura muted en cada intento
+      const p = video.play();
+      if (p !== undefined) {
+        p.then(skipIntroIfSafe).catch(() => { /* reintentará con gesto o eventos */ });
       }
+    };
+
+    // Al hacer loop y volver cerca de 0, vuelve al segundo 3 en móvil (si es seguro)
+    const handleTimeUpdate = () => {
+      if (isMobileViewport() && video.currentTime < 1) skipIntroIfSafe();
     };
     video.addEventListener("timeupdate", handleTimeUpdate);
 
-    // Try to play immediately if ready
-    if (video.readyState >= 2) {
-      attemptPlay();
-    } else {
-      video.addEventListener("canplay", attemptPlay, { once: true });
-      video.addEventListener("loadeddata", attemptPlay, { once: true });
-    }
+    // Reintenta reproducir en cada hito de carga (cubre buffering lento en móvil)
+    const playEvents = ["loadeddata", "canplay", "canplaythrough", "loadedmetadata"] as const;
+    playEvents.forEach((e) => video.addEventListener(e, attemptPlay));
+    if (video.readyState >= 2) attemptPlay();
 
-    // Re-play when tab becomes visible
+    // Fallback por gesto de usuario: imprescindible en Modo de bajo consumo de iOS,
+    // que bloquea el autoplay aunque el vídeo esté muted. Los listeners se mantienen
+    // hasta que el vídeo realmente empieza a reproducirse (evento `playing`).
+    const gestureEvents = ["touchstart", "pointerdown", "click", "scroll"] as const;
+    const handleGesture = () => { if (video.paused) attemptPlay(); };
+    const addGestureListeners = () =>
+      gestureEvents.forEach((e) => document.addEventListener(e, handleGesture, { passive: true }));
+    const removeGestureListeners = () =>
+      gestureEvents.forEach((e) => document.removeEventListener(e, handleGesture));
+    addGestureListeners();
+    const handlePlaying = () => removeGestureListeners();
+    video.addEventListener("playing", handlePlaying);
+
+    // Reintenta al volver a la pestaña
     const handleVisibilityChange = () => {
       if (!document.hidden && video.paused) attemptPlay();
     };
@@ -100,16 +121,12 @@ const HeroSection = () => {
       observer.observe(video);
     }
 
-    // On mobile: allow user touch to trigger play (low power mode fallback)
-    const handleTouch = () => {
-      if (video.paused) attemptPlay();
-    };
-    document.addEventListener("touchstart", handleTouch, { once: true, passive: true });
-
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      document.removeEventListener("touchstart", handleTouch);
+      playEvents.forEach((e) => video.removeEventListener(e, attemptPlay));
+      video.removeEventListener("playing", handlePlaying);
       video.removeEventListener("timeupdate", handleTimeUpdate);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      removeGestureListeners();
       observer?.disconnect();
     };
   }, []);
@@ -133,7 +150,7 @@ const HeroSection = () => {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster="/hero-poster.webp"
           aria-hidden="true"
           className="w-full h-full object-cover object-center"
