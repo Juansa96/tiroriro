@@ -1,0 +1,432 @@
+{
+  "version": "2026-08-25",
+  "telas": [
+    {
+      "id": "basica-arequipa-beige",
+      "nombre": "Arequipa Beige",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/arequipa-beige.webp",
+      "hex": "#D4C5A9"
+    },
+    {
+      "id": "basica-flor-azul-protea",
+      "nombre": "Flor Azul Protea",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/flor-azul-protea.webp",
+      "hex": "#6B8FAA"
+    },
+    {
+      "id": "basica-flor-01",
+      "nombre": "Floral Natural",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/flor-01.webp",
+      "hex": "#8B7355"
+    },
+    {
+      "id": "basica-flor-hemera-amarilla",
+      "nombre": "Flor Hémera Amarilla",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/flor-hemera-amarilla.webp",
+      "hex": "#D4B84A"
+    },
+    {
+      "id": "basica-morris-granadas-terracota",
+      "nombre": "Morris Granadas Terracota",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/morris-granadas-terracota.webp",
+      "hex": "#B5604A"
+    },
+    {
+      "id": "basica-pajaros-louise-azul",
+      "nombre": "Pájaros Louise Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/pajaros-louise-azul.webp",
+      "hex": "#5B7EA6"
+    },
+    {
+      "id": "basica-pajaros-louise-rosa",
+      "nombre": "Pájaros Louise Rosa",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/pajaros-louise-rosa.webp",
+      "hex": "#C48080"
+    },
+    {
+      "id": "basica-pajaros-louise-verde",
+      "nombre": "Pájaros Louise Verde",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/pajaros-louise-verde.webp",
+      "hex": "#5B8A6A"
+    },
+    {
+      "id": "basica-floralia-vintage",
+      "nombre": "Floralia Vintage",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/floralia-vintage.webp",
+      "hex": "#8B6B4A"
+    },
+    {
+      "id": "basica-ikat",
+      "nombre": "Ikat Natural",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat.webp",
+      "hex": "#C4A882"
+    },
+    {
+      "id": "basica-ikat-verde",
+      "nombre": "Ikat Verde Agua",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat-verde.webp",
+      "hex": "#7D9B76"
+    },
+    {
+      "id": "basica-ikat-arena",
+      "nombre": "Ikat Arena",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat-arena.webp",
+      "hex": "#C8A878"
+    },
+    {
+      "id": "basica-ikat-arrecife",
+      "nombre": "Ikat Arrecife",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat-arrecife.webp",
+      "hex": "#6B8B8B"
+    },
+    {
+      "id": "basica-ikat-bali-azul",
+      "nombre": "Ikat Bali Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat-bali-azul.webp",
+      "hex": "#4A6B8B"
+    },
+    {
+      "id": "basica-ikat-yakarta",
+      "nombre": "Ikat Yakarta",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat-yakarta.webp",
+      "hex": "#8B7A55"
+    },
+    {
+      "id": "basica-arbol-kasbah",
+      "nombre": "Árbol Kasbah",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/arbol-kasbah.webp",
+      "hex": "#8B6554"
+    },
+    {
+      "id": "basica-geometrica-kuwait",
+      "nombre": "Geométrica Kuwait",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/geometrica-kuwait.webp",
+      "hex": "#8B7355"
+    },
+    {
+      "id": "basica-takada-verde",
+      "nombre": "Takada Verde",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/takada-verde.webp",
+      "hex": "#5B7355"
+    },
+    {
+      "id": "basica-espiga-agua",
+      "nombre": "Espiga Agua",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/espiga-agua.webp",
+      "hex": "#8BA89A"
+    },
+    {
+      "id": "basica-mil-rayas-gris",
+      "nombre": "Mil Rayas Gris",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/mil-rayas-gris.webp",
+      "hex": "#A0A0A0"
+    },
+    {
+      "id": "basica-rayas-arena",
+      "nombre": "Rayas Arena",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/rayas-arena.webp",
+      "hex": "#C4A882"
+    },
+    {
+      "id": "basica-mil-rayas-azul",
+      "nombre": "Mil Rayas Azul Marino",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/mil-rayas-azul.webp",
+      "hex": "#2C3E50"
+    },
+    {
+      "id": "basica-raya-indigo",
+      "nombre": "Raya Índigo Acuarela",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/raya-indigo.webp",
+      "hex": "#4A6FA5"
+    },
+    {
+      "id": "basica-rayas-tevere",
+      "nombre": "Rayas Tévere",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/rayas-tevere.webp",
+      "hex": "#8B7355"
+    },
+    {
+      "id": "basica-coral-costero",
+      "nombre": "Coral Costero",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/coral-costero.webp",
+      "hex": "#E8A87C"
+    },
+    {
+      "id": "basica-raya-harvest",
+      "nombre": "Raya Harvest",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/raya-harvest.webp",
+      "hex": "#C19A6B"
+    },
+    {
+      "id": "basica-rayas-laurel-azul",
+      "nombre": "Rayas Laurel Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/rayas-laurel-azul.webp",
+      "hex": "#5B7A9A"
+    },
+    {
+      "id": "basica-lino-greca",
+      "nombre": "Lino Greca",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/lino-greca.webp",
+      "hex": "#C4B090"
+    },
+    {
+      "id": "basica-raya-rioja",
+      "nombre": "Raya Rioja",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/raya-rioja.webp",
+      "hex": "#8B3A3A"
+    },
+    {
+      "id": "basica-rayas-espiga-arena",
+      "nombre": "Rayas Espiga Arena",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/rayas-espiga-arena.webp",
+      "hex": "#C8AA82"
+    },
+    {
+      "id": "basica-rayas-espiga-azul",
+      "nombre": "Rayas Espiga Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/rayas-espiga-azul.webp",
+      "hex": "#4A6B8A"
+    },
+    {
+      "id": "basica-rayas-piave",
+      "nombre": "Rayas Piave",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/rayas-piave.webp",
+      "hex": "#7A8B6A"
+    },
+    {
+      "id": "basica-raya-artesanal-lino",
+      "nombre": "Raya Artesanal Lino",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/raya-artesanal-lino.webp",
+      "hex": "#C8B890"
+    },
+    {
+      "id": "basica-raya-relieve-lino",
+      "nombre": "Raya Relieve Lino",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/raya-relieve-lino.webp",
+      "hex": "#D4C8A8"
+    },
+    {
+      "id": "basica-toile-jouy-azul",
+      "nombre": "Toile de Jouy Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/toile-jouy-azul.webp",
+      "hex": "#6B8FAA"
+    },
+    {
+      "id": "basica-espiga-azul",
+      "nombre": "Espiga Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/espiga-azul.webp",
+      "hex": "#5A7890"
+    },
+    {
+      "id": "basica-morris-granadas-azul",
+      "nombre": "Morris Granadas Azul",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/morris-granadas-azul.webp",
+      "hex": "#4A6B8B"
+    },
+    {
+      "id": "basica-pata-de-gallo-verde",
+      "nombre": "Pata de Gallo Verde",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/pata-de-gallo-verde.webp",
+      "hex": "#5A7A5A"
+    },
+    {
+      "id": "basica-ikat-rojo",
+      "nombre": "Ikat Rojo",
+      "coleccion": "basica",
+      "foto": "https://tirorirohome.com/telas/basicas/ikat-rojo.webp",
+      "hex": "#B54A4A"
+    },
+    {
+      "id": "premium-baqueira",
+      "nombre": "Baqueira",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/baqueira.webp",
+      "hex": "#5B4B3A"
+    },
+    {
+      "id": "premium-baqueira-roja",
+      "nombre": "Baqueira Roja",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/baqueira-roja.webp",
+      "hex": "#8B3A3A"
+    },
+    {
+      "id": "premium-cerler",
+      "nombre": "Cérler",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/cerler.webp",
+      "hex": "#8B7355"
+    },
+    {
+      "id": "premium-lola-gris",
+      "nombre": "Lola Gris",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/lola-gris.webp",
+      "hex": "#6D6D6D"
+    },
+    {
+      "id": "premium-rocio",
+      "nombre": "Rocío",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/rocio.webp",
+      "hex": "#D4B896"
+    },
+    {
+      "id": "premium-artesano-beige",
+      "nombre": "Artesano Beige",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/artesano-beige.webp",
+      "hex": "#D4C5A9"
+    },
+    {
+      "id": "premium-oxford",
+      "nombre": "Oxford",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/oxford.webp",
+      "hex": "#D0C8B8"
+    },
+    {
+      "id": "premium-lino-verde-botella",
+      "nombre": "Lino Verde Botella",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/lino-verde-botella.webp",
+      "hex": "#2D4A2D"
+    },
+    {
+      "id": "premium-lino-verde",
+      "nombre": "Lino Verde",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/lino-verde.webp",
+      "hex": "#4A6B4A"
+    },
+    {
+      "id": "premium-guell-lamadrid",
+      "nombre": "Güell Lamadrid",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/guell-lamadrid.webp",
+      "hex": "#8B7355"
+    },
+    {
+      "id": "premium-rayas-verde-sage",
+      "nombre": "Rayas Verde Sage",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/rayas-verde-sage.webp",
+      "hex": "#7D9B76"
+    },
+    {
+      "id": "premium-lino-azul-provenzal",
+      "nombre": "Lino Azul Provenzal",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/lino-azul-provenzal.webp",
+      "hex": "#4A6FA5"
+    },
+    {
+      "id": "premium-vichy-denim",
+      "nombre": "Vichy Denim",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/vichy-denim.webp",
+      "hex": "#2C3E50"
+    },
+    {
+      "id": "premium-vichy-verde",
+      "nombre": "Vichy Verde",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/vichy-verde.webp",
+      "hex": "#4A7A5A"
+    },
+    {
+      "id": "premium-ramas-siena",
+      "nombre": "Ramas Siena Azul",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/ramas-siena.webp",
+      "hex": "#5B6B8B"
+    },
+    {
+      "id": "premium-flores-gardenia",
+      "nombre": "Flores Gardenia",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/flores-gardenia.webp",
+      "hex": "#6B8FAA"
+    },
+    {
+      "id": "premium-lino-flores-normandia",
+      "nombre": "Lino Flores Normandía",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/lino-flores-normandia.webp",
+      "hex": "#8BA870"
+    },
+    {
+      "id": "premium-lino-flores-senda",
+      "nombre": "Lino Flores Senda",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/lino-flores-senda.webp",
+      "hex": "#C8A8A0"
+    },
+    {
+      "id": "premium-bibiana",
+      "nombre": "Bibiana",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/bibiana.webp",
+      "hex": "#8B7A8B"
+    },
+    {
+      "id": "premium-prints-botanicos",
+      "nombre": "Prints Botánicos",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/prints-botanicos.webp",
+      "hex": "#5A7A5A"
+    },
+    {
+      "id": "premium-raya-monina",
+      "nombre": "Raya Monina",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/raya-monina.webp",
+      "hex": "#C8B890"
+    },
+    {
+      "id": "premium-rayas-jules-verde",
+      "nombre": "Rayas Jules Verde",
+      "coleccion": "premium",
+      "foto": "https://tirorirohome.com/telas/premium/rayas-jules-verde.webp",
+      "hex": "#4A7A5A"
+    }
+  ]
+}
