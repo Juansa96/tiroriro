@@ -405,6 +405,10 @@ const ContactForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          {/* Parámetros de clic de campañas (Google Ads / Meta) — solo lectura */}
+          {CLICK_ID_PARAMS.map((key) => (
+            <input key={key} type="hidden" name={key} value={clickIds[key] ?? ""} readOnly />
+          ))}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label htmlFor="contact-name" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Nombre *</label>
