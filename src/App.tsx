@@ -9,7 +9,8 @@ import MobileStickyCTA from "@/components/MobileStickyCTA";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollToTop from "@/components/ScrollToTop";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { captureClickIds } from "@/lib/tracking";
 import Index from "./pages/Index"; // home se mantiene eager (LCP)
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
