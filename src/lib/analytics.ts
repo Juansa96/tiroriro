@@ -16,6 +16,11 @@ let configured = false;
 
 function loadGtagScript() {
   if (scriptLoaded || typeof document === "undefined") return;
+  // Deduplicación a nivel DOM por si la flag de sesión se perdió o ya existe.
+  if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_ID}"]`)) {
+    scriptLoaded = true;
+    return;
+  }
   scriptLoaded = true;
   const s = document.createElement("script");
   s.async = true;
@@ -67,8 +72,16 @@ export function denyAnalyticsConsent() {
 
 // Called on app boot to re-hydrate consent from previous visits.
 export function initAnalyticsFromStorage() {
-  const v = getConsent();
-  if (v === "granted") grantAnalyticsConsent();
+  const consent = getConsent();
+  // Compatibilidad con visitas antiguas que solo guardaron cookies_accepted.
+  let accepted: string | null = null;
+  try {
+    accepted = localStorage.getItem("cookies_accepted");
+  } catch {}
+
+  if (consent === "granted" || (consent === null && accepted === "true")) {
+    grantAnalyticsConsent();
+  }
 }
 
 // SPA page view — dispara un page_view manual en cada cambio de ruta.
