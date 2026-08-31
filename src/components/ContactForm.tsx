@@ -37,6 +37,7 @@ const ContactForm = () => {
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [clickIds] = useState(() => getClickIds());
 
   // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
   const cp = form.postalCode.trim();
