@@ -72,6 +72,15 @@ const ContactInternalEmail = ({
             </Section>
           ) : null}
 
+          {tracking ? (
+            <Section style={{ marginTop: '20px' }}>
+              <Text style={messageLabel}>Origen de campaña</Text>
+              <Text style={messageBox}>{tracking}</Text>
+            </Section>
+          ) : null}
+
+
+
           <Hr style={hr} />
           <Text style={replyNote}>
             👆 Responde directamente a este email para contactar con {fullName.split(' ')[0]}
