@@ -115,6 +115,7 @@ export const template = {
     submittedAt: 'lunes, 1 de enero de 2025, 10:30',
     configSummary: 'Cabecero Pregonda · 150 cm × 100 cm · Tela Arequipa Beige · Vivo simple',
     previewLink: 'https://tirorirohome.com/?previewType=cabecero#contacto',
+    tracking: 'gclid: EAIaIQobCh...\nutm_source: google\nutm_medium: cpc\nutm_campaign: cabeceros-marca',
   },
 } satisfies TemplateEntry
 
