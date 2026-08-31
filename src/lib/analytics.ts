@@ -16,6 +16,11 @@ let configured = false;
 
 function loadGtagScript() {
   if (scriptLoaded || typeof document === "undefined") return;
+  // Deduplicación a nivel DOM por si la flag de sesión se perdió o ya existe.
+  if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_ID}"]`)) {
+    scriptLoaded = true;
+    return;
+  }
   scriptLoaded = true;
   const s = document.createElement("script");
   s.async = true;
