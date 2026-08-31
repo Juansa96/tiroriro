@@ -276,6 +276,7 @@ const ContactForm = () => {
         products: selectedProducts.join(','),
       };
       trackEvent('generate_lead', leadParams);
+      trackLeadConversion(form.email);
       // Limpia el borrador tras envío correcto
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
