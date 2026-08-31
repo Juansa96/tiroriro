@@ -61,3 +61,18 @@ export const getClickIds = (): StoredClickIds => {
     return {};
   }
 };
+
+/** Conversión de Google Ads — llamar solo tras confirmación de lead creado. */
+export function trackLeadConversion(email?: string) {
+  if (typeof window === "undefined" || !(window as any).gtag) return;
+  const gtag = (window as any).gtag;
+  if (email) {
+    gtag("set", "user_data", { email: email.trim().toLowerCase() });
+  }
+  gtag("event", "conversion", {
+    send_to: "AW-18316237534/G2cjCMvYjOscEN617p1E",
+    value: 155.0,
+    currency: "EUR",
+  });
+  gtag("event", "generate_lead", { value: 155.0, currency: "EUR" });
+}
