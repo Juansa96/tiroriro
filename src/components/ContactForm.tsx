@@ -249,6 +249,15 @@ const ContactForm = () => {
             origen: hasConfigParams ? 'Configurador' : 'Formulario web',
             configurador: configuradorData,
             presupuesto: presupuestoFlag,
+            gclid: clickIds.gclid,
+            gbraid: clickIds.gbraid,
+            wbraid: clickIds.wbraid,
+            utm_source: clickIds.utm_source,
+            utm_medium: clickIds.utm_medium,
+            utm_campaign: clickIds.utm_campaign,
+            utm_term: clickIds.utm_term,
+            fbclid: clickIds.fbclid,
+            landing_path: clickIds.landing_path,
           },
         });
       } catch (crmErr) {
