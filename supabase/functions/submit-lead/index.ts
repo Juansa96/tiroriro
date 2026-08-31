@@ -66,6 +66,15 @@ Deno.serve(async (req) => {
     origen: trim(body.origen, 100),
     configurador: body.configurador,
     presupuesto: body.presupuesto,
+    gclid: trim(body.gclid, 500),
+    gbraid: trim(body.gbraid, 500),
+    wbraid: trim(body.wbraid, 500),
+    utm_source: trim(body.utm_source, 200),
+    utm_medium: trim(body.utm_medium, 200),
+    utm_campaign: trim(body.utm_campaign, 200),
+    utm_term: trim(body.utm_term, 200),
+    fbclid: trim(body.fbclid, 500),
+    landing_path: trim(body.landing_path, 500),
   }
 
   const url = Deno.env.get('CRM_API_URL')

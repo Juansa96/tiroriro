@@ -5,6 +5,7 @@ import { Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
+import { CLICK_ID_PARAMS, getClickIds } from "@/lib/tracking";
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
@@ -36,6 +37,7 @@ const ContactForm = () => {
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [clickIds] = useState(() => getClickIds());
 
   // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
   const cp = form.postalCode.trim();
@@ -192,6 +194,10 @@ const ContactForm = () => {
             submittedAt,
             previewLink,
             formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
+            tracking: CLICK_ID_PARAMS
+              .filter((k) => clickIds[k])
+              .map((k) => `${k}: ${clickIds[k]}`)
+              .join('\n') || undefined,
           },
         },
       });
@@ -247,6 +253,15 @@ const ContactForm = () => {
             origen: hasConfigParams ? 'Configurador' : 'Formulario web',
             configurador: configuradorData,
             presupuesto: presupuestoFlag,
+            gclid: clickIds.gclid,
+            gbraid: clickIds.gbraid,
+            wbraid: clickIds.wbraid,
+            utm_source: clickIds.utm_source,
+            utm_medium: clickIds.utm_medium,
+            utm_campaign: clickIds.utm_campaign,
+            utm_term: clickIds.utm_term,
+            fbclid: clickIds.fbclid,
+            landing_path: clickIds.landing_path,
           },
         });
       } catch (crmErr) {
@@ -405,6 +420,10 @@ const ContactForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          {/* Parámetros de clic de campañas (Google Ads / Meta) — solo lectura */}
+          {CLICK_ID_PARAMS.map((key) => (
+            <input key={key} type="hidden" name={key} value={clickIds[key] ?? ""} readOnly />
+          ))}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
               <label htmlFor="contact-name" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Nombre *</label>
