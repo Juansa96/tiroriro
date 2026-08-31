@@ -72,8 +72,16 @@ export function denyAnalyticsConsent() {
 
 // Called on app boot to re-hydrate consent from previous visits.
 export function initAnalyticsFromStorage() {
-  const v = getConsent();
-  if (v === "granted") grantAnalyticsConsent();
+  const consent = getConsent();
+  // Compatibilidad con visitas antiguas que solo guardaron cookies_accepted.
+  let accepted: string | null = null;
+  try {
+    accepted = localStorage.getItem("cookies_accepted");
+  } catch {}
+
+  if (consent === "granted" || (consent === null && accepted === "true")) {
+    grantAnalyticsConsent();
+  }
 }
 
 // SPA page view — dispara un page_view manual en cada cambio de ruta.
