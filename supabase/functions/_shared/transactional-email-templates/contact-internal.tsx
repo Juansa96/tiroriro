@@ -16,6 +16,7 @@ interface ContactInternalProps {
   details?: string
   submittedAt?: string
   previewLink?: string
+  tracking?: string
 }
 
 const ContactInternalEmail = ({
@@ -28,6 +29,7 @@ const ContactInternalEmail = ({
   details,
   submittedAt,
   previewLink,
+  tracking,
 }: ContactInternalProps) => (
   <Html lang="es" dir="ltr">
     <Head />
