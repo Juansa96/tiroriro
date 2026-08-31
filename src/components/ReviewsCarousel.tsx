@@ -13,21 +13,20 @@ const GOOGLE_REVIEW_COUNT = 47;
 type Review = {
   name: string;
   location: string;
-  photo: string;
   text: string;
 };
 
 const REVIEWS: Review[] = [
-  { name: "Íñigo Camino", location: "Cliente verificado", photo: "/reviews/inigo-camino.jpg", text: "Todo un acierto. De diez. El cabecero me llegó en perfecto estado y muy protegido. Es exactamente igual que en las fotos. Se nota el trabajo artesanal y la cercanía de Juan y Bea a la hora de personalizarlo a mi gusto. Volveré a comprar." },
-  { name: "Ana Cuadrado", location: "Cliente verificado", photo: "/reviews/ana-cuadrado.jpg", text: "Estaba un poco reticente a comprar este tipo de textil online sin tocarlo antes, pero la web es muy intuitiva y las fotos reflejan muy bien la realidad. El pedido llegó a tiempo y la calidad del producto cumple de sobra con lo prometido. Buena relación calidad-precio." },
-  { name: "Alex Gutiérrez", location: "Cliente verificado", photo: "/reviews/alex-gutierrez.jpg", text: "No suelo poner reseñas, pero la experiencia ha sido tan buena que espero que mucha más gente la tenga. Nuestro cabecero nuevo es precioso y se nota la atención al detalle, pero lo que más me ha gustado ha sido el trato, la recomendación fantástica para elegir la tela y la puntualidad del envío. Millones de gracias!" },
-  { name: "María Gómez de Olea", location: "Cliente verificado", photo: "/reviews/maria-gomez-de-olea.jpg", text: "Increíble el trato de Tiroriro, súper recomendables! Beatriz es encantadora, me atendió fenomenal y el pedido llegó en tiempo y forma. Aparte, me he hecho un estudio de mercado de precios y estos son los que mejor salen con diferencia." },
-  { name: "Vari Álvarez", location: "Cliente verificado", photo: "/reviews/vari-alvarez.jpg", text: "Tenía bastantes dudas sobre el tono exacto de la tela para el cabecero y les escribí por atención al cliente. Me atendieron de maravilla, me asesoraron súper bien con los colores y el resultado en casa ha sido espectacular. La tela tiene un tacto increíble, se nota que es de buena calidad." },
-  { name: "Isabel Plettenberg", location: "Cliente verificado", photo: "/reviews/isabel-plettenberg.jpg", text: "Hemos encargado un cabecero con forma conta de medidas 1,80x1,20. Estamos felices con el resultado. Todo el proceso ha sido muy fácil y rápido. En dos semanas lo teníamos en casa. Muy recomendable!" },
-  { name: "David Franco", location: "Cliente verificado", photo: "/reviews/david-franco.jpg", text: "Buscábamos un cabecero que saliera un poco de lo típico que ves en todas las grandes superficies y dimos con esta web. El diseño es moderno pero atemporal, y la calidad del tejido es brutal. Un descubrimiento de marca, la verdad." },
-  { name: "María Espa", location: "Cliente verificado", photo: "/reviews/maria-espa.jpg", text: "Da gusto abrir un paquete cuando viene todo tan bien presentado y protegido. Desde el minuto uno te das cuenta de que es una marca con identidad. El cabecero que compramos queda de revista, todo el mundo que entra a la habitación nos pregunta de dónde es." },
-  { name: "Manuel Álvarez", location: "Cliente verificado", photo: "/reviews/manuel-alvarez.jpg", text: "Descubrí Tiroriro buscando un cabecero a medida y la experiencia ha sido muy buena. Lo que más me gustó fue la posibilidad de personalizar prácticamente todo: medidas, forma y tejido, algo que no es tan fácil de encontrar." },
-  { name: "SyM", location: "Cliente verificado", photo: "/reviews/sym.jpg", text: "Hubo una pequeña confusión con la dirección de entrega por parte de la agencia de transportes, pero el equipo de Tiroriro lo solucionó el mismo día de forma súper amable. El cabecero ya está puesto y no puedo estar más contenta. Da gusto comprar en marcas que cuidan así al cliente." },
+  { name: "Íñigo Camino", location: "Cliente verificado", text: "Todo un acierto. De diez. El cabecero me llegó en perfecto estado y muy protegido. Es exactamente igual que en las fotos. Se nota el trabajo artesanal y la cercanía de Juan y Bea a la hora de personalizarlo a mi gusto. Volveré a comprar." },
+  { name: "Ana Cuadrado", location: "Cliente verificado", text: "Estaba un poco reticente a comprar este tipo de textil online sin tocarlo antes, pero la web es muy intuitiva y las fotos reflejan muy bien la realidad. El pedido llegó a tiempo y la calidad del producto cumple de sobra con lo prometido. Buena relación calidad-precio." },
+  { name: "Alex Gutiérrez", location: "Cliente verificado", text: "No suelo poner reseñas, pero la experiencia ha sido tan buena que espero que mucha más gente la tenga. Nuestro cabecero nuevo es precioso y se nota la atención al detalle, pero lo que más me ha gustado ha sido el trato, la recomendación fantástica para elegir la tela y la puntualidad del envío. Millones de gracias!" },
+  { name: "María Gómez de Olea", location: "Cliente verificado", text: "Increíble el trato de Tiroriro, súper recomendables! Beatriz es encantadora, me atendió fenomenal y el pedido llegó en tiempo y forma. Aparte, me he hecho un estudio de mercado de precios y estos son los que mejor salen con diferencia." },
+  { name: "Vari Álvarez", location: "Cliente verificado", text: "Tenía bastantes dudas sobre el tono exacto de la tela para el cabecero y les escribí por atención al cliente. Me atendieron de maravilla, me asesoraron súper bien con los colores y el resultado en casa ha sido espectacular. La tela tiene un tacto increíble, se nota que es de buena calidad." },
+  { name: "Isabel Plettenberg", location: "Cliente verificado", text: "Hemos encargado un cabecero con forma conta de medidas 1,80x1,20. Estamos felices con el resultado. Todo el proceso ha sido muy fácil y rápido. En dos semanas lo teníamos en casa. Muy recomendable!" },
+  { name: "David Franco", location: "Cliente verificado", text: "Buscábamos un cabecero que saliera un poco de lo típico que ves en todas las grandes superficies y dimos con esta web. El diseño es moderno pero atemporal, y la calidad del tejido es brutal. Un descubrimiento de marca, la verdad." },
+  { name: "María Espa", location: "Cliente verificado", text: "Da gusto abrir un paquete cuando viene todo tan bien presentado y protegido. Desde el minuto uno te das cuenta de que es una marca con identidad. El cabecero que compramos queda de revista, todo el mundo que entra a la habitación nos pregunta de dónde es." },
+  { name: "Manuel Álvarez", location: "Cliente verificado", text: "Descubrí Tiroriro buscando un cabecero a medida y la experiencia ha sido muy buena. Lo que más me gustó fue la posibilidad de personalizar prácticamente todo: medidas, forma y tejido, algo que no es tan fácil de encontrar." },
+  { name: "SyM", location: "Cliente verificado", text: "Hubo una pequeña confusión con la dirección de entrega por parte de la agencia de transportes, pero el equipo de Tiroriro lo solucionó el mismo día de forma súper amable. El cabecero ya está puesto y no puedo estar más contenta. Da gusto comprar en marcas que cuidan así al cliente." },
 ];
 
 const reviewJsonLd = {
@@ -51,27 +50,15 @@ const Star = () => (
 );
 
 const Avatar = ({ review }: { review: Review }) => {
-  const [failed, setFailed] = useState(false);
   const initial = review.name.trim().charAt(0).toUpperCase();
-  if (failed) {
-    return (
-      <div
-        className="w-14 h-14 rounded-full flex items-center justify-center bg-secondary text-foreground font-serif text-xl ring-2 ring-border shrink-0"
-        aria-label={`Inicial de ${review.name}`}
-      >
-        {initial}
-      </div>
-    );
-  }
   return (
-    <img
-      src={review.photo}
-      alt={`Foto de ${review.name}, cliente de Tiroriro`}
-      className="w-14 h-14 rounded-full object-cover ring-2 ring-border shrink-0"
-      loading="lazy"
-      decoding="async"
-      onError={() => setFailed(true)}
-    />
+    <div
+      className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 font-serif text-xl text-white ring-2 ring-border"
+      style={{ backgroundColor: "#1a4b5b" }}
+      aria-label={`Inicial de ${review.name}`}
+    >
+      {initial}
+    </div>
   );
 };
 
