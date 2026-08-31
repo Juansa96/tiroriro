@@ -51,27 +51,15 @@ const Star = () => (
 );
 
 const Avatar = ({ review }: { review: Review }) => {
-  const [failed, setFailed] = useState(false);
   const initial = review.name.trim().charAt(0).toUpperCase();
-  if (failed) {
-    return (
-      <div
-        className="w-14 h-14 rounded-full flex items-center justify-center bg-secondary text-foreground font-serif text-xl ring-2 ring-border shrink-0"
-        aria-label={`Inicial de ${review.name}`}
-      >
-        {initial}
-      </div>
-    );
-  }
   return (
-    <img
-      src={review.photo}
-      alt={`Foto de ${review.name}, cliente de Tiroriro`}
-      className="w-14 h-14 rounded-full object-cover ring-2 ring-border shrink-0"
-      loading="lazy"
-      decoding="async"
-      onError={() => setFailed(true)}
-    />
+    <div
+      className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 font-serif text-xl text-white ring-2 ring-border"
+      style={{ backgroundColor: "#1a4b5b" }}
+      aria-label={`Inicial de ${review.name}`}
+    >
+      {initial}
+    </div>
   );
 };
 
