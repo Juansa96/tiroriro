@@ -39,7 +39,12 @@ const categoryRoutes = [
   { path: "/productos/pantallas-lampara", categoryKey: "pantallas-lampara" },
 ];
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    captureClickIds();
+  }, []);
+
+  return (
   <HelmetProvider>
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
