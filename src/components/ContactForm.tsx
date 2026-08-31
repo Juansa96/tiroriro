@@ -194,6 +194,10 @@ const ContactForm = () => {
             submittedAt,
             previewLink,
             formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
+            tracking: CLICK_ID_PARAMS
+              .filter((k) => clickIds[k])
+              .map((k) => `${k}: ${clickIds[k]}`)
+              .join('\n') || undefined,
           },
         },
       });
