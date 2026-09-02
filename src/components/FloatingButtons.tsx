@@ -9,8 +9,11 @@ const FloatingButtons = () => {
   const location = useLocation();
 
   const isConfigurador = location.pathname === '/configurador';
-  // Mobile sticky CTA bar sits at bottom-0; push floating buttons above it on mobile
-  const bottomClass = "bottom-24 md:bottom-6";
+  // Mobile sticky CTA bar sits at bottom-0; push floating buttons above it on mobile.
+  // --cookie-banner-h lo publica CookieBanner mientras el banner está abierto, para
+  // que el botón suba por encima de la tarjeta de consentimiento (0px si no hay banner).
+  const bottomClass =
+    "bottom-[calc(var(--cookie-banner-h,0px)+6rem)] md:bottom-[calc(var(--cookie-banner-h,0px)+1.5rem)]";
   const whatsappUrl = isConfigurador ? WHATSAPP_CONFIGURADOR_URL : WHATSAPP_URL;
   const whatsappLabel = isConfigurador ? "¿Dudas? Escríbenos" : "Escríbenos por WhatsApp";
 
@@ -23,7 +26,7 @@ const FloatingButtons = () => {
   };
 
   return (
-    <div className={`fixed ${bottomClass} right-6 z-50 flex flex-col items-end gap-3`}>
+    <div className={`fixed ${bottomClass} right-6 z-50 flex flex-col items-end gap-3 transition-[bottom] duration-300`}>
       {/* WhatsApp — siempre visible, incluso en el configurador */}
       <div className="relative">
         {whatsappHovered && (

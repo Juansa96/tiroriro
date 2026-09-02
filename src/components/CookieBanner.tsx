@@ -1,15 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { safeLocalStorageGet } from "@/lib/safe-storage";
 import { grantAnalyticsConsent, denyAnalyticsConsent } from "@/lib/analytics";
 
+// Altura real del banner, publicada en el <body> para que el botón flotante de
+// WhatsApp suba mientras está abierto y no quede tapado por la tarjeta.
+const HEIGHT_VAR = "--cookie-banner-h";
+
 const CookieBanner = () => {
   const [visible, setVisible] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const accepted = safeLocalStorageGet("cookies_accepted");
     if (!accepted) setVisible(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const el = bannerRef.current;
+    const clear = () => document.body.style.removeProperty(HEIGHT_VAR);
+    if (!visible || !el) {
+      clear();
+      return;
+    }
+    const sync = () => document.body.style.setProperty(HEIGHT_VAR, `${el.offsetHeight}px`);
+    sync();
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(sync) : null;
+    observer?.observe(el);
+    window.addEventListener("resize", sync);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", sync);
+      clear();
+    };
+  }, [visible]);
 
   const acceptAll = () => {
     grantAnalyticsConsent();
@@ -24,28 +49,70 @@ const CookieBanner = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-foreground/95 text-primary-foreground backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
-        <p className="text-xs font-light leading-snug flex-1 min-w-0">
-          Cookies técnicas y analíticas (GA4).{" "}
-          <Link to="/cookies" className="underline hover:opacity-80">Más info</Link>
-        </p>
-        <div className="flex gap-2 shrink-0 self-end sm:self-auto">
-          <button
-            onClick={rejectAll}
-            className="px-3 py-1 text-xs font-light hover:opacity-80 transition-opacity"
-          >
-            Rechazar
-          </button>
-          <button
-            onClick={acceptAll}
-            className="px-3 py-1 bg-accent-warm text-white text-xs font-medium rounded hover:opacity-90 transition-opacity"
-          >
-            Aceptar
-          </button>
+    <>
+      {/* Velo que da protagonismo al banner. No bloquea el scroll ni los clics. */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-[59] bg-black/50 pointer-events-none"
+      />
+
+      <div
+        ref={bannerRef}
+        role="dialog"
+        aria-labelledby="cookie-banner-title"
+        aria-describedby="cookie-banner-desc"
+        className="fixed inset-x-0 bottom-0 z-[60] p-3 sm:p-5 animate-fade-in-up"
+      >
+        <div className="mx-auto max-w-3xl rounded-2xl bg-background text-foreground shadow-2xl ring-1 ring-foreground/10 p-5 sm:p-6">
+          <div className="flex items-start gap-4">
+            <span
+              aria-hidden="true"
+              className="hidden sm:flex shrink-0 items-center justify-center w-11 h-11 rounded-full"
+              style={{ backgroundColor: "hsl(var(--accent-warm))" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" className="w-6 h-6">
+                <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5Z" />
+                <circle cx="9" cy="10" r="1" fill="white" stroke="none" />
+                <circle cx="14" cy="15" r="1" fill="white" stroke="none" />
+                <circle cx="8.5" cy="15.5" r="1" fill="white" stroke="none" />
+              </svg>
+            </span>
+
+            <div className="flex-1 min-w-0">
+              <p id="cookie-banner-title" className="font-serif text-lg sm:text-xl font-light">
+                Usamos cookies
+              </p>
+              <p id="cookie-banner-desc" className="mt-1.5 text-sm font-light leading-relaxed text-foreground/75">
+                Técnicas para que la web funcione y analíticas (GA4) para entender cómo se usa y mejorarla.
+                Tú decides.{" "}
+                <Link to="/cookies" className="underline underline-offset-2 hover:opacity-80">
+                  Más info
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
+            <button
+              onClick={rejectAll}
+              className="w-full sm:w-auto px-6 py-3 rounded-full border border-foreground/30 text-sm font-medium hover:bg-foreground/5 transition-colors"
+            >
+              Rechazar
+            </button>
+            <button
+              onClick={acceptAll}
+              className="w-full sm:w-auto px-8 py-3 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition-opacity"
+              style={{
+                backgroundColor: "hsl(var(--accent-warm))",
+                color: "hsl(var(--accent-warm-foreground))",
+              }}
+            >
+              Aceptar
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
