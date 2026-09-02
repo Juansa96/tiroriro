@@ -185,8 +185,11 @@ const ContactForm = () => {
         : undefined;
 
       // 1. Email interno a TiroRiro (obligatorio)
+      const oversizedLine = headboardOversizedSurcharge > 0
+        ? ` (incluye suplemento cabecero grande: ${headboardOversizedSurcharge} €)`
+        : '';
       const shippingLine = isMadridCP
-        ? `Envío Madrid: 40 € — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
+        ? `Envío Madrid: ${SHIPPING_MADRID} €${oversizedLine} — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
         : `Envío fuera de Madrid: a consultar según destino${cp ? ` (CP ${cp})` : ''}`;
       const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
         body: {
