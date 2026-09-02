@@ -434,9 +434,16 @@ const ProductConfigurator = () => {
   const handleProductChange = (type: ProductType) => {
     if (type !== productType) {
       resetConfiguracion(type);
+      const p = PRODUCTS.find(item => item.type === type);
+      trackFbEvent('ViewContent', {
+        content_name: p?.name ?? type,
+        value: p?.basePrice ?? 0,
+        currency: 'EUR',
+      });
     }
     setProductType(type);
   };
+
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
   const lateralFabric = ALL_FABRICS.find(f => f.id === lateralFabricId);
