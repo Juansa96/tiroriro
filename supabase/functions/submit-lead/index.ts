@@ -73,8 +73,16 @@ Deno.serve(async (req) => {
     utm_medium: trim(body.utm_medium, 200),
     utm_campaign: trim(body.utm_campaign, 200),
     utm_term: trim(body.utm_term, 200),
+    utm_content: trim(body.utm_content, 200),
+    utm_placement: trim(body.utm_placement, 200),
+    utm_id: trim(body.utm_id, 200),
     fbclid: trim(body.fbclid, 500),
     landing_path: trim(body.landing_path, 500),
+    landing_page: trim(body.landing_page, 500),
+    referrer: trim(body.referrer, 500),
+    first_seen: trim(body.first_seen, 40),
+    atribucion: body.atribucion,
+
   }
 
   const url = Deno.env.get('CRM_API_URL')

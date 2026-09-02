@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { CLICK_ID_PARAMS, getClickIds, trackLeadConversion } from "@/lib/tracking";
 import { trackFbEvent } from "@/lib/metaPixel";
+import { getAttribution } from "@/lib/attribution";
+
 
 import {
   SHIPPING_MADRID,
@@ -45,6 +47,8 @@ const ContactForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [clickIds] = useState(() => getClickIds());
+  const [attribution] = useState(() => getAttribution());
+
 
   // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
   const cp = form.postalCode.trim();
@@ -275,15 +279,23 @@ const ContactForm = () => {
             origen: hasConfigParams ? 'Configurador' : 'Formulario web',
             configurador: configuradorData,
             presupuesto: presupuestoFlag,
-            gclid: clickIds.gclid,
+            gclid: clickIds.gclid ?? attribution.gclid,
             gbraid: clickIds.gbraid,
             wbraid: clickIds.wbraid,
-            utm_source: clickIds.utm_source,
-            utm_medium: clickIds.utm_medium,
-            utm_campaign: clickIds.utm_campaign,
-            utm_term: clickIds.utm_term,
-            fbclid: clickIds.fbclid,
+            utm_source: clickIds.utm_source ?? attribution.utm_source,
+            utm_medium: clickIds.utm_medium ?? attribution.utm_medium,
+            utm_campaign: clickIds.utm_campaign ?? attribution.utm_campaign,
+            utm_term: clickIds.utm_term ?? attribution.utm_term,
+            utm_content: attribution.utm_content,
+            utm_placement: attribution.utm_placement,
+            utm_id: attribution.utm_id,
+            fbclid: clickIds.fbclid ?? attribution.fbclid,
             landing_path: clickIds.landing_path,
+            landing_page: attribution.landing_page,
+            referrer: attribution.referrer,
+            first_seen: attribution.first_seen,
+            atribucion: attribution,
+
           },
         });
       } catch (crmErr) {
