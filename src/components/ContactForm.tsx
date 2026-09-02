@@ -253,7 +253,9 @@ const ContactForm = () => {
           telaLateral: previewLateralName ?? undefined,
           anchoCama: previewWidth ?? undefined,
           altoCm: previewHeight ?? undefined,
-          acabado: previewFinish || 'vivo-simple',
+          // El vivo NO se pone solo: si el cliente no eligió acabado, el lead
+          // llega sin acabado y en el CRM se decide (hay cabeceros sin vivo).
+          acabado: previewFinish || undefined,
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
           precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
           envioMadrid: isMadridCP ? SHIPPING_MADRID : undefined,

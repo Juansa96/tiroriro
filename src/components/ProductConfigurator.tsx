@@ -578,7 +578,10 @@ const ProductConfigurator = () => {
 
     if (extraRelleno) o.relleno = 'true';
     if (extraTapetes && productType === 'cabecero') o.tapetes = 'true';
-    o.hasCustomVivo = vivoColorId ? 'true' : 'false';
+    // La tela de vivo distinta solo cuenta (precio y resumen) si el acabado
+    // lleva vivo: al pasar a "Sin vivo" no puede quedarse cobrando el extra.
+    const llevaVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
+    o.hasCustomVivo = vivoColorId && llevaVivo ? 'true' : 'false';
     o.hasCustomLateral = lateralFabricId ? 'true' : 'false';
     return o;
   }, [productType, shape, bedWidth, bedHeight, benchLength, cushionShape, cushionSize,
@@ -1744,7 +1747,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
         <div className="pb-6 space-y-3 px-1 pt-2">
           {(FINISHES.filter(f => {
-            if (productType === 'cabecero') return f.id === 'vivo-simple' || f.id === 'vivo-doble';
+            // El cabecero también puede ir SIN vivo (mismo precio que el simple).
+            if (productType === 'cabecero') return f.id === 'liso' || f.id === 'vivo-simple' || f.id === 'vivo-doble';
             if (productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'banco') return f.id === 'liso' || f.id === 'vivo-simple';
