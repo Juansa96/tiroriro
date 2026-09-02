@@ -12,6 +12,8 @@ import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { useMetaPixelPageView } from "@/hooks/useMetaPixelPageView";
 import { lazy, Suspense, useEffect } from "react";
 import { captureClickIds } from "@/lib/tracking";
+import { captureAttribution } from "@/lib/attribution";
+
 import Index from "./pages/Index"; // home se mantiene eager (LCP)
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
