@@ -68,6 +68,16 @@ const ContactForm = () => {
   const previewLateralImage = searchParams.get("previewLateralImage") || undefined;
   const previewLateralName = searchParams.get("previewLateralName") || undefined;
 
+  // Cabeceros de más de 1,80 m de largo o más de 1,20 m de alto: +20 € de envío (solo Madrid).
+  const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
+  const previewWidthNum = previewWidth ? Number(previewWidth) : undefined;
+  const previewHeightNum = previewHeight ? Number(previewHeight) : undefined;
+  const headboardOversizedSurcharge = previewType === 'cabecero' && isHeadboardOversized(previewWidthNum, previewHeightNum)
+    ? HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE
+    : 0;
+  const shippingCost = isMadridCP ? SHIPPING_MADRID + headboardOversizedSurcharge : null;
+  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
+
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
       let details = fromConfig || '';
