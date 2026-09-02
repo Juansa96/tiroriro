@@ -30,6 +30,12 @@ const IgPage = lazy(() => import("./pages/IgPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+function MetaPixelTracker() {
+  useMetaPixelPageView();
+  return null;
+}
+
 const categoryRoutes = [
   { path: "/productos/cabeceros", categoryKey: "cabeceros" },
   { path: "/productos/bancos", categoryKey: "bancos" },
@@ -54,6 +60,7 @@ const App = () => {
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
         <AnalyticsTracker />
+        <MetaPixelTracker />
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Index />} />
