@@ -34,7 +34,7 @@ const FAQS = [
   },
   {
     q: "¿Cuánto cuesta el envío y a qué zonas llegáis?",
-    a: "Dentro de la Comunidad de Madrid el envío cuesta 40 € (se cobra aparte del precio del producto). Fuera de Madrid enviamos a toda la península ibérica y el coste se calcula según destino — te lo confirmamos por teléfono antes de cerrar el pedido. Para Baleares y Canarias también lo valoramos puntualmente. Procuramos que los transportistas vayan en pareja cuando el cabecero es grande, lo entregan en casa y se cuidan al máximo de que la pieza no sufra durante el trayecto.",
+    a: "Dentro de la Comunidad de Madrid el envío cuesta 40 € (se cobra aparte del precio del producto); en cabeceros de más de 180 cm de ancho o 120 cm de alto son 60 €, porque necesitan un transporte mayor. El configurador te dice siempre la cifra exacta de tu medida. Fuera de Madrid enviamos a toda la península ibérica y el coste se calcula según destino — te lo confirmamos por teléfono antes de cerrar el pedido. Para Baleares y Canarias también lo valoramos puntualmente. Procuramos que los transportistas vayan en pareja cuando el cabecero es grande, lo entregan en casa y se cuidan al máximo de que la pieza no sufra durante el trayecto.",
   },
   {
     q: "¿Cómo es vuestro proceso artesanal paso a paso?",

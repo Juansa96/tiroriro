@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
-import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO } from "@/data/pricing";
+import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO,
+  SHIPPING_MADRID, HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE, isHeadboardOversized } from "@/data/pricing";
 import { Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -468,6 +469,14 @@ const ProductConfigurator = () => {
     : productType === 'cojin' ? cushionDetails?.heightCm
     : productType === 'pantalla' ? (lampSizeParsed?.heightCm ?? 30)
     : undefined;
+
+  // Envío: en el configurador ya se conocen tipo y medidas, así que se muestra la
+  // cifra exacta en lugar de un 40 € genérico que se quedaría corto en cabeceros grandes.
+  const oversizedShippingSurcharge =
+    productType === 'cabecero' && isHeadboardOversized(widthCm, heightCm)
+      ? HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE
+      : 0;
+  const madridShipping = SHIPPING_MADRID + oversizedShippingSurcharge;
 
   const depthCm = productType === 'mesa'
     ? (benchLength === 'custom' ? (benchDepth ? parseInt(benchDepth) : undefined) : parseCm(benchDepth))
@@ -982,7 +991,11 @@ const ProductConfigurator = () => {
             </div>
           )}
           <div className="mt-2 px-1">
-            <p className="text-xs text-muted-foreground font-light text-center">Envío a la península · Madrid <span className="font-medium text-foreground">40 €</span> · resto a consultar en la llamada</p>
+            <p className="text-xs text-muted-foreground font-light text-center">
+              Envío a la península · Madrid <span className="font-medium text-foreground">{madridShipping} €</span>
+              {oversizedShippingSurcharge > 0 && <> (incluye {oversizedShippingSurcharge} € por cabecero grande)</>}
+              {' '}· resto a consultar en la llamada
+            </p>
             <p className="text-[11px] text-muted-foreground/60 font-light text-center italic mt-0.5">Telas sujetas a disponibilidad de stock.</p>
           </div>
 

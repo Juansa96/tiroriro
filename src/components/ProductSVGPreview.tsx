@@ -197,7 +197,6 @@ const HeadboardSVG = ({
   heightCm?: number;
 }) => {
   const shape = forma || "recto";
-  const patternId = useId();
   const lateralPatternId = useId();
   const clipId = useId();
   const scaleX = scaleRange(widthCm, 90, 200, 0.72, 1.02);
@@ -220,7 +219,6 @@ const HeadboardSVG = ({
   return (
     <svg viewBox="0 0 330 220" className="w-full max-w-[320px] mx-auto">
       <defs>
-        <TexturePattern id={patternId} image={fabricImage} color={color} tile={18} />
         <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={18} />
         <clipPath id={`hb-${clipId}`}>
           <path d={frontPath} />
@@ -259,7 +257,9 @@ const HeadboardSVG = ({
         {finish === "vivo-doble" && (
           <path d={frontPath} transform={`translate(${dx} ${dy})`} fill="none" stroke={vivoColor} strokeWidth="2.2" strokeLinejoin="round" />
         )}
-        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
+        {/* Cara frontal en color liso: el estampado repetido sobre la forma confundía
+            a los clientes. La tela se sigue viendo en los laterales y en las muestras. */}
+        <path d={frontPath} fill={color} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
 
         {finish === "vivo-simple" && (
           <g clipPath={`url(#hb-${clipId})`}>
@@ -530,8 +530,8 @@ const PuffSVG = ({
         {/* Cara lateral derecha (tela lateral) */}
         <path d={sidePath} fill={patternFill(lateralPatternId, darken(color, 20))} stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
         <path d={sidePath} fill="rgba(0,0,0,0.10)" />
-        {/* Cara frontal (tela principal) */}
-        <path d={frontPath} fill={patternFill(patternId, color)} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
+        {/* Cara frontal en color liso, por la misma razón que el cabecero */}
+        <path d={frontPath} fill={color} stroke="rgba(0,0,0,0.16)" strokeWidth="1" />
         {finish === "vivo-simple" && (
           <g clipPath={`url(#pf-${clipId}-${clipSuffix})`}>
             <path d={frontPath} fill="none" stroke={vivoColor} strokeWidth="3" strokeLinejoin="round" />
@@ -544,7 +544,6 @@ const PuffSVG = ({
   return (
     <svg viewBox="0 0 320 230" className="w-full max-w-[280px] mx-auto">
       <defs>
-        <TexturePattern id={patternId}        image={fabricImage}                   color={color} tile={18} />
         <TexturePattern id={lateralPatternId} image={lateralFabricImage || fabricImage} color={color} tile={18} />
         {/* Un clipPath por puf para el vivo (mismo path, distinto id para evitar conflictos) */}
         <clipPath id={`pf-${clipId}-a`}><path d={frontPath} /></clipPath>
