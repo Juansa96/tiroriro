@@ -297,6 +297,19 @@ const ContactForm = () => {
       };
       trackEvent('generate_lead', leadParams);
       trackLeadConversion(form.email);
+      // Meta Pixel: solo tras confirmación de envío correcto.
+      {
+        const fbValue = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined;
+        const fbName = prefilledProduct || (selectedProducts.length ? selectedProducts.join(', ') : undefined);
+        const source = hasConfigParams ? 'configurador' : 'contacto';
+        trackFbEvent('Lead', {
+          currency: 'EUR',
+          source,
+          ...(fbName ? { content_name: fbName } : {}),
+          ...(fbValue !== undefined ? { value: fbValue } : {}),
+        });
+      }
+
       // Limpia el borrador tras envío correcto
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
