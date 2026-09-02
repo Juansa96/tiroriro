@@ -9,6 +9,7 @@ import MobileStickyCTA from "@/components/MobileStickyCTA";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollToTop from "@/components/ScrollToTop";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { useMetaPixelPageView } from "@/hooks/useMetaPixelPageView";
 import { lazy, Suspense, useEffect } from "react";
 import { captureClickIds } from "@/lib/tracking";
 import Index from "./pages/Index"; // home se mantiene eager (LCP)
@@ -29,6 +30,12 @@ const IgPage = lazy(() => import("./pages/IgPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+function MetaPixelTracker() {
+  useMetaPixelPageView();
+  return null;
+}
+
 const categoryRoutes = [
   { path: "/productos/cabeceros", categoryKey: "cabeceros" },
   { path: "/productos/bancos", categoryKey: "bancos" },
@@ -53,6 +60,7 @@ const App = () => {
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
         <AnalyticsTracker />
+        <MetaPixelTracker />
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Index />} />
