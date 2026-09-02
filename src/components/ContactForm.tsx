@@ -6,6 +6,11 @@ import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { CLICK_ID_PARAMS, getClickIds, trackLeadConversion } from "@/lib/tracking";
+import {
+  SHIPPING_MADRID,
+  HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE,
+  isHeadboardOversized,
+} from "@/data/pricing";
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
@@ -42,9 +47,6 @@ const ContactForm = () => {
   // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
   const cp = form.postalCode.trim();
   const isMadridCP = /^28\d{3}$/.test(cp);
-  const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
-  const shippingCost = isMadridCP ? 40 : null;
-  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
 
   // Draft autosave key. Include configurator params so distintas configs no se pisan.
   const DRAFT_KEY = "tiro_contact_draft_v1";
@@ -65,6 +67,16 @@ const ContactForm = () => {
   const previewLateralHex = searchParams.get("previewLateralHex") || undefined;
   const previewLateralImage = searchParams.get("previewLateralImage") || undefined;
   const previewLateralName = searchParams.get("previewLateralName") || undefined;
+
+  // Cabeceros de más de 1,80 m de largo o más de 1,20 m de alto: +20 € de envío (solo Madrid).
+  const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
+  const previewWidthNum = previewWidth ? Number(previewWidth) : undefined;
+  const previewHeightNum = previewHeight ? Number(previewHeight) : undefined;
+  const headboardOversizedSurcharge = previewType === 'cabecero' && isHeadboardOversized(previewWidthNum, previewHeightNum)
+    ? HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE
+    : 0;
+  const shippingCost = isMadridCP ? SHIPPING_MADRID + headboardOversizedSurcharge : null;
+  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
 
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
@@ -174,8 +186,11 @@ const ContactForm = () => {
         : undefined;
 
       // 1. Email interno a TiroRiro (obligatorio)
+      const oversizedLine = headboardOversizedSurcharge > 0
+        ? ` (incluye suplemento cabecero grande: ${headboardOversizedSurcharge} €)`
+        : '';
       const shippingLine = isMadridCP
-        ? `Envío Madrid: 40 € — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
+        ? `Envío Madrid: ${SHIPPING_MADRID} €${oversizedLine} — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
         : `Envío fuera de Madrid: a consultar según destino${cp ? ` (CP ${cp})` : ''}`;
       const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
         body: {
@@ -241,6 +256,9 @@ const ContactForm = () => {
           acabado: previewFinish || 'vivo-simple',
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
           precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
+          envioMadrid: isMadridCP ? SHIPPING_MADRID : undefined,
+          suplementoEnvioCabeceroGrande: headboardOversizedSurcharge > 0 ? headboardOversizedSurcharge : undefined,
+          costeEnvioTotal: shippingCost ?? undefined,
         } : undefined;
 
         await supabase.functions.invoke('submit-lead', {
@@ -387,8 +405,14 @@ const ContactForm = () => {
                       <>
                         <div className="flex items-baseline justify-between text-sm">
                           <span className="text-muted-foreground font-light">Envío Madrid</span>
-                          <span className="font-medium text-foreground">40 €</span>
+                          <span className="font-medium text-foreground">{SHIPPING_MADRID} €</span>
                         </div>
+                        {headboardOversizedSurcharge > 0 && (
+                          <div className="flex items-baseline justify-between text-sm">
+                            <span className="text-muted-foreground font-light">Suplemento cabecero grande</span>
+                            <span className="font-medium text-foreground">{headboardOversizedSurcharge} €</span>
+                          </div>
+                        )}
                         <div className="flex items-baseline justify-between text-base pt-2 border-t border-border/30">
                           <span className="font-serif text-foreground">Total</span>
                           <span className="font-serif text-xl text-foreground">{totalIfKnown} € <span className="text-[10px] text-muted-foreground font-sans">IVA incl.</span></span>
@@ -467,7 +491,7 @@ const ContactForm = () => {
             {cp.length === 5 && (
               <p className="mt-2 text-xs text-muted-foreground font-light">
                 {isMadridCP
-                  ? <>Envío Madrid: <span className="font-medium text-foreground">40 €</span></>
+                  ? <>Envío Madrid: <span className="font-medium text-foreground">{SHIPPING_MADRID} €</span>{headboardOversizedSurcharge > 0 && <> + <span className="font-medium text-foreground">{headboardOversizedSurcharge} €</span> suplemento cabecero grande</>}</>
                   : <>Fuera de Madrid — envío a consultar en la llamada.</>}
               </p>
             )}
