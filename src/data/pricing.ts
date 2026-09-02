@@ -97,6 +97,15 @@ export const PANTALLA_PREMIUM: Record<string, number> = {
 
 // ── Envío ────────────────────────────────────────────────────────────────────
 export const SHIPPING_MADRID = 40;
+export const HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE = 20;
+export const HEADBOARD_OVERSIZED_WIDTH_THRESHOLD = 180; // cm
+export const HEADBOARD_OVERSIZED_HEIGHT_THRESHOLD = 120; // cm
+
+export function isHeadboardOversized(widthCm: number | undefined, heightCm: number | undefined): boolean {
+  const w = widthCm ?? 0;
+  const h = heightCm ?? 0;
+  return w > HEADBOARD_OVERSIZED_WIDTH_THRESHOLD || h > HEADBOARD_OVERSIZED_HEIGHT_THRESHOLD;
+}
 
 // ── Extras heredados (§4) ────────────────────────────────────────────────────
 export const EXTRA_COLGADOR = 5;
