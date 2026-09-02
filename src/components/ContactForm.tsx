@@ -561,7 +561,7 @@ const ContactForm = () => {
 
           <div className="pt-2 p-3 bg-muted/40 border border-border/40 rounded-md">
             <p className="text-xs text-muted-foreground font-light leading-relaxed">
-              <span className="font-medium text-foreground">Envío a la península.</span> Dentro de Madrid <span className="font-medium">40 €</span>; en el resto lo confirmamos en la llamada de menos de 24 h.
+              <span className="font-medium text-foreground">Envío a la península.</span> Dentro de Madrid <span className="font-medium">{SHIPPING_MADRID + headboardOversizedSurcharge} €</span>{headboardOversizedSurcharge > 0 && <> (incluye {headboardOversizedSurcharge} € por cabecero grande)</>}; en el resto lo confirmamos en la llamada de menos de 24 h.
             </p>
             <p className="text-[11px] text-muted-foreground/70 font-light mt-1 italic">Telas sujetas a disponibilidad de stock.</p>
           </div>
