@@ -924,13 +924,13 @@ const LampshadeSVG = ({
   );
 };
 
+// La silueta del preview es SIEMPRE neutra: ni la tela, ni su color, ni el ribete
+// cambian cómo se ve la pieza. Ver la tela repetida sobre la forma despistaba a los
+// clientes, así que las telas se enseñan solo en las muestras del panel lateral.
+const PREVIEW_NEUTRAL = "#D4C5A9";
+
 const ProductSVGPreview = ({
   type,
-  color,
-  fabricImage,
-  lateralFabricImage,
-  finish,
-  vivoColor,
   forma,
   widthCm,
   heightCm,
@@ -938,7 +938,14 @@ const ProductSVGPreview = ({
   surface,
   quantity = 1,
 }: Props) => {
-  const vc = vivoColor || darken(color);
+  // color, fabricImage, lateralFabricImage, finish y vivoColor se siguen aceptando
+  // para no romper a quien llama, pero se ignoran a propósito: la forma no cambia.
+  // El volumen se sigue apreciando por los velos traslúcidos de cada cara.
+  const color = PREVIEW_NEUTRAL;
+  const fabricImage = undefined;
+  const lateralFabricImage = undefined;
+  const finish = "";
+  const vc = PREVIEW_NEUTRAL;
 
   if (!type) return <EmptyState />;
 
