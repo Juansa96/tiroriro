@@ -401,8 +401,14 @@ const ContactForm = () => {
                       <>
                         <div className="flex items-baseline justify-between text-sm">
                           <span className="text-muted-foreground font-light">Envío Madrid</span>
-                          <span className="font-medium text-foreground">40 €</span>
+                          <span className="font-medium text-foreground">{SHIPPING_MADRID} €</span>
                         </div>
+                        {headboardOversizedSurcharge > 0 && (
+                          <div className="flex items-baseline justify-between text-sm">
+                            <span className="text-muted-foreground font-light">Suplemento cabecero grande</span>
+                            <span className="font-medium text-foreground">{headboardOversizedSurcharge} €</span>
+                          </div>
+                        )}
                         <div className="flex items-baseline justify-between text-base pt-2 border-t border-border/30">
                           <span className="font-serif text-foreground">Total</span>
                           <span className="font-serif text-xl text-foreground">{totalIfKnown} € <span className="text-[10px] text-muted-foreground font-sans">IVA incl.</span></span>
