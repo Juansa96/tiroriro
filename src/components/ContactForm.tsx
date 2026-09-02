@@ -45,17 +45,8 @@ const ContactForm = () => {
   const [clickIds] = useState(() => getClickIds());
 
   // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
-  // Cabeceros de más de 1,80 m de largo o más de 1,20 m de alto: +20 € de envío.
   const cp = form.postalCode.trim();
   const isMadridCP = /^28\d{3}$/.test(cp);
-  const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
-  const previewWidthNum = previewWidth ? Number(previewWidth) : undefined;
-  const previewHeightNum = previewHeight ? Number(previewHeight) : undefined;
-  const headboardOversizedSurcharge = previewType === 'cabecero' && isHeadboardOversized(previewWidthNum, previewHeightNum)
-    ? HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE
-    : 0;
-  const shippingCost = isMadridCP ? SHIPPING_MADRID + headboardOversizedSurcharge : null;
-  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
 
   // Draft autosave key. Include configurator params so distintas configs no se pisan.
   const DRAFT_KEY = "tiro_contact_draft_v1";
