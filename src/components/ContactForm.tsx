@@ -255,6 +255,9 @@ const ContactForm = () => {
           acabado: previewFinish || 'vivo-simple',
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
           precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
+          envioMadrid: isMadridCP ? SHIPPING_MADRID : undefined,
+          suplementoEnvioCabeceroGrande: headboardOversizedSurcharge > 0 ? headboardOversizedSurcharge : undefined,
+          costeEnvioTotal: shippingCost ?? undefined,
         } : undefined;
 
         await supabase.functions.invoke('submit-lead', {
