@@ -6,6 +6,8 @@ import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { CLICK_ID_PARAMS, getClickIds, trackLeadConversion } from "@/lib/tracking";
+import { trackFbEvent } from "@/lib/metaPixel";
+
 import {
   SHIPPING_MADRID,
   HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE,
