@@ -487,7 +487,7 @@ const ContactForm = () => {
             {cp.length === 5 && (
               <p className="mt-2 text-xs text-muted-foreground font-light">
                 {isMadridCP
-                  ? <>Envío Madrid: <span className="font-medium text-foreground">40 €</span></>
+                  ? <>Envío Madrid: <span className="font-medium text-foreground">{SHIPPING_MADRID} €</span>{headboardOversizedSurcharge > 0 && <> + <span className="font-medium text-foreground">{headboardOversizedSurcharge} €</span> suplemento cabecero grande</>}</>
                   : <>Fuera de Madrid — envío a consultar en la llamada.</>}
               </p>
             )}
