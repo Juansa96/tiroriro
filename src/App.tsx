@@ -51,7 +51,9 @@ const categoryRoutes = [
 const App = () => {
   useEffect(() => {
     captureClickIds();
+    captureAttribution();
   }, []);
+
 
   return (
   <HelmetProvider>
