@@ -10,6 +10,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib/products";
+import { trackFbEvent } from "@/lib/metaPixel";
+
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
 import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO,
   SHIPPING_MADRID, HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE, isHeadboardOversized } from "@/data/pricing";
@@ -434,9 +436,16 @@ const ProductConfigurator = () => {
   const handleProductChange = (type: ProductType) => {
     if (type !== productType) {
       resetConfiguracion(type);
+      const p = PRODUCTS.find(item => item.type === type);
+      trackFbEvent('ViewContent', {
+        content_name: p?.name ?? type,
+        value: p?.basePrice ?? 0,
+        currency: 'EUR',
+      });
     }
     setProductType(type);
   };
+
 
   const fabric = ALL_FABRICS.find(f => f.id === fabricId);
   const lateralFabric = ALL_FABRICS.find(f => f.id === lateralFabricId);

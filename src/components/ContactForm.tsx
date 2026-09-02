@@ -6,6 +6,8 @@ import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { CLICK_ID_PARAMS, getClickIds, trackLeadConversion } from "@/lib/tracking";
+import { trackFbEvent } from "@/lib/metaPixel";
+
 import {
   SHIPPING_MADRID,
   HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE,
@@ -297,6 +299,19 @@ const ContactForm = () => {
       };
       trackEvent('generate_lead', leadParams);
       trackLeadConversion(form.email);
+      // Meta Pixel: solo tras confirmación de envío correcto.
+      {
+        const fbValue = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined;
+        const fbName = prefilledProduct || (selectedProducts.length ? selectedProducts.join(', ') : undefined);
+        const source = hasConfigParams ? 'configurador' : 'contacto';
+        trackFbEvent('Lead', {
+          currency: 'EUR',
+          source,
+          ...(fbName ? { content_name: fbName } : {}),
+          ...(fbValue !== undefined ? { value: fbValue } : {}),
+        });
+      }
+
       // Limpia el borrador tras envío correcto
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
