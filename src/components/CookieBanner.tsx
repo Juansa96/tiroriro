@@ -80,11 +80,12 @@ const CookieBanner = () => {
 
             <div className="flex-1 min-w-0">
               <p id="cookie-banner-title" className="font-serif text-lg sm:text-xl font-light">
-                Usamos cookies
+                Cookies (ninguna se come)
               </p>
               <p id="cookie-banner-desc" className="mt-1.5 text-sm font-light leading-relaxed text-foreground/75">
-                Técnicas para que la web funcione y analíticas (GA4) para entender cómo se usa y mejorarla.
-                Tú decides.{" "}
+                Las técnicas mantienen la web en pie. Las analíticas (GA4) nos cuentan qué cabeceros
+                te enamoran, para acertar más. Tú eliges, y esta decisión —prometido— no te va a
+                quitar el sueño.{" "}
                 <Link to="/cookies" className="underline underline-offset-2 hover:opacity-80">
                   Más info
                 </Link>
