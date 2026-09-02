@@ -14,6 +14,14 @@ const FloatingButtons = () => {
   const whatsappUrl = isConfigurador ? WHATSAPP_CONFIGURADOR_URL : WHATSAPP_URL;
   const whatsappLabel = isConfigurador ? "¿Dudas? Escríbenos" : "Escríbenos por WhatsApp";
 
+  // Conversión de Google Ads al pulsar el botón flotante de WhatsApp.
+  // Sin preventDefault: el evento se envía mientras el enlace abre la pestaña nueva.
+  const handleWhatsappClick = () => {
+    window.gtag?.("event", "conversion", {
+      send_to: "AW-18316237534/ja3TCICIvewcEN617p1E",
+    });
+  };
+
   return (
     <div className={`fixed ${bottomClass} right-6 z-50 flex flex-col items-end gap-3`}>
       {/* WhatsApp — siempre visible, incluso en el configurador */}
@@ -28,6 +36,7 @@ const FloatingButtons = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={whatsappLabel}
+          onClick={handleWhatsappClick}
           className="flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-transform duration-200 hover:scale-110"
           style={{ backgroundColor: '#25D366' }}
           onMouseEnter={() => setWhatsappHovered(true)}
