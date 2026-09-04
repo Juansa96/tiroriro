@@ -130,7 +130,9 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
     if (options.shapeLabel)  parts.push(options.shapeLabel);
     if (options.bedWidthCm)  parts.push(`Ancho ${options.bedWidthCm} cm`);
     if (options.bedHeightCm) parts.push(`Alto ${options.bedHeightCm} cm`);
-    parts.push(options.finish === "vivo-doble" ? "Vivo doble" : "Vivo simple");
+    // "liso" = sin vivo: el cliente lo elige a propósito y así debe llegar al
+    // formulario y al CRM (antes se traducía por error a "Vivo simple").
+    parts.push(options.finish === "vivo-doble" ? "Vivo doble" : options.finish === "liso" ? "Sin vivo" : "Vivo simple");
     if (options.montaje === "colgar") parts.push("Montaje: colgado a la pared");
     if (options.montaje === "apoyar") parts.push("Montaje: apoyado en el suelo");
   }
