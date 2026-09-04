@@ -131,7 +131,8 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
     if (options.bedWidthCm)  parts.push(`Ancho ${options.bedWidthCm} cm`);
     if (options.bedHeightCm) parts.push(`Alto ${options.bedHeightCm} cm`);
     parts.push(options.finish === "vivo-doble" ? "Vivo doble" : "Vivo simple");
-    if (options.colgador === "true") parts.push("Con colgador");
+    if (options.montaje === "colgar") parts.push("Montaje: colgado a la pared");
+    if (options.montaje === "apoyar") parts.push("Montaje: apoyado en el suelo");
   }
   if (type === "banco") {
     parts[0] = "Banco Oyambre";
@@ -174,7 +175,6 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
   if (options.fabricGroup === "Premium") parts.push("Tela premium");
   if (options.hasCustomVivo === "true") parts.push("Vivo en tela diferente");
   if (options.hasCustomLateral === "true") parts.push("Laterales en tela diferente");
-  if (options.tapetes === "true") parts.push("Con tapetes");
 
   return parts.join(" · ");
 }

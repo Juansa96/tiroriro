@@ -12,7 +12,7 @@ const CATEGORIES = [
     name: "Cabeceros tapizados",
     tagline: "5 formas · Colección Baleares",
     image: "/productos-fotos/cabeceros/pregonda-01.webp",
-    priceLabel: "Desde 285 €",
+    priceLabel: "Desde 290 €",
     comingSoon: false,
   },
   {

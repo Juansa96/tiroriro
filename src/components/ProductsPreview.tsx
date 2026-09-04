@@ -10,7 +10,7 @@ const PRODUCTS_DATA = [
     id: "cabeceros",
     name: "Cabeceros tapizados",
     badge: "Hecho a mano",
-    price: "desde 285 €",
+    price: "desde 290 €",
     image: "/productos-fotos/cabeceros/pregonda-01.webp",
     alt: "Cabecero tapizado artesanal de Tiroriro",
     link: "/productos/cabeceros",

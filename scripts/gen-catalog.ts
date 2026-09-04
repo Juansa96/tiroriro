@@ -8,7 +8,7 @@ import {
   MESA_BASE, MESA_PREMIUM, MESA_VIVO, MESA_HEIGHT_CM,
   COJIN_BASE, COJIN_PREMIUM,
   PANTALLA_BASE, PANTALLA_PREMIUM,
-  SHIPPING_MADRID, EXTRA_COLGADOR, EXTRA_METACRILATO, EXTRA_CRISTAL,
+  SHIPPING_MADRID, EXTRA_METACRILATO, EXTRA_CRISTAL,
 } from "../src/data/pricing.ts";
 import { writeFileSync } from "node:fs";
 
@@ -19,7 +19,8 @@ const catalog = {
   cabecero: {
     base: CABECERO_BASE, premium: CABECERO_PREMIUM,
     alturas: [100, 120, 130], heightStepEur: HEIGHT_STEP_EUR,
-    vivoDoble: CABECERO_VIVO_DOBLE, colgador: EXTRA_COLGADOR,
+    // colgador y tapetes van incluidos en `base` (0 = sin recargo).
+    vivoDoble: CABECERO_VIVO_DOBLE, colgador: 0,
   },
   banco: { base: BANCO_BASE, premium: BANCO_PREMIUM, vivo: BANCO_VIVO },
   puf:   { base: PUF_BASE, premium: PUF_PREMIUM, vivo: PUF_VIVO, alturaCm: PUF_HEIGHT_CM["cuadrado-40"] ?? 40, alturas: PUF_HEIGHT_CM },

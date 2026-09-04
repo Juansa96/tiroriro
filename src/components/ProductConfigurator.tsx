@@ -364,11 +364,12 @@ const ProductConfigurator = () => {
 
   const [puffQuantity, setPuffQuantity] = useState("1");
 
-  const [extraPatas, setExtraPatas] = useState(false);
+  // Cabecero: colgador y tapetes van incluidos en el precio. El cliente solo
+  // nos dice cómo lo va a montar ('colgar' a la pared | 'apoyar' en el suelo).
+  const [montaje, setMontaje] = useState<'' | 'colgar' | 'apoyar'>('');
   const [extraRelleno, setExtraRelleno] = useState(false);
   const [extraExpress, setExtraExpress] = useState(false);
   const [extraTopMaterial, setExtraTopMaterial] = useState("nada");
-  const [extraTapetes, setExtraTapetes] = useState(false);
 
   // Siempre string — un único acordeón type="single" en mobile y desktop
   const [openAccordion, setOpenAccordion] = useState<string>("type");
@@ -426,11 +427,10 @@ const ProductConfigurator = () => {
     setCustomWidth('');
     setCustomHeight('');
     setPuffQuantity('1');
-    setExtraPatas(false);
+    setMontaje('');
     setExtraRelleno(false);
     setExtraExpress(false);
     setExtraTopMaterial('nada');
-    setExtraTapetes(false);
   };
 
   const handleProductChange = (type: ProductType) => {
@@ -540,7 +540,7 @@ const ProductConfigurator = () => {
         : bedHeight.includes('120') ? '120'
         : bedHeight.replace(' cm', '');
       o.shapeLabel = HEADBOARD_SHAPES.find(s => s.id === shape)?.name ?? shape;
-      if (extraPatas) o.colgador = 'true';
+      if (montaje) o.montaje = montaje;
     }
 
     if (productType === 'puf') {
@@ -586,7 +586,6 @@ const ProductConfigurator = () => {
     }
 
     if (extraRelleno) o.relleno = 'true';
-    if (extraTapetes && productType === 'cabecero') o.tapetes = 'true';
     // La tela de vivo distinta solo cuenta (precio y resumen) si el acabado
     // lleva vivo: al pasar a "Sin vivo" no puede quedarse cobrando el extra.
     const llevaVivo = finish === 'vivo-simple' || finish === 'vivo-doble';
@@ -595,8 +594,8 @@ const ProductConfigurator = () => {
     return o;
   }, [productType, shape, bedWidth, bedHeight, benchLength, cushionShape, cushionSize,
       puffDiameter, puffQuantity, lampDiameter, finish, fabricGroup, fabricId,
-      extraPatas, extraRelleno, extraTopMaterial, customWidth, customHeight,
-      extraTapetes, vivoColorId, lateralFabricId]);
+      montaje, extraRelleno, extraTopMaterial, customWidth, customHeight,
+      vivoColorId, lateralFabricId]);
 
   const price = useMemo(() => {
     if (!productType) return 0;
@@ -634,7 +633,8 @@ const ProductConfigurator = () => {
       : false,
     fabric: !!fabricId,
     finish: (productType === 'pantalla' || productType === 'cojin') ? true : !!finish,
-    extras: !productType || !['cabecero'].includes(productType),
+    // Cabecero: el paso "Montaje" se completa al elegir pared o suelo.
+    extras: !productType || (productType === 'cabecero' ? !!montaje : true),
   };
 
   const currentStep = isMobile ? (typeof openAccordion === 'string' ? openAccordion : 'type') : (Array.isArray(openAccordion) ? openAccordion[0] || 'type' : openAccordion);
@@ -764,6 +764,7 @@ const ProductConfigurator = () => {
       previewDepth: depthCm?.toString() || '',
     });
     if (extraExpress) params.set('express', 'true');
+    if (montaje) params.set('previewMontaje', montaje);
     if (price > 0) params.set('previewPrice', price.toString());
     if (fabricGroup) params.set('fabricGroup', fabricGroup);
     return `/?${params.toString()}#contacto`;
@@ -792,13 +793,14 @@ const ProductConfigurator = () => {
         return finishObj ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishObj.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'extras': {
         const extras = [
-          extraPatas && (productType === 'cabecero' ? 'Colgador' : 'Patas'),
+          montaje === 'colgar' && 'Colgado a la pared',
+          montaje === 'apoyar' && 'Apoyado en el suelo',
           extraRelleno && 'Relleno',
           extraExpress && 'Express',
           extraTopMaterial !== 'nada' && (extraTopMaterial === 'metacrilato' ? 'Metacrilato' : 'Cristal'),
-          extraTapetes && productType === 'cabecero' && 'Tapetes',
         ].filter(Boolean);
-        return extras.length > 0 ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span> : <span className="text-muted-foreground italic">Opcional</span>;
+        if (extras.length > 0) return <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {extras.join(', ')}</span>;
+        return <span className="text-muted-foreground italic">{productType === 'cabecero' ? 'Elige una opción' : 'Opcional'}</span>;
       }
     }
   };
@@ -910,10 +912,9 @@ const ProductConfigurator = () => {
     vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
     puffQuantity, setPuffQuantity,
-    extraPatas, setExtraPatas, extraRelleno, setExtraRelleno,
+    montaje, setMontaje, extraRelleno, setExtraRelleno,
     extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
-    extraTapetes, setExtraTapetes,
     advanceTo, needsVivo,
   };
 
@@ -1128,11 +1129,10 @@ interface AccordionContentSharedProps {
   vivoColorId: string; setVivoColorId: (v: string) => void;
   customWidth: string; setCustomWidth: (v: string) => void;
   customHeight: string; setCustomHeight: (v: string) => void;
-  extraPatas: boolean; setExtraPatas: (v: boolean) => void;
+  montaje: '' | 'colgar' | 'apoyar'; setMontaje: (v: '' | 'colgar' | 'apoyar') => void;
   extraRelleno: boolean; setExtraRelleno: (v: boolean) => void;
   extraExpress: boolean; setExtraExpress: (v: boolean) => void;
   extraTopMaterial: string; setExtraTopMaterial: (v: string) => void;
-  extraTapetes: boolean; setExtraTapetes: (v: boolean) => void;
   advanceTo: (step: Step) => void;
   needsVivo: boolean;
   stepComplete: Record<Step, boolean>;
@@ -1160,9 +1160,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     finish, setFinish,
     vivoColorId, setVivoColorId,
     customWidth, setCustomWidth, customHeight, setCustomHeight,
-    extraPatas, setExtraPatas, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
+    montaje, setMontaje, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
-    extraTapetes, setExtraTapetes,
     advanceTo, needsVivo,
   } = props;
 
@@ -1826,12 +1825,26 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         <SectionHeader step="extras" num={5} isComplete={stepComplete.extras} />
         <div className="pb-6 space-y-4 px-1 pt-2">
           {productType === 'cabecero' && (
-            <div className="flex justify-between items-center py-2">
-              <div>
-                <p className="text-base text-foreground font-light">Colgador</p>
-                <p className="text-xs text-muted-foreground">Para colgarlo en la pared · Incluido</p>
+            <div className="py-2">
+              <p className="text-base text-foreground font-light mb-1">¿Cómo lo vas a montar?</p>
+              <p className="text-xs text-muted-foreground mb-3">El colgador y los tapetes protectores van incluidos. Solo dinos cómo lo quieres colocar.</p>
+              <div className="grid grid-cols-2 gap-2">
+                {([
+                  { id: 'colgar', label: 'Colgado a la pared', note: 'Con colgador incluido' },
+                  { id: 'apoyar', label: 'Apoyado en el suelo', note: 'Con tapetes protectores' },
+                ] as const).map(opt => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setMontaje(opt.id)}
+                    aria-pressed={montaje === opt.id}
+                    className={`border rounded p-3 text-center text-xs transition-all ${montaje === opt.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/60'}`}
+                  >
+                    <span className="block font-light text-foreground">{opt.label}</span>
+                    <span className="block text-muted-foreground/70 mt-0.5 text-[10px] leading-tight">{opt.note}</span>
+                  </button>
+                ))}
               </div>
-              <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
             </div>
           )}
           {productType === 'mesa' && (
@@ -1855,15 +1868,6 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </button>
                 ))}
               </div>
-            </div>
-          )}
-          {productType === 'cabecero' && (
-            <div className="flex justify-between items-center py-2">
-              <div>
-                <p className="text-base text-foreground font-light">Tapetes protectores</p>
-                <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · Incluido</p>
-              </div>
-              <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
             </div>
           )}
           {!productType && (

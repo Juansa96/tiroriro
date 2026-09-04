@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     q: "¿Cuánto cuesta un cabecero tapizado a medida?",
-    a: "Nuestros cabeceros tapizados a medida parten de 285 € e incluyen la tela básica que elijas, el tamaño que necesites y el acabado a mano. El precio final depende de la forma (recto, arco, corona o ondas), del ancho y de la tela: las telas premium tienen un recargo variable (lo ves en el configurador antes de confirmar). En el configurador puedes ver el precio exacto en tiempo real antes de pedirlo.",
+    a: "Nuestros cabeceros tapizados a medida parten de 290 € e incluyen la tela básica que elijas, el tamaño que necesites y el acabado a mano. El precio final depende de la forma (recto, arco, corona o ondas), del ancho y de la tela: las telas premium tienen un recargo variable (lo ves en el configurador antes de confirmar). En el configurador puedes ver el precio exacto en tiempo real antes de pedirlo.",
   },
   {
     q: "¿Qué tela es mejor para un cabecero?",
@@ -22,7 +22,7 @@ const FAQS = [
   },
   {
     q: "¿Merece la pena un cabecero hecho a medida frente a uno estándar?",
-    a: "Sí, por tres motivos: encaja al milímetro con tu cama y pared (los estándar suelen quedar cortos o desproporcionados), eliges la tela y el color exactos para tu dormitorio, y al estar tapizado a mano la calidad y durabilidad es muy superior a la de un cabecero industrial. Y el precio (desde 285 €) suele ser competitivo frente a tiendas de gama media.",
+    a: "Sí, por tres motivos: encaja al milímetro con tu cama y pared (los estándar suelen quedar cortos o desproporcionados), eliges la tela y el color exactos para tu dormitorio, y al estar tapizado a mano la calidad y durabilidad es muy superior a la de un cabecero industrial. Y el precio (desde 290 €) suele ser competitivo frente a tiendas de gama media.",
   },
   {
     q: "¿Cómo se limpia un cabecero tapizado?",

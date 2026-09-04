@@ -206,7 +206,7 @@ const HeroSection = () => {
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/85">
-            <span className="text-[12px] md:text-[11px] font-normal tracking-widest">Cabeceros desde 285 € · Mesas de centro desde 220 € · Pufs desde 150 € · Pantallas de lámpara desde 25 €</span>
+            <span className="text-[12px] md:text-[11px] font-normal tracking-widest">Cabeceros desde 290 € · Mesas de centro desde 220 € · Pufs desde 150 € · Pantallas de lámpara desde 25 €</span>
           </div>
 
         </div>

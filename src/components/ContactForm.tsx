@@ -73,6 +73,10 @@ const ContactForm = () => {
   const previewLateralHex = searchParams.get("previewLateralHex") || undefined;
   const previewLateralImage = searchParams.get("previewLateralImage") || undefined;
   const previewLateralName = searchParams.get("previewLateralName") || undefined;
+  // Cabecero: cómo lo va a montar el cliente ('colgar' pared | 'apoyar' suelo).
+  // Colgador y tapetes van incluidos; esto es solo información para el equipo.
+  const previewMontajeRaw = searchParams.get("previewMontaje");
+  const previewMontaje = previewMontajeRaw === "colgar" || previewMontajeRaw === "apoyar" ? previewMontajeRaw : undefined;
 
   // Cabeceros de más de 1,80 m de largo o más de 1,20 m de alto: +20 € de envío (solo Madrid).
   const productPrice = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : null;
@@ -262,6 +266,7 @@ const ContactForm = () => {
           // El vivo NO se pone solo: si el cliente no eligió acabado, el lead
           // llega sin acabado y en el CRM se decide (hay cabeceros sin vivo).
           acabado: previewFinish || undefined,
+          montaje: previewMontaje,
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
           precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
           envioMadrid: isMadridCP ? SHIPPING_MADRID : undefined,

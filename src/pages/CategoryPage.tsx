@@ -294,7 +294,7 @@ export const categoryAltLabel: Record<string, string> = {
 export const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
   cabeceros: {
     title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
-    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 285 €. Hecho a mano en España en 20 días.",
+    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 290 €. Hecho a mano en España en 20 días.",
     canonical: "https://tirorirohome.com/productos/cabeceros",
     ogImage: "https://tirorirohome.com/productos-fotos/cabeceros/IMG_2218.webp",
   },
