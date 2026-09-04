@@ -7,9 +7,13 @@
 export type Category = "cabecero" | "banco" | "puf" | "mesa" | "cojin" | "pantalla";
 
 // ── Cabeceros ────────────────────────────────────────────────────────────────
+// El precio base INCLUYE el colgador y los tapetes protectores. Antes eran dos
+// extras de 5 € y el cliente elegía uno (colgador si va a la pared, tapetes si
+// va al suelo): ese importe (+5 €) está metido aquí. Un cabecero nunca sale sin
+// ellos, así que el cliente solo elige cómo lo va a montar.
 export const CABECERO_BASE: Record<string, number> = {
-  "90": 285, "105": 315, "135": 360, "150": 400,
-  "160": 435, "180": 455, "200": 485,
+  "90": 290, "105": 320, "135": 365, "150": 405,
+  "160": 440, "180": 460, "200": 490,
 };
 export const CABECERO_PREMIUM: Record<string, number> = {
   "90": 60, "105": 65, "135": 80, "150": 90,
@@ -108,9 +112,7 @@ export function isHeadboardOversized(widthCm: number | undefined, heightCm: numb
 }
 
 // ── Extras heredados (§4) ────────────────────────────────────────────────────
-// Colgador y tapetes protectores van INCLUIDOS en el precio base del cabecero
-// (antes +5 € cada uno). Los precios base no cambian: 285 € sigue siendo el
-// "desde" del cabecero. Solo desaparece el recargo.
+// Colgador y tapetes protectores: incluidos en CABECERO_BASE (ver arriba).
 export const EXTRA_VIVO_DIFERENTE = 5;
 export const EXTRA_LATERAL_DIFERENTE = 15;
 export const EXTRA_METACRILATO = 50;
@@ -182,7 +184,7 @@ export function calculatePrice(category: Category, opt: PriceOptions): number {
   if (category === "cabecero") {
     total += getHeightSurcharge(opt.heightCm);
     if (opt.vivo === "doble") total += CABECERO_VIVO_DOBLE;
-    // colgador / tapetes: incluidos, sin recargo.
+    // colgador / tapetes: ya incluidos en la base.
   }
   if (category === "banco" && opt.vivo === "simple") total += BANCO_VIVO;
   if (category === "puf"   && opt.vivo === "simple") total += PUF_VIVO;
