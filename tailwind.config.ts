@@ -108,6 +108,11 @@ export default {
           "50%": { transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
         },
+        // Monstruito del banner de cookies: un balanceo suave, como masticando.
+        nom: {
+          "0%, 100%": { transform: "rotate(-6deg)" },
+          "50%": { transform: "rotate(2deg) translateY(1px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
