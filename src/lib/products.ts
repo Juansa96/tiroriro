@@ -110,8 +110,6 @@ function toPriceOptions(type: ProductType, o: Record<string, string>): PriceOpti
     fabricGroup: o.fabricGroup,
     heightCm,
     vivo,
-    colgador: o.colgador === "true",
-    tapetes: o.tapetes === "true",
     vivoDiferente: o.hasCustomVivo === "true",
     lateralDiferente: o.hasCustomLateral === "true",
     surface: (o.surface as PriceOptions["surface"]) || "",

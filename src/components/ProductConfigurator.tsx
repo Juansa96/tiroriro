@@ -1829,7 +1829,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <div className="flex justify-between items-center py-2">
               <div>
                 <p className="text-base text-foreground font-light">Colgador</p>
-                <p className="text-xs text-muted-foreground">+5€</p>
+                <p className="text-xs text-muted-foreground">Para colgarlo en la pared · Incluido</p>
               </div>
               <Switch checked={extraPatas} onCheckedChange={setExtraPatas} />
             </div>
@@ -1861,7 +1861,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             <div className="flex justify-between items-center py-2">
               <div>
                 <p className="text-base text-foreground font-light">Tapetes protectores</p>
-                <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · +5€</p>
+                <p className="text-xs text-muted-foreground">Para apoyar la pieza en el suelo sin rayarlo · Incluido</p>
               </div>
               <Switch checked={extraTapetes} onCheckedChange={setExtraTapetes} />
             </div>
