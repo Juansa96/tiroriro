@@ -32,9 +32,9 @@ export const CATEGORY_SPEECH: Record<string, Speech> = {
       "Bajo una bombilla desnuda nadie se queda a hablar. Una luz cálida, filtrada por una tela bonita, es la que hace que la gente se siente y no se levante. Es la diferencia entre una habitación y un sitio.",
   },
   "mesas-centro": {
-    contra: "Contra la mesa intocable",
+    contra: "Contra el salón sin centro",
     texto:
-      "Una mesa de centro tapizada es la que nadie tiene miedo de usar: se apoyan los pies, se juega encima, se dejan las tazas. Es el centro del salón porque se puede vivir en ella, no solo mirarla.",
+      "Alrededor de una mesa ocurren los encuentros: el café de la mañana, el juego del domingo, la conversación que se alarga cuando ya no queda nada en las tazas. Una mesa de centro tapizada es una mesa a la que se acerca todo el mundo: se apoyan los pies, se sientan los niños en el suelo, nadie tiene miedo de usarla. Es el sitio donde el salón se junta.",
   },
   cojines: {
     contra: "Contra el sofá de uno",
