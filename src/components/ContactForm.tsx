@@ -261,6 +261,8 @@ const ContactForm = () => {
           forma: searchParams.get('previewForma') ?? undefined,
           tela: previewFabricName ?? undefined,
           telaLateral: previewLateralName ?? undefined,
+          // Tela del vivo/ribete elegida (si es distinta de la principal).
+          telaVivo: previewVivoName ?? undefined,
           anchoCama: previewWidth ?? undefined,
           altoCm: previewHeight ?? undefined,
           // El vivo NO se pone solo: si el cliente no eligió acabado, el lead

@@ -13,7 +13,7 @@ import { ProductType, PRODUCTS, calculatePrice, buildConfigSummary } from "@/lib
 import { trackFbEvent } from "@/lib/metaPixel";
 
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
-import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO,
+import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO, EXTRA_VIVO_DIFERENTE,
   SHIPPING_MADRID, HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE, isHeadboardOversized } from "@/data/pricing";
 import { Clock, ZoomIn } from "lucide-react";
 import FabricLightbox, { type LightboxFabric } from "./FabricLightbox";
@@ -129,51 +129,63 @@ const CUSHION_SHAPES = [
 ];
 
 // Lookup: fabric id → style category for the filter
+// Clasificado mirando la FOTO de cada tela (no el nombre): es lo que el
+// cliente ve al filtrar. Si se cambia una foto, revisar aquí su estilo.
 const FABRIC_ESTILO: Record<string, "liso" | "flores" | "geometrico" | "rayas"> = {
   // Básicas — Lisas
   "basica-arequipa-beige": "liso",
-  // Básicas — Flores
+  "basica-espiga-azul": "liso",            // sarga azul lisa (la espiga es la textura, no un dibujo)
+  // Básicas — Flores y botánicas
   "basica-flor-azul-protea": "flores", "basica-flor-01": "flores",
   "basica-flor-hemera-amarilla": "flores", "basica-morris-granadas-terracota": "flores",
   "basica-pajaros-louise-azul": "flores", "basica-pajaros-louise-rosa": "flores",
   "basica-pajaros-louise-verde": "flores", "basica-floralia-vintage": "flores",
+  "basica-toile-jouy-azul": "flores", "basica-morris-granadas-azul": "flores",
+  "basica-coral-costero": "flores",        // ramita bordada sobre fondo claro
   // Básicas — Geométricas
   "basica-ikat": "geometrico", "basica-ikat-verde": "geometrico",
   "basica-ikat-arena": "geometrico", "basica-ikat-arrecife": "geometrico",
   "basica-ikat-bali-azul": "geometrico", "basica-ikat-yakarta": "geometrico",
+  "basica-ikat-rojo": "geometrico",
   "basica-arbol-kasbah": "geometrico", "basica-geometrica-kuwait": "geometrico",
-  "basica-takada-verde": "geometrico",
-  "basica-espiga-agua": "geometrico",
+  "basica-takada-verde": "geometrico", "basica-pata-de-gallo-verde": "geometrico",
   // Básicas — Rayas
+  "basica-espiga-agua": "rayas",           // raya fina en tono agua
   "basica-mil-rayas-gris": "rayas", "basica-rayas-arena": "rayas",
   "basica-mil-rayas-azul": "rayas", "basica-raya-indigo": "rayas",
-  "basica-rayas-tevere": "rayas", "basica-coral-costero": "rayas",
-  "basica-raya-harvest": "rayas", "basica-rayas-laurel-azul": "rayas",
-  "basica-lino-greca": "rayas", "basica-raya-rioja": "rayas",
-  "basica-rayas-espiga-arena": "rayas", "basica-rayas-espiga-azul": "rayas",
-  "basica-rayas-piave": "rayas", "basica-raya-artesanal-lino": "rayas",
-  "basica-raya-relieve-lino": "rayas",
-  // Básicas — Otras
-  "basica-toile-jouy-azul": "flores", "basica-espiga-azul": "rayas",
-  "basica-morris-granadas-azul": "flores", "basica-pata-de-gallo-verde": "geometrico",
-  "basica-ikat-rojo": "geometrico",
-  // Premium — Lisos
-  "premium-baqueira": "liso", "premium-baqueira-roja": "liso",
-  "premium-cerler": "liso", "premium-lola-gris": "liso",
-  "premium-rocio": "liso", "premium-artesano-beige": "liso",
-  "premium-oxford": "liso", "premium-lino-verde-botella": "liso",
-  "premium-lino-verde": "liso", "premium-lino-azul-provenzal": "liso",
-  "premium-bibiana": "liso",
+  "basica-rayas-tevere": "rayas", "basica-raya-harvest": "rayas",
+  "basica-rayas-laurel-azul": "rayas", "basica-lino-greca": "rayas",
+  "basica-raya-rioja": "rayas", "basica-rayas-espiga-arena": "rayas",
+  "basica-rayas-espiga-azul": "rayas", "basica-rayas-piave": "rayas",
+  "basica-raya-artesanal-lino": "rayas", "basica-raya-relieve-lino": "rayas",
+  // Premium — Lisas
+  "premium-artesano-beige": "liso", "premium-oxford": "liso",
+  "premium-lino-verde-botella": "liso", "premium-lino-verde": "liso",
+  // Premium — Rayas (en la foto son rayas, aunque el nombre no lo diga)
+  "premium-baqueira": "rayas", "premium-baqueira-roja": "rayas",
+  "premium-cerler": "rayas", "premium-rocio": "rayas",
+  "premium-guell-lamadrid": "rayas",
+  "premium-rayas-verde-sage": "rayas", "premium-raya-monina": "rayas",
+  "premium-rayas-jules-verde": "rayas",
   // Premium — Geométricas
-  "premium-guell-lamadrid": "geometrico",
+  "premium-lola-gris": "geometrico",       // raya fina con puntos
   "premium-vichy-denim": "geometrico", "premium-vichy-verde": "geometrico",
-  // Premium — Flores
+  "premium-bibiana": "geometrico",         // celosía de hojas
+  // Premium — Flores y botánicas
+  "premium-lino-azul-provenzal": "flores", // estampado floral azul sobre crudo
   "premium-ramas-siena": "flores", "premium-flores-gardenia": "flores",
   "premium-lino-flores-normandia": "flores", "premium-lino-flores-senda": "flores",
   "premium-prints-botanicos": "flores",
-  // Premium — Rayas
-  "premium-rayas-verde-sage": "rayas", "premium-raya-monina": "rayas",
-  "premium-rayas-jules-verde": "rayas",
+};
+
+// En almohadones el "vivo" se llama ribete: mismas opciones, otro nombre.
+const finishName = (type: ProductType | null, id: string, name: string) => {
+  if (type !== 'cojin') return name;
+  return id === 'liso' ? 'Sin ribete' : id === 'vivo-simple' ? 'Con ribete' : name;
+};
+const finishDesc = (type: ProductType | null, id: string, desc: string) => {
+  if (type !== 'cojin') return desc;
+  return id === 'liso' ? 'Sin ribete en el borde del almohadón' : id === 'vivo-simple' ? 'Un ribete cosido en todo el borde' : desc;
 };
 
 type Step = "type" | "measures" | "fabric" | "finish" | "extras";
@@ -321,12 +333,14 @@ const FabricSwatchPanel = ({
   vivoFabric,
   lateralFabric,
   showLateral = true,
+  vivoLabel = 'Vivo',
   onZoom,
 }: {
   fabric?: LightboxFabric;
   vivoFabric?: LightboxFabric;
   lateralFabric?: LightboxFabric;
   showLateral?: boolean;
+  vivoLabel?: string;
   onZoom?: (f: LightboxFabric) => void;
 }) => (
   <div className="flex flex-col gap-3 justify-center">
@@ -349,7 +363,7 @@ const FabricSwatchPanel = ({
     {/* 3. Vivo elegido */}
     {vivoFabric && (
       <div className="flex flex-col gap-1">
-        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Vivo</p>
+        <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">{vivoLabel}</p>
         <SwatchButton fabric={vivoFabric} heightClass="h-9" onZoom={onZoom} />
         <p className="text-[10px] text-muted-foreground font-light leading-tight">{vivoFabric.name}</p>
       </div>
@@ -736,7 +750,7 @@ const ProductConfigurator = () => {
   if (productType === 'pantalla') chips.push(lampDiameter || "—");
   chips.push(fabric?.name || "—");
   const finishObj = FINISHES.find(f => f.id === finish);
-  if (finishObj) chips.push(finishObj.name);
+  if (finishObj) chips.push(finishName(productType, finishObj.id, finishObj.name));
   else chips.push("—");
 
   const previewLabel = [
@@ -812,7 +826,7 @@ const ProductConfigurator = () => {
       case 'fabric':
         return fabric ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {fabric.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'finish':
-        return finishObj ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishObj.name}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
+        return finishObj ? <span className="text-foreground flex items-center gap-1"><span className="text-accent-warm">✓</span> {finishName(productType, finishObj.id, finishObj.name)}</span> : <span className="text-muted-foreground italic">Elige una opción</span>;
       case 'extras': {
         const extras = [
           montaje === 'colgar' && 'Colgado a la pared',
@@ -963,6 +977,7 @@ const ProductConfigurator = () => {
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
                   showLateral={productType === 'cabecero' || productType === 'puf'}
+                  vivoLabel={productType === 'cojin' ? 'Ribete' : 'Vivo'}
                   onZoom={setZoomFabric}
                 />
               </div>
@@ -999,6 +1014,7 @@ const ProductConfigurator = () => {
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
                   showLateral={productType === 'cabecero' || productType === 'puf'}
+                  vivoLabel={productType === 'cojin' ? 'Ribete' : 'Vivo'}
                   onZoom={setZoomFabric}
                 />
               </div>
@@ -1738,7 +1754,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
           )}
 
           {/* Tela de laterales — cabeceros, pufs y Gulpiyuri */}
-          {(productType === 'cabecero' || productType === 'puf' || (productType === 'cojin' && cushionShape === 'gulpiyuri')) && fabricId && (
+          {/* Tela lateral solo en cabeceros y pufs: los almohadones no la llevan. */}
+          {(productType === 'cabecero' || productType === 'puf') && fabricId && (
             <div className="pt-4 border-t border-border/30">
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">Tela de los laterales <span className="text-muted-foreground/60 normal-case">(opcional · +15€)</span></p>
               <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
@@ -1785,7 +1802,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
         </div>
       </div>
 
-      {productType !== 'cojin' && productType !== 'pantalla' && (
+      {productType !== 'pantalla' && (
       <div id="acc-finish" className={`border-b border-border scroll-mt-32 ${disabledClass}`}>
         <SectionHeader step="finish" num={4} isComplete={stepComplete.finish} />
         <div className="pb-6 space-y-3 px-1 pt-2">
@@ -1795,6 +1812,8 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             if (productType === 'mesa') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'puf') return f.id === 'liso' || f.id === 'vivo-simple';
             if (productType === 'banco') return f.id === 'liso' || f.id === 'vivo-simple';
+            // Almohadones: sin ribete o con ribete (incluido en el precio).
+            if (productType === 'cojin') return f.id === 'liso' || f.id === 'vivo-simple';
             return true;
           })).map(f => {
             // Etiqueta del recargo específica por producto
@@ -1804,22 +1823,26 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               : productType === 'mesa'  && f.id === 'vivo-simple' ? MESA_VIVO
               : productType === 'cabecero' && f.id === 'vivo-doble' ? CABECERO_VIVO_DOBLE
               : 0;
-            const label = perProductExtra > 0 ? `+${perProductExtra} €` : (f as { extraLabel?: string }).extraLabel;
+            const label = productType === 'cojin'
+              ? 'Incluido'
+              : perProductExtra > 0 ? `+${perProductExtra} €` : (f as { extraLabel?: string }).extraLabel;
             return (
             <button
               key={f.id}
               onClick={() => setFinish(f.id)}
               className={`w-full text-left px-5 py-4 border rounded-md transition-all ${finish === f.id ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/60"}`}
             >
-              <span className="text-sm font-medium text-foreground">{f.name}</span>
+              <span className="text-sm font-medium text-foreground">{finishName(productType, f.id, f.name)}</span>
               {label && <span className="text-xs text-accent-warm ml-2">{label}</span>}
-              <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{f.desc}</span>
+              <span className="block text-xs text-muted-foreground font-light italic mt-0.5">{finishDesc(productType, f.id, f.desc)}</span>
             </button>
             );
           })}
           {needsVivo && (
             <div className="pt-3">
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Básicas</p>
+              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">{productType === 'cojin' ? 'Tela del ribete' : 'Tela del vivo'} <span className="text-muted-foreground/60 normal-case">(opcional · +{EXTRA_VIVO_DIFERENTE} € si es distinta)</span></p>
+              <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
+              <p className="text-[10px] uppercase text-muted-foreground mb-2">Básicas</p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {FABRIC_GROUPS[0].fabrics.map(f => (
                   <button key={f.id} onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
@@ -1834,7 +1857,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   </button>
                 ))}
               </div>
-              <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Premium</p>
+              <p className="text-[10px] uppercase text-muted-foreground mb-2">Premium</p>
               <div className="flex flex-wrap gap-2">
                 {FABRIC_GROUPS[1].fabrics.map(f => (
                   <button key={f.id} onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>

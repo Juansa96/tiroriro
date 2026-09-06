@@ -166,8 +166,10 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
     if (options.surface === "cristal")     parts.push("Cristal 6 mm");
     if (options.finish === "vivo-simple") parts.push("Con vivo");
   }
-  if (type === "cojin" && options.cushionKey) {
-    parts.push(normalizeCojinKey(options.cushionKey).replace(/^[^-]+-/, "").replace(/x/g, "×") + " cm");
+  if (type === "cojin") {
+    if (options.cushionKey) parts.push(normalizeCojinKey(options.cushionKey).replace(/^[^-]+-/, "").replace(/x/g, "×") + " cm");
+    // Ribete: se pide a propósito, así que llega explícito al CRM.
+    parts.push(options.finish === "vivo-simple" ? "Con ribete" : "Sin ribete");
   }
   if (type === "pantalla" && options.pantallaSizeKey) {
     parts.push(options.pantallaSizeKey.replace(/^[^-]+-/, ""));
@@ -175,7 +177,7 @@ export function buildConfigSummary(type: ProductType, options: Record<string, st
 
   if (options.fabricLabel) parts.push(`Tela: ${options.fabricLabel}`);
   if (options.fabricGroup === "Premium") parts.push("Tela premium");
-  if (options.hasCustomVivo === "true") parts.push("Vivo en tela diferente");
+  if (options.hasCustomVivo === "true") parts.push(type === "cojin" ? "Ribete en tela diferente" : "Vivo en tela diferente");
   if (options.hasCustomLateral === "true") parts.push("Laterales en tela diferente");
 
   return parts.join(" · ");
