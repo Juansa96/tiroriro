@@ -40,7 +40,7 @@ const VirtualTryOn = () => {
     <section className="py-20 md:py-32 px-6 bg-secondary">
       <div className="container mx-auto max-w-3xl">
         <AnimatedSection className="text-center mb-12">
-          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Míralo en tu casa antes de decidir</h2>
+          <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground">Míralo en tu casa antes de decidir</h1>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light italic max-w-lg mx-auto">
             "Sube una foto de tu estancia, elige el producto y la tela, y nuestra IA te muestra cómo quedaría — en segundos."
