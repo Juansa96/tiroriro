@@ -5,8 +5,12 @@ import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import AnimatedSection from "./AnimatedSection";
 
-// TODO: sustituir por el enlace real al perfil de Google Business de Tiroriro Home.
-const GOOGLE_REVIEWS_URL = "https://www.google.com/search?q=Tiroriro+Home+opiniones";
+// Perfil de Empresa de Google de Tiroriro (mismo id que el enlace de reseña
+// del correo de entrega del CRM, ENTREGA_REVIEW_URL).
+export const GOOGLE_BUSINESS_URL = "https://g.page/r/Ces4vVtTbYFGEBM";
+const GOOGLE_REVIEWS_URL = GOOGLE_BUSINESS_URL;
+// Nota y nº de reseñas del perfil de Google. Se actualizan A MANO: al cambiar
+// en Google, cambiarlos aquí (salen en la web y en el JSON-LD).
 const GOOGLE_RATING = "4,9";
 const GOOGLE_REVIEW_COUNT = 47;
 
@@ -35,6 +39,13 @@ const reviewJsonLd = {
   "@id": "https://tirorirohome.com/#organization",
   "name": "Tiroriro",
   "url": "https://tirorirohome.com",
+  "sameAs": [GOOGLE_BUSINESS_URL, "https://www.instagram.com/tirorirohome/"],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": GOOGLE_RATING.replace(",", "."),
+    "bestRating": "5",
+    "reviewCount": String(GOOGLE_REVIEW_COUNT),
+  },
   "review": REVIEWS.map((r) => ({
     "@type": "Review",
     "author": { "@type": "Person", "name": r.name },

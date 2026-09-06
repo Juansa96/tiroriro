@@ -125,7 +125,7 @@ const UnsubscribePage = () => {
                 </h1>
                 <span className="section-line" />
                 <p className="mt-6 text-base text-muted-foreground font-light leading-relaxed">
-                  No recibirás más emails de TiroRiro Home. Si fue un error, escríbenos y lo arreglamos.
+                  No recibirás más emails de Tiroriro. Si fue un error, escríbenos y lo arreglamos.
                 </p>
                 <Link to="/" className="cta-link mt-10 inline-block">Volver al inicio</Link>
               </>
