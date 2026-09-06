@@ -8,6 +8,7 @@
     "gen:catalog": "node --experimental-strip-types scripts/gen-catalog.ts",
     "gen:telas": "node --experimental-strip-types scripts/gen-telas.ts",
     "gen:llms": "node --experimental-strip-types scripts/gen-llms-full.ts",
+    "indexnow": "node --experimental-strip-types scripts/indexnow.ts",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
