@@ -7,6 +7,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import { FABRICS, type SharedFabric } from "@/lib/fabrics";
 import SEO from "@/components/SEO";
 import FabricLightbox from "@/components/FabricLightbox";
+import GuiaCategoria from "@/components/GuiaCategoria";
 
 const COLECCIONES = [
   { name: "Básicas", priceBadge: "Sin coste adicional", badgeClass: "bg-green-50 text-green-700 border-green-200" },
@@ -129,6 +130,13 @@ const TelasPage = () => {
           </section>
         );
       })}
+
+      {/* Guía: cómo elegir la tela */}
+      <section className="pb-14 md:pb-20 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <GuiaCategoria guiaKey="telas" />
+        </div>
+      </section>
 
       {/* CTA final */}
       <section className="bg-[#10262e] py-16 px-6">

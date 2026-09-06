@@ -6,6 +6,7 @@
 //   npm run gen:llms
 import { readFileSync, writeFileSync } from "node:fs";
 import { FABRICS } from "../src/lib/fabrics.ts";
+import { GUIAS } from "../src/data/guias.ts";
 import {
   CABECERO_BASE, CABECERO_PREMIUM, CABECERO_VIVO_DOBLE, HEIGHT_STEP_EUR,
   BANCO_BASE, BANCO_PREMIUM, BANCO_VIVO,
@@ -102,6 +103,9 @@ ${telas("Básicas")}
 
 ### Colección Premium (recargo fijo según medida, ver tarifas)
 ${telas("Premium")}
+
+## Guías de compra
+${Object.entries(GUIAS).map(([k, g]) => `### ${g.titulo} (${BASE}/${k === "telas" ? "telas" : `productos/${k}`})\n${g.intro}\n${g.bloques.map((b) => `\n**${b.titulo}** ${b.parrafos.join(" ")}${b.lista ? "\n" + b.lista.map((l) => `- ${l}`).join("\n") : ""}`).join("\n")}`).join("\n\n")}
 
 ## Preguntas frecuentes
 ${faqs.map((f) => `### ${f.q}\n${f.a}`).join("\n\n")}
