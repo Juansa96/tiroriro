@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getCategoryPriceFrom, formatPrice, type Category } from "@/data/pricing";
 import PreciosOrientativos from "@/components/PreciosOrientativos";
 import GuiaCategoria from "@/components/GuiaCategoria";
+import { CATEGORY_SPEECH } from "@/data/narrativa";
 
 export interface Model {
   name: string;
@@ -655,6 +656,12 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
           <AnimatedSection className="text-center mb-12">
             <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground">{cat.title}</h1>
             <p className="mt-3 text-muted-foreground font-light italic">{cat.subtitle}</p>
+            {CATEGORY_SPEECH[category] && (
+              <div className="mt-8 max-w-2xl mx-auto text-left md:text-center">
+                <p className="text-[10px] tracking-[0.22em] uppercase text-accent-warm font-medium">{CATEGORY_SPEECH[category].contra}</p>
+                <p className="mt-2 text-base md:text-lg text-muted-foreground font-light leading-relaxed">{CATEGORY_SPEECH[category].texto}</p>
+              </div>
+            )}
             {category === 'cabeceros' && (
               <p className="mt-3 text-sm text-muted-foreground font-light">
                 <Link to="/guia-medidas-cabeceros" className="underline underline-offset-4 hover:text-accent-warm transition-colors">
