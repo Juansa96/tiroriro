@@ -1,81 +1,61 @@
 # Tiroriro
 
-> Taller artesanal español de mobiliario tapizado a medida: cabeceros, pufs, mesas de centro y pantallas de lámpara. Hecho a mano en España en 20 días, con más de 60 telas disponibles.
+> Taller artesanal español de mobiliario tapizado a medida: cabeceros de cama, pufs, bancos, mesas de centro, almohadones y pantallas de lámpara. Hecho a mano en Madrid (España) en 20 días, con más de 60 telas para elegir. Configurador online con precio en tiempo real.
 
-Tiroriro es una marca de mobiliario tapizado a medida con sede en Boadilla del Monte (Comunidad de Madrid, España). Dirección del taller: Calle Cristóbal Colón, 11, 28660 Boadilla del Monte. Cada pieza se fabrica a mano bajo pedido. El cliente elige forma, tamaño y tela desde el configurador online; el precio se calcula en tiempo real. Entrega habitual: 20 días naturales. Envíos a toda la península ibérica (Baleares y Canarias bajo consulta). Pagos: Bizum, Stripe, transferencia. Contacto: info@tirorirohome.com · +34 660 786 453 · Instagram @tirorirohome.
+Tiroriro (también "Tiroriro Home", web tirorirohome.com) es una marca de mobiliario tapizado a medida con taller en Boadilla del Monte (Comunidad de Madrid, España). Dirección: Calle Cristóbal Colón, 11, 28660 Boadilla del Monte. Cada pieza se fabrica a mano bajo pedido: el cliente elige forma, medidas, tela y acabado en el configurador online y ve el precio final (IVA incluido) al instante. Plazo habitual de entrega: 20 días naturales. Envíos a toda la península ibérica (Baleares y Canarias bajo consulta). Pago por Bizum, tarjeta (Stripe) o transferencia; no se cobra nada hasta confirmar el pedido. Contacto: info@tirorirohome.com · WhatsApp/teléfono +34 660 786 453 · Instagram @tirorirohome.
+
+Versión completa con catálogo de telas, tarifas y preguntas frecuentes: https://tirorirohome.com/llms-full.txt
 
 ## Datos clave
-- Producto principal: cabeceros tapizados a medida (5 formas, desde 285 €)
-- Otros productos: pufs cuadrados y puf redondo Monteferro (desde 150 €), mesas de centro (desde 220 €), pantallas de lámpara (desde 25 €), almohadones tapizados a medida
-- Próximamente: bancos entelados, percheros
-- Telas: más de 60 referencias entre básicas y premium
-- Plazo de entrega: 20 días naturales
-- Origen: hecho a mano en Boadilla del Monte (Madrid, España)
-- Garantía: defectos de fabricación cubiertos; no se admiten devoluciones por cambio de opinión (productos personalizados)
+- Producto principal: cabeceros de cama tapizados a medida en 5 formas (recto, arco, corona simple, corona doble y corona quíntuple). Desde 290 € (cama de 90 cm) hasta 490 € (cama de 200 cm) con tela básica.
+- Otros productos: bancos entelados Oyambre (desde 295 €), pufs cuadrados Patos y redondos Monteferro (desde 150 €), mesas de centro tapizadas Cabo de Palos (desde 220 €), almohadones Rodiles / Covadonga / Gulpiyuri (desde 60 €) y pantallas de lámpara Almanzor / Tormes / La Serrota (desde 25 €).
+- Telas: más de 60 referencias en dos colecciones. Básicas (sin recargo) y Premium (recargo fijo según medida, visible en el configurador). Cualquier tela se puede ver ampliada en la web.
+- Plazo de entrega: 20 días naturales desde la confirmación y el pago.
+- Origen: fabricado a mano en Boadilla del Monte, Madrid (España), por tapiceros artesanos.
+- Envío: 40 € en la Comunidad de Madrid (60 € para cabeceros de más de 180 cm de ancho o 120 cm de alto). Resto de la península según destino, confirmado antes de cerrar el pedido.
+- Garantía: cualquier defecto de fabricación se repara o sustituye sin coste. Al ser productos personalizados no hay devolución por cambio de opinión.
+- Descuentos para hoteles, restaurantes, interiorismo y pedidos de empresa.
 
-## Catálogo de cabeceros (modelos y precios desde)
-- Calobra — forma recta, líneas limpias. Desde 285 €.
-- Pregonda — remate en arco suave. Desde 285 €.
-- Macarella — corona simple con ondulación central. Desde 285 €.
-- Conta — corona doble escalonada. Desde 285 €.
-- Barbaria — corona quíntuple con cinco arcos. Desde 285 €.
+## Catálogo de cabeceros (modelos)
+- Calobra — forma recta, líneas limpias. Desde 290 €.
+- Pregonda — remate en arco suave. Desde 290 €.
+- Macarella — corona simple con ondulación central. Desde 290 €.
+- Conta — corona doble escalonada. Desde 290 €.
+- Barbaria — corona quíntuple con cinco arcos. Desde 290 €.
+Acabados: liso, con vivo simple (ribete) o con vivo doble (+15 €). Tela lateral distinta opcional (+15 €). Montaje colgado a la pared o apoyado en el suelo (colgador y tapetes protectores incluidos).
 
 ## Medidas de cabeceros recomendadas
 - Cama 90 cm → cabecero 100–110 cm de ancho, 100–120 cm de alto.
+- Cama 105 cm → cabecero 115–125 cm de ancho, 100–120 cm de alto.
 - Cama 135 cm → cabecero 145–155 cm de ancho, 110–130 cm de alto.
 - Cama 150 cm → cabecero 160–170 cm de ancho, 110–140 cm de alto.
 - Cama 160 cm → cabecero 170–180 cm de ancho, 120–140 cm de alto.
 - Cama 180 cm → cabecero 190–200 cm de ancho, 120–150 cm de alto.
 - Cama 200 cm → cabecero 210–220 cm de ancho, 130–160 cm de alto.
-Regla general: el cabecero sobresale 5–10 cm a cada lado del colchón.
+Regla general: el cabecero sobresale 5–10 cm a cada lado del colchón. Guía completa: https://tirorirohome.com/guia-medidas-cabeceros
 
-## Composición interior (todos los productos)
-- Estructura: tablero aglomerado reforzado en laterales.
+## Composición interior (cabeceros y piezas tapizadas)
+- Estructura: tablero aglomerado reforzado en los laterales.
 - Acolchado: gomaespuma de alta densidad + capa de guata de 8 cm.
-- Tapizado: cosido y ajustado a mano con la tela elegida por el cliente.
-- Acabado opcional: ribetes, piping, combinación bicolor.
-
-## Envíos
-- Comunidad de Madrid: 40 € (tarifa fija). Entrega habitual por dos transportistas para piezas grandes.
-- Resto de península ibérica: presupuesto según destino (se confirma por teléfono antes de cerrar el pedido).
-- Baleares y Canarias: bajo consulta.
-- Servicio de instalación en domicilio disponible en Comunidad de Madrid.
-
-## Métodos de pago
-- Bizum
-- Stripe (tarjeta)
-- Transferencia bancaria
-No se cobra ningún anticipo hasta que el cliente confirma el pedido.
-
-## Telas (categorías principales)
-- Básicas: lino lavado, algodón, panas finas, mezclas naturales (incluidas en precio base).
-- Premium: bouclé, velvet, terciopelos italianos, telas de diseñador (recargo variable según medida — se ve en el configurador).
-- Posibilidad de enviar tela propia (el cliente compra el metraje según indicaciones del taller).
-
-## Personalización
-- Cualquier medida bajo encargo (cabeceros de 90 a 220 cm de ancho, 80 a 200 cm de alto).
-- Combinaciones bicolor (cuerpo + ribete o mitades).
-- Diseños propios del cliente: enviar boceto y se valora viabilidad.
-- Descuento especial para hoteles, restaurantes, hostelería y proyectos de interiorismo.
-
-## Devoluciones y garantía
-- Productos personalizados: no se admite devolución por cambio de opinión.
-- Garantía completa sobre defectos de fabricación: el taller los repara o sustituye sin coste.
+- Tapizado: tela cosida y ajustada a mano.
+- Acabado opcional: vivo/ribete simple o doble, combinación bicolor, tela lateral distinta.
 
 ## Páginas
-- [Inicio](/): presentación de marca, productos destacados y formulario de contacto
-- [Productos](/productos): catálogo completo por categorías
-- [Cabeceros tapizados](/productos/cabeceros): 5 modelos (Calobra, Pregonda, Macarella, Conta, Barbaria) desde 285 €
-- [Pufs](/productos/pufs): puf cuadrado Patos y puf redondo Monteferro tapizados a medida desde 150 €
-- [Cojines y almohadones](/productos/cojines): cojines y almohadones tapizados a medida en más de 60 telas
-- [Mesas de centro](/productos/mesas-centro): mesas cuadradas desde 220 €
-- [Pantallas de lámpara](/productos/pantallas-lampara): 6 formas tapizadas a mano desde 25 €
-- [Telas](/telas): catálogo de telas básicas y premium con foto y descripción
-- [Configurador](/configurador): herramienta interactiva para diseñar tu pieza (forma + medidas + tela + precio en tiempo real)
-- [Guía de medidas de cabeceros](/guia-medidas-cabeceros): tabla de medidas recomendadas por tamaño de cama (90, 135, 150, 180) y guía de alturas
-- [Nosotros](/nosotros): equipo y proceso artesanal
+- [Inicio](https://tirorirohome.com/): presentación, productos destacados, cómo funciona, reseñas, preguntas frecuentes y formulario de contacto
+- [Productos](https://tirorirohome.com/productos): catálogo completo por categorías
+- [Cabeceros tapizados](https://tirorirohome.com/productos/cabeceros): 5 modelos (Calobra, Pregonda, Macarella, Conta, Barbaria) desde 290 €
+- [Bancos entelados](https://tirorirohome.com/productos/bancos): banco Oyambre de pie de cama en 5 largos desde 295 €
+- [Pufs](https://tirorirohome.com/productos/pufs): puf cuadrado Patos y puf redondo Monteferro desde 150 €
+- [Almohadones](https://tirorirohome.com/productos/cojines): Rodiles (cuadrado), Covadonga (rectangular) y Gulpiyuri (rulo) desde 60 €
+- [Mesas de centro](https://tirorirohome.com/productos/mesas-centro): mesa tapizada Cabo de Palos, con opción de tapa de cristal o metacrilato, desde 220 €
+- [Pantallas de lámpara](https://tirorirohome.com/productos/pantallas-lampara): Almanzor (cilíndrica), Tormes (cuadrada) y La Serrota (rectangular) desde 25 €
+- [Telas](https://tirorirohome.com/telas): catálogo de más de 60 telas básicas y premium con foto ampliable y descripción
+- [Configurador](https://tirorirohome.com/configurador): diseña tu pieza (forma + medidas + tela + acabado) con precio en tiempo real y vista previa en el color elegido
+- [Guía de medidas de cabeceros](https://tirorirohome.com/guia-medidas-cabeceros): medidas recomendadas por tamaño de cama y guía de alturas
+- [Probador virtual](https://tirorirohome.com/probador): ver un cabecero en una foto de tu dormitorio
+- [Nosotros](https://tirorirohome.com/nosotros): equipo y proceso artesanal
 
 ## Optional
-- [Aviso legal](/aviso-legal)
-- [Política de privacidad](/privacidad)
-- [Política de cookies](/cookies)
+- [Aviso legal](https://tirorirohome.com/aviso-legal)
+- [Política de privacidad](https://tirorirohome.com/privacidad)
+- [Política de cookies](https://tirorirohome.com/cookies)

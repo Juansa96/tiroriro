@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, ZoomIn } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import { FABRICS } from "@/lib/fabrics";
+import { FABRICS, type SharedFabric } from "@/lib/fabrics";
 import SEO from "@/components/SEO";
+import FabricLightbox from "@/components/FabricLightbox";
 
 const COLECCIONES = [
   { name: "Básicas", priceBadge: "Sin coste adicional", badgeClass: "bg-green-50 text-green-700 border-green-200" },
@@ -13,8 +15,12 @@ const COLECCIONES = [
 
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, tengo dudas sobre las telas y me gustaría orientación.");
 
-const TelasPage = () => (
+const TelasPage = () => {
+  // Tela abierta en la lupa (pulsar cualquier tela la amplía).
+  const [zoomFabric, setZoomFabric] = useState<SharedFabric | null>(null);
+  return (
   <>
+    <FabricLightbox fabric={zoomFabric} onClose={() => setZoomFabric(null)} />
     <SEO
       title="Telas para tapizado | Más de 60 opciones | Tiroriro"
       description="Más de 60 telas básicas y premium para tapizar tu pieza a medida: lisas, flores, rayas y geométricas. Consulta disponibilidad de stock."
@@ -62,8 +68,13 @@ const TelasPage = () => (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {items.map((fabric, i) => (
                   <AnimatedSection key={fabric.name} delay={i * 0.08}>
-                    <div className="group cursor-default">
-                      <div className="relative overflow-hidden rounded-xl aspect-square bg-secondary">
+                    <div className="group">
+                      <button
+                        type="button"
+                        onClick={() => setZoomFabric(fabric)}
+                        aria-label={`Ampliar la tela ${fabric.name}`}
+                        className="relative block w-full overflow-hidden rounded-xl aspect-square bg-secondary cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60"
+                      >
                         <img
                           src={fabric.image}
                           alt={`Tela ${fabric.name} para tapizado`}
@@ -72,7 +83,10 @@ const TelasPage = () => (
                           decoding="async"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none rounded-xl" />
-                      </div>
+                        <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-white/85 px-2 py-1 text-[10px] tracking-wide uppercase text-foreground shadow-sm">
+                          <ZoomIn size={12} /> Ampliar
+                        </span>
+                      </button>
                       <div className="mt-3 flex items-start gap-2.5">
                         <div
                           className="w-4 h-4 rounded-full border border-border flex-shrink-0 mt-0.5"
@@ -149,6 +163,7 @@ const TelasPage = () => (
     </main>
     <Footer />
   </>
-);
+  );
+};
 
 export default TelasPage;

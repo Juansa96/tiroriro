@@ -15,7 +15,8 @@ import { trackFbEvent } from "@/lib/metaPixel";
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
 import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO,
   SHIPPING_MADRID, HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE, isHeadboardOversized } from "@/data/pricing";
-import { Clock } from "lucide-react";
+import { Clock, ZoomIn } from "lucide-react";
+import FabricLightbox, { type LightboxFabric } from "./FabricLightbox";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Cabecero: vivo-simple incluido (0€), vivo-doble +15 €
@@ -277,29 +278,62 @@ const RenderNotice = () => (
 
 // Fabric swatch panel shown next to the render
 // Order: tela principal → tela laterales → vivo
+// Muestra pulsable: abre la lupa (FabricLightbox) con la tela a tamaño real.
+const SwatchButton = ({
+  fabric,
+  heightClass,
+  onZoom,
+}: {
+  fabric?: LightboxFabric;
+  heightClass: string;
+  onZoom?: (f: LightboxFabric) => void;
+}) => {
+  const inner = (
+    <>
+      {fabric?.image && (
+        <img src={fabric.image} alt={fabric.name} className="w-full h-full object-cover" loading="lazy" />
+      )}
+      {fabric && onZoom && (
+        <span className="absolute bottom-0.5 right-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/85 text-foreground shadow-sm">
+          <ZoomIn size={10} />
+        </span>
+      )}
+    </>
+  );
+  const cls = `relative w-full ${heightClass} rounded-md border border-border/40 overflow-hidden`;
+  const style = { backgroundColor: fabric?.hex || '#E8E4DC' };
+  if (!fabric || !onZoom) return <div className={cls} style={style}>{inner}</div>;
+  return (
+    <button
+      type="button"
+      onClick={() => onZoom(fabric)}
+      aria-label={`Ampliar la tela ${fabric.name}`}
+      className={`${cls} cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/60`}
+      style={style}
+    >
+      {inner}
+    </button>
+  );
+};
+
 const FabricSwatchPanel = ({
   fabric,
   vivoFabric,
   lateralFabric,
   showLateral = true,
+  onZoom,
 }: {
-  fabric?: { name: string; hex: string; image?: string };
-  vivoFabric?: { name: string; hex: string; image?: string };
-  lateralFabric?: { name: string; hex: string; image?: string };
+  fabric?: LightboxFabric;
+  vivoFabric?: LightboxFabric;
+  lateralFabric?: LightboxFabric;
   showLateral?: boolean;
+  onZoom?: (f: LightboxFabric) => void;
 }) => (
   <div className="flex flex-col gap-3 justify-center">
     {/* 1. Tela elegida */}
     <div className="flex flex-col gap-1">
       <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Tela</p>
-      <div
-        className="w-full h-14 rounded-md border border-border/40 overflow-hidden"
-        style={{ backgroundColor: fabric?.hex || '#E8E4DC' }}
-      >
-        {fabric?.image && (
-          <img src={fabric.image} alt={fabric.name} className="w-full h-full object-cover" loading="lazy" />
-        )}
-      </div>
+      <SwatchButton fabric={fabric} heightClass="h-14" onZoom={onZoom} />
       <p className="text-[10px] text-muted-foreground font-light leading-tight">{fabric?.name || '—'}</p>
     </div>
 
@@ -307,14 +341,7 @@ const FabricSwatchPanel = ({
     {showLateral && (
       <div className="flex flex-col gap-1">
         <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Laterales</p>
-        <div
-          className="w-full h-14 rounded-md border border-border/40 overflow-hidden"
-          style={{ backgroundColor: lateralFabric?.hex || fabric?.hex || '#E8E4DC' }}
-        >
-          {(lateralFabric?.image || fabric?.image) && (
-            <img src={lateralFabric?.image || fabric?.image} alt={lateralFabric?.name || fabric?.name} className="w-full h-full object-cover" loading="lazy" />
-          )}
-        </div>
+        <SwatchButton fabric={lateralFabric || fabric} heightClass="h-14" onZoom={onZoom} />
         <p className="text-[10px] text-muted-foreground font-light leading-tight">{lateralFabric?.name || fabric?.name || '—'}</p>
       </div>
     )}
@@ -323,14 +350,7 @@ const FabricSwatchPanel = ({
     {vivoFabric && (
       <div className="flex flex-col gap-1">
         <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">Vivo</p>
-        <div
-          className="w-full h-9 rounded-md border border-border/40 overflow-hidden"
-          style={{ backgroundColor: vivoFabric.hex }}
-        >
-          {vivoFabric.image && (
-            <img src={vivoFabric.image} alt={vivoFabric.name} className="w-full h-full object-cover" loading="lazy" />
-          )}
-        </div>
+        <SwatchButton fabric={vivoFabric} heightClass="h-9" onZoom={onZoom} />
         <p className="text-[10px] text-muted-foreground font-light leading-tight">{vivoFabric.name}</p>
       </div>
     )}
@@ -356,6 +376,8 @@ const ProductConfigurator = () => {
   const [lampDiameter, setLampDiameter] = useState("");
   const [lampHeight, setLampHeight] = useState("");
   const [fabricId, setFabricId] = useState("");
+  // Tela abierta en la lupa (muestras del panel o segundo toque en una tela elegida).
+  const [zoomFabric, setZoomFabric] = useState<LightboxFabric | null>(null);
   const [lateralFabricId, setLateralFabricId] = useState("");
   const [finish, setFinish] = useState("");
   const [vivoColorId, setVivoColorId] = useState("");
@@ -916,10 +938,12 @@ const ProductConfigurator = () => {
     extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
     advanceTo, needsVivo,
+    onZoomFabric: setZoomFabric,
   };
 
   return (
     <div className="min-h-screen">
+      <FabricLightbox fabric={zoomFabric} onClose={() => setZoomFabric(null)} />
       <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
         <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-2">Diseña el tuyo</h1>
         <p className="text-sm text-muted-foreground font-light">Precio en tiempo real · Hecho a medida</p>
@@ -939,6 +963,7 @@ const ProductConfigurator = () => {
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
                   showLateral={productType === 'cabecero' || productType === 'puf'}
+                  onZoom={setZoomFabric}
                 />
               </div>
             )}
@@ -974,6 +999,7 @@ const ProductConfigurator = () => {
                   vivoFabric={needsVivo ? vivoFabric : undefined}
                   lateralFabric={lateralFabric || undefined}
                   showLateral={productType === 'cabecero' || productType === 'puf'}
+                  onZoom={setZoomFabric}
                 />
               </div>
             )}
@@ -1136,6 +1162,7 @@ interface AccordionContentSharedProps {
   advanceTo: (step: Step) => void;
   needsVivo: boolean;
   stepComplete: Record<Step, boolean>;
+  onZoomFabric: (f: LightboxFabric) => void;
 }
 
 const AccordionItems = (props: AccordionContentSharedProps) => {
@@ -1163,6 +1190,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
     montaje, setMontaje, extraRelleno, setExtraRelleno, extraExpress, setExtraExpress,
     extraTopMaterial, setExtraTopMaterial,
     advanceTo, needsVivo,
+    onZoomFabric,
   } = props;
 
   const productSelected = !!productType;
@@ -1669,7 +1697,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </button>
             ))}
           </div>
-          <p className="text-[11px] text-muted-foreground/60 font-light italic -mt-1">Sujeto a disponibilidad de stock.</p>
+          <p className="text-[11px] text-muted-foreground/60 font-light italic -mt-1">Sujeto a disponibilidad de stock. Pulsa otra vez sobre la tela elegida para verla en grande.</p>
           {FABRIC_GROUPS.map(group => {
             const filtered = fabricFilter === "todas"
               ? group.fabrics
@@ -1680,7 +1708,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
               <div className="flex flex-wrap gap-3">
                 {filtered.map(f => (
-                  <button key={f.id} onClick={() => setFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                  <button key={f.id} onClick={() => (fabricId === f.id ? onZoomFabric(f) : setFabricId(f.id))} className="flex flex-col items-center gap-1.5" title={fabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={fabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir la tela ${f.name}`}>
                     <div
                       className={`w-10 h-10 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-2 ${fabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                       style={{ backgroundColor: f.hex }}
@@ -1697,8 +1725,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             );
           })}
           {fabricId && (
-            <p className="text-xs text-muted-foreground font-light">
-              {ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}
+            <p className="text-xs text-muted-foreground font-light flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span>{ALL_FABRICS.find(f => f.id === fabricId)?.name} · {ALL_FABRICS.find(f => f.id === fabricId)?.collection}</span>
+              <button
+                type="button"
+                onClick={() => { const f = ALL_FABRICS.find(x => x.id === fabricId); if (f) onZoomFabric(f); }}
+                className="inline-flex items-center gap-1 underline underline-offset-4 hover:text-foreground transition-colors"
+              >
+                <ZoomIn size={12} /> Ver la tela en grande
+              </button>
             </p>
           )}
 
@@ -1718,7 +1753,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                       <span className="text-[9px] text-muted-foreground font-light">Igual</span>
                     </button>
                     {FABRIC_GROUPS[0].fabrics.map(f => (
-                      <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                      <button key={f.id} onClick={() => (lateralFabricId === f.id ? onZoomFabric(f) : setLateralFabricId(f.id))} className="flex flex-col items-center gap-1.5" title={lateralFabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={lateralFabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para los laterales`}>
                         <div
                           className={`w-8 h-8 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${lateralFabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                           style={{ backgroundColor: f.hex }}
@@ -1733,7 +1768,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   <p className="text-[10px] uppercase text-muted-foreground mb-2">Premium</p>
                   <div className="flex flex-wrap gap-2">
                     {FABRIC_GROUPS[1].fabrics.map(f => (
-                      <button key={f.id} onClick={() => setLateralFabricId(f.id)} className="flex flex-col items-center gap-1.5" title={f.name}>
+                      <button key={f.id} onClick={() => (lateralFabricId === f.id ? onZoomFabric(f) : setLateralFabricId(f.id))} className="flex flex-col items-center gap-1.5" title={lateralFabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={lateralFabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para los laterales`}>
                         <div
                           className={`w-8 h-8 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${lateralFabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                           style={{ backgroundColor: f.hex }}
@@ -1787,7 +1822,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Básicas</p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {FABRIC_GROUPS[0].fabrics.map(f => (
-                  <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
+                  <button key={f.id} onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
                     <div
                       className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                       style={{ backgroundColor: f.hex }}
@@ -1802,7 +1837,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-2 font-light">Premium</p>
               <div className="flex flex-wrap gap-2">
                 {FABRIC_GROUPS[1].fabrics.map(f => (
-                  <button key={f.id} onClick={() => setVivoColorId(f.id)} title={f.name}>
+                  <button key={f.id} onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
                     <div
                       className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
                       style={{ backgroundColor: f.hex }}
