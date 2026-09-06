@@ -55,9 +55,9 @@ export const QUIENES_SOMOS = {
   combatimosTitulo: "Lo que combatimos",
   combatimos: [
     "La indiferencia en casa. No llega de golpe: llega cansada. Es el día complicado que hace que no preguntes cómo ha ido el suyo. Es el agotamiento que convierte una pregunta de tu hijo en un “ahora no”. Es el “mañana hablamos” que se repite hasta que ya no queda nada que decir.",
-    "Nosotros no arreglamos eso. Pero hacemos los sitios donde se arregla.",
+    "Nosotros no arreglamos eso. Pero hacemos los sitios donde se arregla. Hacemos encuentros: el cabecero, el banco, el puf y la luz donde dos personas se paran, se miran y se encuentran.",
     "Un cabecero para el momento más importante del día, cuando dos personas se apoyan y se cuentan lo que ha pasado, en vez de dormirse contra una pared fría. Un banco a los pies de la cama para que los hijos entren y cuenten lo del colegio. Pufs para que, cuando el salón se llena, nadie tenga que ir a por sillas al trastero: cabéis todos. Y pantallas de lámpara para hablar alrededor de una luz cálida, filtrada por una tela bonita, y no bajo una bombilla fría.",
-    "Piezas para que unos se compadezcan de otros. Para que en casa se hable. Porque, como dijo Juan Pablo II, el futuro de la humanidad se fragua en la familia.",
+    "Piezas para el encuentro. Para que unos se compadezcan de otros y en casa se hable. Porque, como dijo Juan Pablo II, el futuro de la humanidad se fragua en la familia.",
   ],
   equipoTitulo: "Quién hace qué",
   equipo:
