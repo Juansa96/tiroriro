@@ -22,6 +22,24 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+// Nombre corto del producto para <title> y H1 ("Cabecero tapizado Calobra").
+// El altLabel largo se queda para los alt de las fotos y el JSON-LD.
+const categoryShortLabel: Record<string, string> = {
+  cabeceros: "Cabecero tapizado",
+  bancos: "Banco entelado",
+  cojines: "Almohadón tapizado",
+  pufs: "Puf tapizado",
+  "mesas-centro": "Mesa de centro tapizada",
+  "pantallas-lampara": "Pantalla de lámpara tapizada",
+};
+
+// Recorta a un máximo de caracteres sin partir palabras (meta description).
+const clampText = (text: string, max: number) => {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
+};
+
 const ModelPage = () => {
   const { category = "", model: modelSlug = "" } = useParams();
   const cat = CATEGORIES[category];
@@ -43,10 +61,12 @@ const ModelPage = () => {
     model.configParam ? `&forma=${model.configParam}` : ""
   }`;
 
-  const title = `${altLabel} ${model.name} — a medida | Tiroriro`;
-  const description = `${model.desc} Hecho a mano en España en 20 días${
-    priceFrom ? `. Desde ${priceFrom} €` : ""
-  }. Más de 60 telas a elegir.`;
+  const shortLabel = categoryShortLabel[category] || altLabel;
+  const title = `${shortLabel} ${model.name} a medida | Tiroriro`;
+  const description = clampText(
+    `${model.desc} Hecho a mano en España en 20 días${priceFrom ? `. Desde ${priceFrom} €` : ""}. Más de 60 telas a elegir.`,
+    158,
+  );
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -151,7 +171,7 @@ const ModelPage = () => {
                 {cat.title}
               </p>
               <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground">
-                {altLabel} {model.name}
+                {shortLabel} {model.name}
               </h1>
               <span className="section-line my-6" />
               <p className="text-base text-muted-foreground font-light leading-relaxed">{model.desc}</p>

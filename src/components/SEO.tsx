@@ -24,10 +24,13 @@ const SEO = ({ title, description, canonical, ogImage = DEFAULT_OG_IMAGE, noInde
 
     {/* Open Graph */}
     <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="Tiroriro" />
+    <meta property="og:locale"      content="es_ES" />
     <meta property="og:title"       content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url"         content={canonical} />
     <meta property="og:image"       content={ogImage} />
+    <meta property="og:image:alt"   content={title} />
 
     {/* Twitter Card */}
     <meta name="twitter:card"        content="summary_large_image" />

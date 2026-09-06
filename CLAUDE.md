@@ -69,12 +69,12 @@ Probar a 1280x800 y 390x844 como mínimo, porque bastante tráfico es móvil.
 - El banner de cookies publica su altura en `--cookie-banner-h` sobre el `<body>` y
   `FloatingButtons` la suma a su separación inferior, para que el botón de WhatsApp no
   quede tapado. Si cambias el alto del banner, no hay que tocar nada: se recalcula solo.
-- **El preview del configurador refleja la elección del cliente** (decisión de septiembre
-  de 2026, que revierte la silueta neutra de unos días antes): el color de la tela tiñe la
-  pieza, el vivo se pinta con su color y la tela lateral se ve en los laterales. Lo que NO
-  se hace es repetir la foto de la tela sobre la cara frontal (ese estampado en mosaico
-  despistaba a los clientes): la cara frontal va en color liso y la foto se ve en las
-  muestras del panel lateral y en la lupa (`FabricLightbox`).
+- **El preview del configurador es siempre una silueta neutra** (`#D4C5A9`). Ni la tela,
+  ni su color, ni el ribete, ni la tela lateral cambian cómo se ve la pieza: se neutralizan
+  de golpe en el componente `ProductSVGPreview`. Es decisión explícita de Juan, confirmada
+  dos veces (2 y 6 de septiembre de 2026): el estampado repetido sobre la forma despistaba
+  a los clientes. NO volver a "arreglarlo" aunque un informe automático lo marque como bug.
+  Las fotos de tela van en las muestras del panel lateral y en la lupa, nunca sobre la pieza.
 - **Cualquier tela se puede ampliar al pulsarla** (`FabricLightbox`): en `/telas`, en las
   muestras del configurador y, en las rejillas del configurador, pulsando otra vez sobre la
   tela ya elegida. Si añades una rejilla de telas nueva, conecta la lupa.
@@ -86,3 +86,21 @@ Probar a 1280x800 y 390x844 como mínimo, porque bastante tráfico es móvil.
 
 El producto, la interfaz y los textos son en español. Los mensajes de commit y las
 descripciones de PR, también.
+
+## Prerender para rastreadores (SEO / IAs)
+
+`vite build` termina ejecutando `scripts/vite-plugin-prerender.ts`: compila
+`src/entry-prerender.tsx` en modo SSR, renderiza cada URL de `public/sitemap.xml`
+y escribe `dist/<ruta>/index.html` con el HTML real de la página y su `<head>`
+(title, description, canonical, Open Graph, JSON-LD del componente `SEO`). Así los
+rastreadores que no ejecutan JavaScript (GPTBot, ClaudeBot, Perplexity, Bing…) leen
+cada página, no una SPA vacía. React sigue montando con `createRoot` encima.
+
+- Página nueva ⇒ ruta en `src/AppRoutes.tsx` + URL en `public/sitemap.xml` + `<SEO …>`.
+- Nada de `window`/`document` durante el render (sí en `useEffect`); si una página
+  falla, el plugin avisa y esa ruta se queda sin prerender, pero el build no rompe.
+- `PRERENDER=0 vite build` lo desactiva. Ver `build` en la consola: "N/25 rutas".
+- Comprobar en producción con "ver código fuente" de /telas: debe aparecer
+  `data-prerendered="1"` y el título de Telas. Si sale el de la portada, el hosting
+  no sirve `telas/index.html` para `/telas` y hay que revisarlo en Lovable.
+

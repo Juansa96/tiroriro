@@ -5,8 +5,12 @@ import { Award, Heart, Truck } from "lucide-react";
 // Module-level flag: survives SPA navigation but resets on page reload
 let animationHasPlayed = false;
 
+// En el prerender del build (sin `window`) no hay animación: el H1 sale entero
+// para que los rastreadores lean el titular.
+const isServer = typeof window === "undefined";
+
 const useTypewriter = (text: string, startDelay: number, speed = 60, skip = false) => {
-  const [displayed, setDisplayed] = useState(skip ? text : "");
+  const [displayed, setDisplayed] = useState(skip || isServer ? text : "");
   const [started, setStarted] = useState(skip);
 
   useEffect(() => {
