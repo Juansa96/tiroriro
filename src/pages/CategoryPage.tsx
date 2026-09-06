@@ -8,6 +8,8 @@ import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getCategoryPriceFrom, formatPrice, type Category } from "@/data/pricing";
+import PreciosOrientativos from "@/components/PreciosOrientativos";
+import GuiaCategoria from "@/components/GuiaCategoria";
 
 export interface Model {
   name: string;
@@ -712,6 +714,12 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
               </div>
             </AnimatedSection>
           )}
+
+          {/* Precios orientativos por medida (de src/data/pricing.ts) y guía de compra */}
+          {productTypeMap[category] && (
+            <PreciosOrientativos category={productTypeMap[category] as Category} className="mt-16" />
+          )}
+          <GuiaCategoria guiaKey={category} className="mt-16" />
 
           {/* CTA: Ver más en Instagram */}
           {category === 'cojines' && (

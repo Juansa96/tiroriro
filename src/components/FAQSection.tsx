@@ -82,7 +82,31 @@ const FAQS = [
   },
   {
     q: "¿El cabecero viene montado o hay que ensamblarlo?",
-    a: "Los cabeceros llegan listos para colocar. Por defecto, no incluyen anclaje a pared. Tienes varias opciones: colocarlo sobre el somier, sin necesidad de fijarlo, añadir patas para apoyarlo directamente en el suelo, o solicitar piezas específicas para anclarlo a la pared. También ofrecemos servicio de instalación en la Comunidad de Madrid. Antes de confirmar el pedido, te explicamos todas las opciones por teléfono.",
+    a: "Los cabeceros llegan listos para colocar y con el colgador para la pared incluido. Tienes dos opciones: colgarlo a la altura que prefieras, o apoyarlo en el suelo entre la pared y el somier, con tapetes protectores incluidos y sin hacer agujeros. También ofrecemos servicio de instalación en la Comunidad de Madrid. Antes de confirmar el pedido, te explicamos las opciones por teléfono.",
+  },
+  {
+    q: "¿Dónde comprar un cabecero tapizado a medida en Madrid?",
+    a: "En Tiroriro los fabricamos a mano en nuestro taller de Boadilla del Monte (Madrid). Eliges forma, medidas y tela en el configurador de la web, te llamamos para confirmar cada detalle y en unos 20 días lo tienes en casa. En la Comunidad de Madrid el envío cuesta 40 € y podemos instalarlo por ti; al resto de la península enviamos con transporte especializado.",
+  },
+  {
+    q: "¿Qué medida y qué precio tiene un cabecero para una cama de 150?",
+    a: "Para un colchón de 150 cm recomendamos un cabecero de 160 a 170 cm de ancho y de 110 a 140 cm de alto, de modo que sobresalga entre 5 y 10 cm por cada lado. Con tela básica y alto estándar parte de 405 €; con tela premium, de 495 €. Cada 10 cm de alto por encima de 100 cm suma 15 €. En la página de cabeceros tienes la tabla completa por ancho de cama.",
+  },
+  {
+    q: "¿Lisa o estampada? ¿Qué tela elegir para un cabecero?",
+    a: "Las lisas (linos, sargas, algodones) son las más fáciles de combinar y aguantan cualquier cambio de decoración; las estampadas (flores, rayas, ikats) convierten el cabecero en el protagonista del dormitorio. Con niños o mascotas conviene una tela de trama cerrada y color medio, que disimula el uso. Todas nuestras telas se pueden ver ampliadas en la página de telas y, si dudas, te asesoramos por WhatsApp con fotos de tu habitación.",
+  },
+  {
+    q: "¿Puedo pedir solo el cabecero, sin cama ni somier?",
+    a: "Sí. El cabecero es una pieza independiente que no necesita cama a juego: se cuelga en la pared con el colgador incluido o se apoya en el suelo, sujeto por el propio somier. Solo necesitamos saber el ancho de tu colchón para calcular la medida ideal.",
+  },
+  {
+    q: "¿Cómo se cuelga un cabecero tapizado?",
+    a: "Todos los cabeceros llevan colgador incluido para fijarlos a la pared a la altura que quieras. Si prefieres no hacer agujeros, se apoya en el suelo entre la pared y el somier, con tapetes protectores. En la Comunidad de Madrid podemos instalarlo por ti, y en cualquier caso te explicamos las opciones por teléfono antes de fabricarlo.",
+  },
+  {
+    q: "¿Hacéis cabeceros para hoteles, pisos turísticos e interiorismo?",
+    a: "Sí. Fabricamos series para hoteles, apartamentos turísticos y proyectos de interiorismo, con descuento por volumen, tanto si todas las piezas son iguales como si cada habitación lleva una medida o una tela distinta. Coordinamos la entrega y la instalación. Cuéntanos el proyecto y te preparamos un presupuesto a medida.",
   },
 ];
 
