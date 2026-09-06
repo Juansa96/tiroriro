@@ -48,7 +48,7 @@ const LINKS = [
 const IgPage = () => (
   <>
     <SEO
-      title="Tiroriro Home | Enlaces desde Instagram"
+      title="Tiroriro | Enlaces desde Instagram"
       description="Diseña tu pieza, mira el catálogo, elige tela o escríbenos. Hecho a mano en España."
       canonical="https://tirorirohome.com/ig"
       noIndex
@@ -56,7 +56,7 @@ const IgPage = () => (
     <main className="min-h-screen bg-bone flex flex-col items-center px-6 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="font-serif text-3xl font-light text-foreground">Tiroriro Home</h1>
+          <h1 className="font-serif text-3xl font-light text-foreground">Tiroriro</h1>
           <p className="mt-2 text-sm text-muted-foreground font-light italic">
             Tapizados a medida, hechos a mano en España
           </p>

@@ -49,7 +49,7 @@ const InstagramFeedTeaser = () => (
           >
             <img
               src={src}
-              alt="Tapizado a medida hecho a mano en España — Tiroriro Home"
+              alt="Tapizado a medida hecho a mano en España — Tiroriro"
               loading="lazy"
               decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

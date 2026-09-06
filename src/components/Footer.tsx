@@ -68,7 +68,7 @@ const Footer = () => (
 
       {/* Copyright */}
       <p className="mt-8 text-center text-xs text-muted-foreground/60 font-light">
-        © {new Date().getFullYear()} Tiroriro Home. Todos los derechos reservados.
+        © {new Date().getFullYear()} Tiroriro. Todos los derechos reservados.
       </p>
     </div>
   </footer>
