@@ -69,11 +69,15 @@ Probar a 1280x800 y 390x844 como mínimo, porque bastante tráfico es móvil.
 - El banner de cookies publica su altura en `--cookie-banner-h` sobre el `<body>` y
   `FloatingButtons` la suma a su separación inferior, para que el botón de WhatsApp no
   quede tapado. Si cambias el alto del banner, no hay que tocar nada: se recalcula solo.
-- **El preview del configurador es siempre una silueta neutra** (`#D4C5A9`). Ni la tela,
-  ni su color, ni el ribete, ni la tela lateral cambian cómo se ve la pieza: se neutralizan
-  de golpe en el componente `ProductSVGPreview`. Ver el estampado repetido sobre la forma
-  despistaba a los clientes y varios escribieron por ello. Las fotos de tela van siempre en
-  las muestras del panel lateral, nunca encima de la pieza.
+- **El preview del configurador refleja la elección del cliente** (decisión de septiembre
+  de 2026, que revierte la silueta neutra de unos días antes): el color de la tela tiñe la
+  pieza, el vivo se pinta con su color y la tela lateral se ve en los laterales. Lo que NO
+  se hace es repetir la foto de la tela sobre la cara frontal (ese estampado en mosaico
+  despistaba a los clientes): la cara frontal va en color liso y la foto se ve en las
+  muestras del panel lateral y en la lupa (`FabricLightbox`).
+- **Cualquier tela se puede ampliar al pulsarla** (`FabricLightbox`): en `/telas`, en las
+  muestras del configurador y, en las rejillas del configurador, pulsando otra vez sobre la
+  tela ya elegida. Si añades una rejilla de telas nueva, conecta la lupa.
 - El texto de cookies puede tener gracia, pero los botones se quedan en "Aceptar" y
   "Rechazar" (etiquetas inequívocas, guía de la AEPD) y con la misma facilidad de
   pulsación.

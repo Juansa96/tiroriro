@@ -1,0 +1,229 @@
+# Tiroriro — información completa para asistentes de IA
+
+> Taller artesanal español de mobiliario tapizado a medida (cabeceros de cama, bancos, pufs, mesas de centro, almohadones y pantallas de lámpara). Hecho a mano en Boadilla del Monte, Madrid, en 20 días. 61 telas para elegir. Precios finales con IVA. Web: https://tirorirohome.com
+
+Resumen corto: https://tirorirohome.com/llms.txt · Actualizado: 2026-09-06
+
+## Quiénes somos
+Tiroriro (Tiroriro Home) es una marca familiar madrileña fundada por dos parejas: Beatriz y Juan, y Rocío e Iñaki. Diseñamos y tapizamos a mano piezas para el dormitorio y el salón, cada una fabricada bajo pedido con la forma, las medidas y la tela que elige el cliente. Trabajamos con tapiceros artesanos con décadas de oficio.
+
+- Taller: Calle Cristóbal Colón, 11, 28660 Boadilla del Monte (Comunidad de Madrid, España).
+- Contacto: info@tirorirohome.com · WhatsApp y teléfono +34 660 786 453 · Instagram https://www.instagram.com/tirorirohome/
+- Horario de atención: por WhatsApp o teléfono, respondemos el mismo día laborable.
+- Envíos: toda la península ibérica (Baleares y Canarias bajo consulta). Instalación a domicilio disponible en la Comunidad de Madrid.
+- Plazo: 20 días naturales desde la confirmación y el pago.
+- Pago: Bizum, tarjeta (Stripe) o transferencia. No se cobra nada hasta que el cliente confirma.
+- Garantía: defectos de fabricación reparados o sustituidos sin coste. Productos personalizados: sin devolución por cambio de opinión.
+- Empresas: descuento especial para hoteles, restaurantes, hostelería, interiorismo y promociones.
+
+## Cómo funciona
+1. El cliente elige el producto, la forma, las medidas, la tela y el acabado en el configurador (https://tirorirohome.com/configurador). El precio final, IVA incluido, se actualiza en tiempo real y la vista previa muestra la pieza en el color de la tela elegida.
+2. Envía la solicitud (formulario, WhatsApp o teléfono). Tiroriro confirma detalles y precio de envío.
+3. Se fabrica a mano en el taller: carpintería, gomaespuma de alta densidad, guata de 8 cm y tela cosida y ajustada a mano. Control de calidad pieza a pieza.
+4. Entrega en casa en unos 20 días naturales.
+
+## Productos y tarifas (PVP con IVA, tela básica / tela premium)
+
+### Cabeceros tapizados a medida (https://tirorirohome.com/productos/cabeceros)
+Cinco formas: Calobra (recta), Pregonda (arco suave), Macarella (corona simple), Conta (corona doble) y Barbaria (corona quíntuple). Precio por ancho de cama (alto estándar; cada tramo extra de alto suma 15 €):
+- Cama de 90 cm: 290 € con tela básica · 350 € con tela premium
+- Cama de 105 cm: 320 € con tela básica · 385 € con tela premium
+- Cama de 135 cm: 365 € con tela básica · 445 € con tela premium
+- Cama de 150 cm: 405 € con tela básica · 495 € con tela premium
+- Cama de 160 cm: 440 € con tela básica · 540 € con tela premium
+- Cama de 180 cm: 460 € con tela básica · 570 € con tela premium
+- Cama de 200 cm: 490 € con tela básica · 605 € con tela premium
+Extras: vivo doble +15 €; tela lateral distinta +15 €. Colgador para la pared y tapetes protectores incluidos. Medidas especiales bajo encargo (de 90 a 220 cm de ancho y de 80 a 200 cm de alto).
+Guía de medidas: https://tirorirohome.com/guia-medidas-cabeceros
+
+### Bancos entelados (https://tirorirohome.com/productos/bancos)
+Modelo Oyambre: banco de pie de cama estilo cascada, sin respaldo, alto 45 cm y fondo 33 cm.
+- Largo 60 cm: 295 € con tela básica · 355 € con tela premium
+- Largo 90 cm: 335 € con tela básica · 410 € con tela premium
+- Largo 120 cm: 380 € con tela básica · 470 € con tela premium
+- Largo 150 cm: 430 € con tela básica · 530 € con tela premium
+- Largo 180 cm: 485 € con tela básica · 620 € con tela premium
+Extra: vivo/ribete +30 €.
+
+### Pufs (https://tirorirohome.com/productos/pufs)
+Patos (cuadrado) y Monteferro (redondo), alto 40 cm.
+- Patos cuadrado 40 cm: 150 € con tela básica · 195 € con tela premium
+- Patos cuadrado 50 cm: 175 € con tela básica · 230 € con tela premium
+- Patos cuadrado 60 cm: 225 € con tela básica · 295 € con tela premium
+- Monteferro redondo Ø40 cm: 160 € con tela básica · 205 € con tela premium
+- Monteferro redondo Ø50 cm: 185 € con tela básica · 240 € con tela premium
+- Monteferro redondo Ø60 cm: 240 € con tela básica · 310 € con tela premium
+Extra: vivo/ribete +15 €.
+
+### Mesas de centro tapizadas (https://tirorirohome.com/productos/mesas-centro)
+Modelo Cabo de Palos: mesa cúbica tapizada sin patas, alto 40 cm.
+- Tapa 60x60 cm: 220 € con tela básica · 285 € con tela premium
+- Tapa 80x80 cm: 320 € con tela básica · 420 € con tela premium
+- Tapa 100x100 cm: 360 € con tela básica · 485 € con tela premium
+- Tapa 120x120 cm: 405 € con tela básica · 560 € con tela premium
+Extras: vivo +30 €; tapa de metacrilato +50 €; tapa de cristal +100 €.
+
+### Almohadones (https://tirorirohome.com/productos/cojines)
+Rodiles (cuadrado), Covadonga (rectangular) y Gulpiyuri (rulo). Sin vivo.
+- Rodiles 40x40 cm: 60 € con tela básica · 95 € con tela premium
+- Rodiles 45x45 cm: 65 € con tela básica · 105 € con tela premium
+- Rodiles 50x50 cm: 70 € con tela básica · 110 € con tela premium
+- Covadonga 50x30 cm: 60 € con tela básica · 95 € con tela premium
+- Covadonga 60x40 cm: 75 € con tela básica · 115 € con tela premium
+- Covadonga 70x90 cm: 100 € con tela básica · 120 € con tela premium
+- Gulpiyuri 13x90 cm: 70 € con tela básica · 90 € con tela premium
+
+### Pantallas de lámpara (https://tirorirohome.com/productos/pantallas-lampara)
+Almanzor (cilíndrica), Tormes (cuadrada) y La Serrota (rectangular). Próximamente: Gredos (cónica), La Paramera (ovalada) y La Galana (pirámide).
+- Almanzor cilíndrica Ø40×40cm: 75 € con tela básica · 105 € con tela premium
+- Almanzor cilíndrica Ø15×20cm: 25 € con tela básica · 40 € con tela premium
+- Almanzor cilíndrica Ø25×25cm: 45 € con tela básica · 65 € con tela premium
+- Tormes cuadrada 20×20cm: 35 € con tela básica · 55 € con tela premium
+- La Serrota rectangular 20×40cm: 65 € con tela básica · 85 € con tela premium
+
+### Envío
+- Comunidad de Madrid: 40 € (cabeceros de más de 180 cm de ancho o 120 cm de alto: 60 €).
+- Resto de la península: según destino, se confirma por teléfono antes de cerrar el pedido.
+- Baleares y Canarias: bajo consulta.
+
+## Telas (https://tirorirohome.com/telas)
+61 telas en dos colecciones. Todas resistentes y aptas para tapicería; cualquiera se puede ampliar en la web para verla en detalle. También se puede enviar tela propia (el taller indica el metraje).
+
+### Colección Básica (sin recargo)
+- Arequipa Beige — Lino en tono tierra cálido y natural. Versátil, combina con madera clara y tonos neutros. Foto: https://tirorirohome.com/telas/basicas/arequipa-beige.webp
+- Flor Azul Protea — Floral botánico en azul. Perfecto para piezas que quieren protagonismo. Foto: https://tirorirohome.com/telas/basicas/flor-azul-protea.webp
+- Floral Natural — Estampado floral en tono natural. Delicado y atemporal. Foto: https://tirorirohome.com/telas/basicas/flor-01.webp
+- Flor Hémera Amarilla — Floral en amarillo cálido. Alegre y luminoso, perfecto para dar vida a cualquier espacio. Foto: https://tirorirohome.com/telas/basicas/flor-hemera-amarilla.webp
+- Morris Granadas Terracota — Inspirado en William Morris, granadas en terracota. Clásico con mucho carácter. Foto: https://tirorirohome.com/telas/basicas/morris-granadas-terracota.webp
+- Pájaros Louise Azul — Estampado de pájaros en azul. Delicado y con personalidad propia. Foto: https://tirorirohome.com/telas/basicas/pajaros-louise-azul.webp
+- Pájaros Louise Rosa — Estampado de pájaros en rosa empolvado. Romántico y atemporal. Foto: https://tirorirohome.com/telas/basicas/pajaros-louise-rosa.webp
+- Pájaros Louise Verde — Estampado de pájaros en verde natural. Fresco y lleno de vida. Foto: https://tirorirohome.com/telas/basicas/pajaros-louise-verde.webp
+- Floralia Vintage — Floral vintage en tonos rosa empolvado. Evoca la tapicería clásica con aire contemporáneo. Foto: https://tirorirohome.com/telas/basicas/floralia-vintage.webp
+- Ikat Natural — Tejido ikat en tonos arena. Artesanal con carácter étnico contemporáneo. Foto: https://tirorirohome.com/telas/basicas/ikat.webp
+- Ikat Verde Agua — Ikat en verde agua refrescante. Tendencia en interiorismo natural. Foto: https://tirorirohome.com/telas/basicas/ikat-verde.webp
+- Ikat Arena — Ikat en tono arena cálido. Artesanal y muy versátil. Foto: https://tirorirohome.com/telas/basicas/ikat-arena.webp
+- Ikat Arrecife — Ikat en azul arrecife. Evoca el mar con elegancia. Foto: https://tirorirohome.com/telas/basicas/ikat-arrecife.webp
+- Ikat Bali Azul — Ikat artesanal en azul Bali. Étnico y sofisticado a la vez. Foto: https://tirorirohome.com/telas/basicas/ikat-bali-azul.webp
+- Ikat Yakarta — Lino ikat en tonos naturales. Carácter artesanal con textura visible. Foto: https://tirorirohome.com/telas/basicas/ikat-yakarta.webp
+- Árbol Kasbah — Estampado árbol en tonos verde salvia. Bohemio y sofisticado. Foto: https://tirorirohome.com/telas/basicas/arbol-kasbah.webp
+- Geométrica Kuwait — Geométrico inspirado en la tapicería marroquí. Muy versátil. Foto: https://tirorirohome.com/telas/basicas/geometrica-kuwait.webp
+- Takada Verde — Estampado geométrico en verde oliva. Fresco y contemporáneo. Foto: https://tirorirohome.com/telas/basicas/takada-verde.webp
+- Espiga Agua — Tejido espiga en tono agua marina. Textura elegante y muy resistente. Foto: https://tirorirohome.com/telas/basicas/espiga-agua.webp
+- Mil Rayas Gris — Rayas finas tejidas en gris. Elegante y atemporal. Foto: https://tirorirohome.com/telas/basicas/mil-rayas-gris.webp
+- Rayas Arena — Raya duplo en tono arena. Natural y fácil de combinar. Foto: https://tirorirohome.com/telas/basicas/rayas-arena.webp
+- Mil Rayas Azul Marino — Rayas tejidas en azul marino. Clásico náutico con personalidad. Foto: https://tirorirohome.com/telas/basicas/mil-rayas-azul.webp
+- Raya Índigo Acuarela — Raya artesanal en índigo acuarela. Efecto pintura único. Foto: https://tirorirohome.com/telas/basicas/raya-indigo.webp
+- Rayas Tévere — Raya clásica en tono natural. Versátil y resistente. Foto: https://tirorirohome.com/telas/basicas/rayas-tevere.webp
+- Coral Costero — Raya en coral y arena. Ideal para ambientes mediterráneos y playeros. Foto: https://tirorirohome.com/telas/basicas/coral-costero.webp
+- Raya Harvest — Raya clásica en tonos harvest. Cálida y acogedora. Foto: https://tirorirohome.com/telas/basicas/raya-harvest.webp
+- Rayas Laurel Azul — Raya en verde laurel con fondo natural. Fresca y muy combinable. Foto: https://tirorirohome.com/telas/basicas/rayas-laurel-azul.webp
+- Lino Greca — Lino con motivo greca tejido. Clásico y de gran elegancia. Foto: https://tirorirohome.com/telas/basicas/lino-greca.webp
+- Raya Rioja — Raya en burdeos Rioja. Cálida y con mucha personalidad. Foto: https://tirorirohome.com/telas/basicas/raya-rioja.webp
+- Rayas Espiga Arena — Espiga tejida en tono arena. Textura artesanal muy elegante. Foto: https://tirorirohome.com/telas/basicas/rayas-espiga-arena.webp
+- Rayas Espiga Azul — Espiga en azul profundo. Clásico, resistente y muy versátil. Foto: https://tirorirohome.com/telas/basicas/rayas-espiga-azul.webp
+- Rayas Piave — Raya Piave en tonos naturales. Discreta y de gran calidad. Foto: https://tirorirohome.com/telas/basicas/rayas-piave.webp
+- Raya Artesanal Lino — Raya artesanal en lino natural. Textura visible y acabado cuidado. Foto: https://tirorirohome.com/telas/basicas/raya-artesanal-lino.webp
+- Raya Relieve Lino — Lino con raya en relieve. Elegante al tacto y a la vista. Foto: https://tirorirohome.com/telas/basicas/raya-relieve-lino.webp
+- Toile de Jouy Azul — Clásico toile en azul. Romántico y con mucho carácter. Foto: https://tirorirohome.com/telas/basicas/toile-jouy-azul.webp
+- Espiga Azul — Tejido espiga en azul. Elegante y muy resistente al uso. Foto: https://tirorirohome.com/telas/basicas/espiga-azul.webp
+- Morris Granadas Azul — Granadas Morris en azul. Clásico inglés con carácter propio. Foto: https://tirorirohome.com/telas/basicas/morris-granadas-azul.webp
+- Pata de Gallo Verde — Pata de gallo en verde salvia. Sofisticado y muy actual. Foto: https://tirorirohome.com/telas/basicas/pata-de-gallo-verde.webp
+- Ikat Rojo — Ikat en rojo intenso. Vibrante y con mucha energía. Foto: https://tirorirohome.com/telas/basicas/ikat-rojo.webp
+
+### Colección Premium (recargo fijo según medida, ver tarifas)
+- Baqueira — Tapicería premium de alto gramaje. Textura rica y tacto suave al toque. Foto: https://tirorirohome.com/telas/premium/baqueira.webp
+- Baqueira Roja — Baqueira en burdeos intenso. Sofisticada y de gran carácter. Foto: https://tirorirohome.com/telas/premium/baqueira-roja.webp
+- Cérler — Tejido premium en tono camel dorado. Lujoso y muy resistente. Foto: https://tirorirohome.com/telas/premium/cerler.webp
+- Lola Gris — Premium en gris marengo. Da carácter y elegancia a cualquier pieza. Foto: https://tirorirohome.com/telas/premium/lola-gris.webp
+- Rocío — Premium en tono arena suave. Luminoso y muy sofisticado. Foto: https://tirorirohome.com/telas/premium/rocio.webp
+- Artesano Beige — Tejido artesanal en beige natural. Textura visible con acabado impecable. Foto: https://tirorirohome.com/telas/premium/artesano-beige.webp
+- Oxford — Lino Oxford de alto gramaje. Elegancia atemporal con una textura exquisita. Foto: https://tirorirohome.com/telas/premium/oxford.webp
+- Lino Verde Botella — Lino premium en verde botella intenso. Elegante y muy tendencia. Foto: https://tirorirohome.com/telas/premium/lino-verde-botella.webp
+- Lino Verde — Lino viscosa en verde fresco. Fluido y de gran caída. Foto: https://tirorirohome.com/telas/premium/lino-verde.webp
+- Güell Lamadrid — Tejido exclusivo Güell Lamadrid. Calidad de firma para proyectos especiales. Foto: https://tirorirohome.com/telas/premium/guell-lamadrid.webp
+- Rayas Verde Sage — Lino a rayas en verde sage. Natural y muy actual. Foto: https://tirorirohome.com/telas/premium/rayas-verde-sage.webp
+- Lino Azul Provenzal — Lino en azul provenzal lavado. Evoca el sur de Francia. Foto: https://tirorirohome.com/telas/premium/lino-azul-provenzal.webp
+- Vichy Denim — Cuadro vichy en denim. Fresco, clásico y con mucho estilo. Foto: https://tirorirohome.com/telas/premium/vichy-denim.webp
+- Vichy Verde — Vichy en verde salvia. Clásico con un toque natural muy actual. Foto: https://tirorirohome.com/telas/premium/vichy-verde.webp
+- Ramas Siena Azul — Estampado botánico en azul siena. Exclusivo y con personalidad. Foto: https://tirorirohome.com/telas/premium/ramas-siena.webp
+- Flores Gardenia — Lino con flores gardenia en turquesa. Romántico y único. Foto: https://tirorirohome.com/telas/premium/flores-gardenia.webp
+- Lino Flores Normandía — Lino con flores en verde Normandía. Romántico y de gran calidad. Foto: https://tirorirohome.com/telas/premium/lino-flores-normandia.webp
+- Lino Flores Senda — Flores delicadas sobre lino natural. Elegante y con mucho detalle. Foto: https://tirorirohome.com/telas/premium/lino-flores-senda.webp
+- Bibiana — Tejido Bibiana con textura única. Sofisticado y de alto gramaje. Foto: https://tirorirohome.com/telas/premium/bibiana.webp
+- Prints Botánicos — Estampado botánico en lino premium. Exclusivo y lleno de detalle. Foto: https://tirorirohome.com/telas/premium/prints-botanicos.webp
+- Raya Monina — Lino raya Monina de gran finura. Natural y muy elegante. Foto: https://tirorirohome.com/telas/premium/raya-monina.webp
+- Rayas Jules Verde — Rayas Jules en verde. Clásico y sofisticado con un toque fresco. Foto: https://tirorirohome.com/telas/premium/rayas-jules-verde.webp
+
+## Preguntas frecuentes
+### ¿Qué medida de cabecero necesito para mi cama?
+Depende del ancho del colchón. La regla general es que el cabecero sobresalga 5-10 cm a cada lado. Para una cama de 150 cm, lo ideal es un cabecero de 160 cm de ancho y 120 o 130 cm de alto. Tenemos una guía completa con medidas para camas de 90, 105, 135, 150, 160, 180 y 200 cm.
+
+### ¿Cuánto cuesta un cabecero tapizado a medida?
+Nuestros cabeceros tapizados a medida parten de 290 € e incluyen la tela básica que elijas, el tamaño que necesites y el acabado a mano. El precio final depende de la forma (recto, arco, corona o ondas), del ancho y de la tela: las telas premium tienen un recargo variable (lo ves en el configurador antes de confirmar). En el configurador puedes ver el precio exacto en tiempo real antes de pedirlo.
+
+### ¿Qué tela es mejor para un cabecero?
+Para un dormitorio principal solemos recomendar lino lavado o bouclé: son cálidos, no destiñen con la luz y aguantan muy bien el paso del tiempo. Si hay mascotas o niños, mejor un velvet o un tejido con tratamiento antimanchas. Si quieres un look más nórdico, los algodones en tonos crudo o piedra funcionan siempre. Tenemos más de 60 telas y, si dudas, te ayudamos por WhatsApp con fotos del espacio.
+
+### ¿Merece la pena un cabecero hecho a medida frente a uno estándar?
+Sí, por tres motivos: encaja al milímetro con tu cama y pared (los estándar suelen quedar cortos o desproporcionados), eliges la tela y el color exactos para tu dormitorio, y al estar tapizado a mano la calidad y durabilidad es muy superior a la de un cabecero industrial. Y el precio (desde 290 €) suele ser competitivo frente a tiendas de gama media.
+
+### ¿Cómo se limpia un cabecero tapizado?
+Para el día a día basta con aspirar la superficie cada 2-3 semanas con la boquilla suave. Si hay una mancha puntual, retírala con un paño húmedo y jabón neutro, frotando desde fuera hacia dentro. Para una limpieza profunda recomendamos llamar a una tapicería local: la mayoría de nuestras telas no se pueden lavar a máquina porque el cabecero lleva relleno interior.
+
+### ¿De qué materiales está hecho un cabecero Tiroriro por dentro?
+La estructura interior es de tablero aglomerado con refuerzo añadido en los laterales para que el cabecero aguante perfectamente con el paso del tiempo y no se deforme. Sobre esa estructura colocamos una capa de gomaespuma de alta densidad (la buena, la que no se hunde con los años), encima una capa de guata de 8 cm para conseguir ese tacto mullido y volumen uniforme, y por último la tela que hayas elegido tapizada a mano. Esta combinación es la que da la sensación firme pero acogedora característica de nuestros cabeceros.
+
+### ¿Cuánto cuesta el envío y a qué zonas llegáis?
+Dentro de la Comunidad de Madrid el envío cuesta 40 € (se cobra aparte del precio del producto); en cabeceros de más de 180 cm de ancho o 120 cm de alto son 60 €, porque necesitan un transporte mayor. El configurador te dice siempre la cifra exacta de tu medida. Fuera de Madrid enviamos a toda la península ibérica y el coste se calcula según destino — te lo confirmamos por teléfono antes de cerrar el pedido. Para Baleares y Canarias también lo valoramos puntualmente. Procuramos que los transportistas vayan en pareja cuando el cabecero es grande, lo entregan en casa y se cuidan al máximo de que la pieza no sufra durante el trayecto.
+
+### ¿Cómo es vuestro proceso artesanal paso a paso?
+Primero pasa por carpintería: en el caso del cabecero se monta la forma según el diseño que hemos definido contigo previamente (si tú tienes una forma creativa también puedes enviárnosla y la fabricamos). Se ajustan medidas, grosor y refuerzos. Después pasa a tapizado, que va siempre en este orden: primero la gomaespuma de alta densidad, encima la guata de 8 cm y por último la tela cosida y ajustada a mano. Antes de salir del taller hacemos un control de calidad pieza a pieza y solo entonces se prepara el envío.
+
+### ¿Puedo enviaros mi propia tela para que la tapicéis?
+Sí, lo hacemos a menudo. El metraje exacto depende del producto y, sobre todo, del tipo de tela: hay telas de doble cara, otras que no, y algunas con rayas o estampados que tienen que casar en los bordes y eso obliga a pedir un poco más de metros. Lo más sencillo es que nos llames o nos escribas, vemos juntos la pieza y la tela y te decimos el metraje exacto antes de que la compres.
+
+### ¿Puedo pedir un cabecero o puf en dos telas (bicolor)?
+Sí, como quieras. Podemos combinar dos telas en el mismo cabecero, puf o cojín — por ejemplo cuerpo en una tela y ribetes o piping en otra, o mitades de distinto color. Cuéntanos la idea por teléfono y te orientamos sobre qué combinaciones quedan mejor con las telas disponibles.
+
+### ¿Tenéis showroom para ver las piezas antes de comprar?
+Todavía no, pero estamos trabajando en abrir un espacio físico muy pronto. Mientras tanto, podemos enviarte fotos reales adicionales de cualquier modelo y resolverte todas las dudas por WhatsApp o por teléfono antes de confirmar el pedido.
+
+### ¿Hacéis descuentos para hoteles, restaurantes o pedidos de empresa?
+Sí. Cuando se trata de un proyecto de empresa con volumen (hoteles, hostelería, interiorismo, promociones), aplicamos un descuento especial. Escríbenos contándonos el proyecto y te preparamos un presupuesto a medida.
+
+### ¿Dónde se fabrican los productos de Tiroriro?
+Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 20 días: nada está prefabricado.
+
+### ¿Cuánto tarda en llegar mi pedido?
+El plazo habitual es de 20 días naturales desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.
+
+### ¿Puedo ver las telas antes de decidir?
+Sí. Puedes ver todas nuestras telas en la sección de telas de la web, con foto de detalle y descripción de cada una. Si tienes dudas, escríbenos por WhatsApp y te orientamos sobre cuál encaja mejor con tu espacio.
+
+### ¿Hacéis envíos a toda España?
+Enviamos a toda la península ibérica. Si estás en Baleares o Canarias, escríbenos y lo valoramos según el destino.
+
+### ¿Puedo devolver el producto si no me gusta?
+Al ser productos hechos a medida y personalizados, no admitimos devoluciones por cambio de opinión. Sí cubrimos cualquier defecto de fabricación — si algo no está bien hecho, lo solucionamos.
+
+### ¿Cómo funciona el pago?
+Aceptamos Bizum, Stripe y transferencia bancaria. El pago se realiza tras confirmar los detalles por teléfono. No pedimos ningún anticipo hasta que estés seguro/a de tu elección.
+
+### ¿El cabecero viene montado o hay que ensamblarlo?
+Los cabeceros llegan listos para colocar. Por defecto, no incluyen anclaje a pared. Tienes varias opciones: colocarlo sobre el somier, sin necesidad de fijarlo, añadir patas para apoyarlo directamente en el suelo, o solicitar piezas específicas para anclarlo a la pared. También ofrecemos servicio de instalación en la Comunidad de Madrid. Antes de confirmar el pedido, te explicamos todas las opciones por teléfono.
+
+## Páginas
+- Inicio: https://tirorirohome.com/
+- Productos: https://tirorirohome.com/productos
+- Cabeceros: https://tirorirohome.com/productos/cabeceros (modelos: /calobra, /pregonda, /macarella, /conta, /barbaria)
+- Bancos: https://tirorirohome.com/productos/bancos (modelo: /oyambre)
+- Pufs: https://tirorirohome.com/productos/pufs (modelos: /patos, /monteferro)
+- Almohadones: https://tirorirohome.com/productos/cojines
+- Mesas de centro: https://tirorirohome.com/productos/mesas-centro (modelo: /cabo-de-palos)
+- Pantallas de lámpara: https://tirorirohome.com/productos/pantallas-lampara (modelos: /almanzor, /tormes, /la-serrota)
+- Telas: https://tirorirohome.com/telas
+- Configurador: https://tirorirohome.com/configurador
+- Guía de medidas de cabeceros: https://tirorirohome.com/guia-medidas-cabeceros
+- Probador virtual: https://tirorirohome.com/probador
+- Nosotros: https://tirorirohome.com/nosotros
+- Aviso legal: https://tirorirohome.com/aviso-legal · Privacidad: https://tirorirohome.com/privacidad · Cookies: https://tirorirohome.com/cookies
