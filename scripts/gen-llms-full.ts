@@ -7,6 +7,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { FABRICS } from "../src/lib/fabrics.ts";
 import { GUIAS } from "../src/data/guias.ts";
+import { QUIENES_SOMOS, CATEGORY_SPEECH } from "../src/data/narrativa.ts";
 import {
   CABECERO_BASE, CABECERO_PREMIUM, CABECERO_VIVO_DOBLE, HEIGHT_STEP_EUR,
   BANCO_BASE, BANCO_PREMIUM, BANCO_VIVO,
@@ -42,7 +43,18 @@ const out = `# Tiroriro — información completa para asistentes de IA
 Resumen corto: ${BASE}/llms.txt · Actualizado: ${new Date().toISOString().slice(0, 10)}
 
 ## Quiénes somos
-Tiroriro (Tiroriro Home) es una marca familiar madrileña fundada por dos parejas: Beatriz y Juan, y Rocío e Iñaki. Diseñamos y tapizamos a mano piezas para el dormitorio y el salón, cada una fabricada bajo pedido con la forma, las medidas y la tela que elige el cliente. Trabajamos con tapiceros artesanos con décadas de oficio.
+Tiroriro (Tiroriro Home) es una marca familiar madrileña fundada por dos parejas: Rocío Navarrete e Iñaki Sangrador, y Bea González del Yerro y Juan Sangrador. Diseñamos y tapizamos a mano piezas para el dormitorio y el salón, cada una fabricada bajo pedido con la forma, las medidas y la tela que elige el cliente. Trabajamos con tapiceros artesanos con décadas de oficio.
+
+${QUIENES_SOMOS.origen.join("\n\n")}
+
+### ${QUIENES_SOMOS.combatimosTitulo}
+${QUIENES_SOMOS.combatimos.join("\n\n")}
+
+### Qué combate cada pieza
+${Object.entries(CATEGORY_SPEECH).map(([k, s]) => `- ${k} (${BASE}/productos/${k}) · ${s.contra}: ${s.texto}`).join("\n")}
+
+### ${QUIENES_SOMOS.equipoTitulo}
+${QUIENES_SOMOS.equipo}
 
 - Taller: Calle Cristóbal Colón, 11, 28660 Boadilla del Monte (Comunidad de Madrid, España).
 - Contacto: info@tirorirohome.com · WhatsApp y teléfono +34 660 786 453 · Instagram https://www.instagram.com/tirorirohome/

@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamSection from "@/components/TeamSection";
 import SEO from "@/components/SEO";
+import { QUIENES_SOMOS } from "@/data/narrativa";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const FACTS = [
@@ -18,13 +19,41 @@ const FACTS = [
 const TeamPage = () => (
   <>
     <SEO
-      title="Quiénes somos | Tiroriro · Tapizado artesanal"
-      description="Conoce el equipo detrás de Tiroriro: artesanos especializados en tapizado a medida, hecho a mano en España con más de 60 telas disponibles."
+      title="Quiénes somos | Tiroriro · Dos familias contra la indiferencia en casa"
+      description="Tiroriro lo fundaron dos parejas en Boadilla del Monte. Hacemos a mano cabeceros, bancos, pufs y pantallas: los sitios donde una familia se encuentra y habla."
       canonical="https://tirorirohome.com/nosotros"
     />
     <Navbar />
     <main className="pt-20 md:pt-24">
-      <h1 className="sr-only">Quiénes somos · Tiroriro</h1>
+      {/* Narrativa de marca (src/data/narrativa.ts): la familia y la indiferencia en casa */}
+      <section className="py-16 md:py-24 px-6">
+        <div className="container mx-auto max-w-3xl">
+          <AnimatedSection className="text-center">
+            <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground mb-4">Dos familias</p>
+            <h1 className="font-serif text-4xl md:text-6xl font-light text-foreground">{QUIENES_SOMOS.titulo}</h1>
+            <span className="section-line" />
+          </AnimatedSection>
+          <AnimatedSection delay={0.1} className="mt-8 space-y-5">
+            {QUIENES_SOMOS.origen.map((p) => (
+              <p key={p} className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">{p}</p>
+            ))}
+          </AnimatedSection>
+          <AnimatedSection delay={0.15} className="mt-14">
+            <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground">{QUIENES_SOMOS.combatimosTitulo}</h2>
+            <div className="w-10 h-px bg-accent-warm mt-3" />
+            <div className="mt-6 space-y-5">
+              {QUIENES_SOMOS.combatimos.map((p) => (
+                <p key={p} className="text-base md:text-lg text-muted-foreground font-light leading-relaxed">{p}</p>
+              ))}
+            </div>
+          </AnimatedSection>
+          <AnimatedSection delay={0.2} className="mt-14">
+            <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground">{QUIENES_SOMOS.equipoTitulo}</h2>
+            <div className="w-10 h-px bg-accent-warm mt-3" />
+            <p className="mt-6 text-base md:text-lg text-muted-foreground font-light leading-relaxed">{QUIENES_SOMOS.equipo}</p>
+          </AnimatedSection>
+        </div>
+      </section>
       <TeamSection />
       <section className="py-16 md:py-24 px-6 bg-secondary">
         <div className="container mx-auto max-w-3xl">

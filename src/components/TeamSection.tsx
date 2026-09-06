@@ -167,10 +167,10 @@ const TeamSection = () => {
     <section id="equipo" className="py-20 md:py-32 px-6 bg-secondary">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Quiénes somos</h2>
+          <h2 className="font-serif text-3xl md:text-5xl font-light text-foreground">Los cuatro</h2>
           <span className="section-line" />
           <p className="mt-6 text-muted-foreground font-light max-w-xl mx-auto italic text-base">
-            "2 hermanos, 2 amigas, 2 bebés recién nacidos y un montón de cosas por encajar — así nació Tiroriro: porque ninguna encontraba lo que de verdad quería para su casa."
+            "Dos hermanos y dos amigas de toda la vida. Esto es lo que hace cada uno para que tu pedido salga bien."
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-10 max-w-6xl mx-auto">
