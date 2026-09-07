@@ -1,7 +1,8 @@
-// Narrativa de marca (decidida por Juan el 6/9/2026): Tiroriro hace piezas
-// para que en casa haya menos INDIFERENCIA y más encuentro. Es el hilo de
-// "Quiénes somos" y el "speech de fondo" de cada categoría. Vive aquí para que
-// la web, el prerender y llms-full.txt cuenten exactamente lo mismo.
+// Narrativa de marca (decidida por Juan el 6/9/2026, compactada el 7/9/2026):
+// Tiroriro hace piezas para que en casa haya menos INDIFERENCIA y más
+// encuentro. Es el hilo de "Por qué Tiroriro" (home), de la introducción de
+// "Quiénes somos" y del "speech de fondo" de cada categoría. Vive aquí para
+// que la web, el prerender y llms-full.txt cuenten exactamente lo mismo.
 
 export interface Speech {
   /** Contra qué se posiciona la pieza ("Contra el 'mañana hablamos'"). */
@@ -43,23 +44,46 @@ export const CATEGORY_SPEECH: Record<string, Speech> = {
   },
 };
 
-// Texto de "Quiénes somos" (/nosotros). Párrafos en orden; los títulos de
-// sección van aparte para poder maquetarlos.
+// "Por qué Tiroriro" (sección de la home). Versión compacta de la narrativa:
+// kicker + titular + una frase, tres razones numeradas y la cita de cierre.
+export const POR_QUE_TIRORIRO = {
+  kicker: "Contra la indiferencia en casa",
+  titulo: "Por qué Tiroriro",
+  intro: "Hacemos encuentros: los sitios de casa donde una familia se para, se mira y habla.",
+  razones: [
+    {
+      num: "01",
+      titulo: "Nació de dos casas por hacer",
+      texto:
+        "Dos parejas, dos bebés recién nacidos y dos casas nuevas. Rocío, Iñaki, Bea y Juan no querían la casa de revista ni el mueble que viene en tres tallas: querían una casa donde apeteciera quedarse y donde a las diez de la noche todavía se hablara. Como no lo encontraban, aprendieron el oficio con tapiceros de toda la vida y empezaron a hacerlo ellos: a mano, a medida y de una en una, no en serie.",
+    },
+    {
+      num: "02",
+      titulo: "Hacemos encuentros",
+      texto:
+        "El “mañana hablamos” se repite hasta que en casa ya no se habla. Por eso hacemos los sitios donde una familia se encuentra: el cabecero donde os contáis el día, el banco donde entran los hijos, el puf que dice “cabéis todos” y la pantalla de lámpara con la luz cálida bajo la que nadie se levanta.",
+    },
+    {
+      num: "03",
+      titulo: "A vuestra medida, y tú solo abres la puerta",
+      texto:
+        "Tú eliges tela, tamaño y acabado; nosotros lo construimos a mano y en 20 días está en tu casa. Sin buscar tapiceros ni coordinar entregas. Y si dudas, nos llamas: te enseñamos telas, te ayudamos con las medidas y resolvemos cualquier duda antes de encargar nada. Al teléfono siempre contesta uno de los cuatro.",
+    },
+  ],
+  cita: {
+    texto: "El futuro de la humanidad se fragua en la familia.",
+    autor: "Juan Pablo II",
+  },
+};
+
+// Introducción de "Quiénes somos" (/nosotros), en primera persona. Debajo van
+// las fichas de "Los cuatro" y los datos clave, que viven en la propia página.
 export const QUIENES_SOMOS = {
+  kicker: "Dos familias",
   titulo: "Quiénes somos",
-  origen: [
-    "Tiroriro lo fundaron dos parejas: Rocío e Iñaki, Bea y Juan. Dos hermanos, dos amigas de toda la vida y, cuando empezó todo, dos bebés recién nacidos y dos casas por hacer.",
-    "Rocío y Bea buscaban lo mismo y no lo encontraban. No querían la casa de revista ni el mueble que viene en tres tallas. Querían una casa donde apeteciera quedarse. Donde se pudiera invitar sin pensar dónde sentar a la gente. Donde a las diez de la noche todavía se hablara.",
-    "Así que aprendieron el oficio con tapiceros de toda la vida y empezaron a fabricar a mano, en Boadilla del Monte, lo que les faltaba: cabeceros, bancos, pufs, pantallas de lámpara. Piezas luminosas, alegres y cómodas, hechas para durar lo que dura una familia.",
+  intro: [
+    "Tiroriro lo fundamos dos parejas: Rocío e Iñaki, Bea y Juan. Dos hermanos, dos amigas de toda la vida y, cuando empezó todo, dos bebés recién nacidos y dos casas por hacer.",
+    "Buscábamos una casa donde apeteciera quedarse. Donde se pudiera invitar sin pensar dónde sentar a la gente. Donde a las diez de la noche todavía se hablara. Como no lo encontrábamos, aprendimos el oficio con tapiceros de toda la vida y empezamos a fabricarlo a mano en Boadilla del Monte.",
+    "Hacemos encuentros: cabeceros, bancos, pufs, mesas y pantallas donde una familia se para, se mira y habla. Porque, como dijo Juan Pablo II, el futuro de la humanidad se fragua en la familia.",
   ],
-  combatimosTitulo: "Lo que combatimos",
-  combatimos: [
-    "La indiferencia en casa. No llega de golpe: llega cansada. Es el día complicado que hace que no preguntes cómo ha ido el suyo. Es el agotamiento que convierte una pregunta de tu hijo en un “ahora no”. Es el “mañana hablamos” que se repite hasta que ya no queda nada que decir.",
-    "Nosotros no arreglamos eso. Pero hacemos los sitios donde se arregla. Hacemos encuentros: el cabecero, el banco, el puf y la luz donde dos personas se paran, se miran y se encuentran.",
-    "Un cabecero para el momento más importante del día, cuando dos personas se apoyan y se cuentan lo que ha pasado, en vez de dormirse contra una pared fría. Un banco a los pies de la cama para que los hijos entren y cuenten lo del colegio. Pufs para que, cuando el salón se llena, nadie tenga que ir a por sillas al trastero: cabéis todos. Y pantallas de lámpara para hablar alrededor de una luz cálida, filtrada por una tela bonita, y no bajo una bombilla fría.",
-    "Piezas para el encuentro. Para que unos se compadezcan de otros y en casa se hable. Porque, como dijo Juan Pablo II, el futuro de la humanidad se fragua en la familia.",
-  ],
-  equipoTitulo: "Quién hace qué",
-  equipo:
-    "Hoy cada pedido lo atiende Bea o Rocío por teléfono. Iñaki se ocupa de que llegue a tu casa en el día y sin un arañazo. Juan hace que todo lo demás funcione. No tenemos tienda: tenemos un taller, una web y un teléfono al que siempre contesta uno de los cuatro.",
 };
