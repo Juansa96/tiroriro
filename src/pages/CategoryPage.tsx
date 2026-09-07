@@ -116,8 +116,8 @@ export const CATEGORIES: Record<string, { title: string; subtitle: string; model
       {
         name: "Barbaria",
         photos: [
-          "/productos-fotos/cabeceros/barbaria-01.webp",
-          "/productos-fotos/cabeceros/barbaria-02.webp",
+          "/productos-fotos/cabeceros/ondas-01.webp",
+          "/productos-fotos/cabeceros/ondas-02.webp",
         ],
         desc: "Corona quíntuple con cinco arcos. Movimiento escultórico y mucha presencia.",
         priceLabel: "",
