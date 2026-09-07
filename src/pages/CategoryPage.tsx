@@ -359,7 +359,6 @@ interface CategoryPageProps {
 const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: string; name: string }) => {
   const [idx, setIdx] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
-  const [landscape, setLandscape] = useState<Record<string, boolean>>({});
   const touchStartX = useRef<number | null>(null);
 
   const buildSrcSet = (src: string) => {
@@ -385,13 +384,6 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
 
   const prev = () => setIdx(i => (i - 1 + photos.length) % photos.length);
   const next = () => setIdx(i => (i + 1) % photos.length);
-  // Las fotos apaisadas (más anchas que altas) se muestran enteras sobre fondo crema
-  // en vez de recortarlas al marco 3:4, que dejaría fuera los laterales de la pieza.
-  const markOrientation = (src: string, img: HTMLImageElement) => {
-    if (img.naturalWidth > img.naturalHeight && !landscape[src]) {
-      setLandscape(l => ({ ...l, [src]: true }));
-    }
-  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -406,7 +398,6 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
   return (
     <div
       className="relative overflow-hidden w-full aspect-[3/4] select-none"
-      style={{ backgroundColor: "#F0EDE8" }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -417,11 +408,10 @@ const PhotoSlider = ({ photos, category, name }: { photos: string[]; category: s
           srcSet={buildSrcSet(src)}
           sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 380px"
           alt={`${categoryAltLabel[category] || "Producto tapizado"} ${name}${photos.length > 1 ? ` — foto ${i + 1}` : ""} | Tiroriro`}
-          className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${landscape[src] ? "object-contain" : "object-cover"}`}
-          style={{ opacity: i === idx ? 1 : 0, objectPosition: landscape[src] ? "center" : imagePosition(category) }}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          style={{ opacity: i === idx ? 1 : 0, objectPosition: imagePosition(category) }}
           loading="lazy"
           decoding="async"
-          onLoad={(e) => markOrientation(src, e.currentTarget)}
         />
       ))}
       {photos.length > 1 && (
