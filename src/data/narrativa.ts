@@ -84,6 +84,7 @@ export const QUIENES_SOMOS = {
   intro: [
     "Tiroriro lo fundamos dos parejas: Rocío e Iñaki, Bea y Juan. Dos hermanos, dos amigas de toda la vida y, cuando empezó todo, dos bebés recién nacidos y dos casas por hacer.",
     "Buscábamos una casa donde apeteciera quedarse. Donde se pudiera invitar sin pensar dónde sentar a la gente. Donde a las diez de la noche todavía se hablara. Como no lo encontrábamos, aprendimos el oficio con tapiceros de toda la vida y empezamos a fabricarlo a mano en Boadilla del Monte.",
-    "Hacemos encuentros: cabeceros, bancos, pufs, mesas y pantallas donde una familia se para, se mira y habla. Porque, como dijo Juan Pablo II, el futuro de la humanidad se fragua en la familia.",
+    "Tenemos un enemigo: la indiferencia en casa. Es el día cansado que hace que no preguntes cómo ha ido el suyo. Es el “ahora no” a la pregunta de un hijo. Es el “mañana hablamos” que se repite hasta que ya no queda nada que decir. Contra eso luchamos.",
+    "Y luchamos con lo que sabemos hacer: encuentros. Cabeceros, bancos, pufs, mesas y pantallas donde una familia se para, se mira y habla. Porque, como dijo Juan Pablo II, el futuro de la humanidad se fragua en la familia.",
   ],
 };
