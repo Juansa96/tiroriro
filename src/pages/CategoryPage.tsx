@@ -566,7 +566,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
         category: cat.title,
         image: activeModels[0]?.photos[0]
           ? `https://tirorirohome.com${activeModels[0].photos[0]}`
-          : "https://tirorirohome.com/hero-poster.webp",
+          : "https://tirorirohome.com/og-image.jpg",
         offers: {
           "@type": "AggregateOffer",
           priceCurrency: "EUR",
