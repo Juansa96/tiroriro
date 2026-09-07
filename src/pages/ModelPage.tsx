@@ -45,6 +45,7 @@ const ModelPage = () => {
   const cat = CATEGORIES[category];
   const seoCat = CATEGORY_SEO[category];
   const [idx, setIdx] = useState(0);
+  const [landscape, setLandscape] = useState<Record<string, boolean>>({});
   const touchX = useRef<number | null>(null);
 
   if (!cat || !seoCat) return <Navigate to="/productos" replace />;
@@ -128,7 +129,8 @@ const ModelPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-start">
             <div
-              className="relative overflow-hidden rounded-lg w-full aspect-[3/4] select-none bg-muted/20"
+              className="relative overflow-hidden rounded-lg w-full aspect-[3/4] select-none"
+              style={{ backgroundColor: "#F0EDE8" }}
               onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
               onTouchEnd={(e) => {
                 if (touchX.current === null) return;
@@ -142,11 +144,17 @@ const ModelPage = () => {
                   key={src}
                   src={src}
                   alt={`${altLabel} ${model.name}${model.photos.length > 1 ? ` — foto ${i + 1}` : ""} | Tiroriro`}
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${landscape[src] ? "object-contain" : "object-cover"}`}
                   style={{ opacity: i === idx ? 1 : 0 }}
                   loading={i === 0 ? "eager" : "lazy"}
                   decoding="async"
                   fetchPriority={i === 0 ? "high" : "auto"}
+                  onLoad={(e) => {
+                    // Fotos apaisadas enteras sobre fondo crema; las verticales llenan el marco 3:4.
+                    if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight && !landscape[src]) {
+                      setLandscape(l => ({ ...l, [src]: true }));
+                    }
+                  }}
                 />
               ))}
               {model.photos.length > 1 && (
