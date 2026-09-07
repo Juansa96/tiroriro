@@ -49,9 +49,9 @@ const articleJsonLd = {
   "@type": "Article",
   headline: "Guía de medidas para cabeceros tapizados: cama 90, 135, 150 y 180",
   description: "Tabla con medidas recomendadas de cabeceros tapizados según el ancho de cama (90, 105, 135, 150, 160, 180, 200) y guía de alturas por estilo.",
-  image: "https://tirorirohome.com/hero-poster.webp",
+  image: "https://tirorirohome.com/og-image.jpg",
   author: { "@type": "Organization", name: "Tiroriro" },
-  publisher: { "@type": "Organization", name: "Tiroriro", logo: { "@type": "ImageObject", url: "https://tirorirohome.com/hero-poster.webp" } },
+  publisher: { "@type": "Organization", name: "Tiroriro", logo: { "@type": "ImageObject", url: "https://tirorirohome.com/logo-tiroriro.png" } },
   mainEntityOfPage: "https://tirorirohome.com/guia-medidas-cabeceros",
 };
 
