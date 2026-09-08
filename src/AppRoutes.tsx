@@ -17,7 +17,6 @@ const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const LegalPage = lazy(() => import("./pages/LegalPage"));
 const CookiesPage = lazy(() => import("./pages/CookiesPage"));
 const GraciasPage = lazy(() => import("./pages/GraciasPage"));
-const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage"));
 const GuiaMedidasCabecerosPage = lazy(() => import("./pages/GuiaMedidasCabecerosPage"));
 const ModelPage = lazy(() => import("./pages/ModelPage"));
 const IgPage = lazy(() => import("./pages/IgPage"));
@@ -55,7 +54,6 @@ const AppRoutes = () => (
     <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
     <Route path="/quienes-somos" element={<Navigate to="/nosotros" replace />} />
     <Route path="/gracias" element={<GraciasPage />} />
-    <Route path="/unsubscribe" element={<UnsubscribePage />} />
     <Route path="/privacidad" element={<PrivacyPage />} />
     <Route path="/aviso-legal" element={<LegalPage />} />
     <Route path="/cookies" element={<CookiesPage />} />

@@ -202,11 +202,8 @@ const ContactForm = () => {
       const shippingLine = isMadridCP
         ? `Envío Madrid: ${SHIPPING_MADRID} €${oversizedLine} — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
         : `Envío fuera de Madrid: a consultar según destino${cp ? ` (CP ${cp})` : ''}`;
-      const { error: internalError } = await supabase.functions.invoke('send-transactional-email', {
+      const { error: internalError } = await supabase.functions.invoke('send-contact-internal', {
         body: {
-          templateName: 'contact-internal',
-          recipientEmail: 'info@tirorirohome.com',
-          replyTo: form.email,
           idempotencyKey: `contact-internal-${idempotencyBase}`,
           templateData: {
             fullName,
@@ -230,9 +227,8 @@ const ContactForm = () => {
 
       // 2. Confirmación al cliente (no bloqueante)
       try {
-        await supabase.functions.invoke('send-transactional-email', {
+        await supabase.functions.invoke('send-contact-confirmation', {
           body: {
-            templateName: 'contact-confirmation',
             recipientEmail: form.email,
             idempotencyKey: `contact-confirmation-${idempotencyBase}`,
             templateData: { firstName, productList, previewLink },
