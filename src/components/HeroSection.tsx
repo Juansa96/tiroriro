@@ -193,7 +193,7 @@ const HeroSection = () => {
           }}
         >
           <p className="hidden md:block mt-6 text-sm md:text-base text-white/90 font-light max-w-xl mx-auto leading-relaxed">
-            Elige la tela y las medidas — nosotros construimos, tapizamos y enviamos. En 20 días lo tienes en casa.
+            Tú eliges la tela y las medidas; nosotros lo construimos, lo tapizamos y te lo enviamos. En 20 días lo tienes en casa.
           </p>
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
