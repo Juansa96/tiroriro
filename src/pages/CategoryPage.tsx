@@ -11,6 +11,7 @@ import { getCategoryPriceFrom, formatPrice, type Category } from "@/data/pricing
 import PreciosOrientativos from "@/components/PreciosOrientativos";
 import GuiaCategoria from "@/components/GuiaCategoria";
 import { CATEGORY_SPEECH } from "@/data/narrativa";
+import { productRatingJsonLd } from "@/data/reviews";
 
 export interface Model {
   name: string;
@@ -576,6 +577,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
           areaServed: "ES",
           seller: { "@type": "Organization", name: "Tiroriro", url: "https://tirorirohome.com" },
         },
+        ...productRatingJsonLd(category),
       }
     : null;
   const breadcrumbJsonLd = seo
@@ -620,6 +622,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                   },
                 }
               : {}),
+            ...productRatingJsonLd(category),
           },
         })),
       }

@@ -12,6 +12,7 @@ import {
   categoryAltLabel,
   productTypeMap,
 } from "./CategoryPage";
+import { productRatingJsonLd } from "@/data/reviews";
 
 const slugify = (s: string) =>
   s
@@ -89,6 +90,7 @@ const ModelPage = () => {
         seller: { "@type": "Organization", name: "Tiroriro", url: "https://tirorirohome.com" },
       },
     }),
+    ...productRatingJsonLd(category),
   };
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
