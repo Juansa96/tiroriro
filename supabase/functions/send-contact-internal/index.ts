@@ -11,6 +11,12 @@ import {
 
 const TEMPLATE = 'contact-internal'
 const INTERNAL_RECIPIENT = 'info@tirorirohome.com'
+// The internal "new enquiry" email goes to our own inbox, so it is not a spam
+// vector towards third parties. A lost enquiry costs a customer, so the per-IP
+// cap here is deliberately loose (many visitors share an IP: offices, cafés,
+// mobile networks) and counts ONLY internal sends, never the customer
+// confirmations sent from the same IP.
+const INTERNAL_IP_MAX_PER_HOUR = 60
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -61,7 +67,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: 'Server configuration error' }, 500)
   }
 
-  if (await ipRateLimited(supabase, callerIp)) {
+  if (await ipRateLimited(supabase, callerIp, { max: INTERNAL_IP_MAX_PER_HOUR, templateName: TEMPLATE })) {
     console.warn('Rate limit exceeded for IP', { callerIp })
     return jsonResponse({ error: 'Rate limit exceeded' }, 429)
   }
