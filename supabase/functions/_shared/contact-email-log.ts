@@ -41,18 +41,27 @@ export function capString(value: unknown, max: number): string | undefined {
   return trimmed ? trimmed.slice(0, max) : undefined
 }
 
-/** Max 10 sends/hour per caller IP. */
+/**
+ * Max `max` sends/hour per caller IP (10 by default, counting every template).
+ * With `templateName` only sends of that template count, so one template's
+ * limit does not eat another's (the internal "new enquiry" email must never be
+ * blocked by the customer confirmations sent from the same IP).
+ */
 export async function ipRateLimited(
   supabase: SupabaseClient,
   callerIp: string,
+  options: { max?: number; templateName?: string } = {},
 ): Promise<boolean> {
+  const max = options.max ?? 10
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
-  const { count } = await supabase
+  let query = supabase
     .from('email_send_log')
     .select('id', { count: 'exact', head: true })
     .eq('metadata->>caller_ip', callerIp)
     .gte('created_at', oneHourAgo)
-  return (count ?? 0) >= 10
+  if (options.templateName) query = query.eq('template_name', options.templateName)
+  const { count } = await query
+  return (count ?? 0) >= max
 }
 
 /** Max 3 sends/10min for the same recipient + template. */

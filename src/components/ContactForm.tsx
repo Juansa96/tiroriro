@@ -195,7 +195,9 @@ const ContactForm = () => {
         ? `${window.location.origin}/?${searchParams.toString()}#contacto`
         : undefined;
 
-      // 1. Email interno a TiroRiro (obligatorio)
+      // 1. Email interno a TiroRiro. Si falla (p. ej. límite de envíos por IP en
+      //    una oficina o red móvil compartida) NO se tira la solicitud: se sigue
+      //    con el alta en el CRM y solo se da error si fallan las dos cosas.
       const oversizedLine = headboardOversizedSurcharge > 0
         ? ` (incluye suplemento cabecero grande: ${headboardOversizedSurcharge} €)`
         : '';
@@ -223,22 +225,12 @@ const ContactForm = () => {
           },
         },
       });
-      if (internalError) throw internalError;
+      const internalOk = !internalError;
+      if (internalError) console.warn('No se pudo enviar el email interno:', internalError);
 
-      // 2. Confirmación al cliente (no bloqueante)
-      try {
-        await supabase.functions.invoke('send-contact-confirmation', {
-          body: {
-            recipientEmail: form.email,
-            idempotencyKey: `contact-confirmation-${idempotencyBase}`,
-            templateData: { firstName, productList, previewLink },
-          },
-        });
-      } catch (confirmErr) {
-        console.warn('No se pudo enviar la confirmación al cliente:', confirmErr);
-      }
-
-      // 3. Registrar lead en CRM (no bloqueante, fallo silencioso)
+      // 2. Registrar lead en CRM. Es la otra vía por la que la solicitud llega
+      //    al equipo: si el email interno ha fallado, esta tiene que funcionar.
+      let crmOk = false;
       try {
         const mensajeCRM = [
           selectedProducts.length > 0 ? `Productos: ${selectedProducts.join(', ')}` : null,
@@ -272,7 +264,7 @@ const ContactForm = () => {
           costeEnvioTotal: shippingCost ?? undefined,
         } : undefined;
 
-        await supabase.functions.invoke('submit-lead', {
+        const { error: crmError } = await supabase.functions.invoke('submit-lead', {
           body: {
             nombre: fullName,
             email: form.email,
@@ -301,8 +293,27 @@ const ContactForm = () => {
 
           },
         });
+        if (crmError) throw crmError;
+        crmOk = true;
       } catch (crmErr) {
         console.warn('CRM no disponible:', crmErr);
+      }
+
+      // Ninguna de las dos vías ha aceptado la solicitud: ahora sí es un error
+      // (el cliente ve el aviso con WhatsApp / email).
+      if (!internalOk && !crmOk) throw internalError ?? new Error('Solicitud no registrada');
+
+      // 3. Confirmación al cliente (no bloqueante)
+      try {
+        await supabase.functions.invoke('send-contact-confirmation', {
+          body: {
+            recipientEmail: form.email,
+            idempotencyKey: `contact-confirmation-${idempotencyBase}`,
+            templateData: { firstName, productList, previewLink },
+          },
+        });
+      } catch (confirmErr) {
+        console.warn('No se pudo enviar la confirmación al cliente:', confirmErr);
       }
 
       // Analytics: evento estándar GA4 para conversión de lead.
