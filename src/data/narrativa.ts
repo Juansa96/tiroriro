@@ -67,7 +67,7 @@ export const POR_QUE_TIRORIRO = {
       num: "03",
       titulo: "A vuestra medida, y tú solo abres la puerta",
       texto:
-        "Tú eliges tela, tamaño y acabado; nosotros lo construimos a mano y en 20 días está en tu casa. Sin buscar tapiceros ni coordinar entregas. Y si dudas, nos llamas: te enseñamos telas, te ayudamos con las medidas y resolvemos cualquier duda antes de encargar nada. Al teléfono siempre contesta uno de los cuatro.",
+        "Tú eliges tela, tamaño y acabado; nosotros lo construimos a mano y en 30 días está en tu casa. Sin buscar tapiceros ni coordinar entregas. Y si dudas, nos llamas: te enseñamos telas, te ayudamos con las medidas y resolvemos cualquier duda antes de encargar nada. Al teléfono siempre contesta uno de los cuatro.",
     },
   ],
   cita: {

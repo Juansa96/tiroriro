@@ -65,7 +65,7 @@ const ModelPage = () => {
   const shortLabel = categoryShortLabel[category] || altLabel;
   const title = `${shortLabel} ${model.name} a medida | Tiroriro`;
   const description = clampText(
-    `${model.desc} Hecho a mano en España en 20 días${priceFrom ? `. Desde ${priceFrom} €` : ""}. Más de 60 telas a elegir.`,
+    `${model.desc} Hecho a mano en España en 30 días${priceFrom ? `. Desde ${priceFrom} €` : ""}. Más de 60 telas a elegir.`,
     158,
   );
 
@@ -183,7 +183,7 @@ const ModelPage = () => {
               )}
 
               <ul className="mt-8 space-y-2 text-sm text-muted-foreground font-light">
-                <li>· Hecho a mano en España en 20 días</li>
+                <li>· Hecho a mano en España en 30 días</li>
                 <li>· Más de 60 telas básicas y premium</li>
                 <li>· Tapizado y medidas a tu gusto</li>
                 <li>· Envío a la península</li>

@@ -1,8 +1,8 @@
 # Tiroriro — información completa para asistentes de IA
 
-> Taller artesanal español de mobiliario tapizado a medida (cabeceros de cama, bancos, pufs, mesas de centro, almohadones y pantallas de lámpara). Hecho a mano en Boadilla del Monte, Madrid, en 20 días. 61 telas para elegir. Precios finales con IVA. Web: https://tirorirohome.com
+> Taller artesanal español de mobiliario tapizado a medida (cabeceros de cama, bancos, pufs, mesas de centro, almohadones y pantallas de lámpara). Hecho a mano en Boadilla del Monte, Madrid, en 30 días. 61 telas para elegir. Precios finales con IVA. Web: https://tirorirohome.com
 
-Resumen corto: https://tirorirohome.com/llms.txt · Actualizado: 2026-09-07
+Resumen corto: https://tirorirohome.com/llms.txt · Actualizado: 2026-09-22
 
 ## Quiénes somos
 Tiroriro (Tiroriro Home) es una marca familiar madrileña fundada por dos parejas: Rocío Navarrete e Iñaki Sangrador, y Bea González del Yerro y Juan Sangrador. Diseñamos y tapizamos a mano piezas para el dormitorio y el salón, cada una fabricada bajo pedido con la forma, las medidas y la tela que elige el cliente. Trabajamos con tapiceros artesanos con décadas de oficio.
@@ -20,7 +20,7 @@ Hacemos encuentros: los sitios de casa donde una familia se para, se mira y habl
 
 - Nació de dos casas por hacer: Dos parejas, dos bebés recién nacidos y dos casas nuevas. Rocío, Iñaki, Bea y Juan no querían la casa de revista ni el mueble que viene en tres tallas: querían una casa donde apeteciera quedarse y donde a las diez de la noche todavía se hablara. Como no lo encontraban, aprendieron el oficio con tapiceros de toda la vida y empezaron a hacerlo ellos: a mano, a medida y de una en una, no en serie.
 - Hacemos encuentros: El “mañana hablamos” se repite hasta que en casa ya no se habla. Por eso hacemos los sitios donde una familia se encuentra: el cabecero donde os contáis el día, el banco donde entran los hijos, el puf que dice “cabéis todos” y la pantalla de lámpara con la luz cálida bajo la que nadie se levanta.
-- A vuestra medida, y tú solo abres la puerta: Tú eliges tela, tamaño y acabado; nosotros lo construimos a mano y en 20 días está en tu casa. Sin buscar tapiceros ni coordinar entregas. Y si dudas, nos llamas: te enseñamos telas, te ayudamos con las medidas y resolvemos cualquier duda antes de encargar nada. Al teléfono siempre contesta uno de los cuatro.
+- A vuestra medida, y tú solo abres la puerta: Tú eliges tela, tamaño y acabado; nosotros lo construimos a mano y en 30 días está en tu casa. Sin buscar tapiceros ni coordinar entregas. Y si dudas, nos llamas: te enseñamos telas, te ayudamos con las medidas y resolvemos cualquier duda antes de encargar nada. Al teléfono siempre contesta uno de los cuatro.
 
 «El futuro de la humanidad se fragua en la familia.» (Juan Pablo II)
 
@@ -39,7 +39,7 @@ Cada pedido lo atiende Bea o Rocío por teléfono. Iñaki se ocupa de que llegue
 - Contacto: info@tirorirohome.com · WhatsApp y teléfono +34 660 786 453 · Instagram https://www.instagram.com/tirorirohome/
 - Horario de atención: por WhatsApp o teléfono, respondemos el mismo día laborable.
 - Envíos: toda la península ibérica (Baleares y Canarias bajo consulta). Instalación a domicilio disponible en la Comunidad de Madrid.
-- Plazo: 20 días naturales desde la confirmación y el pago.
+- Plazo: 30 días naturales (un mes) desde la confirmación y el pago.
 - Pago: Bizum, tarjeta (Stripe) o transferencia. No se cobra nada hasta que el cliente confirma.
 - Garantía: defectos de fabricación reparados o sustituidos sin coste. Productos personalizados: sin devolución por cambio de opinión.
 - Empresas: descuento especial para hoteles, restaurantes, hostelería, interiorismo y promociones.
@@ -48,7 +48,7 @@ Cada pedido lo atiende Bea o Rocío por teléfono. Iñaki se ocupa de que llegue
 1. El cliente elige el producto, la forma, las medidas, la tela y el acabado en el configurador (https://tirorirohome.com/configurador). El precio final, IVA incluido, se actualiza en tiempo real y la vista previa muestra la pieza en el color de la tela elegida.
 2. Envía la solicitud (formulario, WhatsApp o teléfono). Tiroriro confirma detalles y precio de envío.
 3. Se fabrica a mano en el taller: carpintería, gomaespuma de alta densidad, guata de 8 cm y tela cosida y ajustada a mano. Control de calidad pieza a pieza.
-4. Entrega en casa en unos 20 días naturales.
+4. Entrega en casa en unos 30 días naturales.
 
 ## Productos y tarifas (PVP con IVA, tela básica / tela premium)
 
@@ -286,10 +286,10 @@ Todavía no, pero estamos trabajando en abrir un espacio físico muy pronto. Mie
 Sí. Cuando se trata de un proyecto de empresa con volumen (hoteles, hostelería, interiorismo, promociones), aplicamos un descuento especial. Escríbenos contándonos el proyecto y te preparamos un presupuesto a medida.
 
 ### ¿Dónde se fabrican los productos de Tiroriro?
-Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 20 días: nada está prefabricado.
+Todo se fabrica a mano en nuestro taller de la Comunidad de Madrid, en España. Trabajamos con tapiceros artesanos con décadas de oficio. Por eso podemos personalizar cada pieza al milímetro y por eso el plazo es de 30 días: nada está prefabricado.
 
 ### ¿Cuánto tarda en llegar mi pedido?
-El plazo habitual es de 20 días naturales desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.
+El plazo habitual es de 30 días naturales (un mes) desde que confirmamos y recibimos el pago. En épocas de alta demanda puede alargarse 2-3 días — siempre te avisamos antes.
 
 ### ¿Puedo ver las telas antes de decidir?
 Sí. Puedes ver todas nuestras telas en la sección de telas de la web, con foto de detalle y descripción de cada una. Si tienes dudas, escríbenos por WhatsApp y te orientamos sobre cuál encaja mejor con tu espacio.

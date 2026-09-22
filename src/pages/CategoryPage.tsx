@@ -298,7 +298,7 @@ export const categoryAltLabel: Record<string, string> = {
 export const CATEGORY_SEO: Record<string, { title: string; description: string; canonical: string; ogImage: string }> = {
   cabeceros: {
     title: "Cabeceros tapizados a medida | 5 formas | Tiroriro",
-    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 290 €. Hecho a mano en España en 20 días.",
+    description: "Cabeceros tapizados a medida en 5 formas: recto, arco, corona y ondas. Más de 60 telas. Desde 290 €. Hecho a mano en España en 30 días.",
     canonical: "https://tirorirohome.com/productos/cabeceros",
     ogImage: "https://tirorirohome.com/productos-fotos/cabeceros/IMG_2218.webp",
   },
@@ -753,7 +753,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
                   <div>
                     <dt className="font-serif text-lg text-foreground">¿Cuánto tarda en llegar?</dt>
                     <dd className="mt-1 text-sm text-muted-foreground font-light leading-relaxed">
-                      Se fabrican a mano en unos 15–20 días desde que confirmas el pedido. Envío a la península.
+                      Se fabrican a mano en unos 15–30 días desde que confirmas el pedido. Envío a la península.
                     </dd>
                   </div>
                   <div>
