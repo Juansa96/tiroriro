@@ -105,7 +105,7 @@ const PreciosOrientativos = ({ category, className = "" }: { category: Category;
         <ul className="mt-5 space-y-1 text-xs text-muted-foreground font-light leading-relaxed">
           {t.notas.map((n) => <li key={n}>{n}</li>)}
           <li>Envío en la Comunidad de Madrid {SHIPPING_MADRID} €; resto de la península según destino, confirmado antes de cerrar el pedido.</li>
-          <li>Plazo de entrega habitual: 20 días naturales.</li>
+          <li>Plazo de entrega habitual: 30 días naturales (un mes).</li>
         </ul>
         <p className="mt-6 text-center">
           <Link to={`/configurador?tipo=${category}`} className="underline underline-offset-4 text-sm text-foreground hover:text-accent-warm transition-colors">

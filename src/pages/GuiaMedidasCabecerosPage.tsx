@@ -209,7 +209,7 @@ const GuiaMedidasCabecerosPage = () => (
             </h2>
             <p className="text-muted-foreground font-light mb-6 max-w-xl mx-auto">
               Elige forma, mide al milímetro y escoge entre más de 60 telas. Precio en tiempo real,
-              entrega en 20 días desde nuestro taller en Madrid.
+              entrega en 30 días desde nuestro taller en Madrid.
             </p>
             <Link
               to="/configurador?producto=cabecero"

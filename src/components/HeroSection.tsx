@@ -193,7 +193,7 @@ const HeroSection = () => {
           }}
         >
           <p className="hidden md:block mt-6 text-sm md:text-base text-white/90 font-light max-w-xl mx-auto leading-relaxed">
-            Tú eliges la tela y las medidas; nosotros lo construimos, lo tapizamos y te lo enviamos. En 20 días lo tienes en casa.
+            Tú eliges la tela y las medidas; nosotros lo construimos, lo tapizamos y te lo enviamos. En 30 días lo tienes en casa.
           </p>
           <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
@@ -234,7 +234,7 @@ const HeroSection = () => {
           <div className="flex flex-col items-center gap-1.5 text-center">
             <Truck size={18} className="text-foreground/70" />
             <span className="text-xs font-medium text-foreground leading-tight">Entrega</span>
-            <span className="text-[10px] text-foreground/70 font-light">en 20 días</span>
+            <span className="text-[10px] text-foreground/70 font-light">en 30 días</span>
           </div>
         </div>
       </div>

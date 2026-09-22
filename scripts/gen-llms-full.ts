@@ -38,7 +38,7 @@ const telas = (col: "Básicas" | "Premium") =>
 
 const out = `# Tiroriro — información completa para asistentes de IA
 
-> Taller artesanal español de mobiliario tapizado a medida (cabeceros de cama, bancos, pufs, mesas de centro, almohadones y pantallas de lámpara). Hecho a mano en Boadilla del Monte, Madrid, en 20 días. ${FABRICS.length} telas para elegir. Precios finales con IVA. Web: ${BASE}
+> Taller artesanal español de mobiliario tapizado a medida (cabeceros de cama, bancos, pufs, mesas de centro, almohadones y pantallas de lámpara). Hecho a mano en Boadilla del Monte, Madrid, en 30 días. ${FABRICS.length} telas para elegir. Precios finales con IVA. Web: ${BASE}
 
 Resumen corto: ${BASE}/llms.txt · Actualizado: ${new Date().toISOString().slice(0, 10)}
 
@@ -64,7 +64,7 @@ Cada pedido lo atiende Bea o Rocío por teléfono. Iñaki se ocupa de que llegue
 - Contacto: info@tirorirohome.com · WhatsApp y teléfono +34 660 786 453 · Instagram https://www.instagram.com/tirorirohome/
 - Horario de atención: por WhatsApp o teléfono, respondemos el mismo día laborable.
 - Envíos: toda la península ibérica (Baleares y Canarias bajo consulta). Instalación a domicilio disponible en la Comunidad de Madrid.
-- Plazo: 20 días naturales desde la confirmación y el pago.
+- Plazo: 30 días naturales (un mes) desde la confirmación y el pago.
 - Pago: Bizum, tarjeta (Stripe) o transferencia. No se cobra nada hasta que el cliente confirma.
 - Garantía: defectos de fabricación reparados o sustituidos sin coste. Productos personalizados: sin devolución por cambio de opinión.
 - Empresas: descuento especial para hoteles, restaurantes, hostelería, interiorismo y promociones.
@@ -73,7 +73,7 @@ Cada pedido lo atiende Bea o Rocío por teléfono. Iñaki se ocupa de que llegue
 1. El cliente elige el producto, la forma, las medidas, la tela y el acabado en el configurador (${BASE}/configurador). El precio final, IVA incluido, se actualiza en tiempo real y la vista previa muestra la pieza en el color de la tela elegida.
 2. Envía la solicitud (formulario, WhatsApp o teléfono). Tiroriro confirma detalles y precio de envío.
 3. Se fabrica a mano en el taller: carpintería, gomaespuma de alta densidad, guata de 8 cm y tela cosida y ajustada a mano. Control de calidad pieza a pieza.
-4. Entrega en casa en unos 20 días naturales.
+4. Entrega en casa en unos 30 días naturales.
 
 ## Productos y tarifas (PVP con IVA, tela básica / tela premium)
 
