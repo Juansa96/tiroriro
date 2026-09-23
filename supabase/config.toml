@@ -15,3 +15,6 @@ verify_jwt = false
 
 [functions.send-contact-confirmation]
 verify_jwt = false
+
+[functions.upload-lead-preview]
+verify_jwt = false

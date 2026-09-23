@@ -65,6 +65,13 @@ Deno.serve(async (req) => {
     mensaje: trim(body.mensaje, 4000),
     origen: trim(body.origen, 100),
     configurador: body.configurador,
+    // Código de descuento (objeto ya calculado en la web). Va también dentro
+    // de configurador.config.descuento cuando hay producto; aquí a nivel de
+    // lead para los formularios directos, que no llevan producto.
+    descuento: body.descuento && typeof body.descuento === 'object' ? body.descuento : undefined,
+    // Envío ya calculado (solo cuando se conoce: CP de Madrid). Si no viene,
+    // el CRM aplica su provisional "a consultar".
+    valor_envio: typeof body.valor_envio === 'number' && body.valor_envio >= 0 ? body.valor_envio : undefined,
     presupuesto: body.presupuesto,
     gclid: trim(body.gclid, 500),
     gbraid: trim(body.gbraid, 500),

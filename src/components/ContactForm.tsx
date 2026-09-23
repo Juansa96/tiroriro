@@ -1,14 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Loader2, MessageCircle } from "lucide-react";
+import { Loader2, MessageCircle, Ticket, X } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { CLICK_ID_PARAMS, getClickIds, trackLeadConversion } from "@/lib/tracking";
 import { trackFbEvent } from "@/lib/metaPixel";
 import { getAttribution } from "@/lib/attribution";
-
+import { capturePreview } from "@/lib/previewSnapshot";
+import {
+  applyDiscount,
+  describeDiscount,
+  describeDiscountForCustomer,
+  discountPayload,
+  findDiscountCode,
+  formatDiscountValue,
+  formatEuroNumber,
+  type DiscountCode,
+} from "@/data/discounts";
 
 import {
   SHIPPING_MADRID,
@@ -49,6 +59,16 @@ const ContactForm = () => {
   const [clickIds] = useState(() => getClickIds());
   const [attribution] = useState(() => getAttribution());
 
+  // Código de descuento: el cliente lo escribe (o llega en la URL como
+  // ?codigo=XXX) y se valida contra la lista oculta de src/data/discounts.ts.
+  const [discountOpen, setDiscountOpen] = useState(false);
+  const [discountInput, setDiscountInput] = useState("");
+  const [discountEntry, setDiscountEntry] = useState<DiscountCode | null>(null);
+  const [discountError, setDiscountError] = useState<string | null>(null);
+
+  // Contenedor del dibujo (SVG) para capturarlo al enviar.
+  const previewRef = useRef<HTMLDivElement>(null);
+
 
   // Cálculo de envío según CP: Madrid (28xxx) = 40€, resto = a consultar.
   const cp = form.postalCode.trim();
@@ -86,7 +106,41 @@ const ContactForm = () => {
     ? HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE
     : 0;
   const shippingCost = isMadridCP ? SHIPPING_MADRID + headboardOversizedSurcharge : null;
-  const totalIfKnown = productPrice !== null && shippingCost !== null ? productPrice + shippingCost : null;
+
+  // Descuento aplicado sobre el precio del producto (nunca sobre el envío).
+  const discount = discountEntry ? applyDiscount(discountEntry, productPrice) : null;
+  const discountedProductPrice = discount?.finalPrice ?? productPrice;
+  const totalIfKnown = discountedProductPrice !== null && shippingCost !== null
+    ? Math.round((discountedProductPrice + shippingCost) * 100) / 100
+    : null;
+
+  const applyDiscountCode = (raw: string): boolean => {
+    const entry = findDiscountCode(raw);
+    if (!entry) {
+      setDiscountEntry(null);
+      setDiscountError(raw.trim() ? "Este código no es válido o ha caducado." : null);
+      return false;
+    }
+    setDiscountEntry(entry);
+    setDiscountInput(entry.code);
+    setDiscountError(null);
+    setDiscountOpen(true);
+    trackEvent('discount_code_applied', { coupon: entry.code });
+    return true;
+  };
+
+  const removeDiscountCode = () => {
+    setDiscountEntry(null);
+    setDiscountInput("");
+    setDiscountError(null);
+  };
+
+  // ?codigo=XXX en la URL (enlaces de campaña o el "ver/editar tu diseño" del email).
+  const codigoParam = searchParams.get('codigo');
+  useEffect(() => {
+    if (codigoParam) applyDiscountCode(codigoParam);
+    // solo al montar / cambiar el parámetro
+  }, [codigoParam]);
 
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
@@ -109,12 +163,15 @@ const ContactForm = () => {
         form?: typeof form;
         selectedProducts?: string[];
         otherProductDetail?: string;
+        discountCode?: string;
       };
       if (draft.form) setForm(f => ({ ...f, ...draft.form, details: f.details || draft.form?.details || "" }));
       if (draft.selectedProducts?.length) {
         setSelectedProducts(prev => Array.from(new Set([...prev, ...draft.selectedProducts!])));
       }
       if (draft.otherProductDetail) setOtherProductDetail(draft.otherProductDetail);
+      // El código guardado se vuelve a validar (puede haber caducado). El de la URL manda.
+      if (draft.discountCode && !codigoParam) applyDiscountCode(draft.discountCode);
     } catch {
       /* ignore */
     }
@@ -126,18 +183,18 @@ const ContactForm = () => {
   useEffect(() => {
     const t = setTimeout(() => {
       try {
-        const hasAnything = form.name || form.email || form.phone || form.details || selectedProducts.length;
+        const hasAnything = form.name || form.email || form.phone || form.details || selectedProducts.length || discountEntry;
         if (!hasAnything) return;
         localStorage.setItem(
           DRAFT_KEY,
-          JSON.stringify({ form, selectedProducts, otherProductDetail }),
+          JSON.stringify({ form, selectedProducts, otherProductDetail, discountCode: discountEntry?.code }),
         );
       } catch {
         /* ignore */
       }
     }, 400);
     return () => clearTimeout(t);
-  }, [form, selectedProducts, otherProductDetail]);
+  }, [form, selectedProducts, otherProductDetail, discountEntry]);
 
   const toggleProduct = (p: string) => {
     setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
@@ -191,9 +248,32 @@ const ContactForm = () => {
 
       // Build a public link that recreates the customer's selection (renders the SVG drawing).
       // This lets the team click the email and see exactly what the customer designed.
+      const linkParams = new URLSearchParams(searchParams);
+      if (discount) linkParams.set('codigo', discount.code);
+      else linkParams.delete('codigo');
       const previewLink = hasConfigParams
-        ? `${window.location.origin}/?${searchParams.toString()}#contacto`
+        ? `${window.location.origin}/?${linkParams.toString()}#contacto`
         : undefined;
+
+      // Dibujo de la pieza tal y como la ve el cliente en esta página: se
+      // captura el SVG, se pasa a PNG y se sube a Storage para que el email
+      // (Gmail no pinta SVG ni data URLs) y el CRM lo enseñen. Si algo falla,
+      // la solicitud sigue igual, solo sin dibujo.
+      const snapshot = previewType ? await capturePreview(previewRef.current) : null;
+      let previewImageUrl: string | undefined;
+      if (snapshot?.png) {
+        try {
+          const { data: uploadData, error: uploadError } = await supabase.functions.invoke('upload-lead-preview', {
+            body: { png: snapshot.png },
+          });
+          if (uploadError) throw uploadError;
+          const url = (uploadData as { url?: unknown } | null)?.url;
+          if (typeof url === 'string' && url.startsWith('https://')) previewImageUrl = url;
+        } catch (uploadErr) {
+          console.warn('No se pudo subir el dibujo del configurador:', uploadErr);
+        }
+      }
+      const discountText = discount ? describeDiscount(discount) : undefined;
 
       // 1. Email interno a TiroRiro. Si falla (p. ej. límite de envíos por IP en
       //    una oficina o red móvil compartida) NO se tira la solicitud: se sigue
@@ -202,7 +282,7 @@ const ContactForm = () => {
         ? ` (incluye suplemento cabecero grande: ${headboardOversizedSurcharge} €)`
         : '';
       const shippingLine = isMadridCP
-        ? `Envío Madrid: ${SHIPPING_MADRID} €${oversizedLine} — Total: ${totalIfKnown ?? '—'} € (IVA incl.)`
+        ? `Envío Madrid: ${SHIPPING_MADRID} €${oversizedLine} — Total: ${totalIfKnown !== null ? formatEuroNumber(totalIfKnown) : '—'} € (IVA incl.${discount ? ', con descuento' : ''})`
         : `Envío fuera de Madrid: a consultar según destino${cp ? ` (CP ${cp})` : ''}`;
       const { error: internalError } = await supabase.functions.invoke('send-contact-internal', {
         body: {
@@ -217,6 +297,8 @@ const ContactForm = () => {
             details: [form.details, shippingLine].filter(Boolean).join('\n') || undefined,
             submittedAt,
             previewLink,
+            previewImageUrl,
+            discount: discountText,
             formOrigin: hasConfigParams ? 'Configurador' : 'Formulario directo (sin configurador)',
             tracking: CLICK_ID_PARAMS
               .filter((k) => clickIds[k])
@@ -236,6 +318,7 @@ const ContactForm = () => {
           selectedProducts.length > 0 ? `Productos: ${selectedProducts.join(', ')}` : null,
           otherProductDetail ? `Otro: ${otherProductDetail}` : null,
           fromConfig ? `Configuración: ${fromConfig}` : null,
+          discountText ? `Código de descuento: ${discountText}` : null,
           form.details ? `Detalles: ${form.details}` : null,
         ].filter(Boolean).join('\n');
 
@@ -258,10 +341,23 @@ const ContactForm = () => {
           acabado: previewFinish || undefined,
           montaje: previewMontaje,
           coleccionTela: searchParams.get('fabricGroup') ?? 'Básicas',
-          precio: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined,
+          // Precio del producto YA con el descuento (es lo que el cliente espera pagar).
+          // El precio original y el detalle del código van en config.descuento.
+          precio: discountedProductPrice ?? undefined,
           envioMadrid: isMadridCP ? SHIPPING_MADRID : undefined,
           suplementoEnvioCabeceroGrande: headboardOversizedSurcharge > 0 ? headboardOversizedSurcharge : undefined,
           costeEnvioTotal: shippingCost ?? undefined,
+          // `config` se guarda íntegro en productos_lead.config_json del CRM.
+          config: {
+            resumen: fromConfig || undefined,
+            descuento: discount ? discountPayload(discount) : undefined,
+            // Dibujo: URL del PNG subido. Si la subida falló, va el SVG como respaldo.
+            dibujo: previewImageUrl
+              ? { png_url: previewImageUrl }
+              : snapshot?.svg
+                ? { svg: snapshot.svg }
+                : undefined,
+          },
         } : undefined;
 
         const { error: crmError } = await supabase.functions.invoke('submit-lead', {
@@ -273,6 +369,11 @@ const ContactForm = () => {
             mensaje: mensajeCRM,
             origen: hasConfigParams ? 'Configurador' : 'Formulario web',
             configurador: configuradorData,
+            // A nivel de lead, para los formularios directos (sin producto).
+            descuento: discount ? discountPayload(discount) : undefined,
+            // Envío conocido (CP de Madrid). Fuera de Madrid no se manda: el CRM
+            // aplica su provisional "a consultar".
+            valor_envio: shippingCost ?? undefined,
             presupuesto: presupuestoFlag,
             gclid: clickIds.gclid ?? attribution.gclid,
             gbraid: clickIds.gbraid,
@@ -309,7 +410,13 @@ const ContactForm = () => {
           body: {
             recipientEmail: form.email,
             idempotencyKey: `contact-confirmation-${idempotencyBase}`,
-            templateData: { firstName, productList, previewLink },
+            templateData: {
+              firstName,
+              productList,
+              previewLink,
+              previewImageUrl,
+              discount: discount ? describeDiscountForCustomer(discount) : undefined,
+            },
           },
         });
       } catch (confirmErr) {
@@ -319,15 +426,16 @@ const ContactForm = () => {
       // Analytics: evento estándar GA4 para conversión de lead.
       const leadParams = {
         currency: 'EUR',
-        value: previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : 0,
+        value: discountedProductPrice ?? 0,
         method: hasConfigParams ? 'configurador' : 'formulario_directo',
         products: selectedProducts.join(','),
+        ...(discount ? { coupon: discount.code } : {}),
       };
       trackEvent('generate_lead', leadParams);
       trackLeadConversion(form.email);
       // Meta Pixel: solo tras confirmación de envío correcto.
       {
-        const fbValue = previewPrice && Number(previewPrice) > 0 ? Number(previewPrice) : undefined;
+        const fbValue = discountedProductPrice ?? undefined;
         const fbName = prefilledProduct || (selectedProducts.length ? selectedProducts.join(', ') : undefined);
         const source = hasConfigParams ? 'configurador' : 'contacto';
         trackFbEvent('Lead', {
@@ -393,7 +501,7 @@ const ContactForm = () => {
                   </div>
                 )}
                 <div className="flex gap-4 items-center">
-                  <div className="flex-1">
+                  <div className="flex-1" ref={previewRef}>
                     <ProductSVGPreview
                       type={previewType}
                       color={previewColor}
@@ -442,8 +550,17 @@ const ContactForm = () => {
                   <div className="mt-5 pt-4 border-t border-border/40 space-y-1.5">
                     <div className="flex items-baseline justify-between text-sm">
                       <span className="text-muted-foreground font-light">Producto</span>
-                      <span className="font-medium text-foreground">{productPrice} €</span>
+                      <span className="font-medium text-foreground">{formatEuroNumber(productPrice)} €</span>
                     </div>
+                    {discount && typeof discount.amount === 'number' && (
+                      <div className="flex items-baseline justify-between text-sm" data-testid="discount-line">
+                        <span className="text-muted-foreground font-light">
+                          Descuento <span className="font-medium text-foreground">{discount.code}</span>
+                          <span className="text-muted-foreground/80"> ({formatDiscountValue(discount)})</span>
+                        </span>
+                        <span className="font-medium text-foreground">−{formatEuroNumber(discount.amount)} €</span>
+                      </div>
+                    )}
                     {isMadridCP ? (
                       <>
                         <div className="flex items-baseline justify-between text-sm">
@@ -458,7 +575,7 @@ const ContactForm = () => {
                         )}
                         <div className="flex items-baseline justify-between text-base pt-2 border-t border-border/30">
                           <span className="font-serif text-foreground">Total</span>
-                          <span className="font-serif text-xl text-foreground">{totalIfKnown} € <span className="text-[10px] text-muted-foreground font-sans">IVA incl.</span></span>
+                          <span className="font-serif text-xl text-foreground">{totalIfKnown !== null ? formatEuroNumber(totalIfKnown) : '—'} € <span className="text-[10px] text-muted-foreground font-sans">IVA incl.</span></span>
                         </div>
                       </>
                     ) : (
@@ -540,6 +657,59 @@ const ContactForm = () => {
             )}
           </div>
 
+          {/* Código de descuento (discreto: solo se despliega si el cliente lo pide) */}
+          <div>
+            {!discountOpen && !discountEntry ? (
+              <button
+                type="button"
+                onClick={() => setDiscountOpen(true)}
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 decoration-border transition-colors"
+              >
+                <Ticket size={14} strokeWidth={1.6} />
+                ¿Tienes un código de descuento?
+              </button>
+            ) : discountEntry ? (
+              <div className="flex items-center justify-between gap-3 rounded-md border border-accent-warm/30 bg-accent-warm/10 px-4 py-3" data-testid="discount-applied">
+                <p className="text-sm text-foreground">
+                  <Ticket size={14} strokeWidth={1.6} className="inline -mt-0.5 mr-1.5 text-accent-warm" />
+                  Código <span className="font-medium">{discountEntry.code}</span> aplicado
+                  <span className="text-muted-foreground"> · {formatDiscountValue(discountEntry)}{typeof discount?.amount === 'number' ? ` (−${formatEuroNumber(discount.amount)} €)` : ' sobre el precio del producto'}</span>
+                </p>
+                <button type="button" onClick={removeDiscountCode} aria-label="Quitar el código de descuento" className="shrink-0 text-muted-foreground hover:text-foreground transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="contact-discount" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
+                  Código de descuento <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(si tienes uno)</span>
+                </label>
+                <div className="flex gap-2 max-w-[360px]">
+                  <input
+                    id="contact-discount"
+                    type="text"
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    spellCheck={false}
+                    value={discountInput}
+                    onChange={(e) => { setDiscountInput(e.target.value.toUpperCase()); if (discountError) setDiscountError(null); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyDiscountCode(discountInput); } }}
+                    placeholder="CÓDIGO"
+                    className={`${inputBase} uppercase tracking-wider ${discountError ? 'border-destructive' : ''}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => applyDiscountCode(discountInput)}
+                    className="shrink-0 px-4 py-3 text-xs tracking-[0.14em] uppercase font-medium border border-border rounded-md text-foreground hover:border-foreground/60 transition-colors"
+                  >
+                    Aplicar
+                  </button>
+                </div>
+                {discountError && <p className="text-xs mt-1 text-destructive">{discountError}</p>}
+              </div>
+            )}
+          </div>
+
           {!hasConfigParams && (
           <div>
             <span className="block text-xs tracking-wide uppercase text-muted-foreground mb-3 font-medium">
@@ -618,8 +788,8 @@ const ContactForm = () => {
               <span className="relative z-10 inline-flex items-center gap-2">
                 {sending
                   ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>)
-                  : hasConfigParams && productPrice !== null
-                    ? `Lo quiero — reserva por ${productPrice} € →`
+                  : hasConfigParams && discountedProductPrice !== null
+                    ? `Lo quiero — reserva por ${formatEuroNumber(discountedProductPrice)} € →`
                     : "Enviar solicitud →"}
               </span>
             </button>
