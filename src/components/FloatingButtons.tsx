@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getConfiguradorDiseno, whatsappHref } from "@/lib/whatsapp";
 
 const WHATSAPP_URL = "https://wa.me/34660786453?text=Hola%2C%20me%20interesa%20uno%20de%20vuestros%20productos%20tapizados%20y%20quer%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.";
 const WHATSAPP_CONFIGURADOR_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, estoy usando el configurador y me gustaría orientación para elegir.");
@@ -13,20 +12,14 @@ const FloatingButtons = () => {
   // Mobile sticky CTA bar sits at bottom-0; push floating buttons above it on mobile.
   // --cookie-banner-h lo publica CookieBanner mientras el banner está abierto, para
   // que el botón suba por encima de la tarjeta de consentimiento (0px si no hay banner).
-  // En el configurador la barra inferior del móvil es más alta (lleva el botón
-  // «Pedir precio de mi diseño por WhatsApp»), así que el flotante sube más.
-  const bottomClass = isConfigurador
-    ? "bottom-[calc(var(--cookie-banner-h,0px)+9rem)] md:bottom-[calc(var(--cookie-banner-h,0px)+1.5rem)]"
-    : "bottom-[calc(var(--cookie-banner-h,0px)+6rem)] md:bottom-[calc(var(--cookie-banner-h,0px)+1.5rem)]";
+  const bottomClass =
+    "bottom-[calc(var(--cookie-banner-h,0px)+6rem)] md:bottom-[calc(var(--cookie-banner-h,0px)+1.5rem)]";
   const whatsappUrl = isConfigurador ? WHATSAPP_CONFIGURADOR_URL : WHATSAPP_URL;
   const whatsappLabel = isConfigurador ? "¿Dudas? Escríbenos" : "Escríbenos por WhatsApp";
 
   // Conversión de Google Ads al pulsar el botón flotante de WhatsApp.
   // Sin preventDefault: el evento se envía mientras el enlace abre la pestaña nueva.
-  const handleWhatsappClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // En el configurador, si ya hay un diseño, se manda el diseño completo.
-    const diseno = isConfigurador ? getConfiguradorDiseno() : null;
-    if (diseno) e.currentTarget.href = whatsappHref(diseno);
+  const handleWhatsappClick = () => {
     window.gtag?.("event", "conversion", {
       send_to: "AW-18316237534/ja3TCICIvewcEN617p1E",
     });

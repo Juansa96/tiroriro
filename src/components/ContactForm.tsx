@@ -51,9 +51,6 @@ const ContactForm = () => {
   const [form, setForm] = useState({ name: "", lastName: "", phone: "", email: "", postalCode: "", details: "" });
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [rgpd, setRgpd] = useState(false);
-  // En el móvil los campos opcionales van plegados: la mitad de quien empieza el
-  // formulario lo abandonaba. En pantallas grandes se ven siempre.
-  const [showOptional, setShowOptional] = useState(false);
   const [otherProductDetail, setOtherProductDetail] = useState("");
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -590,7 +587,7 @@ const ContactForm = () => {
               <input id="contact-name" type="text" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Tu nombre" className={`${inputBase} ${hasError('name') ? 'border-destructive' : ''}`} />
               {hasError('name') && <p className="text-xs mt-1 text-destructive">{errors.name}</p>}
             </div>
-            <div className={showOptional ? "" : "hidden sm:block"}>
+            <div>
               <label htmlFor="contact-lastname" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">Apellidos</label>
               <input id="contact-lastname" type="text" value={form.lastName} onChange={(e) => update("lastName", e.target.value)} placeholder="Tus apellidos" className={inputBase} />
             </div>
@@ -609,14 +606,6 @@ const ContactForm = () => {
             </div>
           </div>
 
-          {!showOptional && !discount && (
-            <button type="button" onClick={() => setShowOptional(true)} aria-expanded={false}
-              className="sm:hidden text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground">
-              + Añadir apellidos, código postal o código de descuento (opcional)
-            </button>
-          )}
-
-          <div className={showOptional || discount ? "space-y-5" : "hidden sm:block space-y-5"}>
           <div>
             <label htmlFor="contact-cp" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
               Código postal <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(para calcular el envío)</span>
@@ -642,7 +631,6 @@ const ContactForm = () => {
 
           {/* Código de descuento: mismo bloque que en el configurador */}
           <DiscountCodeField state={discountState} id="contact-discount" />
-          </div>
 
           {!hasConfigParams && (
           <div>
