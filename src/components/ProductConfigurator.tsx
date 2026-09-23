@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import ProductSVGPreview, { darken } from "./ProductSVGPreview";
 import { Switch } from "@/components/ui/switch";
@@ -18,6 +18,9 @@ import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO, EXTRA
 import { Clock, ZoomIn } from "lucide-react";
 import FabricLightbox, { type LightboxFabric } from "./FabricLightbox";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useDiscountCode } from "@/hooks/useDiscountCode";
+import DiscountCodeField from "./DiscountCodeField";
+import { formatEuroNumber } from "@/data/discounts";
 
 // Cabecero: vivo-simple incluido (0€), vivo-doble +15 €
 // Bancos/pufs/mesas: vivo-simple con recargo (definido en pricing.ts)
@@ -373,7 +376,7 @@ const FabricSwatchPanel = ({
 
 const ProductConfigurator = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
 
   const [productType, setProductType] = useState<ProductType | null>(null);
@@ -724,6 +727,24 @@ const ProductConfigurator = () => {
   // Banco con medidas personalizadas: precio a consultar
   const isPriceOnRequest = productType === 'banco' && benchLength === 'custom';
 
+  // Código de descuento (se aplica al precio de la pieza; el envío no cambia).
+  // Pasa al formulario por ?codigo= y se recuerda en el navegador.
+  const clearUrlCode = useCallback(() => {
+    if (!searchParams.has('codigo')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('codigo');
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
+  const discountState = useDiscountCode({
+    urlCode: searchParams.get('codigo'),
+    productPrice: priceIsKnown && !isPriceOnRequest ? price : null,
+    clearUrlCode,
+  });
+  const discount = discountState.applied;
+  const hasDiscountAmount = !!discount && typeof discount.amount === 'number' && typeof discount.finalPrice === 'number';
+  const finalPrice = hasDiscountAmount ? discount!.finalPrice! : price;
+  const priceLabel = (p: number) => `${formatEuroNumber(p)} €`;
+
   // Detecta si el usuario ha introducido una medida personalizada (no preset)
   const hasCustomMeasure = !!(
     (productType === 'cabecero' && ((bedWidth === 'custom' && customWidth) || (bedHeight === 'custom' && customHeight))) ||
@@ -803,6 +824,8 @@ const ProductConfigurator = () => {
     if (montaje) params.set('previewMontaje', montaje);
     if (price > 0) params.set('previewPrice', price.toString());
     if (fabricGroup) params.set('fabricGroup', fabricGroup);
+    // El formulario vuelve a calcular el descuento a partir del código.
+    if (discount) params.set('codigo', discount.code);
     return `/?${params.toString()}#contacto`;
   };
 
@@ -1025,9 +1048,15 @@ const ProductConfigurator = () => {
             <div className="mt-5 flex items-baseline justify-between px-1">
               <div>
                 <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
-                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price} €` : `desde ${basePrice} €`)}
+                  {hasDiscountAmount && <span className="text-xl text-muted-foreground line-through mr-2 align-middle">{priceLabel(price)}</span>}
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? priceLabel(finalPrice) : `desde ${basePrice} €`)}
                   {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
                 </p>
+                {hasDiscountAmount && (
+                  <p className="mt-1.5 text-xs text-accent-warm font-medium">
+                    Código {discount!.code}: te ahorras {formatEuroNumber(discount!.amount!)} €
+                  </p>
+                )}
               </div>
               {!isPriceOnRequest && <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>}
             </div>
@@ -1062,6 +1091,8 @@ const ProductConfigurator = () => {
             </div>
           )}
 
+          {productType && <DiscountCodeField state={discountState} id="config-discount" className="mt-3 mx-1" />}
+
           <div className="flex flex-col gap-3 mt-4">
             <button
                 onClick={handleOrder}
@@ -1070,7 +1101,7 @@ const ProductConfigurator = () => {
               >
                 <span className="relative z-10">
                   {priceIsKnown && !isPriceOnRequest
-                    ? `Lo quiero — reserva por ${price} €`
+                    ? `Lo quiero — reserva por ${priceLabel(finalPrice)}`
                     : 'Lo quiero — reserva la mía'} →
                 </span>
               </button>
@@ -1101,6 +1132,7 @@ const ProductConfigurator = () => {
           setOpenAccordion={handleAccordionChange}
           {...sharedAccordionProps}
         />
+        {productType && <DiscountCodeField state={discountState} id="config-discount-mobile" className="mt-5" />}
       </div>
 
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
@@ -1109,10 +1141,16 @@ const ProductConfigurator = () => {
             {productType ? (
               <>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
-                <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none">
-                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? `${price}€` : `desde ${basePrice}€`)}
+                <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none whitespace-nowrap">
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? priceLabel(finalPrice) : `desde ${basePrice}€`)}
                   {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
                 </p>
+                {hasDiscountAmount && (
+                  <p className="text-[10px] leading-tight mt-0.5 whitespace-nowrap">
+                    <span className="text-muted-foreground line-through">{priceLabel(price)}</span>
+                    <span className="text-accent-warm font-medium"> · {discount!.code} −{formatEuroNumber(discount!.amount!)} €</span>
+                  </p>
+                )}
                 {isPriceOnRequest ? (
                   <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
                     Te contactamos
@@ -1134,7 +1172,7 @@ const ProductConfigurator = () => {
             >
               <span className="relative z-10">
                 {priceIsKnown && !isPriceOnRequest
-                  ? `Reserva por ${price} €`
+                  ? `Reserva por ${priceLabel(finalPrice)}`
                   : 'Lo quiero'} →
               </span>
             </button>

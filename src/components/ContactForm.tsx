@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Loader2, MessageCircle, Ticket, X } from "lucide-react";
+import { Loader2, MessageCircle } from "lucide-react";
 import ProductSVGPreview from "./ProductSVGPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
@@ -9,15 +9,14 @@ import { CLICK_ID_PARAMS, getClickIds, trackLeadConversion } from "@/lib/trackin
 import { trackFbEvent } from "@/lib/metaPixel";
 import { getAttribution } from "@/lib/attribution";
 import { capturePreview } from "@/lib/previewSnapshot";
+import { useDiscountCode } from "@/hooks/useDiscountCode";
+import DiscountCodeField from "./DiscountCodeField";
 import {
-  applyDiscount,
   describeDiscount,
   describeDiscountForCustomer,
   discountPayload,
-  findDiscountCode,
   formatDiscountValue,
   formatEuroNumber,
-  type DiscountCode,
 } from "@/data/discounts";
 
 import {
@@ -41,7 +40,7 @@ function mapProductName(name: string): string {
 }
 
 const ContactForm = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const fromConfig = searchParams.get('config');
   const prefilledProduct = searchParams.get('product');
@@ -58,13 +57,6 @@ const ContactForm = () => {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [clickIds] = useState(() => getClickIds());
   const [attribution] = useState(() => getAttribution());
-
-  // Código de descuento: el cliente lo escribe (o llega en la URL como
-  // ?codigo=XXX) y se valida contra la lista oculta de src/data/discounts.ts.
-  const [discountOpen, setDiscountOpen] = useState(false);
-  const [discountInput, setDiscountInput] = useState("");
-  const [discountEntry, setDiscountEntry] = useState<DiscountCode | null>(null);
-  const [discountError, setDiscountError] = useState<string | null>(null);
 
   // Contenedor del dibujo (SVG) para capturarlo al enviar.
   const previewRef = useRef<HTMLDivElement>(null);
@@ -107,40 +99,23 @@ const ContactForm = () => {
     : 0;
   const shippingCost = isMadridCP ? SHIPPING_MADRID + headboardOversizedSurcharge : null;
 
-  // Descuento aplicado sobre el precio del producto (nunca sobre el envío).
-  const discount = discountEntry ? applyDiscount(discountEntry, productPrice) : null;
+  // Código de descuento: el cliente lo escribe aquí o en el configurador
+  // (llega por ?codigo=XXX o guardado en el navegador) y se valida contra la
+  // lista oculta de src/data/discounts.ts. Se aplica al precio del producto,
+  // nunca al envío.
+  const clearUrlCode = useCallback(() => {
+    if (!searchParams.has('codigo')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('codigo');
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
+  const discountState = useDiscountCode({ urlCode: searchParams.get('codigo'), productPrice, clearUrlCode });
+  const discount = discountState.applied;
   const discountedProductPrice = discount?.finalPrice ?? productPrice;
   const totalIfKnown = discountedProductPrice !== null && shippingCost !== null
     ? Math.round((discountedProductPrice + shippingCost) * 100) / 100
     : null;
 
-  const applyDiscountCode = (raw: string): boolean => {
-    const entry = findDiscountCode(raw);
-    if (!entry) {
-      setDiscountEntry(null);
-      setDiscountError(raw.trim() ? "Este código no es válido o ha caducado." : null);
-      return false;
-    }
-    setDiscountEntry(entry);
-    setDiscountInput(entry.code);
-    setDiscountError(null);
-    setDiscountOpen(true);
-    trackEvent('discount_code_applied', { coupon: entry.code });
-    return true;
-  };
-
-  const removeDiscountCode = () => {
-    setDiscountEntry(null);
-    setDiscountInput("");
-    setDiscountError(null);
-  };
-
-  // ?codigo=XXX en la URL (enlaces de campaña o el "ver/editar tu diseño" del email).
-  const codigoParam = searchParams.get('codigo');
-  useEffect(() => {
-    if (codigoParam) applyDiscountCode(codigoParam);
-    // solo al montar / cambiar el parámetro
-  }, [codigoParam]);
 
   useEffect(() => {
     if (prefilledProduct || fromConfig) {
@@ -163,38 +138,34 @@ const ContactForm = () => {
         form?: typeof form;
         selectedProducts?: string[];
         otherProductDetail?: string;
-        discountCode?: string;
       };
       if (draft.form) setForm(f => ({ ...f, ...draft.form, details: f.details || draft.form?.details || "" }));
       if (draft.selectedProducts?.length) {
         setSelectedProducts(prev => Array.from(new Set([...prev, ...draft.selectedProducts!])));
       }
       if (draft.otherProductDetail) setOtherProductDetail(draft.otherProductDetail);
-      // El código guardado se vuelve a validar (puede haber caducado). El de la URL manda.
-      if (draft.discountCode && !codigoParam) applyDiscountCode(draft.discountCode);
     } catch {
       /* ignore */
     }
     // solo al montar
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Guardar borrador con debounce ligero cada vez que cambia algo relevante.
   useEffect(() => {
     const t = setTimeout(() => {
       try {
-        const hasAnything = form.name || form.email || form.phone || form.details || selectedProducts.length || discountEntry;
+        const hasAnything = form.name || form.email || form.phone || form.details || selectedProducts.length;
         if (!hasAnything) return;
         localStorage.setItem(
           DRAFT_KEY,
-          JSON.stringify({ form, selectedProducts, otherProductDetail, discountCode: discountEntry?.code }),
+          JSON.stringify({ form, selectedProducts, otherProductDetail }),
         );
       } catch {
         /* ignore */
       }
     }, 400);
     return () => clearTimeout(t);
-  }, [form, selectedProducts, otherProductDetail, discountEntry]);
+  }, [form, selectedProducts, otherProductDetail]);
 
   const toggleProduct = (p: string) => {
     setSelectedProducts(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
@@ -448,6 +419,7 @@ const ContactForm = () => {
 
       // Limpia el borrador tras envío correcto
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+      discountState.remove();
       navigate(`/gracias?name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       console.error('Error enviando email:', err);
@@ -657,58 +629,8 @@ const ContactForm = () => {
             )}
           </div>
 
-          {/* Código de descuento (discreto: solo se despliega si el cliente lo pide) */}
-          <div>
-            {!discountOpen && !discountEntry ? (
-              <button
-                type="button"
-                onClick={() => setDiscountOpen(true)}
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 decoration-border transition-colors"
-              >
-                <Ticket size={14} strokeWidth={1.6} />
-                ¿Tienes un código de descuento?
-              </button>
-            ) : discountEntry ? (
-              <div className="flex items-center justify-between gap-3 rounded-md border border-accent-warm/30 bg-accent-warm/10 px-4 py-3" data-testid="discount-applied">
-                <p className="text-sm text-foreground">
-                  <Ticket size={14} strokeWidth={1.6} className="inline -mt-0.5 mr-1.5 text-accent-warm" />
-                  Código <span className="font-medium">{discountEntry.code}</span> aplicado
-                  <span className="text-muted-foreground"> · {formatDiscountValue(discountEntry)}{typeof discount?.amount === 'number' ? ` (−${formatEuroNumber(discount.amount)} €)` : ' sobre el precio del producto'}</span>
-                </p>
-                <button type="button" onClick={removeDiscountCode} aria-label="Quitar el código de descuento" className="shrink-0 text-muted-foreground hover:text-foreground transition-colors">
-                  <X size={16} />
-                </button>
-              </div>
-            ) : (
-              <div>
-                <label htmlFor="contact-discount" className="block text-xs tracking-wide uppercase text-muted-foreground mb-2 font-medium">
-                  Código de descuento <span className="normal-case tracking-normal text-muted-foreground/70 font-light">(si tienes uno)</span>
-                </label>
-                <div className="flex gap-2 max-w-[360px]">
-                  <input
-                    id="contact-discount"
-                    type="text"
-                    autoComplete="off"
-                    autoCapitalize="characters"
-                    spellCheck={false}
-                    value={discountInput}
-                    onChange={(e) => { setDiscountInput(e.target.value.toUpperCase()); if (discountError) setDiscountError(null); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyDiscountCode(discountInput); } }}
-                    placeholder="CÓDIGO"
-                    className={`${inputBase} uppercase tracking-wider ${discountError ? 'border-destructive' : ''}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => applyDiscountCode(discountInput)}
-                    className="shrink-0 px-4 py-3 text-xs tracking-[0.14em] uppercase font-medium border border-border rounded-md text-foreground hover:border-foreground/60 transition-colors"
-                  >
-                    Aplicar
-                  </button>
-                </div>
-                {discountError && <p className="text-xs mt-1 text-destructive">{discountError}</p>}
-              </div>
-            )}
-          </div>
+          {/* Código de descuento: mismo bloque que en el configurador */}
+          <DiscountCodeField state={discountState} id="contact-discount" />
 
           {!hasConfigParams && (
           <div>
