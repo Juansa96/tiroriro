@@ -9,6 +9,7 @@ import {
   sendAndLog,
   serviceClient,
 } from '../_shared/contact-email-log.ts'
+import { safeLeadPreviewUrl } from '../_shared/lead-preview.ts'
 
 const TEMPLATE = 'contact-confirmation'
 
@@ -37,6 +38,8 @@ Deno.serve(async (req) => {
     firstName: capString(data.firstName, 100),
     productList: capString(data.productList, 500),
     previewLink: capString(data.previewLink, 1000),
+    discount: capString(data.discount, 300),
+    previewImageUrl: safeLeadPreviewUrl(data.previewImageUrl),
   }
 
   const callerIp = callerIpOf(req)

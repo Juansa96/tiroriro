@@ -1,6 +1,6 @@
 import * as React from 'npm:react@18.3.1'
 import {
-  Body, Button, Container, Head, Heading, Html, Preview, Section, Text, Hr, Link,
+  Body, Button, Container, Head, Heading, Html, Img, Preview, Section, Text, Hr, Link,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
@@ -17,6 +17,10 @@ interface ContactInternalProps {
   submittedAt?: string
   previewLink?: string
   tracking?: string
+  /** Texto ya formateado del código de descuento (código · −10 % · importes). */
+  discount?: string
+  /** PNG del dibujo que montó el cliente en el configurador (bucket lead-previews). */
+  previewImageUrl?: string
 }
 
 const ContactInternalEmail = ({
@@ -30,6 +34,8 @@ const ContactInternalEmail = ({
   submittedAt,
   previewLink,
   tracking,
+  discount,
+  previewImageUrl,
 }: ContactInternalProps) => (
   <Html lang="es" dir="ltr">
     <Head />
@@ -45,13 +51,30 @@ const ContactInternalEmail = ({
           <Row label="Nombre" value={fullName} />
           <Row label="Email" value={<Link href={`mailto:${email}`} style={linkStyle}>{email}</Link>} />
           {phone ? <Row label="Teléfono" value={<Link href={`tel:${phone}`} style={linkStyle}>{phone}</Link>} /> : null}
-          <Row label="Productos" value={productList} last={!otherDetail} />
-          {otherDetail ? <Row label="Detalle" value={otherDetail} last /> : null}
+          <Row label="Productos" value={productList} last={!otherDetail && !discount} />
+          {otherDetail ? <Row label="Detalle" value={otherDetail} last={!discount} /> : null}
+          {discount ? (
+            <Section style={discountBox}>
+              <Text style={discountLabel}>🎟️ Código de descuento</Text>
+              <Text style={discountValue}>{discount}</Text>
+            </Section>
+          ) : null}
 
           {configSummary ? (
             <Section style={configBox}>
               <Text style={configLabel}>Configuración del diseñador</Text>
               <Text style={configContent}>{configSummary}</Text>
+              {previewImageUrl ? (
+                <Section style={{ textAlign: 'center', marginTop: '14px' }}>
+                  <Img
+                    src={previewImageUrl}
+                    alt="Dibujo de la pieza tal y como la configuró el cliente"
+                    width="320"
+                    style={previewImg}
+                  />
+                  <Text style={previewCaption}>Dibujo de la pieza tal y como la montó el cliente en el configurador.</Text>
+                </Section>
+              ) : null}
               {previewLink ? (
                 <Section style={{ textAlign: 'center', marginTop: '14px' }}>
                   <Button href={previewLink} style={previewBtn}>
@@ -115,6 +138,7 @@ export const template = {
     submittedAt: 'lunes, 1 de enero de 2025, 10:30',
     configSummary: 'Cabecero Pregonda · 150 cm × 100 cm · Tela Arequipa Beige · Vivo simple',
     previewLink: 'https://tirorirohome.com/?previewType=cabecero#contacto',
+    discount: 'BIENVENIDA10 · −10 % · −40,50 € · producto 364,50 € en vez de 405 €',
     tracking: 'gclid: EAIaIQobCh...\nutm_source: google\nutm_medium: cpc\nutm_campaign: cabeceros-marca',
   },
 } satisfies TemplateEntry
@@ -139,3 +163,8 @@ const replyNote = { fontSize: '13px', color: '#1a4b5b', textAlign: 'center' as c
 const footer = { fontSize: '11px', color: '#bbb', textAlign: 'center' as const, marginTop: '16px', fontFamily: 'Arial, sans-serif' }
 const previewBtn = { backgroundColor: '#1a4b5b', color: '#ffffff', textDecoration: 'none', padding: '10px 22px', borderRadius: '6px', fontSize: '13px', fontFamily: 'Arial, sans-serif', fontWeight: 500 }
 const previewHint = { fontSize: '11px', color: '#888', margin: '8px 0 0', fontFamily: 'Arial, sans-serif', fontStyle: 'italic' as const }
+const discountBox = { backgroundColor: '#f0f7f2', border: '1px solid #cfe5d6', padding: '12px 16px', margin: '14px 0 0', borderRadius: '6px' }
+const discountLabel = { fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: '#2f6b47', margin: '0 0 6px', fontWeight: 600, fontFamily: 'Arial, sans-serif' }
+const discountValue = { fontSize: '14px', color: '#1f4d33', margin: 0, fontWeight: 600 }
+const previewImg = { display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto', backgroundColor: '#ffffff', border: '1px solid #e8e4de', borderRadius: '6px' }
+const previewCaption = { fontSize: '11px', color: '#888', margin: '8px 0 0', fontFamily: 'Arial, sans-serif', fontStyle: 'italic' as const }

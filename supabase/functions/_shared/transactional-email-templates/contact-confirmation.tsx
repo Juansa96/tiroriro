@@ -1,6 +1,6 @@
 import * as React from 'npm:react@18.3.1'
 import {
-  Body, Button, Container, Head, Heading, Html, Preview, Section, Text, Hr, Link,
+  Body, Button, Container, Head, Heading, Html, Img, Preview, Section, Text, Hr, Link,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
@@ -10,12 +10,18 @@ interface ContactConfirmationProps {
   firstName?: string
   productList?: string
   previewLink?: string
+  /** Texto ya formateado del código de descuento aplicado. */
+  discount?: string
+  /** PNG del dibujo que montó el cliente (bucket lead-previews). */
+  previewImageUrl?: string
 }
 
 const ContactConfirmationEmail = ({
   firstName = '',
   productList = 'tu solicitud',
   previewLink,
+  discount,
+  previewImageUrl,
 }: ContactConfirmationProps) => (
   <Html lang="es" dir="ltr">
     <Head />
@@ -33,18 +39,39 @@ const ContactConfirmationEmail = ({
             Te respondemos en <strong>menos de 24 horas laborables</strong>.
           </Text>
 
-          {previewLink && (
+          {discount && (
+            <Section style={discountBox}>
+              <Text style={discountLabel}>🎟️ Código de descuento aplicado</Text>
+              <Text style={discountText}>{discount}</Text>
+            </Section>
+          )}
+
+          {(previewLink || previewImageUrl) && (
             <Section style={previewBox}>
               <Text style={previewLabel}>Tu diseño</Text>
-              <Text style={previewText}>
-                Guardamos la configuración exacta que elegiste. Si quieres cambiar algo,
-                puedes seguir editándola desde aquí:
-              </Text>
-              <Section style={{ textAlign: 'center' }}>
-                <Button href={previewLink} style={editButton}>
-                  Ver o editar tu diseño
-                </Button>
-              </Section>
+              {previewImageUrl && (
+                <Section style={{ textAlign: 'center', margin: '0 0 14px' }}>
+                  <Img
+                    src={previewImageUrl}
+                    alt="Dibujo de tu pieza tal y como la configuraste"
+                    width="300"
+                    style={previewImg}
+                  />
+                </Section>
+              )}
+              {previewLink && (
+                <Text style={previewText}>
+                  Guardamos la configuración exacta que elegiste. Si quieres cambiar algo,
+                  puedes seguir editándola desde aquí:
+                </Text>
+              )}
+              {previewLink && (
+                <Section style={{ textAlign: 'center' }}>
+                  <Button href={previewLink} style={editButton}>
+                    Ver o editar tu diseño
+                  </Button>
+                </Section>
+              )}
             </Section>
           )}
 
@@ -89,6 +116,7 @@ export const template = {
     firstName: 'María',
     productList: 'Cabeceros',
     previewLink: 'https://tirorirohome.com/?previewType=cabecero&previewForma=recto#contacto',
+    discount: 'BIENVENIDA10 · −10 % · tu cabecero se queda en 364,50 € en vez de 405 €',
   },
 } satisfies TemplateEntry
 
@@ -112,3 +140,7 @@ const previewBox = { backgroundColor: '#fdf9f2', border: '1px solid #ead9bd', bo
 const previewLabel = { margin: '0 0 8px', fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: '#a8824a', fontFamily: 'Arial, sans-serif', fontWeight: 600 }
 const previewText = { margin: '0 0 14px', fontSize: '13px', color: '#555', lineHeight: '1.55' }
 const editButton = { backgroundColor: '#C4956A', color: '#ffffff', textDecoration: 'none', padding: '10px 22px', borderRadius: '6px', fontSize: '13px', fontFamily: 'Arial, sans-serif', fontWeight: 500 }
+const discountBox = { backgroundColor: '#f0f7f2', border: '1px solid #cfe5d6', borderRadius: '8px', padding: '16px 22px', margin: '0 0 24px', textAlign: 'left' as const }
+const discountLabel = { margin: '0 0 6px', fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: '#2f6b47', fontFamily: 'Arial, sans-serif', fontWeight: 600 }
+const discountText = { margin: 0, fontSize: '14px', color: '#1f4d33', lineHeight: '1.55' }
+const previewImg = { display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto', backgroundColor: '#ffffff', border: '1px solid #ead9bd', borderRadius: '6px' }

@@ -8,6 +8,7 @@ import {
   sendAndLog,
   serviceClient,
 } from '../_shared/contact-email-log.ts'
+import { safeLeadPreviewUrl } from '../_shared/lead-preview.ts'
 
 const TEMPLATE = 'contact-internal'
 const INTERNAL_RECIPIENT = 'info@tirorirohome.com'
@@ -55,6 +56,10 @@ Deno.serve(async (req) => {
     previewLink: capString(data.previewLink, 1000),
     formOrigin: capString(data.formOrigin, 100),
     tracking: capString(data.tracking, 2000),
+    // Código de descuento que escribió el cliente (ya validado en la web).
+    discount: capString(data.discount, 300),
+    // Dibujo de la pieza: solo si está alojado en nuestro bucket de Storage.
+    previewImageUrl: safeLeadPreviewUrl(data.previewImageUrl),
   }
 
   const callerIp = callerIpOf(req)
