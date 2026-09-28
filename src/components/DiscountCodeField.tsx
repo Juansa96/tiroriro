@@ -6,7 +6,28 @@ import type { DiscountCodeState } from "@/hooks/useDiscountCode";
 // formulario: caja visible sobre el crema, campo + "Aplicar", y cuando hay
 // código aplicado, una franja con el resultado y un botón para quitarlo.
 const DiscountCodeField = ({ state, id = "discount-code", className = "" }: { state: DiscountCodeState; id?: string; className?: string }) => {
-  const { input, setInput, entry, applied, error, clearError, apply, remove } = state;
+  const { input, setInput, entry, applied, notApplicable, error, clearError, apply, remove } = state;
+
+  if (entry && notApplicable) {
+    return (
+      <div className={`rounded-md border border-border bg-background px-4 py-3 ${className}`} data-testid="discount-not-applicable">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground leading-snug">
+            <Ticket size={16} strokeWidth={1.6} className="inline -mt-0.5 mr-1.5 text-accent-warm" aria-hidden />
+            {notApplicable}
+          </p>
+          <button
+            type="button"
+            onClick={remove}
+            aria-label="Quitar el código de descuento"
+            className="shrink-0 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X size={14} /> Quitar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (entry && applied) {
     return (

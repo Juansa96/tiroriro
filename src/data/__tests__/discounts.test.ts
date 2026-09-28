@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   DISCOUNT_CODES,
   applyDiscount,
+  discountAppliesTo,
   describeDiscount,
   describeDiscountForCustomer,
   discountPayload,
@@ -81,5 +82,32 @@ describe("códigos de descuento", () => {
       precio_final: 364.5,
       texto: describeDiscount(d),
     });
+  });
+});
+
+describe("códigos activos", () => {
+  it("TiroriroSeeker26 no vale para cojines ni pantallas de lámpara", () => {
+    const d = findDiscountCode("TiroriroSeeker26", new Date(2026, 9, 1))!;
+    expect(discountAppliesTo(d, ["cabecero"])).toBe(true);
+    expect(discountAppliesTo(d, ["cojin"])).toBe(false);
+    expect(discountAppliesTo(d, ["pantalla"])).toBe(false);
+    expect(discountAppliesTo(d, ["cojin", "pantalla"])).toBe(false);
+    expect(discountAppliesTo(d, ["cojin", "puf"])).toBe(true);
+    expect(discountAppliesTo(d, null)).toBe(true);
+    const sinPrecio = applyDiscount(d, null);
+    expect(describeDiscount(sinPrecio)).toBe(
+      "TIRORIROSEEKER26 · Grupos WhatsApp Seeker · −10 % · se aplicará al presupuesto (no vale para cojines ni pantallas de lámpara)",
+    );
+    expect(describeDiscountForCustomer(sinPrecio)).toBe(
+      "TIRORIROSEEKER26 · −10 % · lo aplicaremos en tu presupuesto (salvo cojines y pantallas de lámpara)",
+    );
+  });
+
+  it("TiroriroSeeker26: 10 % hasta el 15 de octubre de 2026 incluido", () => {
+    const d = findDiscountCode("tiroriroseeker26", new Date(2026, 9, 15, 23, 59));
+    expect(d).toMatchObject({ type: "percent", value: 10 });
+    expect(applyDiscount(d!, 400)).toMatchObject({ code: "TIRORIROSEEKER26", amount: 40, finalPrice: 360 });
+    expect(findDiscountCode("TiroriroSeeker26", new Date(2026, 8, 28))).not.toBeNull();
+    expect(findDiscountCode("TiroriroSeeker26", new Date(2026, 9, 16))).toBeNull();
   });
 });

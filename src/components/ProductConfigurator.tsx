@@ -738,6 +738,7 @@ const ProductConfigurator = () => {
   const discountState = useDiscountCode({
     urlCode: searchParams.get('codigo'),
     productPrice: priceIsKnown && !isPriceOnRequest ? price : null,
+    productTypes: productType ? [productType] : null,
     clearUrlCode,
   });
   const discount = discountState.applied;

@@ -18,11 +18,16 @@
 //   · label      (opcional) Nombre corto que verá el equipo en el CRM.
 //   · validFrom  (opcional) "AAAA-MM-DD": el código no vale antes de ese día.
 //   · validUntil (opcional) "AAAA-MM-DD": el código vale hasta ese día incluido.
+//   · excludeProducts (opcional) tipos de producto a los que NO se aplica,
+//                p. ej. ["cojin", "pantalla"]. Con ese producto el código no
+//                descuenta nada y el cliente ve el aviso.
 //
 // El descuento se aplica SOLO al precio del producto, nunca al envío. El
 // importe con IVA ya viene incluido en el precio, así que el descuento también
 // es sobre PVP final.
 // ─────────────────────────────────────────────────────────────────────────────
+
+import type { ProductType } from "@/lib/products";
 
 export type DiscountType = "percent" | "fixed";
 
@@ -33,11 +38,20 @@ export interface DiscountCode {
   label?: string;
   validFrom?: string;
   validUntil?: string;
+  excludeProducts?: ProductType[];
 }
 
 export const DISCOUNT_CODES: DiscountCode[] = [
-  // ← Añadir aquí los códigos activos. Mientras esté vacío, cualquier código
-  //   que escriba el cliente se rechaza como "no válido".
+  // Grupos de WhatsApp de Pablo (Seeker): 10 % hasta el día del evento, 15/10/2026 incluido.
+  // Vale para todo menos cojines y pantallas de lámpara.
+  {
+    code: "TiroriroSeeker26",
+    type: "percent",
+    value: 10,
+    label: "Grupos WhatsApp Seeker",
+    validUntil: "2026-10-15",
+    excludeProducts: ["cojin", "pantalla"],
+  },
 ];
 
 /** Descuento ya calculado sobre un precio concreto. Es lo que viaja al CRM y a los emails. */
@@ -52,6 +66,35 @@ export interface AppliedDiscount {
   amount?: number;
   /** Precio del producto con el descuento aplicado (si se conoce el precio). */
   finalPrice?: number;
+  /** "cojines ni pantallas de lámpara": productos a los que no se aplica. */
+  excludes?: string;
+}
+
+const PRODUCT_PLURAL: Record<ProductType, string> = {
+  cabecero: "cabeceros",
+  banco: "bancos",
+  cojin: "cojines",
+  puf: "pufs",
+  mesa: "mesas",
+  pantalla: "pantallas de lámpara",
+};
+
+/** "cojines ni pantallas de lámpara" (o `undefined` si el código vale para todo). */
+export function excludedProductsText(entry: Pick<DiscountCode, "excludeProducts">): string | undefined {
+  const list = (entry.excludeProducts ?? []).map((t) => PRODUCT_PLURAL[t]);
+  if (!list.length) return undefined;
+  return list.length === 1 ? list[0] : `${list.slice(0, -1).join(", ")} ni ${list[list.length - 1]}`;
+}
+
+/**
+ * ¿Vale el código para lo que pide el cliente? Sin productos conocidos, sí
+ * (el equipo lo ajusta al presupuestar). Con varios, basta con que uno no
+ * esté excluido: el descuento se aplica solo a esos.
+ */
+export function discountAppliesTo(entry: DiscountCode, productTypes: readonly ProductType[] | null | undefined): boolean {
+  const excluded = entry.excludeProducts ?? [];
+  if (!excluded.length || !productTypes?.length) return true;
+  return productTypes.some((t) => !excluded.includes(t));
 }
 
 /** Normaliza lo que escribe el cliente: mayúsculas, sin espacios ni tildes raras. */
@@ -104,6 +147,7 @@ export function applyDiscount(entry: DiscountCode, productPrice: number | null |
     type: entry.type,
     value: entry.value,
     label: entry.label,
+    excludes: excludedProductsText(entry),
   };
   if (typeof productPrice !== "number" || !(productPrice > 0)) return base;
 
@@ -143,7 +187,7 @@ export function describeDiscount(d: AppliedDiscount): string {
     parts.push(`−${formatEuroNumber(d.amount)} €`);
     parts.push(`producto ${formatEuroNumber(d.finalPrice)} € en vez de ${formatEuroNumber(d.originalPrice)} €`);
   } else {
-    parts.push("se aplicará al presupuesto");
+    parts.push(d.excludes ? `se aplicará al presupuesto (no vale para ${d.excludes})` : "se aplicará al presupuesto");
   }
   return parts.join(" · ");
 }
@@ -154,7 +198,9 @@ export function describeDiscountForCustomer(d: AppliedDiscount): string {
   if (typeof d.finalPrice === "number" && typeof d.originalPrice === "number") {
     return `${head} · tu pieza se queda en ${formatEuroNumber(d.finalPrice)} € en vez de ${formatEuroNumber(d.originalPrice)} €`;
   }
-  return `${head} · lo aplicaremos en tu presupuesto`;
+  return d.excludes
+    ? `${head} · lo aplicaremos en tu presupuesto (salvo ${d.excludes.replace(" ni ", " y ")})`
+    : `${head} · lo aplicaremos en tu presupuesto`;
 }
 
 /** Objeto que viaja al CRM (claves en snake_case como el resto del contrato). */
