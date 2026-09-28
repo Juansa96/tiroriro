@@ -575,9 +575,9 @@ const ContactForm = () => {
                       </>
                     ) : (
                       <>
-                        <div className="flex items-baseline justify-between text-sm">
+                        <div className="flex items-baseline justify-between gap-3 text-sm">
                           <span className="text-muted-foreground font-light">Envío</span>
-                          <span className="text-foreground font-light italic">a consultar según destino</span>
+                          <span className="text-foreground font-light italic text-right">a consultar según destino</span>
                         </div>
                         <p className="text-[11px] text-muted-foreground font-light italic mt-2">
                           {cp ? 'Confirmaremos el importe exacto de envío en la llamada de menos de 24 h.' : 'Añade tu código postal abajo para calcular el envío. Si no es Madrid, lo confirmamos en la llamada.'}
