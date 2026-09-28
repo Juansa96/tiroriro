@@ -159,6 +159,14 @@ export function getCategoryPriceFrom(category: Category): number {
   return vals.length ? Math.min(...vals) : 0;
 }
 
+// Precio más alto de catálogo (medida mayor con tela premium), sin extras.
+// Se usa como `highPrice` del AggregateOffer en el JSON-LD.
+export function getCategoryPriceTo(category: Category): number {
+  const { base, premium } = TABLES[category];
+  const vals = Object.keys(base).map((k) => base[k] + (premium[k] ?? 0));
+  return vals.length ? Math.max(...vals) : 0;
+}
+
 export function formatPrice(n: number): string {
   return `${Math.round(n)} €`;
 }
