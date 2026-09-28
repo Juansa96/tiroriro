@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
+import type { ProductType } from "@/lib/products";
 import {
   applyDiscount,
+  discountAppliesTo,
+  excludedProductsText,
   findDiscountCode,
   type AppliedDiscount,
   type DiscountCode,
@@ -35,6 +38,8 @@ export interface DiscountCodeState {
   entry: DiscountCode | null;
   /** Descuento calculado sobre `productPrice` (o solo el código si no hay precio). */
   applied: AppliedDiscount | null;
+  /** Aviso si el código es válido pero no vale para este producto (p. ej. cojines). */
+  notApplicable: string | null;
   error: string | null;
   clearError: () => void;
   apply: (raw: string) => boolean;
@@ -48,10 +53,12 @@ export interface DiscountCodeState {
 export function useDiscountCode(opts: {
   urlCode?: string | null;
   productPrice: number | null;
+  /** Productos que pide el cliente, para los códigos que excluyen algunos. */
+  productTypes?: readonly ProductType[] | null;
   /** Quita ?codigo= de la URL al pulsar "Quitar" (si no, volvería al recargar). */
   clearUrlCode?: () => void;
 }): DiscountCodeState {
-  const { urlCode, productPrice, clearUrlCode } = opts;
+  const { urlCode, productPrice, productTypes, clearUrlCode } = opts;
   const [input, setInput] = useState("");
   const [entry, setEntry] = useState<DiscountCode | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -97,13 +104,20 @@ export function useDiscountCode(opts: {
     if (entry) writeStored(entry.code);
   }, [entry]);
 
-  const applied = entry ? applyDiscount(entry, productPrice) : null;
+  // Un código que no vale para este producto se queda guardado (vuelve a
+  // aplicarse si el cliente cambia a otro producto) pero no descuenta nada.
+  const fits = !!entry && discountAppliesTo(entry, productTypes);
+  const applied = entry && fits ? applyDiscount(entry, productPrice) : null;
+  const notApplicable = entry && !fits
+    ? `El código ${entry.code} no vale para ${excludedProductsText(entry) ?? "este producto"}.`
+    : null;
 
   return {
     input,
     setInput,
     entry,
     applied,
+    notApplicable,
     error,
     clearError: () => setError(null),
     apply,

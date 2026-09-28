@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import type { ProductType } from "@/lib/products";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2, MessageCircle } from "lucide-react";
@@ -26,6 +27,15 @@ import {
 } from "@/data/pricing";
 
 const PRODUCT_OPTIONS = ["Cabeceros", "Bancos entelados", "Cojines y almohadones", "Pufs", "Mesas de centro", "Pantallas de lámpara", "Otro"];
+// Opción del formulario → tipo de producto (para los códigos que excluyen alguno).
+const OPTION_PRODUCT_TYPE: Record<string, ProductType> = {
+  "Cabeceros": "cabecero",
+  "Bancos entelados": "banco",
+  "Cojines y almohadones": "cojin",
+  "Pufs": "puf",
+  "Mesas de centro": "mesa",
+  "Pantallas de lámpara": "pantalla",
+};
 const WHATSAPP_URL = "https://wa.me/34660786453?text=" + encodeURIComponent("Hola, me interesa uno de vuestros productos tapizados y quería más información.");
 
 function mapProductName(name: string): string {
@@ -109,7 +119,18 @@ const ContactForm = () => {
     next.delete('codigo');
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams]);
-  const discountState = useDiscountCode({ urlCode: searchParams.get('codigo'), productPrice, clearUrlCode });
+  // Con "Otro" no se sabe qué es: el código se acepta y lo ajusta el equipo.
+  const discountProductTypes = useMemo<ProductType[] | null>(() => {
+    if (previewType) return [previewType];
+    const types = selectedProducts.map((p) => OPTION_PRODUCT_TYPE[p]);
+    return types.length && types.every(Boolean) ? types : null;
+  }, [previewType, selectedProducts]);
+  const discountState = useDiscountCode({
+    urlCode: searchParams.get('codigo'),
+    productPrice,
+    productTypes: discountProductTypes,
+    clearUrlCode,
+  });
   const discount = discountState.applied;
   const discountedProductPrice = discount?.finalPrice ?? productPrice;
   const totalIfKnown = discountedProductPrice !== null && shippingCost !== null
