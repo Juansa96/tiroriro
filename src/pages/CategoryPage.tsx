@@ -7,7 +7,7 @@ import { ChevronRight, ChevronLeft, Clock, Instagram, Maximize2 } from "lucide-r
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { getCategoryPriceFrom, formatPrice, type Category } from "@/data/pricing";
+import { getCategoryPriceFrom, getCategoryPriceTo, formatPrice, type Category } from "@/data/pricing";
 import PreciosOrientativos from "@/components/PreciosOrientativos";
 import GuiaCategoria from "@/components/GuiaCategoria";
 import { CATEGORY_SPEECH } from "@/data/narrativa";
@@ -346,6 +346,9 @@ const SLUG_TO_CAT: Record<string, Category> = {
 export const CATEGORY_PRICE_FROM: Record<string, number> = Object.fromEntries(
   Object.entries(SLUG_TO_CAT).map(([slug, cat]) => [slug, getCategoryPriceFrom(cat)])
 );
+const CATEGORY_PRICE_TO: Record<string, number> = Object.fromEntries(
+  Object.entries(SLUG_TO_CAT).map(([slug, cat]) => [slug, getCategoryPriceTo(cat)])
+);
 
 const imagePosition = (category: string) => {
   if (category === "pufs" || category === "mesas-centro") return "center center";
@@ -572,6 +575,7 @@ const CategoryPage = ({ categoryKey }: CategoryPageProps) => {
           "@type": "AggregateOffer",
           priceCurrency: "EUR",
           lowPrice: priceFrom,
+          highPrice: Math.max(CATEGORY_PRICE_TO[category] ?? 0, priceFrom),
           offerCount: activeModels.length || 1,
           availability: "https://schema.org/InStock",
           areaServed: "ES",
