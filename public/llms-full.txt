@@ -2,7 +2,7 @@
 
 > Taller artesanal español de mobiliario tapizado a medida (cabeceros de cama, bancos, pufs, mesas de centro, almohadones y pantallas de lámpara). Hecho a mano en Boadilla del Monte, Madrid, en 30 días. 61 telas para elegir. Precios finales con IVA. Web: https://tirorirohome.com
 
-Resumen corto: https://tirorirohome.com/llms.txt · Actualizado: 2026-09-22
+Resumen corto: https://tirorirohome.com/llms.txt · Actualizado: 2026-09-28
 
 ## Quiénes somos
 Tiroriro (Tiroriro Home) es una marca familiar madrileña fundada por dos parejas: Rocío Navarrete e Iñaki Sangrador, y Bea González del Yerro y Juan Sangrador. Diseñamos y tapizamos a mano piezas para el dormitorio y el salón, cada una fabricada bajo pedido con la forma, las medidas y la tela que elige el cliente. Trabajamos con tapiceros artesanos con décadas de oficio.
@@ -336,6 +336,5 @@ Sí. Fabricamos series para hoteles, apartamentos turísticos y proyectos de int
 - Telas: https://tirorirohome.com/telas
 - Configurador: https://tirorirohome.com/configurador
 - Guía de medidas de cabeceros: https://tirorirohome.com/guia-medidas-cabeceros
-- Probador virtual: https://tirorirohome.com/probador
 - Nosotros: https://tirorirohome.com/nosotros
 - Aviso legal: https://tirorirohome.com/aviso-legal · Privacidad: https://tirorirohome.com/privacidad · Cookies: https://tirorirohome.com/cookies

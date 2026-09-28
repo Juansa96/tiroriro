@@ -10,7 +10,6 @@ import Index from "./pages/Index"; // home se mantiene eager (LCP)
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const ConfiguratorPage = lazy(() => import("./pages/ConfiguratorPage"));
-const TryOnPage = lazy(() => import("./pages/TryOnPage"));
 const TeamPage = lazy(() => import("./pages/TeamPage"));
 const TelasPage = lazy(() => import("./pages/TelasPage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
@@ -45,7 +44,6 @@ const AppRoutes = () => (
     ))}
     <Route path="/productos/:category/:model" element={<ModelPage />} />
     <Route path="/configurador" element={<ConfiguratorPage />} />
-    <Route path="/probador" element={<TryOnPage />} />
     <Route path="/telas" element={<TelasPage />} />
     <Route path="/guia-medidas-cabeceros" element={<GuiaMedidasCabecerosPage />} />
     <Route path="/ig" element={<IgPage />} />
