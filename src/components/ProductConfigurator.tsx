@@ -15,7 +15,7 @@ import { trackFbEvent } from "@/lib/metaPixel";
 import { FABRIC_GROUPS, ALL_FABRICS } from "@/lib/fabrics";
 import { BANCO_BASE, CABECERO_VIVO_DOBLE, BANCO_VIVO, PUF_VIVO, MESA_VIVO, EXTRA_VIVO_DIFERENTE,
   SHIPPING_MADRID, HEADBOARD_OVERSIZED_SHIPPING_SURCHARGE, isHeadboardOversized } from "@/data/pricing";
-import { Clock, ZoomIn } from "lucide-react";
+import { Check, ZoomIn } from "lucide-react";
 import FabricLightbox, { type LightboxFabric } from "./FabricLightbox";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDiscountCode } from "@/hooks/useDiscountCode";
@@ -870,7 +870,7 @@ const ProductConfigurator = () => {
   const visibleSteps = showExtrasStep ? STEPS : STEPS.filter(s => s !== 'extras');
   const visibleStepIndex = visibleSteps.indexOf(currentStep as Step);
 
-  const ProgressBar = ({ className = "" }: { className?: string }) => (
+  const ProgressBar = ({ className = "", compact = false }: { className?: string; compact?: boolean }) => (
     <div className={className}>
       <div className="flex gap-1">
         {visibleSteps.map((s) => (
@@ -879,7 +879,7 @@ const ProductConfigurator = () => {
             type="button"
             onClick={() => advanceTo(s)}
             aria-label={`Ir al paso ${STEP_LABELS[s]}`}
-            className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted cursor-pointer group relative"
+            className={`flex-1 ${compact ? 'h-1' : 'h-1.5'} rounded-full overflow-hidden bg-muted cursor-pointer group relative`}
           >
             <div
               className="h-full rounded-full transition-all duration-300 group-hover:opacity-80"
@@ -891,9 +891,9 @@ const ProductConfigurator = () => {
           </button>
         ))}
       </div>
-      <div className="flex justify-between items-center mt-2 gap-2">
-        <p className="text-xs text-muted-foreground font-light">
-          Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span> · <span className="text-accent-warm font-medium">{
+      <div className={`flex justify-between items-center gap-2 ${compact ? 'mt-1.5' : 'mt-2'}`}>
+        <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-muted-foreground font-light truncate`}>
+          Paso {Math.max(1, visibleStepIndex + 1)} de {visibleSteps.length} · <span className="text-foreground">{STEP_LABELS[currentStep as Step] || STEP_LABELS.type}</span>{compact ? null : <> · <span className="text-accent-warm font-medium">{
             (() => {
               // Peso fijo del primer paso: siempre 1 / STEPS.length (independiente
               // de cuántos pasos tenga el producto). El resto del 100% se reparte
@@ -909,9 +909,9 @@ const ProductConfigurator = () => {
               });
               return Math.round(total);
             })()
-          }%</span>
+          }%</span></>}
         </p>
-        <p className="text-[10px] text-muted-foreground/70 font-light hidden sm:block">Pulsa para navegar</p>
+        {!compact && <p className="text-[10px] text-muted-foreground/70 font-light hidden sm:block">Pulsa para navegar</p>}
       </div>
     </div>
   );
@@ -948,6 +948,23 @@ const ProductConfigurator = () => {
     setOpenAccordion(val || '');
   };
 
+  // Texto del botón principal. "Reservar" en vez de "Lo quiero": lleva a la
+  // acción sin sonar agresivo; el precio va al lado y la letra pequeña aclara
+  // que no se paga nada ahora.
+  const productCtaName: Record<ProductType, string> = {
+    cabecero: 'mi cabecero', banco: 'mi banco', puf: 'mi puf',
+    mesa: 'mi mesa', pantalla: 'mi pantalla', cojin: 'mis almohadones',
+  };
+  const ctaLabel = !productType
+    ? 'Elige un producto'
+    : isPriceOnRequest
+      ? 'Pedir presupuesto'
+      : priceIsKnown
+        ? `Reservar ${productCtaName[productType]} · ${priceLabel(finalPrice)}`
+        : `Reservar ${productCtaName[productType]}`;
+  const ctaLabelMobile = !productType ? 'Empezar' : isPriceOnRequest ? 'Pedir presupuesto' : 'Reservar';
+  const discountCode = discountState.entry?.code ?? discount?.code ?? '';
+
   const sharedAccordionProps = {
     openAccordion: accordionValue,
     setOpenAccordion: handleAccordionChange,
@@ -982,52 +999,60 @@ const ProductConfigurator = () => {
   return (
     <div className="min-h-screen">
       <FabricLightbox fabric={zoomFabric} onClose={() => setZoomFabric(null)} />
-      <div className="container mx-auto px-4 md:px-6 pt-24 pb-4 text-center">
+      <div className="container mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-3 md:pb-6 text-center">
         <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground mb-2">Diseña el tuyo</h1>
-        <p className="text-sm text-muted-foreground font-light">Precio en tiempo real · Hecho a medida</p>
+        <p className="text-sm text-muted-foreground font-light">Elige forma, medida y tela · precio al instante · hecho a mano en España</p>
       </div>
 
-      <div id="mobile-preview" className="md:hidden sticky top-16 z-30" style={{ backgroundColor: '#F0EDE8' }}>
-        <div className="px-4 py-2 flex flex-col items-center">
-          {/* SVG + fabric swatches side-by-side on mobile */}
-          <div className="flex w-full gap-3 items-center justify-center min-h-[110px]">
-            <div className="flex-1 flex items-center justify-center">
-              <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={1} />
+      <div id="mobile-preview" className="md:hidden sticky top-20 z-30 border-b border-border/40" style={{ backgroundColor: '#F0EDE8' }}>
+        <div className="px-4 pt-2 pb-2.5">
+          {/* Silueta pequeña + muestras de tela a la derecha: deja sitio a los pasos */}
+          <div className="flex items-center gap-3 min-h-[92px]">
+            <div className="flex-1 min-w-0 flex items-center justify-center">
+              <div className="w-full max-w-[170px]">
+                <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={1} />
+              </div>
             </div>
             {fabricId && (
-              <div className="w-16 flex-shrink-0 border-l border-border/30 pl-2">
-                <FabricSwatchPanel
-                  fabric={fabric}
-                  vivoFabric={needsVivo ? vivoFabric : undefined}
-                  lateralFabric={lateralFabric || undefined}
-                  showLateral={productType === 'cabecero' || productType === 'puf'}
-                  vivoLabel={productType === 'cojin' ? 'Ribete' : 'Vivo'}
-                  onZoom={setZoomFabric}
-                />
+              <div className="flex shrink-0 items-start gap-2.5 border-l border-border/40 pl-3">
+                {([
+                  { key: 'tela', label: 'Tela', f: fabric },
+                  ...((productType === 'cabecero' || productType === 'puf') ? [{ key: 'lados', label: 'Lados', f: lateralFabric || fabric }] : []),
+                  ...((needsVivo && vivoFabric) ? [{ key: 'vivo', label: productType === 'cojin' ? 'Ribete' : 'Vivo', f: vivoFabric }] : []),
+                ] as Array<{ key: string; label: string; f?: LightboxFabric }>).map(({ key, label, f }) => (
+                  <div key={key} className="flex w-11 flex-col items-center gap-1">
+                    <SwatchButton fabric={f} heightClass="h-11" onZoom={setZoomFabric} />
+                    <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{label}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-          <div className="mt-1.5 w-full">
-            <ProgressBar />
-          </div>
+          <ProgressBar className="mt-1" compact />
         </div>
       </div>
 
       <div className="hidden md:flex container mx-auto px-6 py-8 gap-10 lg:gap-14">
         {/* Left column: render + fabric swatches + actions */}
-        <div className="w-[45%] lg:w-1/2 sticky top-20 self-start" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+        <div
+          className="w-[45%] lg:w-1/2 sticky top-24 self-start overflow-y-auto pb-6"
+          style={{ maxHeight: 'calc(100vh - 96px)', scrollbarWidth: 'none' }}
+        >
           <div className="rounded-lg p-5 flex gap-4" style={{ backgroundColor: '#F0EDE8' }}>
 
             {/* SVG render */}
-            <div className="flex-1 flex flex-col items-center justify-center min-h-[320px]">
-              <p className="font-serif text-sm text-muted-foreground mb-4 text-center">{previewLabel}</p>
+            <div className="flex-1 flex flex-col items-center justify-center min-h-[280px]">
+              {productType && (
+                <p className="font-serif text-sm text-muted-foreground mb-3 text-center">{previewLabel}</p>
+              )}
               <div className="flex-1 flex items-center justify-center w-full">
                 <ProductSVGPreview type={productType} color={fillColor} fabricImage={fabricImage} lateralFabricImage={lateralFabricImage} finish={finish} vivoColor={vivoColor} forma={svgForma} widthCm={widthCm} heightCm={heightCm} depthCm={depthCm} surface={productType === 'mesa' && extraTopMaterial !== 'nada' ? extraTopMaterial : undefined} quantity={1} />
               </div>
-              {!productType && (
-                <p className="text-xs text-muted-foreground text-center mt-2">Tu pieza aparecerá aquí</p>
+              {productType ? (
+                <RenderNotice />
+              ) : (
+                <p className="text-xs text-muted-foreground text-center mt-3 font-light">Elige un producto a la derecha para empezar.</p>
               )}
-              <RenderNotice />
             </div>
 
             {/* Fabric swatch panel — only when fabric is selected */}
@@ -1045,75 +1070,63 @@ const ProductConfigurator = () => {
             )}
           </div>
 
-          {productType && (
-            <div className="mt-5 flex items-baseline justify-between px-1">
-              <div>
-                <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1">
-                  {hasDiscountAmount && <span className="text-xl text-muted-foreground line-through mr-2 align-middle">{priceLabel(price)}</span>}
-                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? priceLabel(finalPrice) : `desde ${basePrice} €`)}
-                  {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm text-2xl align-top ml-1" aria-hidden>*</span>}
-                </p>
-                {hasDiscountAmount && (
-                  <p className="mt-1.5 text-xs text-accent-warm font-medium">
-                    Código {discount!.code}: te ahorras {formatEuroNumber(discount!.amount!)} €
+          {productType ? (
+            <div className="mt-5 px-1">
+              {/* Precio */}
+              <div className="flex items-end justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-[10px] tracking-[0.16em] uppercase text-muted-foreground font-medium">
+                    {isPriceOnRequest ? 'Precio' : hasCustomMeasure ? 'Precio orientativo' : priceIsKnown ? 'Tu precio' : 'Precio'}
                   </p>
-                )}
+                  <p key={priceKey} className="price-animate font-serif text-4xl font-light text-foreground leading-none mt-1.5">
+                    {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? priceLabel(finalPrice) : `desde ${basePrice} €`)}
+                    {hasDiscountAmount && (
+                      <span className="ml-2.5 text-lg text-muted-foreground line-through font-light">{priceLabel(price)}</span>
+                    )}
+                  </p>
+                </div>
+                {!isPriceOnRequest && <p className="text-[11px] text-muted-foreground font-light pb-0.5 shrink-0">IVA incl.</p>}
               </div>
-              {!isPriceOnRequest && <p className="text-[10px] text-muted-foreground font-light">IVA incl.</p>}
-            </div>
-          )}
-          {isPriceOnRequest ? (
-            <div className="mt-2 px-1">
-              <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
-                Precio a consultar — nos pondremos en contacto contigo.
+              <p className="mt-2.5 text-xs text-muted-foreground font-light leading-snug">
+                {isPriceOnRequest ? (
+                  'Con tus medidas te preparamos el precio y te lo confirmamos en menos de 24 h.'
+                ) : hasCustomMeasure ? (
+                  customNote
+                ) : (
+                  <>
+                    Envío a Madrid <span className="font-medium text-foreground">{madridShipping} €</span>
+                    {oversizedShippingSurcharge > 0 && <> (incluye {oversizedShippingSurcharge} € por cabecero grande)</>}
+                    {' '}· resto de la península, a consultar.
+                  </>
+                )}
               </p>
-            </div>
-          ) : hasCustomMeasure && (
-            <div className="mt-2 px-1">
-              <p className="text-[11px] text-muted-foreground font-light italic leading-snug">
-                <span className="text-accent-warm not-italic">*</span> {customNote}
-              </p>
-            </div>
-          )}
-          <div className="mt-2 px-1">
-            <p className="text-xs text-muted-foreground font-light text-center">
-              Envío a la península · Madrid <span className="font-medium text-foreground">{madridShipping} €</span>
-              {oversizedShippingSurcharge > 0 && <> (incluye {oversizedShippingSurcharge} € por cabecero grande)</>}
-              {' '}· resto a consultar en la llamada
-            </p>
-            <p className="text-[11px] text-muted-foreground/60 font-light text-center italic mt-0.5">Telas sujetas a disponibilidad de stock.</p>
-          </div>
 
-          {productType && (
-            <div className="mt-3 mx-1 p-3 bg-accent-warm/5 border border-accent-warm/20 rounded-md text-center">
-              <p className="text-[11px] text-foreground font-medium tracking-wide leading-snug">
-                Reserva con el 50% · El resto al recibir · Garantía de fabricación
-              </p>
-            </div>
-          )}
+              <DiscountCodeField state={discountState} id="config-discount" className="mt-5" note={false} />
 
-          {productType && <DiscountCodeField state={discountState} id="config-discount" className="mt-3 mx-1" />}
-
-          <div className="flex flex-col gap-3 mt-4">
-            <button
+              <button
+                type="button"
                 onClick={handleOrder}
-                disabled={!productType}
-                className="btn-sweep btn-unir btn-unir-outline w-full inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
+                className="btn-sweep btn-unir mt-4 w-full inline-flex h-12 items-center justify-center px-6 text-xs tracking-[0.16em] uppercase font-medium"
               >
-                <span className="relative z-10">
-                  {priceIsKnown && !isPriceOnRequest
-                    ? `Lo quiero — reserva por ${priceLabel(finalPrice)}`
-                    : 'Lo quiero — reserva la mía'} →
-                </span>
+                <span className="relative z-10 truncate">{ctaLabel} →</span>
               </button>
-          </div>
+              <p className="mt-2.5 text-[11px] text-muted-foreground font-light text-center leading-snug">
+                Sin pago ahora · te llamamos en menos de 24 h · reserva con el 50 % y el resto al recibirlo
+              </p>
+              <p className="mt-1 text-[10px] text-muted-foreground/60 font-light text-center italic">Telas sujetas a disponibilidad de stock.</p>
+            </div>
+          ) : (
+            <p className="mt-5 px-1 text-xs text-muted-foreground font-light text-center leading-relaxed">
+              Cabeceros desde 290 € · Pufs desde 150 € · Mesas desde 220 € · Pantallas desde 25 €
+            </p>
+          )}
         </div>
 
         <div className="w-[55%] lg:w-1/2">
           <div className="mb-6">
             <h2 className="font-serif text-3xl lg:text-4xl font-light text-foreground">Configura tu pieza</h2>
           </div>
-          <div className="sticky top-20 z-20 bg-background/95 backdrop-blur-sm pb-3 pt-1 -mx-2 px-2 mb-4">
+          <div className="sticky top-24 z-20 bg-background/95 backdrop-blur-sm pb-3 pt-2 -mx-2 px-2 mb-4">
             <ProgressBar />
           </div>
           <ConfigAccordionsSingle
@@ -1124,59 +1137,53 @@ const ProductConfigurator = () => {
         </div>
       </div>
 
-      <div className="md:hidden px-4 pb-28 pt-2">
-        <div className="mb-3">
-          <h2 className="font-serif text-xl font-light text-foreground">Configura tu pieza</h2>
-        </div>
+      <div className="md:hidden px-4 pb-32 pt-3">
         <ConfigAccordionsSingle
           openAccordion={accordionValue}
           setOpenAccordion={handleAccordionChange}
           {...sharedAccordionProps}
         />
-        {productType && <DiscountCodeField state={discountState} id="config-discount-mobile" className="mt-5" />}
+        {productType && (
+          <div className="mt-6 space-y-4">
+            <DiscountCodeField state={discountState} id="config-discount-mobile" />
+            <p className="text-[11px] text-muted-foreground font-light leading-snug text-center">
+              Envío a Madrid <span className="font-medium text-foreground">{madridShipping} €</span> · resto de la península, a consultar · Sin pago ahora: reserva con el 50 % y el resto al recibirlo.
+            </p>
+          </div>
+        )}
       </div>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border px-6 py-4">
-        <div className="flex items-center justify-between gap-3">
+      {/* Barra inferior fija en móvil: precio a la izquierda, botón a la derecha */}
+      <div
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border px-4 pt-2.5"
+        style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}
+      >
+        <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
             {productType ? (
               <>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Precio</p>
-                <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none whitespace-nowrap">
-                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? priceLabel(finalPrice) : `desde ${basePrice}€`)}
-                  {hasCustomMeasure && !isPriceOnRequest && <span className="text-accent-warm ml-0.5 text-lg" aria-hidden>*</span>}
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest truncate">
+                  {hasDiscountAmount ? `Con ${discountCode}` : isPriceOnRequest ? 'Precio' : hasCustomMeasure ? 'Precio orientativo' : 'Precio · IVA incl.'}
                 </p>
-                {hasDiscountAmount && (
-                  <p className="text-[10px] leading-tight mt-0.5 whitespace-nowrap">
-                    <span className="text-muted-foreground line-through">{priceLabel(price)}</span>
-                    <span className="text-accent-warm font-medium"> · {discount!.code} −{formatEuroNumber(discount!.amount!)} €</span>
-                  </p>
-                )}
-                {isPriceOnRequest ? (
-                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
-                    Te contactamos
-                  </p>
-                ) : hasCustomMeasure && (
-                  <p className="text-[9px] text-muted-foreground italic font-light leading-tight mt-0.5">
-                    *Orientativo
-                  </p>
-                )}
+                <p key={priceKey} className="price-animate font-serif text-2xl font-light text-foreground leading-none whitespace-nowrap mt-0.5">
+                  {isPriceOnRequest ? 'A consultar' : (priceIsKnown ? priceLabel(finalPrice) : `desde ${basePrice} €`)}
+                  {hasDiscountAmount && (
+                    <span className="ml-1.5 text-sm text-muted-foreground line-through">{priceLabel(price)}</span>
+                  )}
+                </p>
               </>
             ) : (
-              <p className="text-xs text-muted-foreground font-light">Elige un producto</p>
+              <p className="text-xs text-muted-foreground font-light leading-snug">Elige un producto para ver el precio</p>
             )}
           </div>
           <button
-              onClick={handleOrder}
-              disabled={!productType}
-              className="btn-sweep btn-unir btn-unir-outline inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-40"
-            >
-              <span className="relative z-10">
-                {priceIsKnown && !isPriceOnRequest
-                  ? `Reserva por ${priceLabel(finalPrice)}`
-                  : 'Lo quiero'} →
-              </span>
-            </button>
+            type="button"
+            onClick={handleOrder}
+            disabled={!productType}
+            className="btn-sweep btn-unir shrink-0 inline-flex h-12 items-center justify-center px-5 text-xs tracking-[0.14em] uppercase font-medium whitespace-nowrap disabled:opacity-40"
+          >
+            <span className="relative z-10">{ctaLabelMobile} →</span>
+          </button>
         </div>
       </div>
     </div>
@@ -1752,7 +1759,7 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               </button>
             ))}
           </div>
-          <p className="text-[11px] text-muted-foreground/60 font-light italic -mt-1">Sujeto a disponibilidad de stock. Pulsa otra vez sobre la tela elegida para verla en grande.</p>
+          <p className="text-[11px] text-muted-foreground/70 font-light -mt-1">Pulsa una tela para elegirla y otra vez para verla en grande.</p>
           {FABRIC_GROUPS.map(group => {
             const filtered = fabricFilter === "todas"
               ? group.fabrics
@@ -1761,20 +1768,42 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
             return (
             <div key={group.label}>
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-3 font-light">{group.label}</p>
-              <div className="flex flex-wrap gap-3">
-                {filtered.map(f => (
-                  <button key={f.id} onClick={() => (fabricId === f.id ? onZoomFabric(f) : setFabricId(f.id))} className="flex flex-col items-center gap-1.5" title={fabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={fabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir la tela ${f.name}`}>
-                    <div
-                      className={`w-10 h-10 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-2 ${fabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
-                      style={{ backgroundColor: f.hex }}
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-x-3 gap-y-4">
+                {filtered.map(f => {
+                  const selected = fabricId === f.id;
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => (selected ? onZoomFabric(f) : setFabricId(f.id))}
+                      className="group flex flex-col items-center gap-1.5 text-center focus:outline-none"
+                      title={selected ? `${f.name} · pulsa otra vez para ampliar` : f.name}
+                      aria-label={selected ? `Ampliar la tela ${f.name}` : `Elegir la tela ${f.name}`}
+                      aria-pressed={selected}
                     >
-                      {(f as { image?: string }).image && (
-                        <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
-                      )}
-                    </div>
-                    <span className="hidden md:block text-[10px] text-muted-foreground font-light max-w-[60px] text-center leading-tight">{f.name}</span>
-                  </button>
-                ))}
+                      <span
+                        className={`relative block w-full aspect-square rounded-xl overflow-hidden transition-all duration-200 ${
+                          selected
+                            ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                            : "ring-1 ring-border/70 group-hover:ring-foreground/50 group-hover:scale-[1.03]"
+                        }`}
+                        style={{ backgroundColor: f.hex }}
+                      >
+                        {(f as { image?: string }).image && (
+                          <img src={(f as { image?: string }).image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
+                        )}
+                        {selected && (
+                          <span className="absolute bottom-1 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background shadow-sm">
+                            <Check size={12} strokeWidth={2.5} />
+                          </span>
+                        )}
+                      </span>
+                      <span className={`text-[10px] leading-tight line-clamp-2 ${selected ? "text-foreground font-medium" : "text-muted-foreground font-light"}`}>
+                        {f.name}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             );
@@ -1803,15 +1832,15 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   <p className="text-[10px] uppercase text-muted-foreground mb-2">Básicas</p>
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => setLateralFabricId('')} className="flex flex-col items-center gap-1">
-                      <div className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center text-[9px] font-medium ${!lateralFabricId ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/40"}`}>
+                      <div className={`w-10 h-10 rounded-lg transition-all flex items-center justify-center text-[10px] font-medium ${!lateralFabricId ? "ring-2 ring-foreground ring-offset-2 ring-offset-background bg-foreground/5" : "ring-1 ring-border/70 hover:ring-foreground/50"}`}>
                         =
                       </div>
                       <span className="text-[9px] text-muted-foreground font-light">Igual</span>
                     </button>
                     {FABRIC_GROUPS[0].fabrics.map(f => (
-                      <button key={f.id} onClick={() => (lateralFabricId === f.id ? onZoomFabric(f) : setLateralFabricId(f.id))} className="flex flex-col items-center gap-1.5" title={lateralFabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={lateralFabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para los laterales`}>
+                      <button key={f.id} type="button" onClick={() => (lateralFabricId === f.id ? onZoomFabric(f) : setLateralFabricId(f.id))} className="flex flex-col items-center gap-1.5 focus:outline-none" title={lateralFabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={lateralFabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para los laterales`}>
                         <div
-                          className={`w-8 h-8 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${lateralFabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                          className={`w-10 h-10 rounded-lg transition-all overflow-hidden ${lateralFabricId === f.id ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "ring-1 ring-border/70 hover:ring-foreground/50"}`}
                           style={{ backgroundColor: f.hex }}
                         >
                           {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
@@ -1824,9 +1853,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
                   <p className="text-[10px] uppercase text-muted-foreground mb-2">Premium</p>
                   <div className="flex flex-wrap gap-2">
                     {FABRIC_GROUPS[1].fabrics.map(f => (
-                      <button key={f.id} onClick={() => (lateralFabricId === f.id ? onZoomFabric(f) : setLateralFabricId(f.id))} className="flex flex-col items-center gap-1.5" title={lateralFabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={lateralFabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para los laterales`}>
+                      <button key={f.id} type="button" onClick={() => (lateralFabricId === f.id ? onZoomFabric(f) : setLateralFabricId(f.id))} className="flex flex-col items-center gap-1.5 focus:outline-none" title={lateralFabricId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={lateralFabricId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para los laterales`}>
                         <div
-                          className={`w-8 h-8 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${lateralFabricId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                          className={`w-10 h-10 rounded-lg transition-all overflow-hidden ${lateralFabricId === f.id ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "ring-1 ring-border/70 hover:ring-foreground/50"}`}
                           style={{ backgroundColor: f.hex }}
                         >
                           {f.image && <img src={f.image} alt={f.name} className="w-full h-full object-cover" loading="lazy" />}
@@ -1882,11 +1911,11 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <p className="text-xs tracking-extra-wide uppercase text-muted-foreground mb-1 font-light">{productType === 'cojin' ? 'Tela del ribete' : 'Tela del vivo'} <span className="text-muted-foreground/60 normal-case">(opcional · +{EXTRA_VIVO_DIFERENTE} € si es distinta)</span></p>
               <p className="text-xs text-muted-foreground/70 font-light mb-3 italic">Por defecto igual que la principal.</p>
               <p className="text-[10px] uppercase text-muted-foreground mb-2">Básicas</p>
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-2.5 mb-4">
                 {FABRIC_GROUPS[0].fabrics.map(f => (
-                  <button key={f.id} onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
+                  <button key={f.id} type="button" className="focus:outline-none" onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
                     <div
-                      className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                      className={`w-10 h-10 rounded-lg transition-all overflow-hidden ${vivoColorId === f.id ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "ring-1 ring-border/70 hover:ring-foreground/50"}`}
                       style={{ backgroundColor: f.hex }}
                     >
                       {f.image && (
@@ -1899,9 +1928,9 @@ const AccordionItems = (props: AccordionContentSharedProps) => {
               <p className="text-[10px] uppercase text-muted-foreground mb-2">Premium</p>
               <div className="flex flex-wrap gap-2">
                 {FABRIC_GROUPS[1].fabrics.map(f => (
-                  <button key={f.id} onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
+                  <button key={f.id} type="button" className="focus:outline-none" onClick={() => (vivoColorId === f.id ? onZoomFabric(f) : setVivoColorId(f.id))} title={vivoColorId === f.id ? `${f.name} · pulsa otra vez para ampliar` : f.name} aria-label={vivoColorId === f.id ? `Ampliar la tela ${f.name}` : `Elegir ${f.name} para el vivo`}>
                     <div
-                      className={`w-7 h-7 rounded-full transition-all overflow-hidden outline outline-2 outline-offset-1 ${vivoColorId === f.id ? "outline-foreground" : "outline-transparent hover:outline-foreground/30"}`}
+                      className={`w-10 h-10 rounded-lg transition-all overflow-hidden ${vivoColorId === f.id ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "ring-1 ring-border/70 hover:ring-foreground/50"}`}
                       style={{ backgroundColor: f.hex }}
                     >
                       {f.image && (

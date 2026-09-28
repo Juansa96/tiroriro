@@ -73,7 +73,7 @@ const HowItWorks = () => (
         <div className="mt-12 text-center">
           <Link
             to="/configurador"
-            className="btn-sweep btn-unir btn-unir-outline inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light"
+            className="btn-sweep btn-unir inline-flex items-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-medium"
           >
             <span className="relative z-10">Diseña el tuyo →</span>
           </Link>
