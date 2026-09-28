@@ -10,23 +10,16 @@ import {
   type DiscountCode,
 } from "@/data/discounts";
 
-// El código aplicado se recuerda en el navegador para que pase del
-// configurador al formulario (y sobreviva a una recarga) sin depender solo
-// de la URL. Se vuelve a validar siempre: si caducó, desaparece.
-const STORAGE_KEY = "tiro_discount_code_v1";
+// El código NO se recuerda en el navegador (decisión de Juan, 28/09/2026):
+// solo se aplica si alguien lo escribe, o si llega por ?codigo= desde el
+// configurador en esa misma solicitud. Antes se guardaba en localStorage y
+// volvía a aparecer solo en cada visita. Esta clave se limpia por si quedó
+// guardada en algún navegador.
+const LEGACY_STORAGE_KEY = "tiro_discount_code_v1";
 
-function readStored(): string | null {
+function clearLegacyStored() {
   try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function writeStored(code: string | null) {
-  try {
-    if (code) localStorage.setItem(STORAGE_KEY, code);
-    else localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
   } catch {
     /* ignore */
   }
@@ -48,7 +41,7 @@ export interface DiscountCodeState {
 
 /**
  * Estado compartido del código de descuento (configurador y formulario).
- * `urlCode` es el `?codigo=` de la URL: manda sobre lo guardado.
+ * `urlCode` es el `?codigo=` de la URL (viene del configurador).
  */
 export function useDiscountCode(opts: {
   urlCode?: string | null;
@@ -81,28 +74,21 @@ export function useDiscountCode(opts: {
     setEntry(null);
     setInput("");
     setError(null);
-    writeStored(null);
     clearUrlCode?.();
   }, [clearUrlCode]);
 
-  // Al montar (o si cambia ?codigo=): URL primero, si no lo guardado. Sin
-  // mensaje de error: un código caducado simplemente no se aplica.
+  // Al montar (o si cambia ?codigo=): solo la URL. Sin mensaje de error: un
+  // código caducado simplemente no se aplica.
   useEffect(() => {
-    const candidate = urlCode || readStored();
-    if (!candidate) return;
-    const found = findDiscountCode(candidate);
+    clearLegacyStored();
+    if (!urlCode) return;
+    const found = findDiscountCode(urlCode);
     if (found) {
       setEntry(found);
       setInput(found.code);
       setError(null);
-    } else if (!urlCode) {
-      writeStored(null);
     }
   }, [urlCode]);
-
-  useEffect(() => {
-    if (entry) writeStored(entry.code);
-  }, [entry]);
 
   // Un código que no vale para este producto se queda guardado (vuelve a
   // aplicarse si el cliente cambia a otro producto) pero no descuenta nada.
