@@ -541,17 +541,19 @@ const ContactForm = () => {
                 {/* Desglose de precio y envío */}
                 {productPrice !== null && (
                   <div className="mt-5 pt-4 border-t border-border/40 space-y-1.5">
-                    <div className="flex items-baseline justify-between text-sm">
+                    <div className="flex items-baseline justify-between gap-3 text-sm">
                       <span className="text-muted-foreground font-light">Producto</span>
-                      <span className="font-medium text-foreground">{formatEuroNumber(productPrice)} €</span>
+                      <span className="font-medium text-foreground whitespace-nowrap">{formatEuroNumber(productPrice)} €</span>
                     </div>
                     {discount && typeof discount.amount === 'number' && (
-                      <div className="flex items-baseline justify-between text-sm" data-testid="discount-line">
-                        <span className="text-muted-foreground font-light">
-                          Descuento <span className="font-medium text-foreground">{discount.code}</span>
-                          <span className="text-muted-foreground/80"> ({formatDiscountValue(discount)})</span>
-                        </span>
-                        <span className="font-medium text-foreground">−{formatEuroNumber(discount.amount)} €</span>
+                      <div data-testid="discount-line">
+                        <div className="flex items-baseline justify-between gap-3 text-sm">
+                          <span className="text-muted-foreground font-light">Descuento</span>
+                          <span className="font-medium text-foreground whitespace-nowrap shrink-0">−{formatEuroNumber(discount.amount)} €</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground/80 font-light leading-snug break-words">
+                          Código <span className="font-medium text-foreground">{discount.code}</span> · {formatDiscountValue(discount)}
+                        </p>
                       </div>
                     )}
                     {isMadridCP ? (
@@ -573,9 +575,9 @@ const ContactForm = () => {
                       </>
                     ) : (
                       <>
-                        <div className="flex items-baseline justify-between text-sm">
+                        <div className="flex items-baseline justify-between gap-3 text-sm">
                           <span className="text-muted-foreground font-light">Envío</span>
-                          <span className="text-foreground font-light italic">a consultar según destino</span>
+                          <span className="text-foreground font-light italic text-right">a consultar según destino</span>
                         </div>
                         <p className="text-[11px] text-muted-foreground font-light italic mt-2">
                           {cp ? 'Confirmaremos el importe exacto de envío en la llamada de menos de 24 h.' : 'Añade tu código postal abajo para calcular el envío. Si no es Madrid, lo confirmamos en la llamada.'}
@@ -726,13 +728,13 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={sending}
-              className="btn-sweep btn-unir btn-unir-outline w-full inline-flex items-center justify-center px-8 py-3 text-xs tracking-[0.18em] uppercase font-light disabled:opacity-50"
+              className="btn-sweep btn-unir w-full inline-flex items-center justify-center px-8 py-3.5 text-xs tracking-[0.18em] uppercase font-medium disabled:opacity-50"
             >
               <span className="relative z-10 inline-flex items-center gap-2">
                 {sending
                   ? (<><Loader2 size={16} className="animate-spin" />Enviando...</>)
                   : hasConfigParams && discountedProductPrice !== null
-                    ? `Lo quiero — reserva por ${formatEuroNumber(discountedProductPrice)} € →`
+                    ? `Reservar por ${formatEuroNumber(discountedProductPrice)} € →`
                     : "Enviar solicitud →"}
               </span>
             </button>

@@ -166,7 +166,7 @@ const HeroSection = () => {
 
       <div className="absolute inset-0 bg-black/40 md:bg-black/45" />
 
-      <div className="relative z-10 text-center px-6 max-w-3xl mx-auto pb-20 md:pb-0">
+      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto pb-20 md:pb-0">
         <div
           className="hidden md:block transition-all duration-700 ease-out mb-4"
           style={{
@@ -210,7 +210,7 @@ const HeroSection = () => {
             </Link>
           </div>
           <div className="mt-5 flex flex-col items-center gap-1 text-white/85">
-            <span className="text-[12px] md:text-[11px] font-normal tracking-widest">Cabeceros desde 290 € · Mesas de centro desde 220 € · Pufs desde 150 € · Pantallas de lámpara desde 25 €</span>
+            <span className="text-[11px] font-normal tracking-wide md:tracking-widest leading-relaxed">Cabeceros desde 290 € · Mesas de centro desde 220 € · Pufs desde 150 € · Pantallas de lámpara desde 25 €</span>
           </div>
 
         </div>
