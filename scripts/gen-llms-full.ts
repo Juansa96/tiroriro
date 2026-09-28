@@ -138,7 +138,6 @@ ${faqs.map((f) => `### ${f.q}\n${f.a}`).join("\n\n")}
 - Telas: ${BASE}/telas
 - Configurador: ${BASE}/configurador
 - Guía de medidas de cabeceros: ${BASE}/guia-medidas-cabeceros
-- Probador virtual: ${BASE}/probador
 - Nosotros: ${BASE}/nosotros
 - Aviso legal: ${BASE}/aviso-legal · Privacidad: ${BASE}/privacidad · Cookies: ${BASE}/cookies
 `;
